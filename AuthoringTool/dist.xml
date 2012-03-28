@@ -1,0 +1,40 @@
+<?eclipse.ant.import?>
+<project>
+	<property name="manager_url" value="http://localhost:8080/manager/text" />
+ 	<property name="manager_username" value="root" />
+	<property name="manager_password" value="dfhsj$%^#fgssff_*^%_6" />
+	<property name="webapp" value="${ant.project.name}" />
+	<property name="war" location="${webapp}.war" />
+
+	<target name="war" description="build the war">
+		<pathconvert property="libs_p" refid="AuthoringTool Libraries.userclasspath" pathsep=",">
+			<map from="/" to=""/>
+		</pathconvert>
+		<war basedir="war" destfile="${war}" webxml="war/WEB-INF/web.xml">
+			<exclude name="WEB-INF/**" />
+			<metainf dir="metainf" />
+			<webinf dir="war/WEB-INF/">
+				<include name="**/*.jar" />
+				<exclude name="lib/geronimo-servlet*.jar" />
+				<exclude name="lib/jetty-naming*.jar" />
+				<exclude name="lib/jetty-plus*.jar" />
+				<exclude name="lib/mysql-connector-java*.jar"/>
+				
+			</webinf>
+
+			<lib dir="${basedir}/.." includes="${libs_p}"/>
+		</war>
+	</target>
+ 
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
+	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+
+	<target name="deploy" depends="war" description="deploy to local tomcat7">
+		<deploy url="${manager_url}" username="${manager_username}" password="${manager_password}" path="/${webapp}" update="true" localWar="${war}" />
+	</target>
+
+	<target name="undeploy" description="undeploy to local tomcat7">
+		<undeploy url="${manager_url}" username="${manager_username}" password="${manager_password}" path="/${webapp}" />
+	</target>
+
+</project>
