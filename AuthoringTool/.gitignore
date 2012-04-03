@@ -4,3 +4,4 @@ war/WEB-INF/deploy
 *~
 AuthoringTool.war
 war/authoringtool
+.gwt
