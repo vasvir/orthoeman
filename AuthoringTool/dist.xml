@@ -14,7 +14,7 @@
 			<exclude name="WEB-INF/**" />
 			<metainf dir="metainf" />
 			<webinf dir="war/WEB-INF/">
-				<include name="**/*.jar" />
+				<!--<include name="**/*.jar" />-->
 				<exclude name="lib/geronimo-servlet*.jar" />
 				<exclude name="lib/jetty-naming*.jar" />
 				<exclude name="lib/jetty-plus*.jar" />
@@ -22,7 +22,7 @@
 				
 			</webinf>
 
-			<lib dir="${basedir}/.." includes="${libs_p}"/>
+			<!--<lib dir="${basedir}/.." includes="${libs_p}"/>-->
 		</war>
 	</target>
  
