@@ -63,6 +63,7 @@
  
   <xs:complexType name="ComplexImageType">
     <xs:sequence>
+      <xs:group ref="ImageDef" minOccurs="1" maxOccurs="1" />
       <xs:element name="Circle" type="CircleType" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="Rect" type="RectType" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="Polygon" type="PolygonType" minOccurs="0" maxOccurs="unbounded" />
@@ -103,13 +104,18 @@
   <xs:group name="TheoryGroupElements">
     <xs:sequence>
       <xs:element name="Content" minOccurs="1" maxOccurs="1" type="UnconstrainedText" />
+      <xs:group ref="ImageDef" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:group>
+
+
+    <xs:group name="ImageDef">
       <xs:choice>
         <xs:element name="ImageID" type="xs:integer" />
         <xs:element name="ImageURI" type="xs:anyURI" />
       </xs:choice>
-    </xs:sequence>
-  </xs:group>
-
+    </xs:group>
+    
   <xs:group name="QuizGroupElements">
     <xs:sequence>
       <xs:element name="Question" type="xs:string" minOccurs="1" maxOccurs="1" />
