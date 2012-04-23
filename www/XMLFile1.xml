@@ -1,6 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Lesson xmlns="http://orthoeman.lan/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://orthoeman.lan/ orthoeman.xsd" id="3" Title="Template Title">
-  <Page id="">
-    
-  </Page>
+<Lesson id="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://orthoeman.lan/ orthoeman.xsd" xmlns="http://orthoeman.lan/" id="3" Title="Template Title">
+  
 </Lesson>
