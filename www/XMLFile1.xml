@@ -1,4 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Lesson id="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://orthoeman.lan/ orthoeman.xsd" xmlns="http://orthoeman.lan/" id="3" Title="Template Title">
-  
+<Lesson id="0" xmlns="http://orthoeman.lan/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Title="Template Title" xsi:schemaLocation="http://orthoeman.lan/ orthoeman.xsd">
+  <Page id="1" Grade="25" Title="Θεωρία">
+    <Widget type="theory">
+      <Content>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+      </Content>
+      <ImageID>34</ImageID>
+    </Widget>
+  </Page>
+  <Page id="2" Grade="10" Title="More theory">
+    <Widget type="theory">
+      <Content>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+      </Content>
+    </Widget>
+  </Page>
+  <Page id="3" Grade="35" Title="Title 3">
+    <Widget type="quiz">
+      <Question>
+        What type is this?
+      </Question>
+      <Answer IsCorrect="yes">
+        Lorem ipsum dolor sit amet,
+      </Answer>
+      <Answer IsCorrect="no">
+        onsectetur adipisicing elit,
+      </Answer>
+      <Answer IsCorrect="yes">
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+      </Answer>
+    </Widget>
+  </Page>
+  <Page id="4" Grade="30" Title="Title 5">
+    <Widget type="complexImage">
+      <Image Question="Where is the break?" ShowRegions="yes">
+        <ImageID>342</ImageID>
+        <Circle IsHotSpot="yes" Radious="40">
+          <Center X="234" Y="342"/>
+        </Circle>
+        <Polygon IsHotSpot="yes">
+          <Point X="234" Y="234"/>
+          <Point X="122" Y="343"/>
+          <Point X="122" Y="343"/>
+          <Point X="122" Y="343"/>
+          <Point X="122" Y="343"/>
+        </Polygon>
+      </Image>
+    </Widget>
+  </Page>
 </Lesson>

@@ -5,16 +5,12 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
 >
 
-  <!-- definition of atributes -->
-  <xs:attribute name="id" type="xs:integer" />
-  <xs:attribute name="Title" type="xs:string" />
-  <xs:attribute name="Grade" type="GradeType"   />
-  <xs:attribute name="IsHotSpot" type="YesNoValues" />
-  
-  
   <!-- definition of simple types -->
-
-  <xs:simpleType name="WidgetTypeValues">
+    <xs:simpleType name="IntegerType">
+      <xs:restriction base="xs:integer" />
+    </xs:simpleType>
+  
+   <xs:simpleType name="WidgetTypeValues">
     <xs:restriction base="xs:string">
       <xs:enumeration value="theory" />
       <xs:enumeration value="complexImage" />
@@ -46,9 +42,9 @@
     <xs:sequence>
       <xs:element name="Widget" type="WidgetComplexType" minOccurs="1" maxOccurs="unbounded" />
      </xs:sequence>
-    <xs:attribute ref="id" use="required" />
-    <xs:attribute ref="Title" use="required" />
-    <xs:attribute ref="Grade" use="required" />
+    <xs:attribute name="id" type="IntegerType" use="required" />
+    <xs:attribute name="Title" type="xs:string" use="required" />
+    <xs:attribute name="Grade" type="GradeType" use="required" />
   </xs:complexType>
 
   <xs:complexType name="WidgetComplexType">
@@ -77,21 +73,21 @@
       <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
     <xs:attribute name="Radious" type="xs:integer" use="required" />
-    <xs:attribute ref="IsHotSpot" use="required" />
+    <xs:attribute name="IsHotSpot" type="YesNoValues" use="required" />
   </xs:complexType>
 
   <xs:complexType name="RectType">
     <xs:sequence>
       <xs:element name="Point" type="PointType" minOccurs="4" maxOccurs="4" />
     </xs:sequence>
-    <xs:attribute ref="IsHotSpot" use="required" />
+    <xs:attribute name="IsHotSpot" type="YesNoValues" use="required" />
   </xs:complexType>
 
   <xs:complexType name="PolygonType">
     <xs:sequence>
       <xs:element name="Point" type="PointType" minOccurs="3" maxOccurs="unbounded" />
     </xs:sequence>
-    <xs:attribute ref="IsHotSpot" use="required" />
+    <xs:attribute name="IsHotSpot" type="YesNoValues" use="required" />
   </xs:complexType>
 
   <xs:complexType name="PointType">
@@ -104,7 +100,7 @@
   <xs:group name="TheoryGroupElements">
     <xs:sequence>
       <xs:element name="Content" minOccurs="1" maxOccurs="1" type="UnconstrainedText" />
-      <xs:group ref="ImageDef" minOccurs="1" maxOccurs="unbounded" />
+      <xs:group ref="ImageDef" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
   </xs:group>
 
@@ -138,8 +134,8 @@
       <xs:sequence>
         <xs:element name="Page" type="PageType" minOccurs="1" maxOccurs="unbounded" />
       </xs:sequence>
-      <xs:attribute ref="id" use="required" />
-      <xs:attribute ref="Title" use="required" />
+      <xs:attribute name="id" type="xs:integer" use="required" />
+      <xs:attribute name="Title" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
    
