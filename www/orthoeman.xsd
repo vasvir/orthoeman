@@ -12,8 +12,8 @@
   
    <xs:simpleType name="WidgetTypeValues">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="theory" />
-      <xs:enumeration value="complexImage" />
+      <xs:enumeration value="text" />
+      <xs:enumeration value="compleximage" />
       <xs:enumeration value="quiz" />
     </xs:restriction>
   </xs:simpleType>
@@ -40,16 +40,15 @@
   <!-- definition of complex types-->
   <xs:complexType name="PageType">
     <xs:sequence>
-      <xs:element name="Widget" type="WidgetComplexType" minOccurs="1" maxOccurs="unbounded" />
+      <xs:element name="Widget" type="WidgetComplexType" minOccurs="2" maxOccurs="2" />
      </xs:sequence>
-    <xs:attribute name="id" type="IntegerType" use="required" />
-    <xs:attribute name="Title" type="xs:string" use="required" />
+    <xs:attribute name="Title" type="xs:string" use="optional" />
     <xs:attribute name="Grade" type="GradeType" use="required" />
   </xs:complexType>
 
   <xs:complexType name="WidgetComplexType">
     <xs:choice>
-      <xs:group ref="TheoryGroupElements" />
+      <xs:element name="Text" type="UnconstrainedText" />
       <xs:group ref="QuizGroupElements" />
       <xs:element name="Image" type="ComplexImageType"  />
     </xs:choice>
@@ -96,14 +95,6 @@
   </xs:complexType>
   
   
-  <!-- definition of Element Groups -->
-  <xs:group name="TheoryGroupElements">
-    <xs:sequence>
-      <xs:element name="Content" minOccurs="1" maxOccurs="1" type="UnconstrainedText" />
-      <xs:group ref="ImageDef" minOccurs="0" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:group>
-
 
     <xs:group name="ImageDef">
       <xs:choice>
@@ -131,9 +122,11 @@
 
   <xs:element name="Lesson">
     <xs:complexType>
-      <xs:sequence>
+        <xs:sequence>
+        <xs:element name="abstract" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="Page" type="PageType" minOccurs="1" maxOccurs="unbounded" />
       </xs:sequence>
+
       <xs:attribute name="id" type="xs:integer" use="required" />
       <xs:attribute name="Title" type="xs:string" use="required" />
     </xs:complexType>
