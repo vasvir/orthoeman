@@ -65,6 +65,8 @@
     </xs:sequence>
     <xs:attribute name="ShowRegions" type="YesNoValues" use="required" />
     <xs:attribute name="id" type="xs:string" use="required" />
+    <xs:attribute name="width" type="xs:integer" use="required" />
+      <xs:attribute name="height" type="xs:integer" use="required" />
   </xs:complexType>
 
   <xs:complexType name="CircleType">
