@@ -15,7 +15,7 @@
   </Page>
   <Page Grade="10">
       <Widget type="compleximage">
-          <Image ShowRegions="no" id="image1">
+          <Image ShowRegions="no" id="image1" width="342" height="321">
               <ImageURI>../images/page2.png</ImageURI>
               <Circle Radious="10" IsHotSpot="yes">
                   <Center X="232" Y="123"/>
