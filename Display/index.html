@@ -35,10 +35,79 @@
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-  
-  <header>
 
-      <nav>
+  <!-- Begin Templates Section -->
+
+
+  <!-- Main Lesson Template -->
+  <script id="LessonTemplate" type="text/x-jsrender">
+      <!-- The First Page -->
+      <div id="Page0">
+          <h1>Lesson {{:attributes.id}}</h1>
+          <h2>{{:attributes.Title}}</h2>
+          <p>{{:abstract}}</p>
+      </div>
+      {{for Page tmpl="#PageTemplate" /}}
+      <div id="Page{{:2*Page.length+1}}">Last Page</div>
+  </script>
+
+  <!-- Main Page Template -->
+  <script id="PageTemplate" type="text/x-jsrender">
+      <div id="Page{{:(2*#index + 1)}}">
+          {{if Widget[0].attributes.type == "compleximage"}}
+            {{for Widget[0] tmpl="#ComplexImageTemplate"/}}
+          {{else if Widget[1].attributes.type == "compleximage"}}
+            {{for Widget[1] tmpl="#ComplexImageTemplate"/}}
+          {{else if Widget[0].attributes.type == "text"}}
+            {{for Widget[0] tmpl="#TextTemplate"/}}
+          {{else if Widget[1].attributes.type == "text"}}
+            {{for Widget[1] tmpl="#TextTemplate"/}}
+          {{/if}}
+     </div>
+      <div id="Page{{:(2*#index + 2)}}">
+          {{if Widget[0].attributes.type == "quiz"}}
+            {{for Widget[0] tmpl="#QuizTemplate"/}}
+          {{else if Widget[1].attributes.type == "quiz"}}
+            {{for Widget[1] tmpl="#QuizTemplate"/}}
+          {{else if Widget[0].attributes.type == "text"}}
+             {{for Widget[0] tmpl="#TextTemplate"/}}
+          {{else if Widget[1].attributes.type == "text"}}
+            {{for Widget[1] tmpl="#TextTemplate"/}}
+          {{/if}}
+      </div>
+
+  </script>
+
+<!-- scenario Theory and Image, scenario Theory and Quiz, scenario Quiz and Image -->
+
+  <!-- Complex - Simple Image Template -->
+ <script id="ComplexImageTemplate" type="text/x-jsrender">
+     <p id="img_{{}}"><img id="imgTest1N1" class="blocks" src="img/Lighthouse.jpg" width="450" height="338" />
+          		<span id="ColorFunctions">
+          		<img id="invert" src="img/invert.png" title="Invert the Image" />
+          		<img id="brightness" src="img/brightness.png" title="Manipulate the Brightness of the Image" />
+          		<img id="contrast" src="img/contrast.png" title="Manipulate the Contrast of the Image" />
+          		<img id="draw" src="img/draw.png" title="Draw a Line" />
+          		<img id="reset" src="img/reset.png" title="Reload the Image" />
+          	</span>
+     </p>
+ </script>
+
+  <!-- Quiz Template -->
+  <script id="QuizTemplate" type="text/x-jsrender">
+   quiz
+ </script>
+
+  <!-- Text Template, Seems simple, but I cannot escape the logic and at the future may need expansion. -->
+  <script id="TextTemplate" type="text/x-jsrender">
+   <p>{{:Text}}</p>
+ </script>
+
+  <!-- End Templates Section -->
+
+
+  <header>
+      <nav style="visibility: collapse;">
           <ul>
               <li id="current"><a href="index.html">Home</a><span></span></li>
               <li><a href="style.html">Style Demo</a><span></span></li>
@@ -53,47 +122,7 @@
   <div id="content_wrap" role="main">
 
       <section id="lesson">
-          <div id="Page1">
-              <h1>Lesson 1</h1>
 
-              <h2>Creative Ideas</h2>
-
-              <p>Nascetur augue hac platea enim, egestas pulvinar vut. Pulvinar cum, ac eu, tristie acus duis in
-                  dictumst non integer! Elit, sed scelerisque odio tortor, sed platea dis? Quis cursus parturient ac
-                  amet odio in? Nunc Amet urna scelerisque eu lectus placerat.</p>
-          </div>
-          <div id="Page2">
-
-              <h2>Test Number 1</h2>
-
-              <p>Explain what the students must do</p>
-
-              <p><b>Requirement:</b> Nascetur augue hac platea enim, egestas pulvinar vut. Pulvinar cum, ac eu, tristie
-                  acus duis in dictumst non integer! Elit, sed scelerisque odio tortor, sed platea dis? Quis cursus
-                  parturient ac amet odio in? Nunc Amet urna scelerisque eu lectus placerat.</p>
-
-              <p>Nascetur augue hac platea enim, egestas pulvinar vut. Pulvinar cum, ac eu, tristie acus duis in
-                  dictumst non integer! Elit, sed scelerisque odio tortor, sed platea dis? Quis cursus parturient ac
-                  amet odio in? Nunc Amet urna scelerisque eu lectus placerat.</p>
-
-              <p>Nascetur augue hac platea enim, egestas pulvinar vut. Pulvinar cum, ac eu, tristie acus duis in
-                  dictumst non integer! Elit, sed scelerisque odio tortor, sed platea dis? Quis cursus parturient ac
-                  amet odio in? Nunc Amet urna scelerisque eu lectus placerat.</p>
-
-          </div>
-          <div id="Page3"><h2>Draw the Lines</h2>
-          	<p id="img"><img id="imgTest1N1" class="blocks" src="img/Lighthouse.jpg" width="450" height="338" />
-          		<span id="ColorFunctions">
-          		<img id="invert" src="img/invert.png" title="Invert the Image" />
-          		<img id="brightness" src="img/brightness.png" title="Manipulate the Brightness of the Image" />
-          		<img id="contrast" src="img/contrast.png" title="Manipulate the Contrast of the Image" />
-          		<img id="draw" src="img/draw.png" title="Draw a Line" />
-          		<img id="reset" src="img/reset.png" title="Reload the Image" />
-          	</span>
-          	</p>
-          </div>
-          <div id="Page4">Page 4</div>
-          <div id="Page5"><p>Page 5</p></div>
       </section>
 
       <section id="navigation">
@@ -116,7 +145,7 @@
   <!-- scripts concatenated and minified via build script -->
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
-  <!-- <script src="js/turn.min.js"></script> -->
+  <script src="js/jsrender.js"></script>
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.

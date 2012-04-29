@@ -118,4 +118,3 @@ Pixastic.Actions.invert={process:function(params){if(Pixastic.Client.hasCanvasIm
 data[pix3-=4]=255-data[pix3];}
 return true;}else if(Pixastic.Client.isIE()){params.image.style.filter+=" invert";return true;}},checkSupport:function(){return(Pixastic.Client.hasCanvasImageData()||Pixastic.Client.isIE());}}
 
-

@@ -9,9 +9,38 @@ var OrthoVariables = {
     HeightFromBottom: 200    //$('#navigation').height() - $('footer').height();
 };
 
+var JsonUrl = "sslayer.php";
+var LessonData = "";
+
 $(document).ready(function(){
 
+    //var LessonData = {Page: }
+    $.getJSON(JsonUrl, {"action" : 1}, function(data) {
+        LessonData =  data;
+        OrthoVariables.maxPages = 2*(LessonData.Page.length + 1);
+        DoTemplating();
+        displayFunctions();
+       /*
+       // Testing the values of the return object
+       alert("lessonid:" + data["@attributes"].id + "\n" +
+        "abstract:" + data["abstract"] + "\n" +
+            "No Pages:" + data.Page.length + data.Page[0]["@attributes"].Title
+        );*/
+    })
 
+
+
+
+
+});
+
+function DoTemplating() {
+   $("#lesson").html(
+       $("#LessonTemplate").render(LessonData)
+   );
+}
+
+function displayFunctions () {
     $('#lesson').turn();
     $('#lesson').turn('size', $('#content_wrap').width(),$(window).height()-OrthoVariables.HeightFromBottom);
 
@@ -41,15 +70,32 @@ $(document).ready(function(){
     });
     $('#NextTest').click(function() { IncreasePage();});
     $("#PreviousTest").click(function() {DecreasePage();});
-   
-   $("#invert").click(function() {InvertImage("imgTest1N1");});
-   $("#brightness").click(function() {Brightness("imgTest1N1", 130);})
-   $("#contrast").click(function() {Contrast("imgTest1N1", 1.5);})
-   ApplyRoundtoPages();
 
-});
+    $("#invert").click(function() {InvertImage("imgTest1N1");});
+    $("#brightness").click(function() {Brightness("imgTest1N1", 130);})
+    $("#contrast").click(function() {Contrast("imgTest1N1", 1.5);})
+    ApplyRoundtoPages();
+}
 
 
+// Image Functions
+
+function InvertImage (id)
+{
+    $("#"+id).pixastic("invert");
+}
+
+function Brightness (id, value)
+{
+    $("#"+id).pixastic("brightness", {brightness:value});
+}
+
+function Contrast (id,value)
+{
+    $("#"+id).pixastic("brightness", {contrast:value});
+}
+
+// Book Like Functions
 function ApplyRoundtoPages ()
 {
     for (var i = 1; i <= OrthoVariables.maxPages; i++)
@@ -67,26 +113,13 @@ function CheckNavLimits ()
     else EnableButtonLink("PreviousTest");
 }
 
-function InvertImage (id)
-{
-	$("#"+id).pixastic("invert");
-}
-
-function Brightness (id, value)
-{
-	$("#"+id).pixastic("brightness", {brightness:value});
-}
-
-function Contrast (id,value)
-{
-	$("#"+id).pixastic("brightness", {contrast:value});
-}
 
 function IncreasePage ()
 {
     if (OrthoVariables.CurPage < OrthoVariables.maxPages)
     {
         OrthoVariables.CurPage+=2;
+        if (OrthoVariables.CurPage > OrthoVariables.maxPages) OrthoVariables.CurPage = OrthoVariables.maxPages;
         ShowPage();
     }
 }
@@ -115,8 +148,6 @@ function ShowPage ()
     function EnableButtonLink (id) {
         $("#"+id).removeClass("disablemore").addClass("more");
     }
-
-
 
 function CreatePages()
 {
