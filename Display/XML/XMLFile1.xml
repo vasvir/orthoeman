@@ -8,15 +8,18 @@
         </Text>
     </Widget>
       <Widget type="compleximage">
-          <Image ShowRegions="no" id="image1">
-              <ImageURI>../images/page1.png</ImageURI>
+          <Image ShowRegions="no" width="500" height="375">
+             <ImageURI>../content/lesson0/lighthouse.jpg</ImageURI> 
           </Image>
       </Widget>
   </Page>
   <Page Grade="10">
       <Widget type="compleximage">
-          <Image ShowRegions="no" id="image1">
-              <ImageURI>../images/page2.png</ImageURI>
+          <Image ShowRegions="no" width="500" height="375">
+              <ImageURI>../content/lesson0/lighthouse.jpg</ImageURI>
+              <Circle Radious="10" IsHotSpot="yes">
+                  <Center X="232" Y="123"/>
+              </Circle>
               <Circle Radious="10" IsHotSpot="yes">
                   <Center X="232" Y="123"/>
               </Circle>

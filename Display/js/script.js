@@ -19,7 +19,7 @@ $(document).ready(function(){
         LessonData =  data;
         OrthoVariables.maxPages = 2*(LessonData.Page.length + 1);
         DoTemplating();
-        displayFunctions();
+        //displayFunctions();
        /*
        // Testing the values of the return object
        alert("lessonid:" + data["@attributes"].id + "\n" +
@@ -38,6 +38,10 @@ function DoTemplating() {
    $("#lesson").html(
        $("#LessonTemplate").render(LessonData)
    );
+
+    $("#invert").click(function() {InvertImage("imgTest1N1");});
+    $("#brightness").click(function() {Brightness("imgTest1N1", 130);})
+    $("#contrast").click(function() {Contrast("imgTest1N1", 1.5);})
 }
 
 function displayFunctions () {
@@ -71,9 +75,7 @@ function displayFunctions () {
     $('#NextTest').click(function() { IncreasePage();});
     $("#PreviousTest").click(function() {DecreasePage();});
 
-    $("#invert").click(function() {InvertImage("imgTest1N1");});
-    $("#brightness").click(function() {Brightness("imgTest1N1", 130);})
-    $("#contrast").click(function() {Contrast("imgTest1N1", 1.5);})
+
     ApplyRoundtoPages();
 }
 

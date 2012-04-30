@@ -45,7 +45,7 @@
       <div id="Page0">
           <h1>Lesson {{:attributes.id}}</h1>
           <h2>{{:attributes.Title}}</h2>
-          <p>{{:abstract}}</p>
+          <p>{{:attributes.abstract}}</p>
       </div>
       {{for Page tmpl="#PageTemplate" /}}
       <div id="Page{{:2*Page.length+1}}">Last Page</div>
@@ -54,24 +54,24 @@
   <!-- Main Page Template -->
   <script id="PageTemplate" type="text/x-jsrender">
       <div id="Page{{:(2*#index + 1)}}">
-          {{if Widget[0].attributes.type == "compleximage"}}
+          {{if Widget[0].type == "compleximage"}}
             {{for Widget[0] tmpl="#ComplexImageTemplate"/}}
-          {{else if Widget[1].attributes.type == "compleximage"}}
+          {{else if Widget[1].type == "compleximage"}}
             {{for Widget[1] tmpl="#ComplexImageTemplate"/}}
-          {{else if Widget[0].attributes.type == "text"}}
+          {{else if Widget[0].type == "text"}}
             {{for Widget[0] tmpl="#TextTemplate"/}}
-          {{else if Widget[1].attributes.type == "text"}}
+          {{else if Widget[1].type == "text"}}
             {{for Widget[1] tmpl="#TextTemplate"/}}
           {{/if}}
      </div>
       <div id="Page{{:(2*#index + 2)}}">
-          {{if Widget[0].attributes.type == "quiz"}}
+          {{if Widget[0].type == "quiz"}}
             {{for Widget[0] tmpl="#QuizTemplate"/}}
-          {{else if Widget[1].attributes.type == "quiz"}}
+          {{else if Widget[1].type == "quiz"}}
             {{for Widget[1] tmpl="#QuizTemplate"/}}
-          {{else if Widget[0].attributes.type == "text"}}
+          {{else if Widget[0].type == "text"}}
              {{for Widget[0] tmpl="#TextTemplate"/}}
-          {{else if Widget[1].attributes.type == "text"}}
+          {{else if Widget[1].type == "text"}}
             {{for Widget[1] tmpl="#TextTemplate"/}}
           {{/if}}
       </div>
@@ -82,7 +82,7 @@
 
   <!-- Complex - Simple Image Template -->
  <script id="ComplexImageTemplate" type="text/x-jsrender">
-     <p id="img_{{}}"><img id="imgTest1N1" class="blocks" src="img/Lighthouse.jpg" width="450" height="338" />
+     <p id="op_{{:Image.id}}"><canvas id="canvasid_{{:Image.id}}" class="blocks" width="450" height="338" />
           		<span id="ColorFunctions">
           		<img id="invert" src="img/invert.png" title="Invert the Image" />
           		<img id="brightness" src="img/brightness.png" title="Manipulate the Brightness of the Image" />
@@ -95,7 +95,12 @@
 
   <!-- Quiz Template -->
   <script id="QuizTemplate" type="text/x-jsrender">
-   quiz
+   <p><strong>{{:Quiz.Question}}</strong> </p>
+   <p>
+   {{for Quiz.Answer}}
+   <input type="checkbox" name="11">{{:#data}}</input><br />
+   {{/for}}
+   </p>
  </script>
 
   <!-- Text Template, Seems simple, but I cannot escape the logic and at the future may need expansion. -->
