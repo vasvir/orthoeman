@@ -77,6 +77,7 @@ h1 {
 .cell {
 	position: relative;
 	display: table-cell;
+	vertical-align: top;
 }
 
 .red {
@@ -122,4 +123,8 @@ h1 {
 	
 html {
 	overflow: hidden;
+}
+
+.nowrap {
+	white-space:nowrap;
 }
