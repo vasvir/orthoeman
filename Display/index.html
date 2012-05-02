@@ -82,13 +82,15 @@
 
   <!-- Complex - Simple Image Template -->
  <script id="ComplexImageTemplate" type="text/x-jsrender">
-     <p id="op_{{:Image.id}}"><canvas id="canvasid_{{:Image.id}}" class="blocks" width="450" height="338" />
-          		<span id="ColorFunctions">
-          		<img id="invert" src="img/invert.png" title="Invert the Image" />
-          		<img id="brightness" src="img/brightness.png" title="Manipulate the Brightness of the Image" />
-          		<img id="contrast" src="img/contrast.png" title="Manipulate the Contrast of the Image" />
-          		<img id="draw" src="img/draw.png" title="Draw a Line" />
-          		<img id="reset" src="img/reset.png" title="Reload the Image" />
+     <p id="op_{{:Image.id}}">
+     	 <canvas id="canvasid_{{:Image.id}}" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
+     	  		<span class="ColorFunctions">
+          		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" />
+          		<img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="Brightness('{{:Image.id}}',-0.1)" />
+                       <input type="range" min="-100" max="100" value="0" />
+          		<img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="Contrast('{{:Image.id}}',-0.1)" />
+          		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" />
+          		<img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" />
           	</span>
      </p>
  </script>
@@ -151,6 +153,9 @@
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="js/jsrender.js"></script>
+  <script src="js/pixastic.custom.js"></script>
+  <script src="js/kinetic-v3.9.4.min.js"></script>
+  <script src="js/myimagetools.js"></script>
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.

@@ -231,16 +231,16 @@ section#navigation
 .blocks
 {
     display: block;
-    margin-left: auto;margin-right: auto;
+    /*margin-left: auto;margin-right: auto;*/
 }
 
 
-span#ColorFunctions img:hover
+span.ColorFunctions img:hover
 {
 	cursor: pointer;
 }
 
-span#ColorFunctions img
+span.ColorFunctions img
 {
 	margin: 10px 0 0 10px;
 
