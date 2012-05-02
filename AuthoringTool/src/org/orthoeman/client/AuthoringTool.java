@@ -16,8 +16,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.touch.client.Point;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -29,6 +33,31 @@ public class AuthoringTool implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		final Label errorLabel = Label.wrap(DOM.getElementById("errorLabel"));
+
+		final Command command = new Command() {
+			public void execute() {
+				Window.alert("Command Fired");
+			}
+		};
+
+		final MenuBar file_menu = new MenuBar(true);
+		file_menu.addItem(new MenuItem("Save", command));
+		file_menu.addItem(new MenuItem("Preview", command));
+
+		final MenuBar edit_menu = new MenuBar(true);
+		edit_menu.addItem(new MenuItem("Undo", command));
+		edit_menu.addItem(new MenuItem("Redo", command));
+
+		final MenuBar help_menu = new MenuBar(true);
+		help_menu.addItem(new MenuItem("Help Contents", command));
+		help_menu.addItem(new MenuItem("Report a bug...", command));
+		help_menu.addItem(new MenuItem("About", command));
+
+		final MenuBar menu_bar = new MenuBar();
+		menu_bar.addItem("File", file_menu);
+		menu_bar.addItem("Edit", edit_menu);
+		menu_bar.addItem("Help", help_menu);
+		RootPanel.get("menuBarContainer").add(menu_bar);
 
 		final Canvas canvas = Canvas.createIfSupported();
 		if (canvas == null) {
