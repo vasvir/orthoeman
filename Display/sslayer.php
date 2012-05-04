@@ -30,10 +30,11 @@ function GetTemplateData($data)
 			$a["Page"][$index]["Widget"][$windex]["type"] = $widgetype;
 			switch ($widgetype) {
 				case 'compleximage':
-					$a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue->Image);
+					$a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue->Image, $index.$windex);
+					$a["Images"][] = array('id' => $index.$windex,'url'=> strval($wvalue->Image->ImageURI) );
 					break;;
 				case 'quiz':
-				$a["Page"][$index]["Widget"][$windex]["Quiz"] = GetDisplayQuizImg($wvalue);
+				$a["Page"][$index]["Widget"][$windex]["Quiz"] = GetDisplayQuizImg($wvalue,$index.$windex);
 					break;
 				case 'text';
 					$a["Page"][$index]["Widget"][$windex]["Text"] = GetDisplayText($wvalue->Text);
@@ -48,7 +49,7 @@ function GetTemplateData($data)
 	return $a;
 }
 
-function GetDisplayComplexImg($data)
+function GetDisplayComplexImg($data,$id)
 {
   $r = array();
   if (isset($data->ImageID))
@@ -62,17 +63,18 @@ function GetDisplayComplexImg($data)
   }
   
   $r["ShowRegions"] = strval($data["ShowRegions"]);
-  $r["id"] = strval($data["id"]);
+  $r["id"] = $id;
   $r["width"] = strval($data["width"]);
   $r["height"] = strval($data["height"]);
   $r["ImageType"] = (count(get_object_vars($data)) > 2) ? "complex" : "simple";
   return $r;
 }
 
-function GetDisplayQuizImg($data)
+function GetDisplayQuizImg($data,$id)
 {
 	$r = array();
     $r["Question"] = strval($data->Question);
+	$r["id"] = $id;
 	$count = count($data->Answer);
 	for ($i=0;$i<$count;$i++)
 		$r["Answer"][$i] = strval($data->Answer[$i]);
