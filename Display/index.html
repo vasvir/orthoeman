@@ -22,6 +22,7 @@
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/ortho_interface.css">
+  <link rel="stylesheet" href="css/jquery-ui-1.8.20.custom.css">
 
 
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
@@ -83,16 +84,19 @@
   <!-- Complex - Simple Image Template -->
  <script id="ComplexImageTemplate" type="text/x-jsrender">
      <p id="op_{{:Image.id}}">
-     	 <canvas id="canvasid_{{:Image.id}}" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
+     <div class="imgcontainer" style="width:{{:Image.width}}px;height:{{:Image.height}}px"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
+          <div id="container_{{:Image.id}}" style="top:-{{:Image.height}}px;position:relative;"></div>
+    </div>
      	  		<span class="ColorFunctions">
-          		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" />
-          		<img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="Brightness('{{:Image.id}}',-0.1)" />
-                       <input type="range" min="-100" max="100" value="0" />
-          		<img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="Contrast('{{:Image.id}}',-0.1)" />
-          		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" />
-          		<img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" />
+          		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
+          		<img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
+                <img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" />
+          		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'draw' )" onmouseout="ShowOffImage('{{:Image.id}}', 'draw' )" onclick="TogglePaint('line')" />
+          		<img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'reset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'reset' )" />
           	</span>
      </p>
+     <div style="position:relevant;"><div id="slider_b_{{:Image.id}}" style="left:90px;top:0px;" class="cssSlider"></div>
+     <div id="slider_c_{{:Image.id}}" style="left:138px;top:0px;" class="cssSlider"></div></div>
  </script>
 
   <!-- Quiz Template -->
@@ -146,16 +150,17 @@
 
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script> -->
-  <script src="js/libs/jquery-1.7.1.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script> -->
+  <script src="js/libs/jquery-1.7.2.min.js"></script>
+  <script src="js/libs/jquery-ui-1.8.20.custom.min.js"></script>
 
   <!-- scripts concatenated and minified via build script -->
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
-  <script src="js/jsrender.js"></script>
-  <script src="js/pixastic.custom.js"></script>
-  <script src="js/kinetic-v3.9.4.min.js"></script>
-  <script src="js/myimagetools.js"></script>
+  <script src="js/libs/jsrender.js"></script>
+  <script src="js/libs/pixastic.custom.js"></script>
+  <script src="js/libs/kinetic-v3.9.4.min.js"></script>
+  <script src="js/libs/myimagetools.js"></script>
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
