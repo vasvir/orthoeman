@@ -32,3 +32,99 @@ h1 {
 #closeButton {
   margin: 15px 6px 6px;
 }
+
+.fill_x {
+	width: 100%;
+}
+
+.fill_y {
+	height: 100%;
+}
+
+.full_x {
+	left: 0;
+	right: 0;
+}
+
+.full_y {
+	top: 0;
+	bottom: 0;
+}
+
+.min_width {
+	width: 100px;
+}
+
+.min_height {
+	height: 30px;
+}
+
+.table_abs {
+	position: absolute;
+	display: table;
+}
+
+.table {
+	position: relative;
+	display: table;
+}
+
+.row {
+	position: relative;
+	display: table-row;
+}
+
+.cell {
+	position: relative;
+	display: table-cell;
+	vertical-align: top;
+}
+
+.red {
+	 background-color: red;
+}
+
+.blue {
+	 background-color: blue;
+}
+
+.yellow {
+	background-color: yellow;
+}
+
+.green {
+	background-color: green;
+}
+
+.pink {
+	background-color: fuchsia;
+}
+
+.gray {
+	background-color: gray;
+}
+
+.orange {
+	background-color: orange;
+}
+        
+.center {
+	text-align: center;
+}
+	
+.scroll {
+	position: relative;
+	overflow: auto;
+}
+	
+.noscroll {
+	overflow: hidden;
+}
+	
+html {
+	overflow: hidden;
+}
+
+.nowrap {
+	white-space:nowrap;
+}
