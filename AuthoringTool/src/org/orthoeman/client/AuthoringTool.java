@@ -163,6 +163,6 @@ public class AuthoringTool implements EntryPoint {
 
 		final SingleUploader upload = new SingleUploader();
 		upload.addOnFinishUploadHandler(onFinishUploaderHandler);
-		RootPanel.get("uploadContainer").add(upload);
+		//RootPanel.get("uploadContainer").add(upload);
 	}
 }
