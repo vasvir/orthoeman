@@ -81,8 +81,30 @@
 					</div>
 				</div>
 	
-				<div class="cell center blue" style="width: 76%;">
-					<div id="canvasContainer" class="fill_y scroll orange">
+				<div class="cell center" style="width: 76%;">
+					<div id="Page1" class="fill_x fill_y gray scroll">
+						<div class="gwt-Label inline" style="width: 6em;;">Title:</div>
+						<input type="text" class="gwt-TextBox inline" style="width: 45em;">
+						<div class="gwt-Label inline margin_left" style="width: 4em;">Weight:</div>
+						<input type="text" class="gwt-TextBox inline" style="width: 3em;">
+						<div class="gwt-Label inline margin_left" style="width: 4em;">Block:</div>
+						<input type="checkbox" class="gwt-TextBox inline">
+
+						<select id="combobox1" class="gwt-ListBox" style="display: block;">
+							<option selected="true">Text</option>
+							<option>Image</option>
+							<option>Video</option>
+							<option>Quiz</option>
+						</select>
+						<textarea class="gwt-TextArea" style="width: 50%"></textarea>
+						<select id="combobox2" class="gwt-ListBox" style="display: block;">
+							<option>Text</option>
+							<option selected="true">Image</option>
+							<option>Video</option>
+							<option>Quiz</option>
+						</select>
+						<div id="canvasContainer">
+						</div>
 					</div>
 				</div>
 
@@ -119,24 +141,13 @@
 							<line x1="3" y1="18" x2="21" y2="6" style="stroke:black; stroke-width:2"/>
 						</svg>
 					</button>
-					<button class="gwt-Button" type="button" title="Image">
+					<button class="gwt-Button" type="button" title="Edit Image">
 						<img src="icons/Image-x-generic.svg" width="24" height="24"/>
 					</button>
-				
-					<div class="yellow">
-				        	o p a a o p a <br> x x x
-		        	</div>
-		        	<!--	
-					<div class="min_width red">
-					min
-					</div>
+					<div style="color: red" id="errorLabel" class="gwt-Label">Point 0 0</div>
+					<!--
+					<div id="uploadContainer" class="green"></div>
 					-->
-					<div class="pink">
-						g e i a n a d o u m e
-					</div>
-					<div style="color: red;" id="errorLabel" class="gwt-Label">Point 0 0</div>
-					<!--<div id="uploadContainer" class="green"></div>-->
-					dfsdsf
 				</div>
 			</div>
 
