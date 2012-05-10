@@ -31,7 +31,7 @@ function GetTemplateData($data)
 			switch ($widgetype) {
 				case 'compleximage':
 					$a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue->Image, $index.$windex);
-					$a["Images"][] = array('id' => $index.$windex,'url'=> strval($wvalue->Image->ImageURI) );
+					$a["Images"][] = array('id' => $index.$windex,'url'=> strval($wvalue->Image->ImageURI), 'HotSpots' => strval($wvalue->Image["HotSpots"]), 'ShowRegions'=> strval($wvalue->Image["ShowRegions"]) );
 					break;;
 				case 'quiz':
 				$a["Page"][$index]["Widget"][$windex]["Quiz"] = GetDisplayQuizImg($wvalue,$index.$windex);
@@ -63,6 +63,7 @@ function GetDisplayComplexImg($data,$id)
   }
   
   $r["ShowRegions"] = strval($data["ShowRegions"]);
+  $r["HotSpots"] = strval($data["HotSpots"]);
   $r["id"] = $id;
   $r["width"] = strval($data["width"]);
   $r["height"] = strval($data["height"]);
