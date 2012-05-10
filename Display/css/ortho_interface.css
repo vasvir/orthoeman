@@ -24,9 +24,9 @@
 
 html { overflow-y: scroll; }
 body {
-    font-family: Georgia, Serif;
-    font-size: 16px;
-    line-height: 25px;
+    font-family: MerriweatherRegular,Georgia, Serif;
+    font-size: 12px;
+    line-height: 20px;
     color: #3B3B3B;
     background: url(../img/bg.png) left top repeat ;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 1);
@@ -180,17 +180,13 @@ section
 
 section#navigation
 {
-    width: 300px;
+    width: 500px;
     margin-left: auto;margin-right: auto;
     z-index: 10000;
 }
 
 /* Lessons */
 
-#lesson
-{
-
-}
 
 #lesson p
 {
@@ -225,12 +221,23 @@ section#navigation
 #lesson p#img
 {
 	text-align: center;
+    margin: 20px;
 
 }
 
-.imgcontainer
+.pencilcursor
 {
-    cursor:crosshair;
+    cursor: url(cursors/draw_freehand_16.png), url(css/cursors/draw_freehand_16.png),auto;
+}
+
+.erasercursor
+{
+	cursor: url(cursors/eraser_16.png), url(css/cursors/eraser_16.png),auto;
+}
+
+.pointcursor
+{
+	cursor:pointer;
 }
 
 .blocks
@@ -258,7 +265,9 @@ span.ColorFunctions img
 
 }
 
-
+.submit {
+    width: 200px;
+}
 
 /* Button Links */
 a:link.more, a:visited.more {
@@ -319,3 +328,29 @@ a:hover.disablemore {
     cursor: not-allowed;
 }
 
+/* Msg box styles */
+#msg_area .ui-icon-closethick {
+    float:right;
+    position:relative;
+    top:5px;
+    right:-5px;
+    display: none;
+}
+
+#msg_area .ui-icon-closethick:hover {
+    cursor: pointer;
+}
+
+/* Quiz */
+div[id^="quiz_"]>p {
+    font-family: MerriweatherBold;
+    margin: 20px;
+}
+div[id^="quiz_"]>ul {
+    list-style-type: none;
+    margin: 20px;
+}
+
+div[id^="quiz_"]>ul>li>input {
+    background-color: orange;
+}

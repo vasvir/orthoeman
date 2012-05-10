@@ -30,7 +30,7 @@
   <!-- All JavaScript at the bottom, except this Modernizr build.
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
-  <script src="js/libs/modernizr-2.5.3.min.js"></script>
+  <!-- <script src="js/libs/modernizr-2.5.3.min.js"></script> -->
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -79,40 +79,53 @@
 
   </script>
 
-<!-- scenario Theory and Image, scenario Theory and Quiz, scenario Quiz and Image -->
-
   <!-- Complex - Simple Image Template -->
  <script id="ComplexImageTemplate" type="text/x-jsrender">
-     <p id="op_{{:Image.id}}">
-     <div class="imgcontainer" style="width:{{:Image.width}}px;height:{{:Image.height}}px"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
+      <div>
+     <div id="pointer_{{:Image.id}}" class="{{if Image.HotSpots=='yes'}}pointcursor{{/if}}" style="width:{{:Image.width}}px;height:{{:Image.height}}px"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
           <div id="container_{{:Image.id}}" style="top:-{{:Image.height}}px;position:relative;"></div>
     </div>
      	  		<span class="ColorFunctions">
           		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
           		<img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
                 <img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" />
-          		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'draw' )" onmouseout="ShowOffImage('{{:Image.id}}', 'draw' )" onclick="TogglePaint('line')" />
+          		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'draw' )" onmouseout="ShowOffImage('{{:Image.id}}', 'draw' )" onclick="TogglePaint('line','{{:Image.id}}',{{if Image.HotSpots=='yes'}}'pointcursor'{{else}}''{{/if}})" />
           		<img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'reset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'reset' )" />
           	</span>
-     </p>
-     <div style="position:relevant;"><div id="slider_b_{{:Image.id}}" style="left:90px;top:0px;" class="cssSlider"></div>
-     <div id="slider_c_{{:Image.id}}" style="left:138px;top:0px;" class="cssSlider"></div></div>
+
+     <div style="position:relative"><div id="slider_b_{{:Image.id}}" style="left:70px;top:10px;" class="cssSlider"></div>
+     <div id="slider_c_{{:Image.id}}" style="left:118px;top:10px;" class="cssSlider"></div></div>
+          </div>
  </script>
 
   <!-- Quiz Template -->
   <script id="QuizTemplate" type="text/x-jsrender">
-   <p><strong>{{:Quiz.Question}}</strong> </p>
-   <p>
-   {{for Quiz.Answer}}
-   <input type="checkbox" name="11">{{:#data}}</input><br />
-   {{/for}}
-   </p>
- </script>
+      <div id="quiz_{{:Quiz.id}}">
+          <p>{{:Quiz.Question}}</p>
+          <ul>
+              {{for Quiz.Answer}}
+              <li><input type="checkbox" name="answer_{{:#parent.id}}_{{:#index}}">{{:#data}}</input></li>
+              {{/for}}
+          </ul>
+
+      </div>
+  </script>
 
   <!-- Text Template, Seems simple, but I cannot escape the logic and at the future may need expansion. -->
   <script id="TextTemplate" type="text/x-jsrender">
    <p>{{:Text}}</p>
  </script>
+
+  <!-- Message Template -->
+  <script id="msgboxTemplate" type="text/x-jsrender">
+      <div id="msgbox_{{:id}}" class="ui-widget" style="margin-top:5px;display:none;">
+          <div class="{{if type === 'alert'}}ui-state-error{{else if type === 'highlight'}}ui-state-highlight{{/if}} ui-corner-all" style="padding: 0 .7em;">
+              <span title="Close the Message Box" class="ui-icon ui-icon-closethick" />
+              <p><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else if type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;margin-top: 4px;"></span>
+                  <strong>Alert:</strong> {{:message}}. </p>
+          </div>
+      </div>
+  </script>
 
   <!-- End Templates Section -->
 
@@ -138,8 +151,16 @@
 
       <section id="navigation">
           <a class="more" id="PreviousTest" href="#">Previous</a>
+          <a class="more submit" style="width:150px;" id="SubmitAnswer" href="#">Submit your Answer</a>
           <a class="more" id="NextTest" href="#">Next</a>
       </section>
+ 
+ <div id="msg_area" style="position: fixed;width: 350px;bottom: 100px;z-index:8">
+
+ </div>
+
+
+
   </div>
   <footer>
 
@@ -161,6 +182,7 @@
   <script src="js/libs/pixastic.custom.js"></script>
   <script src="js/libs/kinetic-v3.9.4.min.js"></script>
   <script src="js/libs/myimagetools.js"></script>
+  <script src="js/libs/turn.min.js"></script>
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
