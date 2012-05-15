@@ -103,8 +103,8 @@
       <div id="quiz_{{:Quiz.id}}">
           <p>{{:Quiz.Question}}</p>
           <ul>
-              {{for Quiz.Answer}}
-              <li><input type="checkbox" name="answer_{{:#parent.id}}_{{:#index}}">{{:#data}}</input></li>
+              {{for Quiz.Answer ~id=Quiz.id}}
+              <li><input type="checkbox" name="{{:#index}}.answer_{{:~id}}" onchange="ToggleQuizSelection(this)" /> <span onclick="ToggleText(this)">&nbsp;{{:#data}}</span></li>
               {{/for}}
           </ul>
 
