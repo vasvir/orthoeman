@@ -23,7 +23,10 @@ var OrthoVariables = {
     msg_info:[],
     msg_curIndex: 0,
     linemindistance : 10,
-    clickcatch : false
+    clickcatch : false,
+    lessonAnswers : [],
+    lessonPage : -1
+
 };
 
 //var JsonUrl = "sslayer.php";
@@ -41,7 +44,7 @@ $(document).ready(function() {
         $("#lesson").html($("#LessonTemplate").render(OrthoVariables.LessonData));
         displayFunctions();
         DoTemplating();
-
+        ApplyRoundtoPages();
 		/*
 		 // Testing the values of the return object
 		 alert("lessonid:" + data["@attributes"].id + "\n" +
@@ -101,6 +104,9 @@ function DoTemplating() {
 		var shapelayer = new Kinetic.Layer({
 			id : "shapelayer"
 		});
+        var answerlayer = new Kinetic.Layer({
+            id : "answerlayer"
+        });
 
         var tooltiplayer = new Kinetic.Layer({
             id: "tooltiplayer",
@@ -122,6 +128,7 @@ function DoTemplating() {
         tooltiplayer.add(tooltip);
 		stage.add(shapelayer);
         stage.add(tooltiplayer);
+        stage.add(answerlayer);
         OrthoVariables.origCanvas[OrthoVariables.LessonData.Images[i].id][2] = stage;
 
 
@@ -154,7 +161,7 @@ function DoTemplating() {
 							strokeWidth : 1,
                             alpha: 0.5,
                             id: "circle_" + id
-						})
+						});
 
 						circle.on("mouseover", function() {
 							$("#pointer_"+id).removeClass().addClass("erasercursor");
@@ -367,6 +374,8 @@ function getID(strID) {
 
 }
 
+
+
 function getBrOrCo(strID) {
 	return strID.substr(strID.indexOf("_") + 1, 1);
 }
@@ -374,7 +383,7 @@ function getBrOrCo(strID) {
 function displayFunctions() {
 	$('#lesson').turn();
 	$('#lesson').turn('size', $('#content_wrap').width(), $(window).height() - OrthoVariables.HeightFromBottom);
-    //$('#lesson').turn('disable',true);
+    $('#lesson').turn('disable',true);
 	//for debuging
 	//CurPage = 3; ShowPage();
 
@@ -397,7 +406,12 @@ function displayFunctions() {
 		//if (page < CurPage) CurPage = page + 1;
 		OrthoVariables.CurPage = page % 2 == 0 && page != 1 ? page + 1 : page;
 		CheckNavLimits();
-
+        var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages)? -1 : ( Math.floor(OrthoVariables.CurPage/2)) - 1;
+        if (OrthoVariables.lessonAnswers[lessonpage] === undefined) {
+            OrthoVariables.lessonAnswers[lessonpage] = {quiz: []}
+        };
+        OrthoVariables.lessonPage = lessonpage;
+        ApplyRoundtoPages();
 	});
 	$('#NextTest').click(function() {
 		IncreasePage();
@@ -407,9 +421,9 @@ function displayFunctions() {
 	});
 
     $("#SubmitAnswer").click(function() {
-       ShowMsg("This is Wrong", "alert");
+       SubmitAnswer();
     });
-	ApplyRoundtoPages();
+
 }
 
 // Image Functions
@@ -522,11 +536,16 @@ function ActionSlider(sliderid, action) {
 
 // Book Like Functions
 function ApplyRoundtoPages() {
-	for(var i = 1; i <= OrthoVariables.maxPages; i++)
-		if(i % 2 == 0)
-			$(".p" + i).addClass("even");
-		else
+	//console.log(OrthoVariables.maxPages);
+    for(var i = 1; i <= OrthoVariables.maxPages; i++){
+		if(i % 2 == 0) {
+            $(".p" + i).addClass("even");
+        }
+		else {
 			$(".p" + i).addClass("odd");
+        }
+    }
+
 }
 
 function CheckNavLimits() {
@@ -614,4 +633,182 @@ function ShowMsg(message, type) {
     }, 1000);
     OrthoVariables.msg_info[id] = msgfadeout;
 }
+
+// Quiz
+function getIndex(strIndex)
+{
+    return strIndex.substr(0, strIndex.indexOf("."));
+}
+function ToggleQuizSelection(element)
+{
+    //console.log(element.name);
+    //console.log ("here");
+    var id = getID(element.name);
+    var myPage = id[0];
+    var myindex = getIndex(element.name);
+    //console.log(myindex + id);
+    OrthoVariables.lessonAnswers[myPage].quiz[myindex] = element.checked;
+    //console.log( OrthoVariables.lessonAnswers[myPage].quiz[myindex]);
+    if (element.checked) {
+    $("[name='" + element.name + "']").parent().addClass("quizselected"); }
+    else { $("[name='" + element.name + "']").parent().removeClass("quizselected");}
+
+    //$("#Page"+cpage+" checkbox,#Page"+cpage+1 +" checkbox").each(function(){console.log(this.name);});
+    //console.log(myelement);
+    //console.log();
+}
+
+function ToggleText(element) {
+    //var elemen
+    //ToggleQuizSelection();
+    var inputelement =  $(element).parent().children("input")[0];
+    inputelement.checked = !inputelement.checked;
+    ToggleQuizSelection(inputelement);
+}
+
+function SubmitAnswer()
+{
+    var type = GetTypeofPage(OrthoVariables.lessonPage);
+    switch (type) {
+        case "quiz":
+            $.getJSON(OrthoVariables.JsonUrl, GetQuizQuestion(), function(data) {
+              ApplyQuizResult(data);
+            } );
+            break;
+    }
+}
+
+function GetQuizQuestion()
+{
+  var Question  = new Object();
+  Question.action = 2;
+  Question.Page = OrthoVariables.lessonPage;
+  Question.type = "quiz";
+  var answer = "";
+  for(var i=0;i< OrthoVariables.lessonAnswers[Question.Page].quiz.length;i++){
+     if (OrthoVariables.lessonAnswers[Question.Page].quiz[i]){
+         answer += i;
+     }
+  }
+  Question.answer = answer;
+  return Question;
+}
+
+function GetTypeofPage(PageID)
+{
+    var type = undefined;
+    var mypage = OrthoVariables.LessonData.Page[PageID];
+    //console.log(mypage.Widget[0].type);
+    if (mypage !== undefined) {
+      if (mypage.Widget[0].type === "quiz" || mypage.Widget[1].type === "quiz") {
+          type = "quiz"
+      }
+    }
+    return type;
+}
+
+function ApplyQuizResult (data) {
+	if (data.Answer === "correct") {
+		ShowMsg("Your Answer is Correct!", "highlight");
+	}
+	else {
+		ShowMsg("Your Answer is Wrong!", "alert");
+	}
+    var length = data.PaintShapes.length;
+    var mypage = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage];
+    var subid = (mypage.Widget[0].type === "compleximage") ? 0 : 1;
+    var id = OrthoVariables.lessonPage.toString()  + subid.toString();
+    var mystage = OrthoVariables.origCanvas[id][2];
+    var myshapelayer = mystage.get("#answerlayer")[0];
+    myshapelayer.removeChildren();
+    for (var i=0;i<length;i++) {
+        switch (data.PaintShapes[i][0]) {
+            case "Circle":
+                myshapelayer.add(PaintEclipse(data.PaintShapes[i]));
+                break;
+            case "Rect":
+                myshapelayer.add(PaintRect(data.PaintShapes[i]));
+                break;
+            case "Polygon":
+                myshapelayer.add(PaintPolygon(data.PaintShapes[i]));
+                break;
+        }
+    }
+    myshapelayer.draw();
+} 
+
+function PaintCircle(data) {
+   var circle = new Kinetic.Circle({
+       x: data[1]["X"],
+       y: data[1]["Y"],
+       radius: data[2],
+       fill : "#046416",
+       stroke : "#285935",
+       strokeWidth : 1,
+       alpha: 0.5
+   });
+    return circle;
+}
+
+function PaintEclipse(data) {
+    var eclipse = new Kinetic.Circle({
+       x: 400,
+       y: 200,
+        radius:30,
+        fill : "#046416",
+        stroke : "#285935",
+        strokeWidth : 1,
+        alpha: 0.5
+    });
+    eclipse.setScale(1,0.5);
+    console.log(eclipse.getScale());
+    return eclipse;
+}
+
+function PaintRect(data) {
+   var rect = new Kinetic.Rect({
+      x:data[1]["X"],
+      y:data[1]["Y"],
+      width:data[2],
+       height:data[3],
+       fill : "#046416",
+       stroke : "#285935",
+       strokeWidth : 1,
+       alpha: 0.5
+   });
+    return rect;
+}
+
+function PaintPolygon (data) {
+    var points = [];
+    var len = (data.length-1);
+    for (var i=0;i<len;i++) {
+        points[i] = {
+            x: parseInt(data[i+1]["X"]),
+            y:parseInt(data[i+1]["Y"])};
+    }
+    var poly = new Kinetic.Polygon({
+        points: points,
+        fill : "#046416",
+        stroke : "#285935",
+        strokeWidth : 1,
+        alpha: 0.5
+    });
+    return poly;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

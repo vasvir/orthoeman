@@ -11,7 +11,143 @@ switch ($action)
         //print_r($displaydata);
         echo json_encode($displaydata);
         break;
+    case "2":
+        echo json_encode(GetAnswer());
+        break;
 
+}
+
+function GetAnswer()
+{
+    $type = $_GET["type"];	
+    $return; 
+	switch ($type) {
+		case 'quiz':
+			 $return = GetQuizAnswer();
+			break;
+		default:
+				$return = "error";
+				break;
+	}
+	return $return;
+}
+
+function GetQuizAnswer()
+{
+	$return = array();
+    $xml = GetXMLData();
+	$useranswer = $_GET["answer"];
+	$Page = $_GET["Page"];
+	$xmlquizanswer = GetQuizXMLData($Page,$xml);
+    if ($xmlquizanswer === $useranswer) {
+		$return["Answer"] = "correct";
+	} else {
+		$return["Answer"] = "wrong";
+	}
+    $return["PaintShapes"] = InvestigateQuizImage($Page, $xml);
+	return $return;
+}
+
+function InvestigateQuizImage($PageID,$xml)
+{
+    $quizimage = null;
+    foreach ($xml->Page[intval($PageID)]->Widget as $key => $value) {
+        if (strval($value["type"]) == "compleximage") {
+            $quizimage = $value;
+        }
+    }
+    $return = "";
+    if ($quizimage->Image["ShowRegions"] == "yes") {
+       $return = array();
+       foreach( get_object_vars($quizimage->Image) as $key=> $value ) {
+           switch ($key) {
+               case 'Circle':
+                   if (is_array($value)) {
+                       foreach ($value as $bkey => $bvalue) {
+                           $return[] = GetCircle($bvalue);
+                       }
+                   } else {
+                       $return[] = GetCircle($value);
+                   }
+                   break;
+               case 'Rect':
+                   if (is_array($value)) {
+                       foreach ($value as $bkey => $bvalue) {
+                           $return[] = GetRect($bvalue);
+                       }
+                   } else {
+                       $return[] = GetRect($value);
+                   }
+                   break;
+               case 'Polygon':
+                   if (is_array($value)) {
+                       foreach ($value as $bkey => $bvalue) {
+                           $return[] = GetPolygon($bvalue);
+                       }
+                   } else {
+                       $return[] = GetPolygon($value);
+                   }
+                   break;
+
+           }
+       }
+    }
+    return $return;
+
+}
+
+function GetCircle($data) {
+   $circle = array();
+    $circle[0] = "Circle"; //type
+    $circle[1] = array("X" => strval($data->Center["X"]) , "Y" => strval($data->Center["Y"]));
+    $circle[2] =strval($data["Radious"]);     // radious
+    return $circle;
+}
+
+function GetRect ($data) {
+    $rect = array();
+    $rect[0] = "Rect";
+    $rect[1] = array("X" => strval($data->Point["X"]) , "Y" => strval($data->Point["Y"]));
+    $rect[2] = strval($data->Width);
+    $rect[3] = strval($data->Height);
+    return $rect;
+}
+
+function GetPolygon($data) {
+    $rect = array();
+    $rect[0] = "Polygon";
+    $count = count($data->Point);
+    for ($i=0;$i< $count;$i++) {
+        $rect[$i+1]= array("X" => strval($data->Point[$i]["X"]) , "Y" => strval($data->Point[$i]["Y"]));
+    }
+    return $rect;
+
+}
+
+function GetQuizXMLData($PageID,$xml)
+{
+	$quizwidget;
+	foreach ($xml->Page[intval($PageID)]->Widget as $key => $value) {
+		if (strval($value["type"]) == "quiz") {
+			$quizwidget = $value;
+		}
+	}
+	//print_r($quizwidget);
+	$answer = "";
+	$counter = 0;
+	foreach ($quizwidget->Answer as $key => $value) {
+		if (strval($value["IsCorrect"]) == "yes") {
+			$answer .= strval($counter);
+		}
+		$counter++;
+	}
+	return $answer;	
+}
+
+function GetXMLData()
+{
+	$xml = simplexml_load_file("XML/XMLFile1.xml");
+	return $xml;
 }
 
 function GetTemplateData($data)
