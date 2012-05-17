@@ -31,10 +31,12 @@ public class AuthoringTool implements EntryPoint {
 	/**
 	 * This is the entry point method.
 	 */
+	@Override
 	public void onModuleLoad() {
 		final Label errorLabel = Label.wrap(DOM.getElementById("errorLabel"));
 
 		final Command command = new Command() {
+			@Override
 			public void execute() {
 				Window.alert("Command Fired");
 			}
@@ -143,6 +145,7 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		final OnLoadPreloadedImageHandler showImageHandler = new OnLoadPreloadedImageHandler() {
+			@Override
 			public void onLoad(PreloadedImage img) {
 				context.drawImage((ImageElement) (Object) img.getElement(), 0,
 						0);
@@ -154,15 +157,18 @@ public class AuthoringTool implements EntryPoint {
 		// protected UploaderConstants i18nStrs;
 
 		final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
+			@Override
 			public void onFinish(IUploader uploader) {
 				if (uploader.getStatus() == Status.SUCCESS) {
-					new PreloadedImage(uploader.fileUrl(), showImageHandler);
+					final PreloadedImage preloadedImage = new PreloadedImage(
+							uploader.fileUrl(), showImageHandler);
+					preloadedImage.setTitle("Ttile to set");
 				}
 			}
 		};
 
 		final SingleUploader upload = new SingleUploader();
 		upload.addOnFinishUploadHandler(onFinishUploaderHandler);
-		//RootPanel.get("uploadContainer").add(upload);
+		// RootPanel.get("uploadContainer").add(upload);
 	}
 }
