@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Lesson id="0" xmlns="http://orthoeman.lan/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Title="Template Title" xsi:schemaLocation="http://orthoeman.lan/ orthoeman.xsd">
+  <abstract>Little info describing the Lesson.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</abstract>
+  <Page Grade="10" Blocked="no">
+    <Widget type="compleximage">
+      <Image ShowRegions="no" width="480" height="640" HotSpots="yes" MaxSpots="1">
+        <ImageURI>../Content/Media/Image/lesson1/1.png</ImageURI>
+        <Polygon IsHotSpot="yes">
+          <Point X="235" Y="131"/>
+          <Point X="192" Y="221"/>
+          <Point X="122" Y="302"/>
+          <Point X="150" Y="374"/>
+          <Point X="230" Y="318"/>
+          <Point X="289" Y="219"/>
+        </Polygon>
+      </Image>
+    </Widget>
+    <Widget type="text">
+      <Text>Identify ( point)  the position of the fracture on the Xray</Text>
+    </Widget>
+  </Page>
+  <Page Grade="12" Blocked="no">
+    <Widget type="compleximage">
+      <Image ShowRegions="no" width="480" height="640" HotSpots="no" MaxSpots="0">
+        <ImageURI>../Content/Media/Image/lesson1/1.png</ImageURI>
+      </Image>
+    </Widget>
+    <Widget type="quiz">
+      <Question>Which is the type of the fracture?</Question>
+      <Answer IsCorrect="no">Femoral head</Answer>
+      <Answer IsCorrect="yes">Femoral neck, Pauwels  III</Answer>
+      <Answer IsCorrect="no">Trochanteric region</Answer>
+      <Answer IsCorrect="no">Femoral neck, Pauwels  II</Answer>
+      <Answer IsCorrect="no">No fracture, just hip dislocation</Answer>
+    </Widget>
+  </Page>
+  <Page Grade="10" Blocked="no">
+    <Widget type="compleximage">
+      <Image ShowRegions="no" width="480" height="640" HotSpots="yes" MaxSpots="2">
+        <ImageURI>../Content/Media/Image/lesson1/1.png</ImageURI>
+        <Circle IsHotSpot="yes" Radius="35">
+          <Center X="189" Y="152"/>
+        </Circle>
+        <Eclipse IsHotSpot="yes" RadiusX="40" RadiusY="60">
+          <Center X="416" Y="498"/>
+        </Eclipse>
+      </Image>
+    </Widget>
+    <Widget type="text">
+      <Text>Point the two radiological findings concerning the 6.5 mm screw:( the 6.5 mm screw is the smallest one)</Text>
+    </Widget>
+  </Page>
+  <Page Grade="10" Blocked="yes">
+    <Widget type="compleximage">
+      <Image ShowRegions="no" width="480" height="640" HotSpots="yes" MaxSpots="1">
+        <ImageURI>../Content/Media/Image/lesson1/1.png</ImageURI>
+        <Circle IsHotSpot="yes" Radius="50">
+          <Center X="133" Y="173"/>
+        </Circle>
+      </Image>
+    </Widget>
+    <Widget type="text">
+      <Text>Point  the radiological finding concerning the dynamic screw:( the dynamic screw is the largest one).</Text>
+    </Widget>
+  </Page>
+  <Page Grade="10" Blocked="yes">
+    <Widget type="compleximage">
+      <Image ShowRegions="yes" width="480" height="640" HotSpots="no" MaxSpots="0">
+        <ImageURI>../Content/Media/Image/lesson1/1.png</ImageURI>
+        <Circle IsHotSpot="no" Radius="35">
+          <Center X="189" Y="152"/>
+        </Circle>
+        <Eclipse IsHotSpot="no" RadiusX="40" RadiusY="60">
+          <Center X="416" Y="498"/>
+        </Eclipse>
+      </Image>
+    </Widget>
+    <Widget type="quiz">
+      <Question>Which of the following answers are correct:</Question>
+      <Answer IsCorrect="yes">The tip of the dynamic screw is situated much  too close to the superior border of the femoral head ( the dynamic screw is the largest one)</Answer>
+      <Answer IsCorrect="yes">The compression screw is not completely tightened, so compression is incomplete</Answer>
+      <Answer IsCorrect="no">The  thread of the dynamic screw is situated within the fracture</Answer>
+      <Answer IsCorrect="no">The dynamic screw screw is too short</Answer>
+    </Widget>
+  </Page>
+</Lesson>
