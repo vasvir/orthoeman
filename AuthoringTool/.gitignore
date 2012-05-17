@@ -3,5 +3,4 @@ war/WEB-INF/classes
 war/WEB-INF/deploy
 *~
 AuthoringTool.war
-war/authoringtool
 .gwt
