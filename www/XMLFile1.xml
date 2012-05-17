@@ -8,27 +8,43 @@
         </Text>
     </Widget>
       <Widget type="compleximage">
-          <Image ShowRegions="no" width="500" height="375">
-             <ImageURI>../content/lesson0/lighthouse.jpg</ImageURI> 
+          <Image ShowRegions="no" width="500" height="375" HotSpots="yes">
+             <ImageURI>../Content/Media/Image/lesson0/lighthouse.jpg</ImageURI>
+              <Circle Radious="10" IsHotSpot="no">
+                  <Center X="232" Y="123"/>
+              </Circle>
+              <Circle Radious="15" IsHotSpot="no">
+                  <Center X="432" Y="223"/>
+              </Circle>
           </Image>
       </Widget>
   </Page>
   <Page Grade="10">
       <Widget type="compleximage">
-          <Image ShowRegions="no" width="500" height="375">
-              <ImageURI>../content/lesson0/lighthouse.jpg</ImageURI>
-              <Circle Radious="10" IsHotSpot="yes">
+          <Image ShowRegions="yes" width="500" height="375" HotSpots="no">
+              <ImageURI>../Content/Media/Image/lesson0/lighthouse.jpg</ImageURI>
+              <Circle Radious="10" IsHotSpot="no">
                   <Center X="232" Y="123"/>
               </Circle>
-              <Circle Radious="10" IsHotSpot="yes">
-                  <Center X="232" Y="123"/>
+              <Circle Radious="15" IsHotSpot="no">
+                  <Center X="432" Y="223"/>
               </Circle>
-              <Rect IsHotSpot="yes">
-                  <Point X="234" Y="2343"/>
-                  <Point X="234" Y="2343"/>
-                  <Point X="234" Y="2343"/>
-                  <Point X="234" Y="2343"/>
+              <Eclipse IsHotSpot="no" RadiousX="30" RadiousY="15">
+                  <Center X="132" Y="50"/>
+              </Eclipse>
+              <Rect IsHotSpot="no">
+                  <Point X="234" Y="243"/>
+                  <Width>100</Width>
+                  <Height>50</Height>
               </Rect>
+              <Polygon IsHotSpot="no">
+                  <Point X="73" Y="192"/>
+                  <Point X="73" Y="160"/>
+                  <Point X="340" Y="23"/>
+                  <Point X="450" Y="109"/>
+                  <Point X="449" Y="139"/>
+                  <Point X="342" Y="93"/>
+              </Polygon>
           </Image>
       </Widget>
       <Widget type="quiz">
