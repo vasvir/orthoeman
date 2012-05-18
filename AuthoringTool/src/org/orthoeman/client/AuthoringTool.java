@@ -1,5 +1,7 @@
 package org.orthoeman.client;
 
+import org.orthoeman.shared.Lesson;
+
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
 import gwtupload.client.PreloadedImage;
@@ -20,6 +22,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -34,6 +37,12 @@ public class AuthoringTool implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		final Label errorLabel = Label.wrap(DOM.getElementById("errorLabel"));
+
+		final ListBox lb = ListBox.wrap(DOM.getElementById("itemCombobox"));
+		for (final Lesson.Page.Item.Type[] item_type_combination : Lesson.Page.validItemTypeCombinations) {
+			lb.addItem(item_type_combination[0].getName() + " - "
+					+ item_type_combination[1].getName());
+		}
 
 		final Command command = new Command() {
 			@Override
