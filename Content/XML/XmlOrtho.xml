@@ -31,12 +31,11 @@
       <Answer IsCorrect="yes">Femoral neck, Pauwels  III</Answer>
       <Answer IsCorrect="no">Trochanteric region</Answer>
       <Answer IsCorrect="no">Femoral neck, Pauwels  II</Answer>
-      <Answer IsCorrect="no">No fracture, just hip dislocation</Answer>
     </Widget>
   </Page>
   <Page Grade="10" Blocked="no">
     <Widget type="compleximage">
-      <Image ShowRegions="no" width="480" height="640" HotSpots="yes" MaxSpots="2">
+      <Image ShowRegions="yes" width="480" height="640" HotSpots="yes" MaxSpots="2">
         <ImageURI>../Content/Media/Image/lesson1/1.png</ImageURI>
         <Circle IsHotSpot="yes" Radius="35">
           <Center X="189" Y="152"/>
@@ -52,7 +51,7 @@
   </Page>
   <Page Grade="10" Blocked="yes">
     <Widget type="compleximage">
-      <Image ShowRegions="no" width="480" height="640" HotSpots="yes" MaxSpots="1">
+      <Image ShowRegions="yes" width="480" height="640" HotSpots="yes" MaxSpots="1">
         <ImageURI>../Content/Media/Image/lesson1/1.png</ImageURI>
         <Circle IsHotSpot="yes" Radius="50">
           <Center X="133" Y="173"/>
