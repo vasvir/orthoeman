@@ -13,6 +13,7 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -179,5 +180,8 @@ public class AuthoringTool implements EntryPoint {
 		final SingleUploader upload = new SingleUploader();
 		upload.addOnFinishUploadHandler(onFinishUploaderHandler);
 		// RootPanel.get("uploadContainer").add(upload);
+		
+		
+		DOM.getElementById("splashPopup").getStyle().setDisplay(Display.NONE);
 	}
 }
