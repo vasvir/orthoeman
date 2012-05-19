@@ -1,5 +1,9 @@
 <?php
+ ob_start();
+require_once('fb.php');
 session_start();
+
+
 $action = $_GET["action"];
 // 1- transform xml to json
 
@@ -17,7 +21,8 @@ switch ($action) {
 }
 
 function GetAnswer() {
-	$type = $_GET["type"];
+	//sleep(2);
+    $type = $_GET["type"];
 	$return = null;
 	switch ($type) {
 		case 'quiz' :
@@ -34,18 +39,26 @@ function GetAnswer() {
 }
 
 function GetQuizAnswer() {
-	$return = array();
+    $return = array();
 	$xml = GetXMLData();
 	$useranswer = $_GET["answer"];
 	$Page = $_GET["Page"];
 	$xmlquizanswer = GetQuizXMLData($Page, $xml);
-	if ($xmlquizanswer === $useranswer) {
+    if ($xmlquizanswer === $useranswer) {
 		$return["Answer"] = "correct";
 	} else {
 		$return["Answer"] = "wrong";
 	}
-	$return["PaintShapes"] = InvestigateQuizImage($Page, $xml);
-	return $return;
+
+    $isblocked = strval($xml->Page[intval($Page)]["Blocked"]);
+    if ($isblocked === "yes" && $return["Answer"] === "wrong") {
+        $return["PaintShapes"] = "";
+        $return["CorrectAnswer"] = "";
+    } else {
+        $return["PaintShapes"] =GetShapesFromImage($Page, $xml);
+        $return["CorrectAnswer"] = $xmlquizanswer;
+    }
+    return $return;
 }
 
 function GetHotspotsAnswer() {
@@ -54,18 +67,43 @@ function GetHotspotsAnswer() {
 	$Page = $_GET["Page"];
     $xml = GetXMLData();
     $myimg = GetHotSpotImage($Page,$xml);
-    //header('Content-Type: image/png');
-    //imagepng($myimg);
     $result = true;
+    $burnded = array();
+     $r = array();
     for ($i=0;$i< count($useranswer);$i++) {
-       $colorint = imagecolorat($myimg,$useranswer[$i][0],$useranswer[$i][1]);
-        if ($colorint === 0) {$result=false;}
+        $r[$i] = false;
+        $x = $useranswer[$i][0];
+        $y = $useranswer[$i][1];
+        for ($j=0;$j<count($myimg);$j++){
+            if (!array_key_exists($j, $burnded)) {
+                $colorint = imagecolorat($myimg[$j],$x,$y);
+                if ($colorint === 1) {$r[$i] =true; $burnded[]=$j;break;}
+            }
+        }
+        if ($r[$i]===false){$result=false;break;}
     }
-    imagedestroy($myimg);
+
+    foreach($r as $rs){
+        if ($rs === false) {$result = false;break;}
+    }
+
+    foreach($myimg as &$img){
+        imagedestroy($img);
+    }
+
 	$return["Answer"] = $result && count($useranswer) > 0 ? "correct" : "wrong";
+    $isblocked = strval($xml->Page[intval($Page)]["Blocked"]);
+    $return["PaintShapes"] = ($isblocked === "yes" && $return["Answer"] === "wrong") ? "" : GetShapesFromImage($Page, $xml);
     return $return;
 }
 
+function CheckImageBurned($j, $burned)
+{
+    $r = false;
+    foreach($burned as $b){
+        if ($j===$b) { }
+    }
+}
 
 
 function GetHotSpotImage($PageID,$xml){
@@ -78,61 +116,72 @@ function GetHotSpotImage($PageID,$xml){
     //initialize image
     $width = strval($quizimage->Image["width"]);
     $height =strval($quizimage->Image["height"]);
-
-    $myimg = imagecreate($width,$height);
-    $white = imagecolorallocate($myimg,255,255,255);
-    $black = imagecolorallocate($myimg,0,0,0);
-    imagefill($myimg,0,0,$white);
+    $myimg = array();
+    //fb($quizimage);
     if (isset($quizimage -> Image["HotSpots"])) {
         if (strval($quizimage -> Image["HotSpots"]) === "yes") {
             $return = array();
             foreach (get_object_vars($quizimage->Image) as $key => $value) {
-
+                $tempimg = imagecreate($width,$height);
+                $white = imagecolorallocate($tempimg,255,255,255);
+                $black = imagecolorallocate($tempimg,0,0,0);
+                imagefill($tempimg,0,0,$white);
                 switch ($key) {
                     case 'Circle' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                PaintCircle($myimg,$bvalue,$black);
+                                PaintCircle($tempimg,$bvalue,$black);
                             }
                         } else {
-                            PaintCircle($myimg,$value,$black);
+                            PaintCircle($tempimg,$value,$black);
                         }
+                        $myimg[] = $tempimg;
                         break;
                     case 'Rect' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                PaintRect($myimg,$bvalue,$black);
+                                PaintRect($tempimg,$bvalue,$black);
                            }
                         } else {
-                            PaintRect($myimg,$value,$black);
+                            PaintRect($tempimg,$value,$black);
                         }
+                        $myimg[] = $tempimg;
                         break;
                     case 'Polygon' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                PaintPolygon($myimg,$bvalue,$black);
+                                PaintPolygon($tempimg,$bvalue,$black);
                             }
                         } else {
-                            PaintPolygon($myimg,$value,$black);
+                            PaintPolygon($tempimg,$value,$black);
                         }
+                        $myimg[] = $tempimg;
                         break;
                     case 'Eclipse' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                PaintEclipse($myimg,$bvalue,$black);
+                                PaintEclipse($tempimg,$bvalue,$black);
                             }
                         } else {
-                            PaintEclipse($myimg,$value,$black);
+                            PaintEclipse($tempimg,$value,$black);
+
                         }
+                        $myimg[] = $tempimg;
                         break;
                 }
+                //header('Content-Type: image/png');
+                //imagepng($tempimg);
+
+                //header('Content-Type: image/png');
+                //imagepng($myimg[0]);
+
             }
         }
     }
     return $myimg;
 }
 
-function InvestigateQuizImage($PageID, $xml) {
+function GetShapesFromImage($PageID, $xml) {
 	$quizimage = null;
 	foreach ($xml->Page[intval($PageID)]->Widget as $key => $value) {
 		if (strval($value["type"]) == "compleximage") {
@@ -198,7 +247,7 @@ function GetCircle($data) {
 }
 
 function PaintCircle($imageone, $data, $color) {
-	imagefilledellipse($imageone, strval($data -> Center["X"]), strval($data -> Center["Y"]), strval($data["Radius"]), strval($data["Radius"]), $color);
+	imagefilledellipse($imageone, strval($data -> Center["X"]), strval($data -> Center["Y"]), 2*intval($data["Radius"]), 2*intval($data["Radius"]), $color);
 	return $imageone;
 }
 
@@ -246,7 +295,7 @@ function GetEclipse($data) {
 }
 
 function PaintEclipse($imageone, $data, $color) {
-	imagefilledellipse($imageone, strval($data -> Center["X"]), strval($data -> Center["Y"]), strval($data["RadiusX"]), strval($data["RadiusY"]), $color);
+	imagefilledellipse($imageone, strval($data -> Center["X"]),  intval($data -> Center["Y"]), 2*intval($data["RadiusX"]), 2*intval($data["RadiusY"]), $color);
 	return $imageone;
 }
 
@@ -257,16 +306,15 @@ function GetQuizXMLData($PageID, $xml) {
 			$quizwidget = $value;
 		}
 	}
-	//print_r($quizwidget);
 	$answer = "";
 	$counter = 0;
 	foreach ($quizwidget->Answer as $key => $value) {
 		if (strval($value["IsCorrect"]) === "yes") {
-			$answer .= strval($counter);
+			$answer .= ";".strval($counter);
 		}
 		$counter++;
 	}
-	return $answer;
+    return $answer;
 }
 
 function GetXMLData() {
@@ -284,6 +332,7 @@ function GetTemplateData($data) {
 	foreach ($data->Page as $key => $value) {
 		$a["Page"][$index]["attributes"]["Grade"] = strval($value["Grade"]);
 		$a["Page"][$index]["attributes"]["Title"] = strval($value["Title"]);
+        $a["Page"][$index]["attributes"]["Blocked"] = strval($value["Blocked"]);
 		$windex = 0;
 		foreach ($value->Widget as $wkey => $wvalue) {
 			$widgetype = strval($wvalue["type"]);
@@ -291,7 +340,7 @@ function GetTemplateData($data) {
 			switch ($widgetype) {
 				case 'compleximage' :
 					$a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue -> Image, $index . $windex);
-					$a["Images"][] = array('id' => $index . $windex, 'url' => strval($wvalue -> Image -> ImageURI), 'HotSpots' => strval($wvalue -> Image["HotSpots"]), 'ShowRegions' => strval($wvalue -> Image["ShowRegions"]));
+					$a["Images"][] = array('id' => $index . $windex, 'url' => strval($wvalue -> Image -> ImageURI), 'HotSpots' => strval($wvalue -> Image["HotSpots"]),'MaxSpots'=>strval($wvalue->Image["MaxSpots"]), 'ShowRegions' => strval($wvalue -> Image["ShowRegions"]));
 					break;
 					;
 				case 'quiz' :
