@@ -69,6 +69,7 @@ public class AuthoringTool implements EntryPoint {
 		menu_bar.addItem("File", file_menu);
 		menu_bar.addItem("Edit", edit_menu);
 		menu_bar.addItem("Help", help_menu);
+		DOM.getElementById("htmlMenuBar").getStyle().setDisplay(Display.NONE);
 		RootPanel.get("menuBarContainer").add(menu_bar);
 
 		final Canvas canvas = Canvas.createIfSupported();
