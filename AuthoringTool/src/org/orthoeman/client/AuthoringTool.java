@@ -37,6 +37,7 @@ public class AuthoringTool implements EntryPoint {
 	 */
 	@Override
 	public void onModuleLoad() {
+		final Label splashScreenLabel = Label.wrap(DOM.getElementById("splashScreenLabel"));
 		final Label errorLabel = Label.wrap(DOM.getElementById("errorLabel"));
 
 		final ListBox lb = ListBox.wrap(DOM.getElementById("itemCombobox"));
@@ -52,6 +53,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		};
 
+		splashScreenLabel.setText("Loading menu...");
 		final MenuBar file_menu = new MenuBar(true);
 		file_menu.addItem(new MenuItem("Save", command));
 		file_menu.addItem(new MenuItem("Preview", command));
