@@ -1,6 +1,7 @@
 package org.orthoeman.shared;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 public class Lesson extends ArrayList<Lesson.Page> {
@@ -13,6 +14,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				{ Item.Type.VIDEO, Item.Type.QUIZ },
 				{ Item.Type.TEXT, Item.Type.QUIZ } };
 
+		public interface TitleChangedListener {
+			public void titleChanged(String title);
+		}
+
 		public static class Item {
 			public static enum Type {
 				TEXT("Text"), QUIZ("Quiz"), IMAGE("Image"), VIDEO("Video");
@@ -22,7 +27,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				private Type(String name) {
 					this.name = name;
 				}
-				
+
 				public String getName() {
 					return name;
 				}
@@ -102,6 +107,29 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				this.questionMap = questionMap;
 			}
 		}
+
+		private String title;
+
+		private Collection<TitleChangedListener> titleChangedListeners = new ArrayList<TitleChangedListener>();
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+
+			for (final TitleChangedListener li : titleChangedListeners)
+				li.titleChanged(title);
+		}
+
+		public void addTitleChangedListener(TitleChangedListener li) {
+			titleChangedListeners.add(li);
+		}
+
+		public void removeTitleChangedListener(TitleChangedListener li) {
+			titleChangedListeners.remove(li);
+		}
 	}
 
 	private String title;
@@ -121,5 +149,20 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public static Lesson readXML(String url) {
+		final Lesson lesson = new Lesson();
+
+		lesson.add(new Page());
+		lesson.get(0).setTitle("opa");
+		lesson.add(new Page());
+		lesson.get(1).setTitle("ouf");
+
+		return lesson;
+	}
+
+	public static void writeXML(Lesson lesson) {
+
 	}
 }

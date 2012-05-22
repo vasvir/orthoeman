@@ -13,34 +13,42 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.touch.client.Point;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class AuthoringTool implements EntryPoint {
+	Lesson lesson = null;
+	Lesson.Page currentPage = null;
+
+	private TextBox title_tb;
+
 	/**
 	 * This is the entry point method.
 	 */
 	@Override
 	public void onModuleLoad() {
-		final Label splashScreenLabel = Label.wrap(DOM.getElementById("splashScreenLabel"));
-		final Label errorLabel = Label.wrap(DOM.getElementById("errorLabel"));
+		final Label splashScreenLabel = getLabel("splashScreenLabel");
+		final Label errorLabel = getLabel("errorLabel");
 
-		final ListBox lb = ListBox.wrap(DOM.getElementById("itemCombobox"));
+		final ListBox lb = getListBox("itemCombobox");
 		for (final Lesson.Page.Item.Type[] item_type_combination : Lesson.Page.validItemTypeCombinations) {
 			lb.addItem(item_type_combination[0].getName() + " - "
 					+ item_type_combination[1].getName());
@@ -71,9 +79,17 @@ public class AuthoringTool implements EntryPoint {
 		menu_bar.addItem("File", file_menu);
 		menu_bar.addItem("Edit", edit_menu);
 		menu_bar.addItem("Help", help_menu);
-		DOM.getElementById("htmlMenuBar").getStyle().setDisplay(Display.NONE);
+		RootPanel.get("htmlMenuBar").setVisible(false);
 		RootPanel.get("menuBarContainer").add(menu_bar);
 
+		title_tb = getTextBox("titleTextBox");
+		title_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				getCurrentPage().setTitle(event.getValue());
+			}
+		});
+		
 		final Canvas canvas = Canvas.createIfSupported();
 		if (canvas == null) {
 			RootPanel.get("errorLabelContainer").add(
@@ -183,8 +199,88 @@ public class AuthoringTool implements EntryPoint {
 		final SingleUploader upload = new SingleUploader();
 		upload.addOnFinishUploadHandler(onFinishUploaderHandler);
 		// RootPanel.get("uploadContainer").add(upload);
+
+		splashScreenLabel.setText("Reading Lesson...");
+		final String url = null;
+		lesson = Lesson.readXML(url);
+
+		splashScreenLabel.setText("Updating GUI...");
+		updateGUI();
+
+		if (lesson.isEmpty())
+			setCurrentPage(new Lesson.Page());
+		else
+			setCurrentPage(lesson.get(0));
+
+		getSplashPopup().setVisible(false);
+	}
+
+	private static ListBox getListBox(String id) {
+		return ListBox.wrap(DOM.getElementById(id));
+	}
+
+	private static Label getLabel(String id) {
+		return Label.wrap(DOM.getElementById(id));
+	}
+
+	private static TextBox getTextBox(String id) {
+		return TextBox.wrap(DOM.getElementById(id));
+	}
+
+	private static RootPanel getSplashPopup() {
+		return RootPanel.get("splashPopup");
+	}
+
+	private static RootPanel getPageButtonContainer() {
+		return RootPanel.get("pageButtonContainer");
+	}
+
+	// private Element getPageButtonContainer() {
+	// return DOM.getElementById("pageButtonContainer");
+	// }
+
+	private Button createPageButton(final Lesson.Page page) {
+		final Button button = new Button(page.getTitle());
+		button.setWidth("100%");
 		
-		
-		DOM.getElementById("splashPopup").getStyle().setDisplay(Display.NONE);
+		page.addTitleChangedListener(new Lesson.Page.TitleChangedListener() {
+			@Override
+			public void titleChanged(String title) {
+				button.setText(title);
+			}
+		});
+
+		button.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				setCurrentPage(page);
+			}
+		});
+		return button;
+	}
+
+	private void addPage(Lesson.Page page) {
+		final Button button = createPageButton(page);
+		getPageButtonContainer().add(button);
+	}
+
+	private void updatePages() {
+		getPageButtonContainer().clear();
+		for (final Lesson.Page page : lesson) {
+			addPage(page);
+		}
+	}
+
+	private void updateGUI() {
+		updatePages();
+	}
+
+	private void setCurrentPage(Lesson.Page page) {
+		this.currentPage = page;
+		title_tb.setText(page.getTitle());
+	}
+	
+	private Lesson.Page getCurrentPage() {
+		return currentPage;
 	}
 }
