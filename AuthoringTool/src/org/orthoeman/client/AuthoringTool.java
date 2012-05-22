@@ -29,16 +29,18 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class AuthoringTool implements EntryPoint {
-	Lesson lesson = null;
-	Lesson.Page currentPage = null;
+	private Lesson lesson = null;
+	private Lesson.Page currentPage = null;
 
 	private TextBox title_tb;
+	private TextArea text_area;
 
 	/**
 	 * This is the entry point method.
@@ -89,7 +91,15 @@ public class AuthoringTool implements EntryPoint {
 				getCurrentPage().setTitle(event.getValue());
 			}
 		});
-		
+
+		text_area = getTextArea("textArea");
+		text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				getCurrentPage().getTextItem().setText(event.getValue());
+			}
+		});
+
 		final Canvas canvas = Canvas.createIfSupported();
 		if (canvas == null) {
 			RootPanel.get("errorLabelContainer").add(
@@ -227,6 +237,10 @@ public class AuthoringTool implements EntryPoint {
 		return TextBox.wrap(DOM.getElementById(id));
 	}
 
+	private static TextArea getTextArea(String id) {
+		return TextArea.wrap(DOM.getElementById(id));
+	}
+
 	private static RootPanel getSplashPopup() {
 		return RootPanel.get("splashPopup");
 	}
@@ -242,7 +256,7 @@ public class AuthoringTool implements EntryPoint {
 	private Button createPageButton(final Lesson.Page page) {
 		final Button button = new Button(page.getTitle());
 		button.setWidth("100%");
-		
+
 		page.addTitleChangedListener(new Lesson.Page.TitleChangedListener() {
 			@Override
 			public void titleChanged(String title) {
@@ -278,8 +292,24 @@ public class AuthoringTool implements EntryPoint {
 	private void setCurrentPage(Lesson.Page page) {
 		this.currentPage = page;
 		title_tb.setText(page.getTitle());
+		for (final Lesson.Page.Item item : page) {
+			switch (item.getType()) {
+			case TEXT:
+				final Lesson.Page.TextItem text_item = (Lesson.Page.TextItem) item;
+				text_area.setText(text_item.getText());
+				break;
+			case QUIZ:
+				break;
+			case IMAGE:
+				break;
+			case VIDEO:
+				break;
+			default:
+				break;
+			}
+		}
 	}
-	
+
 	private Lesson.Page getCurrentPage() {
 		return currentPage;
 	}

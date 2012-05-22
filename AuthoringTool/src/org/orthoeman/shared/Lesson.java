@@ -51,8 +51,13 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		public static class TextItem extends Item {
 			private String text;
 
-			public TextItem() {
+			public TextItem(String text) {
 				super(Type.TEXT);
+				setText(text);
+			}
+
+			public TextItem() {
+				this("");
 			}
 
 			public String getText() {
@@ -112,6 +117,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		private Collection<TitleChangedListener> titleChangedListeners = new ArrayList<TitleChangedListener>();
 
+		public Page(String title) {
+			setTitle(title);
+		}
+
+		public Page() {
+			this("");
+		}
+
 		public String getTitle() {
 			return title;
 		}
@@ -129,6 +142,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public void removeTitleChangedListener(TitleChangedListener li) {
 			titleChangedListeners.remove(li);
+		}
+
+		public TextItem getTextItem() {
+			for (final Item item : this) {
+				if (item.getType() == Item.Type.TEXT)
+					return (TextItem) item;
+			}
+			return null;
 		}
 	}
 
@@ -154,10 +175,13 @@ public class Lesson extends ArrayList<Lesson.Page> {
 	public static Lesson readXML(String url) {
 		final Lesson lesson = new Lesson();
 
-		lesson.add(new Page());
-		lesson.get(0).setTitle("opa");
-		lesson.add(new Page());
-		lesson.get(1).setTitle("ouf");
+		lesson.add(new Page("opa"));
+		lesson.get(0).add(new Page.TextItem("This is a very interesting opa"));
+		lesson.get(0).add(new Page.ImageItem());
+
+		lesson.add(new Page("ouf"));
+		lesson.get(1).add(new Page.TextItem("oud is a nice concept"));
+		lesson.get(1).add(new Page.ImageItem());
 
 		return lesson;
 	}
