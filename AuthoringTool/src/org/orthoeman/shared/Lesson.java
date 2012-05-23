@@ -5,6 +5,11 @@ import java.util.Collection;
 import java.util.Map;
 
 public class Lesson extends ArrayList<Lesson.Page> {
+	public interface PageListener {
+		public void pageAdded(Page page);
+
+		public void pageRemoved(Page page);
+	}
 
 	public static class Page extends ArrayList<Page.Item> {
 		public static final Page.Item.Type[][] validItemTypeCombinations = {
@@ -151,7 +156,26 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			}
 			return null;
 		}
+
+		@Override
+		public String toString() {
+			return "Page: " + getTitle() + " items: " + super.toString();
+		}
+
+		@Override
+		public int hashCode() {
+			return System.identityHashCode(this);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == this)
+				return true;
+			return false;
+		}
 	}
+
+	private Collection<PageListener> pageListeners = new ArrayList<PageListener>();
 
 	private String title;
 	private String author;
@@ -172,6 +196,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		this.author = author;
 	}
 
+	public void addPageListener(PageListener li) {
+		pageListeners.add(li);
+	}
+
+	public void removePageListener(PageListener li) {
+		pageListeners.remove(li);
+	}
+
 	public static Lesson readXML(String url) {
 		final Lesson lesson = new Lesson();
 
@@ -188,5 +220,46 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 	public static void writeXML(Lesson lesson) {
 
+	}
+
+	private void notifyPageListeners(Page page, boolean added) {
+		if (added) {
+			for (final PageListener li : pageListeners) {
+				li.pageAdded(page);
+			}
+		} else {
+			for (final PageListener li : pageListeners) {
+				li.pageRemoved(page);
+			}
+		}
+	}
+
+	@Override
+	public boolean add(Page e) {
+		final boolean status = super.add(e);
+		if (status)
+			notifyPageListeners(e, true);
+		return status;
+	}
+
+	@Override
+	public void add(int index, Page element) {
+		super.add(index, element);
+		notifyPageListeners(element, true);
+	}
+
+	@Override
+	public Page remove(int index) {
+		final Page page = super.remove(index);
+		notifyPageListeners(page, true);
+		return page;
+	}
+
+	@Override
+	public boolean remove(Object o) {
+		final boolean status = super.remove(o);
+		if (status)
+			notifyPageListeners((Page) o, false);
+		return status;
 	}
 }

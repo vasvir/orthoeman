@@ -95,22 +95,32 @@
 						</div>
 						<div class="row nowrap">
 							<div class="cell">
-								<button class="gwt-Button" type="button" style="width: 50%;">Add</button><button class="gwt-Button" type="button" style="width: 50%;">Remove</button>
+								<button id="addButton" class="gwt-Button" type="button" style="width: 50%;">Add</button><button id="removeButton" class="gwt-Button" type="button" style="width: 50%;">Remove</button>
 							</div>
 				        </div>
 					</div>
 				</div>
 	
 				<div class="cell center" style="width: 76%;">
-					<div id="Page1" class="fill_x fill_y scroll">
+					<div id="pageContainer" class="fill_x fill_y scroll">
 						<div class="gwt-Label">Title:</div>
 						<input id="titleTextBox" type="text" class="gwt-TextBox inline" 
 							title="Leave it blank if there is no need for a title in this page" style="width: 45em;">
 
 						<select id="itemCombobox" class="gwt-ListBox" style="display: block;">
 						</select>
+
 						<textarea id="textArea" class="gwt-TextArea" style="width: 50%"></textarea>
+
+						<div id="quizContainer">
+							Quiz container
+						</div>
+
 						<div id="canvasContainer">
+						</div>
+
+						<div id="videoContainer">
+							video container
 						</div>
 
 						<div style="text-align: right";>
