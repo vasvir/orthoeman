@@ -18,6 +18,8 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -41,16 +43,19 @@ import com.google.gwt.user.client.ui.TextBox;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class AuthoringTool implements EntryPoint {
+	private static final String itemTypeSeparator = " - ";
+
 	private Lesson lesson = null;
 	private Lesson.Page currentPage = null;
 
 	private Map<Lesson.Page, Button> page_button_map = new HashMap<Lesson.Page, Button>();
-	
+
 	private TextBox title_tb;
 	private TextArea text_area;
 	private RootPanel quizContainer;
 	private RootPanel canvasContainer;
 	private RootPanel videoContainer;
+	private ListBox combobox;
 
 	/**
 	 * This is the entry point method.
@@ -60,10 +65,58 @@ public class AuthoringTool implements EntryPoint {
 		final Label splashScreenLabel = getLabel("splashScreenLabel");
 		final Label errorLabel = getLabel("errorLabel");
 
-		final ListBox lb = getListBox("itemCombobox");
+		combobox = getListBox("itemCombobox");
+		combobox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				final Lesson.Page page = getCurrentPage();
+				final Lesson.Page.Item old_item1 = page.get(0);
+				final Lesson.Page.Item old_item2 = page.get(1);
+
+				page.clear();
+				final String[] type_names_a = combobox.getItemText(
+						combobox.getSelectedIndex()).split(itemTypeSeparator);
+				final Lesson.Page.Item.Type item1_type = Lesson.Page.Item.Type
+						.getTypeByName(type_names_a[0]);
+				final Lesson.Page.Item.Type item2_type = Lesson.Page.Item.Type
+						.getTypeByName(type_names_a[1]);
+
+				// keep old elements
+				if (old_item1.getType() == item1_type
+						|| old_item1.getType() == item2_type)
+					page.add(old_item1);
+				if (old_item2.getType() == item1_type
+						|| old_item2.getType() == item2_type)
+					page.add(old_item2);
+				// what's missing?
+				switch (page.size()) {
+				case 0:
+					// both are missing. Create them
+					page.addItem(item1_type);
+					page.addItem(item2_type);
+					break;
+				case 1:
+					// one is missing?. Who?
+					if (page.get(0).getType() != item1_type)
+						page.addItem(item1_type);
+					else
+						page.addItem(item2_type);
+					break;
+				case 2:
+					// nothing is missing.
+					break;
+				default:
+					Window.alert("You should never see this message. Please reports.\n"
+							+ "Combobox changed "
+							+ combobox.getItemText(combobox.getSelectedIndex()));
+					break;
+				}
+				setCurrentPage(page);
+			}
+		});
 		for (final Lesson.Page.Item.Type[] item_type_combination : Lesson.Page.validItemTypeCombinations) {
-			lb.addItem(item_type_combination[0].getName() + " - "
-					+ item_type_combination[1].getName());
+			combobox.addItem(getComboboxOptionText(item_type_combination[0],
+					item_type_combination[1]));
 		}
 
 		final Command command = new Command() {
@@ -110,8 +163,9 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				final Lesson.Page page = getCurrentPage();
-				
-				final Lesson.Page new_page = findCurrentItemAfterRemove(lesson, page);
+
+				final Lesson.Page new_page = findCurrentItemAfterRemove(lesson,
+						page);
 
 				setCurrentPage(new_page);
 
@@ -138,7 +192,7 @@ public class AuthoringTool implements EntryPoint {
 
 		quizContainer = getQuizContainer();
 		videoContainer = getVideoContainer();
-		
+
 		final Canvas canvas = Canvas.createIfSupported();
 		if (canvas == null) {
 			RootPanel.get("errorLabelContainer").add(
@@ -259,12 +313,13 @@ public class AuthoringTool implements EntryPoint {
 			public void pageRemoved(Page page) {
 				remove_b.setEnabled(!lesson.isEmpty());
 			}
+
 			@Override
 			public void pageAdded(Page page) {
 				remove_b.setEnabled(!lesson.isEmpty());
 			}
 		});
-		
+
 		splashScreenLabel.setText("Updating GUI...");
 		updateGUI();
 
@@ -335,7 +390,7 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		getPageButtonContainer().add(button);
-		
+
 		page_button_map.put(page, button);
 	}
 
@@ -363,17 +418,20 @@ public class AuthoringTool implements EntryPoint {
 
 	private void setCurrentPage(Lesson.Page page) {
 		this.currentPage = page;
-		final RootPanel pageContainer = RootPanel.get("pageContainer"); 
+		final RootPanel pageContainer = RootPanel.get("pageContainer");
 
 		if (page == null) {
 			pageContainer.setVisible(false);
 			return;
 		}
-		
+
 		text_area.setVisible(false);
 		quizContainer.setVisible(false);
 		canvasContainer.setVisible(false);
 		videoContainer.setVisible(false);
+
+		combobox.setSelectedIndex(getComboboxOptionIndex(page.get(0).getType(),
+				page.get(1).getType()));
 
 		title_tb.setText(page.getTitle());
 		for (final Lesson.Page.Item item : page) {
@@ -392,14 +450,13 @@ public class AuthoringTool implements EntryPoint {
 			case VIDEO:
 				videoContainer.setVisible(true);
 				break;
-			default:
-				break;
 			}
 		}
 		pageContainer.setVisible(true);
 	}
 
-	private static <T> T findCurrentItemAfterRemove(Collection<T> collection, T remove_item) {
+	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
+			T remove_item) {
 		boolean found = false;
 		T previous_item = null;
 
@@ -407,17 +464,32 @@ public class AuthoringTool implements EntryPoint {
 			if (found) {
 				return item;
 			}
-			
+
 			if (item.equals(remove_item)) {
 				found = true;
 				continue;
 			}
-			
+
 			previous_item = item;
 		}
 		if (found)
 			return previous_item;
-		
+
 		return null;
+	}
+
+	private static String getComboboxOptionText(Lesson.Page.Item.Type type1,
+			Lesson.Page.Item.Type type2) {
+		return type1.getName() + itemTypeSeparator + type2.getName();
+	}
+
+	private int getComboboxOptionIndex(Lesson.Page.Item.Type type1,
+			Lesson.Page.Item.Type type2) {
+		final String option = getComboboxOptionText(type1, type2);
+		final int total = combobox.getItemCount();
+		for (int i = 0; i < total; i++)
+			if (option.equals(combobox.getItemText(i)))
+				return i;
+		return -1;
 	}
 }

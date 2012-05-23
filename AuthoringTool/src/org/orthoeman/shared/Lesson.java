@@ -2,7 +2,10 @@ package org.orthoeman.shared;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+
+import org.orthoeman.shared.Lesson.Page.Item.Type;
 
 public class Lesson extends ArrayList<Lesson.Page> {
 	public interface PageListener {
@@ -27,6 +30,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			public static enum Type {
 				TEXT("Text"), QUIZ("Quiz"), IMAGE("Image"), VIDEO("Video");
 
+				// enums are initialized before any static initializers are run
+				private static Map<String, Type> name2TypeMap = new HashMap<String, Type>();
+				static {
+					for (final Type type : values()) {
+						name2TypeMap.put(type.getName(), type);
+					}
+				}
+
 				private final String name;
 
 				private Type(String name) {
@@ -36,6 +47,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				public String getName() {
 					return name;
 				}
+				
+			    public static Type getTypeByName(String name) {
+			        return name2TypeMap.get(name);
+			    }
 			}
 
 			private Type type;
@@ -124,6 +139,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public Page(String title) {
 			setTitle(title);
+			addItem(validItemTypeCombinations[0][0]);
+			addItem(validItemTypeCombinations[0][1]);
 		}
 
 		public Page() {
@@ -155,6 +172,25 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					return (TextItem) item;
 			}
 			return null;
+		}
+
+		public void addItem(Type type) {
+			switch (type) {
+			case TEXT:
+				add(new TextItem());
+				break;
+			case QUIZ:
+				add(new QuizItem());
+				break;
+			case IMAGE:
+				add(new ImageItem());
+				break;
+			case VIDEO:
+				add(new VideoItem());
+				break;
+			default:
+				break;
+			}
 		}
 
 		@Override
