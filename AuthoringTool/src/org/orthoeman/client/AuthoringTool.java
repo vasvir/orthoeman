@@ -1,6 +1,11 @@
 package org.orthoeman.client;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.orthoeman.shared.Lesson;
+import org.orthoeman.shared.Lesson.Page;
 
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
@@ -39,8 +44,13 @@ public class AuthoringTool implements EntryPoint {
 	private Lesson lesson = null;
 	private Lesson.Page currentPage = null;
 
+	private Map<Lesson.Page, Button> page_button_map = new HashMap<Lesson.Page, Button>();
+	
 	private TextBox title_tb;
 	private TextArea text_area;
+	private RootPanel quizContainer;
+	private RootPanel canvasContainer;
+	private RootPanel videoContainer;
 
 	/**
 	 * This is the entry point method.
@@ -84,6 +94,32 @@ public class AuthoringTool implements EntryPoint {
 		RootPanel.get("htmlMenuBar").setVisible(false);
 		RootPanel.get("menuBarContainer").add(menu_bar);
 
+		final Button add_b = getButton("addButton");
+		add_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final Lesson.Page page = new Lesson.Page("New Page");
+				lesson.add(page);
+				addPageButton(page);
+				setCurrentPage(page);
+			}
+		});
+
+		final Button remove_b = getButton("removeButton");
+		remove_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final Lesson.Page page = getCurrentPage();
+				
+				final Lesson.Page new_page = findCurrentItemAfterRemove(lesson, page);
+
+				setCurrentPage(new_page);
+
+				lesson.remove(page);
+				removePageButton(page);
+			}
+		});
+
 		title_tb = getTextBox("titleTextBox");
 		title_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
@@ -100,6 +136,9 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		quizContainer = getQuizContainer();
+		videoContainer = getVideoContainer();
+		
 		final Canvas canvas = Canvas.createIfSupported();
 		if (canvas == null) {
 			RootPanel.get("errorLabelContainer").add(
@@ -108,7 +147,8 @@ public class AuthoringTool implements EntryPoint {
 		}
 		final Canvas back_canvas = Canvas.createIfSupported();
 
-		RootPanel.get("canvasContainer").add(canvas);
+		canvasContainer = getCanvasContainer();
+		canvasContainer.add(canvas);
 
 		final int width = 800;
 		final int height = 600;
@@ -214,6 +254,17 @@ public class AuthoringTool implements EntryPoint {
 		final String url = null;
 		lesson = Lesson.readXML(url);
 
+		lesson.addPageListener(new Lesson.PageListener() {
+			@Override
+			public void pageRemoved(Page page) {
+				remove_b.setEnabled(!lesson.isEmpty());
+			}
+			@Override
+			public void pageAdded(Page page) {
+				remove_b.setEnabled(!lesson.isEmpty());
+			}
+		});
+		
 		splashScreenLabel.setText("Updating GUI...");
 		updateGUI();
 
@@ -241,6 +292,10 @@ public class AuthoringTool implements EntryPoint {
 		return TextArea.wrap(DOM.getElementById(id));
 	}
 
+	private static Button getButton(String id) {
+		return Button.wrap(DOM.getElementById(id));
+	}
+
 	private static RootPanel getSplashPopup() {
 		return RootPanel.get("splashPopup");
 	}
@@ -249,11 +304,19 @@ public class AuthoringTool implements EntryPoint {
 		return RootPanel.get("pageButtonContainer");
 	}
 
-	// private Element getPageButtonContainer() {
-	// return DOM.getElementById("pageButtonContainer");
-	// }
+	private static RootPanel getCanvasContainer() {
+		return RootPanel.get("canvasContainer");
+	}
 
-	private Button createPageButton(final Lesson.Page page) {
+	private static RootPanel getVideoContainer() {
+		return RootPanel.get("videoContainer");
+	}
+
+	private static RootPanel getQuizContainer() {
+		return RootPanel.get("quizContainer");
+	}
+
+	private void addPageButton(final Lesson.Page page) {
 		final Button button = new Button(page.getTitle());
 		button.setWidth("100%");
 
@@ -270,18 +333,23 @@ public class AuthoringTool implements EntryPoint {
 				setCurrentPage(page);
 			}
 		});
-		return button;
+
+		getPageButtonContainer().add(button);
+		
+		page_button_map.put(page, button);
 	}
 
-	private void addPage(Lesson.Page page) {
-		final Button button = createPageButton(page);
-		getPageButtonContainer().add(button);
+	private void removePageButton(Lesson.Page page) {
+		final Button button = page_button_map.get(page);
+		getPageButtonContainer().remove(button);
+		page_button_map.remove(page);
 	}
 
 	private void updatePages() {
 		getPageButtonContainer().clear();
+		page_button_map.clear();
 		for (final Lesson.Page page : lesson) {
-			addPage(page);
+			addPageButton(page);
 		}
 	}
 
@@ -289,28 +357,67 @@ public class AuthoringTool implements EntryPoint {
 		updatePages();
 	}
 
+	private Lesson.Page getCurrentPage() {
+		return currentPage;
+	}
+
 	private void setCurrentPage(Lesson.Page page) {
 		this.currentPage = page;
+		final RootPanel pageContainer = RootPanel.get("pageContainer"); 
+
+		if (page == null) {
+			pageContainer.setVisible(false);
+			return;
+		}
+		
+		text_area.setVisible(false);
+		quizContainer.setVisible(false);
+		canvasContainer.setVisible(false);
+		videoContainer.setVisible(false);
+
 		title_tb.setText(page.getTitle());
 		for (final Lesson.Page.Item item : page) {
 			switch (item.getType()) {
 			case TEXT:
 				final Lesson.Page.TextItem text_item = (Lesson.Page.TextItem) item;
 				text_area.setText(text_item.getText());
+				text_area.setVisible(true);
 				break;
 			case QUIZ:
+				quizContainer.setVisible(true);
 				break;
 			case IMAGE:
+				canvasContainer.setVisible(true);
 				break;
 			case VIDEO:
+				videoContainer.setVisible(true);
 				break;
 			default:
 				break;
 			}
 		}
+		pageContainer.setVisible(true);
 	}
 
-	private Lesson.Page getCurrentPage() {
-		return currentPage;
+	private static <T> T findCurrentItemAfterRemove(Collection<T> collection, T remove_item) {
+		boolean found = false;
+		T previous_item = null;
+
+		for (final T item : collection) {
+			if (found) {
+				return item;
+			}
+			
+			if (item.equals(remove_item)) {
+				found = true;
+				continue;
+			}
+			
+			previous_item = item;
+		}
+		if (found)
+			return previous_item;
+		
+		return null;
 	}
 }
