@@ -82,35 +82,25 @@ public class AuthoringTool implements EntryPoint {
 						.getTypeByName(type_names_a[1]);
 
 				// keep old elements
-				if (old_item1.getType() == item1_type
-						|| old_item1.getType() == item2_type)
+				if (old_item1.getType() == item1_type) {
 					page.add(old_item1);
-				if (old_item2.getType() == item1_type
-						|| old_item2.getType() == item2_type)
-					page.add(old_item2);
-				// what's missing?
-				switch (page.size()) {
-				case 0:
-					// both are missing. Create them
-					page.addItem(item1_type);
-					page.addItem(item2_type);
-					break;
-				case 1:
-					// one is missing?. Who?
-					if (page.get(0).getType() != item1_type)
-						page.addItem(item1_type);
-					else
-						page.addItem(item2_type);
-					break;
-				case 2:
-					// nothing is missing.
-					break;
-				default:
-					Window.alert("You should never see this message. Please reports.\n"
-							+ "Combobox changed "
-							+ combobox.getItemText(combobox.getSelectedIndex()));
-					break;
 				}
+				if (old_item2.getType() == item1_type) {
+					page.add(old_item2);
+				}
+				if (page.isEmpty()) {
+					page.addItem(item1_type);
+				}
+				if (old_item1.getType() == item2_type) {
+					page.add(old_item1);
+				}
+				if (old_item2.getType() == item2_type) {
+					page.add(old_item2);
+				}
+				if (page.size() == 1) {
+					page.addItem(item2_type);
+				}
+
 				setCurrentPage(page);
 			}
 		});
