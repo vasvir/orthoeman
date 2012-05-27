@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Lesson;
 import org.orthoeman.shared.Lesson.Page;
 
@@ -13,7 +14,6 @@ import gwtupload.client.PreloadedImage;
 import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 import gwtupload.client.SingleUploader;
 
-import com.allen_sauer.gwt.log.client.DivLogger;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -68,6 +68,7 @@ public class AuthoringTool implements EntryPoint {
 	 */
 	private long startTimeMillis;
 
+	//
 	/**
 	 * Note, we defer all application initialization code to
 	 * {@link #onModuleLoad2()} so that the UncaughtExceptionHandler can catch
@@ -75,6 +76,9 @@ public class AuthoringTool implements EntryPoint {
 	 */
 	@Override
 	public void onModuleLoad() {
+		final DivLogger div_logger = new DivLogger();
+		div_logger.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
+		Log.addLogger(div_logger);
 		/*
 		 * Install an UncaughtExceptionHandler which will produce
 		 * <code>FATAL</code> log messages

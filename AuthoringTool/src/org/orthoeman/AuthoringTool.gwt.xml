@@ -2,6 +2,7 @@
 <module rename-to='authoringtool'>
   <!-- For development, a default of `TRACE` is recommended -->
   <inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
+  <set-property name="log_DivLogger" value="DISABLED" />
 
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
