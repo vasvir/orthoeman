@@ -87,6 +87,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			public void setText(String text) {
 				this.text = text;
 			}
+
+			@Override
+			public String toString() {
+				return getClass() + ":" + getText();
+			}
 		}
 
 		public static class ResourceItem extends Item {

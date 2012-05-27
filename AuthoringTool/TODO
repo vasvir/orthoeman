@@ -1,9 +1,27 @@
 up down via drag & drop
 
-Available combinations
+Display:
+	scale resize images otherwise brightness contrast controls are out of screen
 
-	Image Text
-	Image Quiz
-	Video Text
-	Video Quiz
-	Text Quiz
+	brightness contrast loose the orignal image
+
+	on reload user spots should be visible
+
+	correct entries should be green not red
+
+
+Editors:
+	Quiz Editor
+	Image Editor
+	Video Editor
+
+
+
+Moodle Integration:
+	Authentication
+	Use data backend for storing resources
+	Authoring Tool and Display Tool launching
+
+
+	
+	
