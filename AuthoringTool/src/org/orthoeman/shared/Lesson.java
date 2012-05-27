@@ -144,8 +144,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public Page(String title) {
 			setTitle(title);
-			addItem(validItemTypeCombinations[0][0]);
-			addItem(validItemTypeCombinations[0][1]);
 		}
 
 		public Page() {
@@ -249,12 +247,12 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		final Lesson lesson = new Lesson();
 
 		lesson.add(new Page("opa"));
-		lesson.get(0).add(new Page.TextItem("This is a very interesting opa"));
 		lesson.get(0).add(new Page.ImageItem());
+		lesson.get(0).add(new Page.TextItem("This is a very interesting opa"));
 
 		lesson.add(new Page("ouf"));
-		lesson.get(1).add(new Page.TextItem("oud is a nice concept"));
 		lesson.get(1).add(new Page.ImageItem());
+		lesson.get(1).add(new Page.TextItem("oud is a nice concept"));
 
 		return lesson;
 	}

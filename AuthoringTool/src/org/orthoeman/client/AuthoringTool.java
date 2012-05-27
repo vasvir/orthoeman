@@ -392,7 +392,7 @@ public class AuthoringTool implements EntryPoint {
 			float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
 			Log.debug("Duration: " + durationSeconds + " seconds");
 		}
-		divLogger.setVisible(false);
+		//divLogger.setVisible(false);
 	}
 
 	private static ListBox getListBox(String id) {
@@ -497,6 +497,7 @@ public class AuthoringTool implements EntryPoint {
 		combobox.setSelectedIndex(getComboboxOptionIndex(page.get(0).getType(),
 				page.get(1).getType()));
 
+		//Log.trace("Where am I: ", new Exception("Stacktrace"));
 		title_tb.setText(page.getTitle());
 		for (final Lesson.Page.Item item : page) {
 			switch (item.getType()) {
