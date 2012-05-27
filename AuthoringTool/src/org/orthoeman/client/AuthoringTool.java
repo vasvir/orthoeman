@@ -13,10 +13,14 @@ import gwtupload.client.PreloadedImage;
 import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 import gwtupload.client.SingleUploader;
 
+import com.allen_sauer.gwt.log.client.DivLogger;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -38,6 +42,7 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -58,10 +63,43 @@ public class AuthoringTool implements EntryPoint {
 	private ListBox combobox;
 
 	/**
-	 * This is the entry point method.
+	 * This field gets compiled out when <code>log_level=OFF</code>, or any
+	 * <code>log_level</code> higher than <code>DEBUG</code>.
+	 */
+	private long startTimeMillis;
+
+	/**
+	 * Note, we defer all application initialization code to
+	 * {@link #onModuleLoad2()} so that the UncaughtExceptionHandler can catch
+	 * any unexpected exceptions.
 	 */
 	@Override
 	public void onModuleLoad() {
+		/*
+		 * Install an UncaughtExceptionHandler which will produce
+		 * <code>FATAL</code> log messages
+		 */
+		Log.setUncaughtExceptionHandler();
+
+		// use deferred command to catch initialization exceptions in
+		// onModuleLoad2
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				onModuleLoad2();
+			}
+		});
+	}
+
+	/**
+	 * This is the entry point method.
+	 */
+	public void onModuleLoad2() {
+		if (Log.isDebugEnabled()) {
+			startTimeMillis = System.currentTimeMillis();
+		}
+		final Widget divLogger = Log.getLogger(DivLogger.class).getWidget();
+
 		final Label splashScreenLabel = getLabel("splashScreenLabel");
 		final Label errorLabel = getLabel("errorLabel");
 
@@ -81,25 +119,37 @@ public class AuthoringTool implements EntryPoint {
 				final Lesson.Page.Item.Type item2_type = Lesson.Page.Item.Type
 						.getTypeByName(type_names_a[1]);
 
+				Log.debug("old_item1: " + old_item1);
+				Log.debug("old_item2: " + old_item2);
+				Log.debug("item1_type: " + item1_type);
+				Log.debug("item2_type: " + item2_type);
+
 				// keep old elements
 				if (old_item1.getType() == item1_type) {
+					Log.debug("1 Adding " + old_item1);
 					page.add(old_item1);
 				}
 				if (old_item2.getType() == item1_type) {
+					Log.debug("2 Adding " + old_item2);
 					page.add(old_item2);
 				}
 				if (page.isEmpty()) {
+					Log.debug("3 Adding empty type " + item1_type);
 					page.addItem(item1_type);
 				}
 				if (old_item1.getType() == item2_type) {
+					Log.debug("4 Adding " + old_item1);
 					page.add(old_item1);
 				}
 				if (old_item2.getType() == item2_type) {
+					Log.debug("5 Adding " + old_item2);
 					page.add(old_item2);
 				}
 				if (page.size() == 1) {
+					Log.debug("6 Adding empty type " + item2_type);
 					page.addItem(item2_type);
 				}
+				Log.debug("--------------------------------------");
 
 				setCurrentPage(page);
 			}
@@ -127,6 +177,13 @@ public class AuthoringTool implements EntryPoint {
 
 		final MenuBar help_menu = new MenuBar(true);
 		help_menu.addItem(new MenuItem("Help Contents", command));
+		help_menu.addItem(new MenuItem("Toggle Console", new Command() {
+			@Override
+			public void execute() {
+				divLogger.setVisible(!divLogger.isVisible());
+			}
+		}));
+
 		help_menu.addItem(new MenuItem("Report a bug...", command));
 		help_menu.addItem(new MenuItem("About", command));
 
@@ -238,7 +295,6 @@ public class AuthoringTool implements EntryPoint {
 				start_point.x = x;
 				start_point.y = y;
 				start_point.valid = true;
-
 			}
 		});
 
@@ -319,6 +375,20 @@ public class AuthoringTool implements EntryPoint {
 			setCurrentPage(lesson.get(0));
 
 		getSplashPopup().setVisible(false);
+
+		/*
+		 * Again, we need a guard here, otherwise <code>log_level=OFF</code>
+		 * would still produce the following useless JavaScript: <pre> var
+		 * durationSeconds, endTimeMillis; endTimeMillis =
+		 * currentTimeMillis_0(); durationSeconds = (endTimeMillis -
+		 * this$static.startTimeMillis) / 1000.0; </pre>
+		 */
+		if (Log.isDebugEnabled()) {
+			long endTimeMillis = System.currentTimeMillis();
+			float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
+			Log.debug("Duration: " + durationSeconds + " seconds");
+		}
+		divLogger.setVisible(false);
 	}
 
 	private static ListBox getListBox(String id) {
@@ -428,6 +498,7 @@ public class AuthoringTool implements EntryPoint {
 			switch (item.getType()) {
 			case TEXT:
 				final Lesson.Page.TextItem text_item = (Lesson.Page.TextItem) item;
+				Log.debug("setCurrentPage text_item: " + text_item);
 				text_area.setText(text_item.getText());
 				text_area.setVisible(true);
 				break;
