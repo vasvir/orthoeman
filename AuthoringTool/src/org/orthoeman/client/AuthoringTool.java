@@ -205,6 +205,8 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				final Lesson.Page page = new Lesson.Page("New Page");
+				page.addItem(Page.validItemTypeCombinations[0][0]);
+				page.addItem(Page.validItemTypeCombinations[0][1]);
 				lesson.add(page);
 				addPageButton(page);
 				setCurrentPage(page);
