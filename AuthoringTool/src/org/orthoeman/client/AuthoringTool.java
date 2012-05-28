@@ -28,6 +28,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.touch.client.Point;
@@ -255,23 +257,8 @@ public class AuthoringTool implements EntryPoint {
 		canvasContainer = getCanvasContainer();
 		canvasContainer.add(canvas);
 
-		final int width = 800;
-		final int height = 600;
-		canvas.setWidth(width + "px");
-		canvas.setHeight(height + "px");
-		canvas.setCoordinateSpaceWidth(width);
-		canvas.setCoordinateSpaceHeight(height);
-
-		back_canvas.setWidth(width + "px");
-		back_canvas.setHeight(height + "px");
-		back_canvas.setCoordinateSpaceWidth(width);
-		back_canvas.setCoordinateSpaceHeight(height);
-
-		final Context2d context = canvas.getContext2d();
-		context.setFillStyle(CssColor.make("yellow"));
-		context.fillRect(0, 0, width, height);
-
-		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
+		canvas.setWidth("100%");
+		canvas.setHeight("100%");
 
 		class Point {
 			double x;
@@ -280,6 +267,49 @@ public class AuthoringTool implements EntryPoint {
 		}
 		final Point start_point = new Point();
 		final Point old_point = new Point();
+
+		class MyResizeHandler implements ResizeHandler {
+			@Override
+			public void onResize(ResizeEvent event) {
+				Log.trace("Browser resized " + event.getWidth() + " x "
+						+ event.getHeight());
+				onResize();
+			}
+
+			public void onResize() {
+				final int width = canvas.getOffsetWidth();
+				final int height = canvas.getOffsetHeight();
+				Log.trace("Browser resized canvas (offset size) " + width
+						+ " x " + height);
+				canvas.setCoordinateSpaceWidth(width);
+				canvas.setCoordinateSpaceHeight(height);
+
+				back_canvas.setWidth(width + "px");
+				back_canvas.setHeight(height + "px");
+				back_canvas.setCoordinateSpaceWidth(width);
+				back_canvas.setCoordinateSpaceHeight(height);
+
+				final Context2d context = canvas.getContext2d();
+				context.setFillStyle(CssColor.make("yellow"));
+				context.fillRect(0, 0, width, height);
+
+				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
+						0, 0);
+
+				start_point.valid = false;
+				old_point.valid = false;
+				Log.trace("Browser resized back_canvas "
+						+ back_canvas.getOffsetWidth() + " x "
+						+ back_canvas.getOffsetHeight());
+			}
+		}
+
+		final MyResizeHandler rh = new MyResizeHandler();
+
+		Window.addResizeHandler(rh);
+		rh.onResize();
+
+		final Context2d context = canvas.getContext2d();
 
 		canvas.addClickHandler(new ClickHandler() {
 			@Override
@@ -392,7 +422,7 @@ public class AuthoringTool implements EntryPoint {
 			float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
 			Log.debug("Duration: " + durationSeconds + " seconds");
 		}
-		//divLogger.setVisible(false);
+		// divLogger.setVisible(false);
 	}
 
 	private static ListBox getListBox(String id) {
@@ -497,7 +527,7 @@ public class AuthoringTool implements EntryPoint {
 		combobox.setSelectedIndex(getComboboxOptionIndex(page.get(0).getType(),
 				page.get(1).getType()));
 
-		//Log.trace("Where am I: ", new Exception("Stacktrace"));
+		// Log.trace("Where am I: ", new Exception("Stacktrace"));
 		title_tb.setText(page.getTitle());
 		for (final Lesson.Page.Item item : page) {
 			switch (item.getType()) {
