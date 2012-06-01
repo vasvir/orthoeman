@@ -13,6 +13,7 @@ import gwtupload.client.IUploader;
 import gwtupload.client.PreloadedImage;
 import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 import gwtupload.client.SingleUploader;
+import gwtupload.client.SingleUploaderModal;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
@@ -60,6 +61,7 @@ public class AuthoringTool implements EntryPoint {
 	private TextBox title_tb;
 	private TextArea text_area;
 	private RootPanel quizContainer;
+	private RootPanel imageEditorContainer;
 	private RootPanel canvasContainer;
 	private RootPanel videoContainer;
 	private ListBox combobox;
@@ -362,14 +364,17 @@ public class AuthoringTool implements EntryPoint {
 		final OnLoadPreloadedImageHandler showImageHandler = new OnLoadPreloadedImageHandler() {
 			@Override
 			public void onLoad(PreloadedImage img) {
+				img.setVisible(false);
+
+				final int width = canvas.getOffsetWidth();
+				final int height = canvas.getOffsetHeight();
+
 				context.drawImage((ImageElement) (Object) img.getElement(), 0,
-						0);
+						0, width, height);
 				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
-						0, 0);
+						0, 0, width, height);
 			}
 		};
-
-		// protected UploaderConstants i18nStrs;
 
 		final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
 			@Override
@@ -377,14 +382,16 @@ public class AuthoringTool implements EntryPoint {
 				if (uploader.getStatus() == Status.SUCCESS) {
 					final PreloadedImage preloadedImage = new PreloadedImage(
 							uploader.fileUrl(), showImageHandler);
-					preloadedImage.setTitle("Ttile to set");
 				}
 			}
 		};
 
-		final SingleUploader upload = new SingleUploader();
-		upload.addOnFinishUploadHandler(onFinishUploaderHandler);
-		// RootPanel.get("uploadContainer").add(upload);
+		final SingleUploader uploader = new SingleUploaderModal();
+		uploader.setAutoSubmit(true);
+		uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
+		uploader.setFileInputPrefix("opa");
+		//uploader.
+		RootPanel.get("uploadContainer").add(uploader);
 
 		splashScreenLabel.setText("Reading Lesson...");
 		final String url = null;
@@ -404,6 +411,8 @@ public class AuthoringTool implements EntryPoint {
 
 		splashScreenLabel.setText("Updating GUI...");
 		updateGUI();
+
+		imageEditorContainer = getImageEditorContainer();
 
 		if (lesson.isEmpty())
 			setCurrentPage(new Lesson.Page());
@@ -457,6 +466,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getCanvasContainer() {
 		return RootPanel.get("canvasContainer");
+	}
+
+	private static RootPanel getImageEditorContainer() {
+		return RootPanel.get("imageEditorContainer");
 	}
 
 	private static RootPanel getVideoContainer() {
@@ -523,7 +536,7 @@ public class AuthoringTool implements EntryPoint {
 
 		text_area.setVisible(false);
 		quizContainer.setVisible(false);
-		canvasContainer.setVisible(false);
+		imageEditorContainer.setVisible(false);
 		videoContainer.setVisible(false);
 
 		combobox.setSelectedIndex(getComboboxOptionIndex(page.get(0).getType(),
@@ -543,7 +556,7 @@ public class AuthoringTool implements EntryPoint {
 				quizContainer.setVisible(true);
 				break;
 			case IMAGE:
-				canvasContainer.setVisible(true);
+				imageEditorContainer.setVisible(true);
 				break;
 			case VIDEO:
 				videoContainer.setVisible(true);
