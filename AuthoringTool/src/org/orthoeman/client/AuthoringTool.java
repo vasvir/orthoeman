@@ -18,7 +18,6 @@ import gwtupload.client.SingleUploaderModal;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -61,10 +60,10 @@ public class AuthoringTool implements EntryPoint {
 	private TextBox title_tb;
 	private TextArea text_area;
 	private RootPanel quizContainer;
-	private RootPanel imageEditorContainer;
 	private RootPanel canvasContainer;
 	private RootPanel videoContainer;
 	private ListBox combobox;
+	private PreloadedImage img = null;
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -256,8 +255,11 @@ public class AuthoringTool implements EntryPoint {
 					new Label("No canvas, get a proper browser!"));
 			return;
 		}
+		canvas.setStyleName("border", true);
 		final Canvas back_canvas = Canvas.createIfSupported();
 
+		// BUG: workaround of GWT weird behaviour
+		RootPanel.get("uploadContainer");
 		canvasContainer = getCanvasContainer();
 		canvasContainer.add(canvas);
 
@@ -281,10 +283,15 @@ public class AuthoringTool implements EntryPoint {
 			}
 
 			public void onResize() {
+				final int div_width = canvasContainer.getOffsetWidth();
+				final int div_height = canvasContainer.getOffsetHeight();
+				Log.trace("Browser resized canvas container (offset size) "
+						+ div_width + " x " + div_height + " style "
+						+ canvasContainer.getStyleName());
 				final int width = canvas.getOffsetWidth();
 				final int height = canvas.getOffsetHeight();
 				Log.trace("Browser resized canvas (offset size) " + width
-						+ " x " + height);
+						+ " x " + height + " style " + canvas.getStyleName());
 				canvas.setCoordinateSpaceWidth(width);
 				canvas.setCoordinateSpaceHeight(height);
 
@@ -293,18 +300,10 @@ public class AuthoringTool implements EntryPoint {
 				back_canvas.setCoordinateSpaceWidth(width);
 				back_canvas.setCoordinateSpaceHeight(height);
 
-				final Context2d context = canvas.getContext2d();
-				context.setFillStyle(CssColor.make("yellow"));
-				context.fillRect(0, 0, width, height);
-
-				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
-						0, 0);
-
 				start_point.valid = false;
 				old_point.valid = false;
-				Log.trace("Browser resized back_canvas "
-						+ back_canvas.getOffsetWidth() + " x "
-						+ back_canvas.getOffsetHeight());
+
+				drawImage(canvas, back_canvas);
 			}
 		}
 
@@ -364,24 +363,20 @@ public class AuthoringTool implements EntryPoint {
 		final OnLoadPreloadedImageHandler showImageHandler = new OnLoadPreloadedImageHandler() {
 			@Override
 			public void onLoad(PreloadedImage img) {
-				img.setVisible(false);
-
-				final int width = canvas.getOffsetWidth();
-				final int height = canvas.getOffsetHeight();
-
-				context.drawImage((ImageElement) (Object) img.getElement(), 0,
-						0, width, height);
-				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
-						0, 0, width, height);
+				drawImage(canvas, back_canvas);
 			}
 		};
 
 		final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
 			@Override
 			public void onFinish(IUploader uploader) {
+				if (img != null) {
+					img.removeFromParent();
+					img = null;
+				}
 				if (uploader.getStatus() == Status.SUCCESS) {
-					final PreloadedImage preloadedImage = new PreloadedImage(
-							uploader.fileUrl(), showImageHandler);
+					img = new PreloadedImage(uploader.fileUrl(),
+							showImageHandler);
 				}
 			}
 		};
@@ -390,7 +385,7 @@ public class AuthoringTool implements EntryPoint {
 		uploader.setAutoSubmit(true);
 		uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
 		uploader.setFileInputPrefix("opa");
-		//uploader.
+		// uploader.
 		RootPanel.get("uploadContainer").add(uploader);
 
 		splashScreenLabel.setText("Reading Lesson...");
@@ -412,8 +407,6 @@ public class AuthoringTool implements EntryPoint {
 		splashScreenLabel.setText("Updating GUI...");
 		updateGUI();
 
-		imageEditorContainer = getImageEditorContainer();
-
 		if (lesson.isEmpty())
 			setCurrentPage(new Lesson.Page());
 		else
@@ -434,6 +427,20 @@ public class AuthoringTool implements EntryPoint {
 			Log.debug("Duration: " + durationSeconds + " seconds");
 		}
 		// divLogger.setVisible(false);
+	}
+
+	private void drawImage(Canvas canvas, Canvas back_canvas) {
+		if (img == null)
+			return;
+		img.setVisible(false);
+
+		final int width = canvas.getOffsetWidth();
+		final int height = canvas.getOffsetHeight();
+
+		canvas.getContext2d().drawImage(
+				(ImageElement) (Object) img.getElement(), 0, 0, width, height);
+		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0,
+				width, height);
 	}
 
 	private static ListBox getListBox(String id) {
@@ -466,10 +473,6 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getCanvasContainer() {
 		return RootPanel.get("canvasContainer");
-	}
-
-	private static RootPanel getImageEditorContainer() {
-		return RootPanel.get("imageEditorContainer");
 	}
 
 	private static RootPanel getVideoContainer() {
@@ -536,7 +539,7 @@ public class AuthoringTool implements EntryPoint {
 
 		text_area.setVisible(false);
 		quizContainer.setVisible(false);
-		imageEditorContainer.setVisible(false);
+		canvasContainer.setVisible(false);
 		videoContainer.setVisible(false);
 
 		combobox.setSelectedIndex(getComboboxOptionIndex(page.get(0).getType(),
@@ -556,7 +559,7 @@ public class AuthoringTool implements EntryPoint {
 				quizContainer.setVisible(true);
 				break;
 			case IMAGE:
-				imageEditorContainer.setVisible(true);
+				canvasContainer.setVisible(true);
 				break;
 			case VIDEO:
 				videoContainer.setVisible(true);
