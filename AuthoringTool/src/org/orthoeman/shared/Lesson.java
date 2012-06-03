@@ -1,11 +1,11 @@
 package org.orthoeman.shared;
 
+import gwtupload.client.PreloadedImage;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.orthoeman.shared.Lesson.Page.Item.Type;
 
 public class Lesson extends ArrayList<Lesson.Page> {
 	public interface PageListener {
@@ -14,7 +14,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		public void pageRemoved(Page page);
 	}
 
-	public static class Page extends ArrayList<Page.Item> {
+	public static class Page {
 		public static final Page.Item.Type[][] validItemTypeCombinations = {
 				{ Item.Type.IMAGE, Item.Type.TEXT },
 				{ Item.Type.IMAGE, Item.Type.QUIZ },
@@ -47,10 +47,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				public String getName() {
 					return name;
 				}
-				
-			    public static Type getTypeByName(String name) {
-			        return name2TypeMap.get(name);
-			    }
+
+				public static Type getTypeByName(String name) {
+					return name2TypeMap.get(name);
+				}
 			}
 
 			private Type type;
@@ -111,8 +111,18 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		public static class ImageItem extends ResourceItem {
+			private PreloadedImage image;
+
 			public ImageItem() {
 				super(Type.IMAGE);
+			}
+
+			public PreloadedImage getImage() {
+				return image;
+			}
+
+			public void setImage(PreloadedImage image) {
+				this.image = image;
 			}
 		}
 
@@ -139,11 +149,19 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		private String title;
+		private Page.Item.Type[] itemTypeCombination;
+		private ImageItem imageItem;
+		private TextItem textItem;
+		private QuizItem quizItem;
+		private VideoItem videoItem;
 
 		private Collection<TitleChangedListener> titleChangedListeners = new ArrayList<TitleChangedListener>();
 
 		public Page(String title) {
 			setTitle(title);
+			setItemTypeCombination(validItemTypeCombinations[0]);
+			setTextItem(new TextItem());
+			setImageItem(new ImageItem());
 		}
 
 		public Page() {
@@ -169,31 +187,44 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			titleChangedListeners.remove(li);
 		}
 
-		public TextItem getTextItem() {
-			for (final Item item : this) {
-				if (item.getType() == Item.Type.TEXT)
-					return (TextItem) item;
-			}
-			return null;
+		public Page.Item.Type[] getItemTypeCombination() {
+			return itemTypeCombination;
 		}
 
-		public void addItem(Type type) {
-			switch (type) {
-			case TEXT:
-				add(new TextItem());
-				break;
-			case QUIZ:
-				add(new QuizItem());
-				break;
-			case IMAGE:
-				add(new ImageItem());
-				break;
-			case VIDEO:
-				add(new VideoItem());
-				break;
-			default:
-				break;
-			}
+		public void setItemTypeCombination(Page.Item.Type[] itemTypeCombination) {
+			this.itemTypeCombination = itemTypeCombination;
+		}
+
+		public ImageItem getImageItem() {
+			return imageItem;
+		}
+
+		public void setImageItem(ImageItem imageItem) {
+			this.imageItem = imageItem;
+		}
+
+		public TextItem getTextItem() {
+			return textItem;
+		}
+
+		public void setTextItem(TextItem textItem) {
+			this.textItem = textItem;
+		}
+
+		public QuizItem getQuizItem() {
+			return quizItem;
+		}
+
+		public void setQuizItem(QuizItem quizItem) {
+			this.quizItem = quizItem;
+		}
+
+		public VideoItem getVideoItem() {
+			return videoItem;
+		}
+
+		public void setVideoItem(VideoItem videoItem) {
+			this.videoItem = videoItem;
 		}
 
 		@Override
@@ -247,12 +278,13 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		final Lesson lesson = new Lesson();
 
 		lesson.add(new Page("opa"));
-		lesson.get(0).add(new Page.ImageItem());
-		lesson.get(0).add(new Page.TextItem("This is a very interesting opa"));
+		lesson.get(0).setImageItem(new Page.ImageItem());
+		lesson.get(0).setTextItem(
+				new Page.TextItem("This is a very interesting opa"));
 
 		lesson.add(new Page("ouf"));
-		lesson.get(1).add(new Page.ImageItem());
-		lesson.get(1).add(new Page.TextItem("oud is a nice concept"));
+		lesson.get(1).setImageItem(new Page.ImageItem());
+		lesson.get(1).setTextItem(new Page.TextItem("oud is a nice concept"));
 
 		return lesson;
 	}

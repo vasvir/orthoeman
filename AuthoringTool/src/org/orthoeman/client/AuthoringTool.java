@@ -63,7 +63,9 @@ public class AuthoringTool implements EntryPoint {
 	private RootPanel canvasContainer;
 	private RootPanel videoContainer;
 	private ListBox combobox;
-	private PreloadedImage img = null;
+
+	private Canvas canvas;
+	private Canvas back_canvas;
 
 	private class Point {
 		double x;
@@ -124,55 +126,12 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onChange(ChangeEvent event) {
 				final Lesson.Page page = getCurrentPage();
-				final Lesson.Page.Item old_item1 = page.get(0);
-				final Lesson.Page.Item old_item2 = page.get(1);
-
-				page.clear();
-				final String[] type_names_a = combobox.getItemText(
-						combobox.getSelectedIndex()).split(itemTypeSeparator);
-				final Lesson.Page.Item.Type item1_type = Lesson.Page.Item.Type
-						.getTypeByName(type_names_a[0]);
-				final Lesson.Page.Item.Type item2_type = Lesson.Page.Item.Type
-						.getTypeByName(type_names_a[1]);
-
-				Log.debug("old_item1: " + old_item1);
-				Log.debug("old_item2: " + old_item2);
-				Log.debug("item1_type: " + item1_type);
-				Log.debug("item2_type: " + item2_type);
-
-				// keep old elements
-				if (old_item1.getType() == item1_type) {
-					Log.debug("1 Adding " + old_item1);
-					page.add(old_item1);
-				}
-				if (old_item2.getType() == item1_type) {
-					Log.debug("2 Adding " + old_item2);
-					page.add(old_item2);
-				}
-				if (page.isEmpty()) {
-					Log.debug("3 Adding empty type " + item1_type);
-					page.addItem(item1_type);
-				}
-				if (old_item1.getType() == item2_type) {
-					Log.debug("4 Adding " + old_item1);
-					page.add(old_item1);
-				}
-				if (old_item2.getType() == item2_type) {
-					Log.debug("5 Adding " + old_item2);
-					page.add(old_item2);
-				}
-				if (page.size() == 1) {
-					Log.debug("6 Adding empty type " + item2_type);
-					page.addItem(item2_type);
-				}
-				Log.debug("--------------------------------------");
-
+				page.setItemTypeCombination(getCurrentItemTypeCombination());
 				setCurrentPage(page);
 			}
 		});
 		for (final Lesson.Page.Item.Type[] item_type_combination : Lesson.Page.validItemTypeCombinations) {
-			combobox.addItem(getComboboxOptionText(item_type_combination[0],
-					item_type_combination[1]));
+			combobox.addItem(getComboboxOptionText(item_type_combination));
 		}
 
 		final Command command = new Command() {
@@ -215,8 +174,6 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				final Lesson.Page page = new Lesson.Page("New Page");
-				page.addItem(Page.validItemTypeCombinations[0][0]);
-				page.addItem(Page.validItemTypeCombinations[0][1]);
 				lesson.add(page);
 				addPageButton(page);
 				setCurrentPage(page);
@@ -258,14 +215,14 @@ public class AuthoringTool implements EntryPoint {
 		quizContainer = getQuizContainer();
 		videoContainer = getVideoContainer();
 
-		final Canvas canvas = Canvas.createIfSupported();
+		canvas = Canvas.createIfSupported();
 		if (canvas == null) {
 			RootPanel.get("errorLabelContainer").add(
 					new Label("No canvas, get a proper browser!"));
 			return;
 		}
 		canvas.setStyleName("border", true);
-		final Canvas back_canvas = Canvas.createIfSupported();
+		back_canvas = Canvas.createIfSupported();
 
 		// BUG: workaround of GWT weird behaviour
 		RootPanel.get("uploadContainer");
@@ -285,7 +242,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 
 			public void onResize() {
-				redraw(canvas, back_canvas);
+				redrawCanvas();
 			}
 		}
 
@@ -343,20 +300,23 @@ public class AuthoringTool implements EntryPoint {
 		final OnLoadPreloadedImageHandler showImageHandler = new OnLoadPreloadedImageHandler() {
 			@Override
 			public void onLoad(PreloadedImage img) {
-				redraw(canvas, back_canvas);
+				redrawCanvas();
 			}
 		};
 
 		final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
 			@Override
 			public void onFinish(IUploader uploader) {
+				final Page.ImageItem image_item = getCurrentPage()
+						.getImageItem();
+				final PreloadedImage img = image_item.getImage();
 				if (img != null) {
 					img.removeFromParent();
-					img = null;
+					image_item.setImage(null);
 				}
 				if (uploader.getStatus() == Status.SUCCESS) {
-					img = new PreloadedImage(uploader.fileUrl(),
-							showImageHandler);
+					image_item.setImage(new PreloadedImage(uploader.fileUrl(),
+							showImageHandler));
 				}
 			}
 		};
@@ -409,13 +369,20 @@ public class AuthoringTool implements EntryPoint {
 		// divLogger.setVisible(false);
 	}
 
-	private int getScaledImageHeight(int canvas_width) {
+	private static int getScaledImageHeight(PreloadedImage img, int canvas_width) {
 		if (img == null)
 			return 3 * canvas_width / 4;
 		return img.getRealHeight() * canvas_width / img.getRealWidth();
 	}
 
-	private void redraw(Canvas canvas, Canvas back_canvas) {
+	private void redrawCanvas() {
+		final Page page = getCurrentPage();
+		if (page == null)
+			return;
+		final Page.ImageItem image_item = page.getImageItem();
+		if (image_item == null)
+			return;
+		final PreloadedImage img = image_item.getImage();
 		final int div_width = canvasContainer.getOffsetWidth();
 		final int div_height = canvasContainer.getOffsetHeight();
 		Log.trace("Browser resized canvas container (offset size) " + div_width
@@ -430,7 +397,7 @@ public class AuthoringTool implements EntryPoint {
 		// let's keep the aspect ratio of the image if exists
 		// account for border (-2);
 		final int canvas_width = width - 2 * border_width;
-		final int new_height = getScaledImageHeight(canvas_width) + 2
+		final int new_height = getScaledImageHeight(img, canvas_width) + 2
 				* border_width;
 		canvas.setHeight(new_height + "px");
 		final int canvas_height = new_height - 2 * border_width;
@@ -449,7 +416,6 @@ public class AuthoringTool implements EntryPoint {
 		final Context2d context = canvas.getContext2d();
 		if (img != null) {
 			img.setVisible(false);
-
 			context.drawImage((ImageElement) (Object) img.getElement(), 0, 0,
 					canvas_width, canvas_height);
 		} else {
@@ -553,37 +519,38 @@ public class AuthoringTool implements EntryPoint {
 			pageContainer.setVisible(false);
 			return;
 		}
+		pageContainer.setVisible(true);
 
 		text_area.setVisible(false);
 		quizContainer.setVisible(false);
 		canvasContainer.setVisible(false);
 		videoContainer.setVisible(false);
 
-		combobox.setSelectedIndex(getComboboxOptionIndex(page.get(0).getType(),
-				page.get(1).getType()));
+		final Page.Item.Type[] itemTypeCombination = page
+				.getItemTypeCombination();
+		combobox.setSelectedIndex(getComboboxOptionIndex(itemTypeCombination));
 
 		// Log.trace("Where am I: ", new Exception("Stacktrace"));
 		title_tb.setText(page.getTitle());
-		for (final Lesson.Page.Item item : page) {
-			switch (item.getType()) {
+		for (final Lesson.Page.Item.Type type : itemTypeCombination) {
+			switch (type) {
 			case TEXT:
-				final Lesson.Page.TextItem text_item = (Lesson.Page.TextItem) item;
-				Log.debug("setCurrentPage text_item: " + text_item);
-				text_area.setText(text_item.getText());
 				text_area.setVisible(true);
+				text_area.setText(page.getTextItem().getText());
 				break;
 			case QUIZ:
 				quizContainer.setVisible(true);
 				break;
 			case IMAGE:
 				canvasContainer.setVisible(true);
+				redrawCanvas();
 				break;
 			case VIDEO:
 				videoContainer.setVisible(true);
 				break;
+			/** todo TODO handle the other types */
 			}
 		}
-		pageContainer.setVisible(true);
 	}
 
 	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
@@ -609,18 +576,29 @@ public class AuthoringTool implements EntryPoint {
 		return null;
 	}
 
-	private static String getComboboxOptionText(Lesson.Page.Item.Type type1,
-			Lesson.Page.Item.Type type2) {
-		return type1.getName() + itemTypeSeparator + type2.getName();
+	private static String getComboboxOptionText(
+			Lesson.Page.Item.Type[] itemTypeCombination) {
+		return itemTypeCombination[0].getName() + itemTypeSeparator
+				+ itemTypeCombination[1].getName();
 	}
 
-	private int getComboboxOptionIndex(Lesson.Page.Item.Type type1,
-			Lesson.Page.Item.Type type2) {
-		final String option = getComboboxOptionText(type1, type2);
+	private int getComboboxOptionIndex(
+			Lesson.Page.Item.Type[] itemTypeCombination) {
+		final String option = getComboboxOptionText(itemTypeCombination);
 		final int total = combobox.getItemCount();
 		for (int i = 0; i < total; i++)
 			if (option.equals(combobox.getItemText(i)))
 				return i;
 		return -1;
+	}
+
+	private Lesson.Page.Item.Type[] getCurrentItemTypeCombination() {
+		final String value = combobox.getItemText(combobox.getSelectedIndex());
+		final String[] type_names_a = value.split(itemTypeSeparator);
+		final Lesson.Page.Item.Type item1_type = Lesson.Page.Item.Type
+				.getTypeByName(type_names_a[0]);
+		final Lesson.Page.Item.Type item2_type = Lesson.Page.Item.Type
+				.getTypeByName(type_names_a[1]);
+		return new Page.Item.Type[] { item1_type, item2_type };
 	}
 }
