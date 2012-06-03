@@ -18,6 +18,7 @@ import gwtupload.client.SingleUploaderModal;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -32,7 +33,6 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.touch.client.Point;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -64,6 +64,15 @@ public class AuthoringTool implements EntryPoint {
 	private RootPanel videoContainer;
 	private ListBox combobox;
 	private PreloadedImage img = null;
+
+	private class Point {
+		double x;
+		double y;
+		boolean valid;
+	}
+
+	final Point start_point = new Point();
+	final Point old_point = new Point();
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -264,15 +273,8 @@ public class AuthoringTool implements EntryPoint {
 		canvasContainer.add(canvas);
 
 		canvas.setWidth("100%");
-		canvas.setHeight("100%");
 
-		class Point {
-			double x;
-			double y;
-			boolean valid;
-		}
-		final Point start_point = new Point();
-		final Point old_point = new Point();
+		final Context2d context = canvas.getContext2d();
 
 		class MyResizeHandler implements ResizeHandler {
 			@Override
@@ -283,27 +285,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 
 			public void onResize() {
-				final int div_width = canvasContainer.getOffsetWidth();
-				final int div_height = canvasContainer.getOffsetHeight();
-				Log.trace("Browser resized canvas container (offset size) "
-						+ div_width + " x " + div_height + " style "
-						+ canvasContainer.getStyleName());
-				final int width = canvas.getOffsetWidth();
-				final int height = canvas.getOffsetHeight();
-				Log.trace("Browser resized canvas (offset size) " + width
-						+ " x " + height + " style " + canvas.getStyleName());
-				canvas.setCoordinateSpaceWidth(width);
-				canvas.setCoordinateSpaceHeight(height);
-
-				back_canvas.setWidth(width + "px");
-				back_canvas.setHeight(height + "px");
-				back_canvas.setCoordinateSpaceWidth(width);
-				back_canvas.setCoordinateSpaceHeight(height);
-
-				start_point.valid = false;
-				old_point.valid = false;
-
-				drawImage(canvas, back_canvas);
+				redraw(canvas, back_canvas);
 			}
 		}
 
@@ -311,8 +293,6 @@ public class AuthoringTool implements EntryPoint {
 
 		Window.addResizeHandler(rh);
 		rh.onResize();
-
-		final Context2d context = canvas.getContext2d();
 
 		canvas.addClickHandler(new ClickHandler() {
 			@Override
@@ -363,7 +343,7 @@ public class AuthoringTool implements EntryPoint {
 		final OnLoadPreloadedImageHandler showImageHandler = new OnLoadPreloadedImageHandler() {
 			@Override
 			public void onLoad(PreloadedImage img) {
-				drawImage(canvas, back_canvas);
+				redraw(canvas, back_canvas);
 			}
 		};
 
@@ -429,18 +409,55 @@ public class AuthoringTool implements EntryPoint {
 		// divLogger.setVisible(false);
 	}
 
-	private void drawImage(Canvas canvas, Canvas back_canvas) {
+	private int getScaledImageHeight(int canvas_width) {
 		if (img == null)
-			return;
-		img.setVisible(false);
+			return 3 * canvas_width / 4;
+		return img.getRealHeight() * canvas_width / img.getRealWidth();
+	}
 
+	private void redraw(Canvas canvas, Canvas back_canvas) {
+		final int div_width = canvasContainer.getOffsetWidth();
+		final int div_height = canvasContainer.getOffsetHeight();
+		Log.trace("Browser resized canvas container (offset size) " + div_width
+				+ " x " + div_height + " style "
+				+ canvasContainer.getStyleName());
 		final int width = canvas.getOffsetWidth();
 		final int height = canvas.getOffsetHeight();
+		Log.trace("Browser resized canvas (offset size) " + width + " x "
+				+ height + " style " + canvas.getStyleName());
 
-		canvas.getContext2d().drawImage(
-				(ImageElement) (Object) img.getElement(), 0, 0, width, height);
+		final int border_width = 1;
+		// let's keep the aspect ratio of the image if exists
+		// account for border (-2);
+		final int canvas_width = width - 2 * border_width;
+		final int new_height = getScaledImageHeight(canvas_width) + 2
+				* border_width;
+		canvas.setHeight(new_height + "px");
+		final int canvas_height = new_height - 2 * border_width;
+
+		canvas.setCoordinateSpaceWidth(canvas_width);
+		canvas.setCoordinateSpaceHeight(canvas_height);
+
+		back_canvas.setWidth(canvas_width + "px");
+		back_canvas.setHeight(canvas_height + "px");
+		back_canvas.setCoordinateSpaceWidth(canvas_width);
+		back_canvas.setCoordinateSpaceHeight(canvas_height);
+
+		start_point.valid = false;
+		old_point.valid = false;
+
+		final Context2d context = canvas.getContext2d();
+		if (img != null) {
+			img.setVisible(false);
+
+			context.drawImage((ImageElement) (Object) img.getElement(), 0, 0,
+					canvas_width, canvas_height);
+		} else {
+			context.setFillStyle(CssColor.make("white"));
+			context.fillRect(0, 0, canvas_width, canvas_height);
+		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0,
-				width, height);
+				canvas_width, canvas_height);
 	}
 
 	private static ListBox getListBox(String id) {
