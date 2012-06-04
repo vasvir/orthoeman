@@ -13,6 +13,9 @@ Display:
 Editors:
 	Quiz Editor
 	Image Editor
+		handle zoom
+		add lines and shapes
+		handle brightness / contrast
 	Video Editor
 
 After fixing editors
@@ -24,7 +27,4 @@ Moodle Integration:
 	Authentication
 	Use data backend for storing resources
 	Authoring Tool and Display Tool launching
-
-
-	
 	

@@ -166,8 +166,9 @@ public class AuthoringTool implements EntryPoint {
 		menu_bar.addItem("File", file_menu);
 		menu_bar.addItem("Edit", edit_menu);
 		menu_bar.addItem("Help", help_menu);
-		RootPanel.get("htmlMenuBar").setVisible(false);
-		RootPanel.get("menuBarContainer").add(menu_bar);
+		getHTMLMenuBar().setVisible(false);
+		getHTMLMenuBar().removeFromParent();
+		getMenuBarContainer().add(menu_bar);
 
 		final Button add_b = getButton("addButton");
 		add_b.addClickHandler(new ClickHandler() {
@@ -217,7 +218,7 @@ public class AuthoringTool implements EntryPoint {
 
 		canvas = Canvas.createIfSupported();
 		if (canvas == null) {
-			RootPanel.get("errorLabelContainer").add(
+			getErrorLabelContainer().add(
 					new Label("No canvas, get a proper browser!"));
 			return;
 		}
@@ -225,7 +226,7 @@ public class AuthoringTool implements EntryPoint {
 		back_canvas = Canvas.createIfSupported();
 
 		// BUG: workaround of GWT weird behaviour
-		RootPanel.get("uploadContainer");
+		getImageUploaderContainer();
 		canvasContainer = getCanvasContainer();
 		canvasContainer.add(canvas);
 
@@ -321,12 +322,12 @@ public class AuthoringTool implements EntryPoint {
 			}
 		};
 
-		final SingleUploader uploader = new SingleUploaderModal();
-		uploader.setAutoSubmit(true);
-		uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
-		uploader.setFileInputPrefix("opa");
+		final SingleUploader image_uploader = new SingleUploaderModal();
+		image_uploader.setAutoSubmit(true);
+		image_uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
+		image_uploader.setFileInputPrefix("opa");
 		// uploader.
-		RootPanel.get("uploadContainer").add(uploader);
+		getImageUploaderContainer().add(image_uploader);
 
 		splashScreenLabel.setText("Reading Lesson...");
 		final String url = null;
@@ -454,6 +455,10 @@ public class AuthoringTool implements EntryPoint {
 		return RootPanel.get("pageButtonContainer");
 	}
 
+	private static RootPanel getImageUploaderContainer() {
+		return RootPanel.get("imageUploaderContainer");
+	}
+
 	private static RootPanel getCanvasContainer() {
 		return RootPanel.get("canvasContainer");
 	}
@@ -464,6 +469,18 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getQuizContainer() {
 		return RootPanel.get("quizContainer");
+	}
+
+	private static RootPanel getErrorLabelContainer() {
+		return RootPanel.get("errorLabelContainer");
+	}
+
+	private static RootPanel getHTMLMenuBar() {
+		return RootPanel.get("htmlMenuBar");
+	}
+
+	private static RootPanel getMenuBarContainer() {
+		return RootPanel.get("menuBarContainer");
 	}
 
 	private void addPageButton(final Lesson.Page page) {
