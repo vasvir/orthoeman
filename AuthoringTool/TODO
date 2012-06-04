@@ -20,8 +20,10 @@ Editors:
 
 After fixing editors
 	- nice layout size for texteditor and title
+	- hide right panel if imageItem is not selected
 
-
+Build:
+	- fix gwt compilation. With this we could automate the deploy
 
 Moodle Integration:
 	Authentication
