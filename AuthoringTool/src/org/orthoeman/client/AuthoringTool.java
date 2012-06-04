@@ -61,7 +61,6 @@ public class AuthoringTool implements EntryPoint {
 	private TextArea text_area;
 	private RootPanel quizContainer;
 	private RootPanel canvasContainer;
-	private RootPanel videoContainer;
 	private ListBox combobox;
 
 	private Canvas canvas;
@@ -214,7 +213,6 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		quizContainer = getQuizContainer();
-		videoContainer = getVideoContainer();
 
 		canvas = Canvas.createIfSupported();
 		if (canvas == null) {
@@ -226,7 +224,15 @@ public class AuthoringTool implements EntryPoint {
 		back_canvas = Canvas.createIfSupported();
 
 		// BUG: workaround of GWT weird behaviour
-		getImageUploaderContainer();
+		// A widget that has an existing parent widget may not be added to the
+		// detach list
+		final boolean work_around_bug = true;
+		if (work_around_bug) {
+			getImageUploaderContainer();
+			getVideoUploaderContainer();
+			getVideoContainer();
+		}
+
 		canvasContainer = getCanvasContainer();
 		canvasContainer.add(canvas);
 
@@ -325,9 +331,11 @@ public class AuthoringTool implements EntryPoint {
 		final SingleUploader image_uploader = new SingleUploaderModal();
 		image_uploader.setAutoSubmit(true);
 		image_uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
-		image_uploader.setFileInputPrefix("opa");
-		// uploader.
 		getImageUploaderContainer().add(image_uploader);
+
+		final SingleUploader video_uploader = new SingleUploaderModal();
+		video_uploader.setAutoSubmit(true);
+		getVideoUploaderContainer().add(video_uploader);
 
 		splashScreenLabel.setText("Reading Lesson...");
 		final String url = null;
@@ -467,6 +475,10 @@ public class AuthoringTool implements EntryPoint {
 		return RootPanel.get("videoContainer");
 	}
 
+	private static RootPanel getVideoUploaderContainer() {
+		return RootPanel.get("videoUploaderContainer");
+	}
+
 	private static RootPanel getQuizContainer() {
 		return RootPanel.get("quizContainer");
 	}
@@ -481,6 +493,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getMenuBarContainer() {
 		return RootPanel.get("menuBarContainer");
+	}
+
+	private static RootPanel getPageContainer() {
+		return RootPanel.get("pageContainer");
 	}
 
 	private void addPageButton(final Lesson.Page page) {
@@ -530,7 +546,7 @@ public class AuthoringTool implements EntryPoint {
 
 	private void setCurrentPage(Lesson.Page page) {
 		this.currentPage = page;
-		final RootPanel pageContainer = RootPanel.get("pageContainer");
+		final RootPanel pageContainer = getPageContainer();
 
 		if (page == null) {
 			pageContainer.setVisible(false);
@@ -541,7 +557,7 @@ public class AuthoringTool implements EntryPoint {
 		text_area.setVisible(false);
 		quizContainer.setVisible(false);
 		canvasContainer.setVisible(false);
-		videoContainer.setVisible(false);
+		getVideoContainer().setVisible(false);
 
 		final Page.Item.Type[] itemTypeCombination = page
 				.getItemTypeCombination();
@@ -563,7 +579,7 @@ public class AuthoringTool implements EntryPoint {
 				redrawCanvas();
 				break;
 			case VIDEO:
-				videoContainer.setVisible(true);
+				getVideoContainer().setVisible(true);
 				break;
 			/** todo TODO handle the other types */
 			}
