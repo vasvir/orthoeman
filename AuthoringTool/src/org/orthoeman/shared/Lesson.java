@@ -16,9 +16,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 	public static class Page {
 		public static final Page.Item.Type[][] validItemTypeCombinations = {
-				{ Item.Type.IMAGE, Item.Type.TEXT },
+				{ Item.Type.TEXT, Item.Type.IMAGE },
 				{ Item.Type.IMAGE, Item.Type.QUIZ },
-				{ Item.Type.VIDEO, Item.Type.TEXT },
+				{ Item.Type.TEXT, Item.Type.VIDEO },
 				{ Item.Type.VIDEO, Item.Type.QUIZ },
 				{ Item.Type.TEXT, Item.Type.QUIZ } };
 
