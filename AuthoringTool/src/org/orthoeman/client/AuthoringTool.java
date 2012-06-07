@@ -313,7 +313,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		};
 
-		final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
+		final IUploader.OnFinishUploaderHandler onImageFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
 			@Override
 			public void onFinish(IUploader uploader) {
 				final Page.ImageItem image_item = getCurrentPage()
@@ -330,17 +330,29 @@ public class AuthoringTool implements EntryPoint {
 			}
 		};
 
+		final IUploader.OnFinishUploaderHandler onVideoFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
+			@Override
+			public void onFinish(IUploader uploader) {
+				if (uploader.getStatus() != Status.SUCCESS)
+					return;
+				final Page.VideoItem video_item = getCurrentPage()
+						.getVideoItem();
+				video_item.setVideoURL(uploader.fileUrl());
+			}
+		};
+
 		final SingleUploader image_uploader = new SingleUploaderModal();
 		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff",
 				".gif");
 		image_uploader.setAutoSubmit(true);
-		image_uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
+		image_uploader.addOnFinishUploadHandler(onImageFinishUploaderHandler);
 		getImageUploaderContainer().add(image_uploader);
 
 		final SingleUploader video_uploader = new SingleUploaderModal();
 		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi",
 				".mov");
 		video_uploader.setAutoSubmit(true);
+		video_uploader.addOnFinishUploadHandler(onVideoFinishUploaderHandler);
 		getVideoUploaderContainer().add(video_uploader);
 
 		splashScreenLabel.setText("Reading Lesson...");
