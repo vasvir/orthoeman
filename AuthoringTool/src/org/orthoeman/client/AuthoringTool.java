@@ -59,6 +59,7 @@ public class AuthoringTool implements EntryPoint {
 
 	private TextBox title_tb;
 	private TextArea text_area;
+
 	private RootPanel quizContainer;
 	private RootPanel canvasContainer;
 	private ListBox combobox;
@@ -196,6 +197,18 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		// BUG: workaround of GWT weird behaviour
+		// A widget that has an existing parent widget may not be added to the
+		// detach list
+		final boolean work_around_bug = true;
+		text_area = getTextTextArea();
+		if (work_around_bug) {
+			getTextContainer();
+			getImageUploaderContainer();
+			getVideoUploaderContainer();
+			getVideoContainer();
+		}
+
 		title_tb = getTextBox("titleTextBox");
 		title_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
@@ -204,7 +217,6 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		text_area = getTextArea("textArea");
 		text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -222,16 +234,6 @@ public class AuthoringTool implements EntryPoint {
 		}
 		canvas.setStyleName("border", true);
 		back_canvas = Canvas.createIfSupported();
-
-		// BUG: workaround of GWT weird behaviour
-		// A widget that has an existing parent widget may not be added to the
-		// detach list
-		final boolean work_around_bug = true;
-		if (work_around_bug) {
-			getImageUploaderContainer();
-			getVideoUploaderContainer();
-			getVideoContainer();
-		}
 
 		canvasContainer = getCanvasContainer();
 		canvasContainer.add(canvas);
@@ -451,6 +453,10 @@ public class AuthoringTool implements EntryPoint {
 		return TextArea.wrap(DOM.getElementById(id));
 	}
 
+	private static TextArea getTextTextArea() {
+		return getTextArea("textArea");
+	}
+
 	private static Button getButton(String id) {
 		return Button.wrap(DOM.getElementById(id));
 	}
@@ -461,6 +467,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getPageButtonContainer() {
 		return RootPanel.get("pageButtonContainer");
+	}
+
+	private static RootPanel getTextContainer() {
+		return RootPanel.get("textContainer");
 	}
 
 	private static RootPanel getImageUploaderContainer() {
@@ -554,7 +564,7 @@ public class AuthoringTool implements EntryPoint {
 		}
 		pageContainer.setVisible(true);
 
-		text_area.setVisible(false);
+		getTextContainer().setVisible(false);
 		quizContainer.setVisible(false);
 		canvasContainer.setVisible(false);
 		getVideoContainer().setVisible(false);
@@ -568,7 +578,7 @@ public class AuthoringTool implements EntryPoint {
 		for (final Lesson.Page.Item.Type type : itemTypeCombination) {
 			switch (type) {
 			case TEXT:
-				text_area.setVisible(true);
+				getTextContainer().setVisible(true);
 				text_area.setText(page.getTextItem().getText());
 				break;
 			case QUIZ:
