@@ -19,7 +19,6 @@ Editors:
 	Video Editor
 
 After fixing editors
-	- nice layout size for texteditor and title
 	- hide right panel if imageItem is not selected
 
 Build:
@@ -27,6 +26,6 @@ Build:
 
 Moodle Integration:
 	Authentication
-	Use data backend for storing resources
+	Use data backend for storing resources (images & videos)
 	Authoring Tool and Display Tool launching
 	
