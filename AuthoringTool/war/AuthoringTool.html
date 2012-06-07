@@ -104,7 +104,7 @@
 				<div class="cell center" style="width: 76%;">
 					<div id="pageContainer" class="fill_x fill_y scroll">
 						<div class="noborder fill_x">
-							<h1>
+							<h1 style="padding: 0; margin: 0;">
 							<div style="float: left;" class="gwt-Label">Title: </div>
 							<div style="overflow: auto;">
 								<input id="titleTextBox" type="text" class="gwt-TextBox noborder fill_x"
@@ -113,19 +113,25 @@
 							</h1>
 						</div>
 
-						<select id="itemCombobox" class="gwt-ListBox" style="display: block;">
-						</select>
+						<h2>Page Type:
+							<select id="itemCombobox" class="gwt-ListBox"></select>
+						</h2>
 
-						<textarea id="textArea" class="gwt-TextArea" style="width: 50%"></textarea>
-
-						<div id="canvasContainer">
-
-						</div>
-
-						<div id="videoContainer" class="center">
-							Select Video:<div id="videoUploaderContainer" class="inline">
+						<div id="textContainer" class="noborder fill_x">
+							<h3>
+							<div style="float: left;">Text: </div>
+							<div style="overflow: auto;">
+								<textarea id="textArea" class="gwt-TextArea fill_x noborder"></textarea>
 							</div>
 						</div>
+
+						<h3><div id="canvasContainer">
+							<h3>Image: <div id="imageUploaderContainer" class="inline"></div>
+						</div></h3>
+
+						<h3><div id="videoContainer" class="center">
+							Video: <div id="videoUploaderContainer" class="inline"></div>
+						</div></h3>
 
 						<div id="quizContainer">
 							Quiz container
