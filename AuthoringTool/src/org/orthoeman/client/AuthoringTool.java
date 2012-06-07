@@ -331,11 +331,15 @@ public class AuthoringTool implements EntryPoint {
 		};
 
 		final SingleUploader image_uploader = new SingleUploaderModal();
+		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff",
+				".gif");
 		image_uploader.setAutoSubmit(true);
 		image_uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
 		getImageUploaderContainer().add(image_uploader);
 
 		final SingleUploader video_uploader = new SingleUploaderModal();
+		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi",
+				".mov");
 		video_uploader.setAutoSubmit(true);
 		getVideoUploaderContainer().add(video_uploader);
 
