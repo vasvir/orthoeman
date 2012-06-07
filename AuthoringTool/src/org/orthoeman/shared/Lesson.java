@@ -127,8 +127,18 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		public static class VideoItem extends ResourceItem {
+			private String videoURL;
+
 			public VideoItem() {
 				super(Type.VIDEO);
+			}
+
+			public String getVideoURL() {
+				return videoURL;
+			}
+
+			public void setVideoURL(String videoURL) {
+				this.videoURL = videoURL;
 			}
 		}
 
