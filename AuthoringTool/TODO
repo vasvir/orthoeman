@@ -9,7 +9,6 @@ Display:
 
 
 Authoring Tool:
-	Quiz Editor
 	Image Editor
 		handle zoom
 		add lines and shapes
@@ -22,13 +21,20 @@ Authoring Tool:
 
 	HTML:
 		Title and inputbox are not nicely aligned due to float exceeding containing div
-		Page, Image and Video are not perfectly algined due to inline block and spaces?
+		Page,
 
-Build:
-	- fix gwt compilation. With this we could automate the deploy
+		Image and Video are not perfectly algined due to inline block and spaces?
+
+		move image editing buttons in the image container. Use
+		tables to perform sane layout for the page
+
+	BUGS:
+		crash on 0x0 canvas resize
+
+	Build:
+		fix gwt compilation. With this we could automate the deploy
 
 Moodle Integration:
-	Authentication
-	Use data backend for storing resources (images & videos)
-	Authoring Tool and Display Tool launching
-	
+	Authentication - Authorization (moodle should provide us with some id)
+	Use data backend for storing resources (xml & images & videos)
+	Authoring Tool should be able to launch the Display Tool

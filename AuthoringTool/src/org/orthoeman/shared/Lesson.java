@@ -5,7 +5,10 @@ import gwtupload.client.PreloadedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.orthoeman.shared.Lesson.Page.QuizItem;
 
 public class Lesson extends ArrayList<Lesson.Page> {
 	public interface PageListener {
@@ -143,18 +146,68 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		public static class QuizItem extends Item {
-			private Map<String, Boolean> questionMap;
+			public static class Answer {
+				private String text;
+				private boolean correct;
+
+				public Answer(String text, boolean correct) {
+					setText(text);
+					setCorrect(correct);
+				}
+
+				public Answer() {
+					this("", false);
+				}
+
+				public String getText() {
+					return text;
+				}
+
+				public void setText(String text) {
+					this.text = text;
+				}
+
+				public boolean isCorrect() {
+					return correct;
+				}
+
+				public void setCorrect(boolean correct) {
+					this.correct = correct;
+				}
+			}
+
+			private String text;
+			private LinkedHashMap<Integer, Answer> answerMap = new LinkedHashMap<Integer, Answer>();
+			private int uniqueIdentifier;
+
+			public QuizItem(String text) {
+				super(Type.QUIZ);
+				setText(text);
+			}
 
 			public QuizItem() {
-				super(Type.QUIZ);
+				this("");
 			}
 
-			public Map<String, Boolean> getQuestionMap() {
-				return questionMap;
+			public String getText() {
+				return text;
 			}
 
-			public void setQuestionMap(Map<String, Boolean> questionMap) {
-				this.questionMap = questionMap;
+			public void setText(String text) {
+				this.text = text;
+			}
+
+			public LinkedHashMap<Integer, Answer> getAnswerMap() {
+				return answerMap;
+			}
+
+			public int createAnswer(String text, boolean correct) {
+				getAnswerMap().put(uniqueIdentifier, new Answer(text, correct));
+				return uniqueIdentifier++;
+			}
+
+			public int createAnswer() {
+				return createAnswer("", false);
 			}
 		}
 
@@ -172,6 +225,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			setItemTypeCombination(validItemTypeCombinations[validItemTypeCombinations.length - 1]);
 			setTextItem(new TextItem());
 			setImageItem(new ImageItem());
+			setVideoItem(new VideoItem());
+			setQuizItem(new QuizItem());
 		}
 
 		public Page() {
@@ -288,13 +343,17 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		final Lesson lesson = new Lesson();
 
 		lesson.add(new Page("opa"));
-		lesson.get(0).setImageItem(new Page.ImageItem());
-		lesson.get(0).setTextItem(
-				new Page.TextItem("This is a very interesting opa"));
+		lesson.get(0).getTextItem().setText("This is a very interesting opa");
+		final QuizItem quiz_item = lesson.get(0).getQuizItem();
+		quiz_item.setText("This statement is correct.");
+		quiz_item.createAnswer("I don't think so", false);
+		quiz_item.createAnswer("really?", false);
+		quiz_item.createAnswer("Not sure", false);
+		quiz_item.createAnswer("Yes", true);
+		quiz_item.createAnswer("I don't know. I don't want to answer", false);
 
 		lesson.add(new Page("ouf"));
-		lesson.get(1).setImageItem(new Page.ImageItem());
-		lesson.get(1).setTextItem(new Page.TextItem("oud is a nice concept"));
+		lesson.get(0).getTextItem().setText("ouf is a nice concept");
 
 		return lesson;
 	}

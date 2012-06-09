@@ -7,6 +7,7 @@ import java.util.Map;
 import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Lesson;
 import org.orthoeman.shared.Lesson.Page;
+import org.orthoeman.shared.Lesson.Page.QuizItem;
 
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
@@ -58,12 +59,14 @@ public class AuthoringTool implements EntryPoint {
 	private Map<Lesson.Page, Button> page_button_map = new HashMap<Lesson.Page, Button>();
 
 	private TextBox title_tb;
-	private TextArea text_area;
-
-	private RootPanel quizContainer;
-	private RootPanel canvasContainer;
 	private ListBox combobox;
 
+	private TextArea text_text_area;
+
+	private RootPanel quizContainer;
+	private TextArea quiz_text_area;
+
+	private RootPanel canvasContainer;
 	private Canvas canvas;
 	private Canvas back_canvas;
 
@@ -201,12 +204,15 @@ public class AuthoringTool implements EntryPoint {
 		// A widget that has an existing parent widget may not be added to the
 		// detach list
 		final boolean work_around_bug = true;
-		text_area = getTextTextArea();
+		text_text_area = getTextTextArea();
+		quiz_text_area = getQuizTextArea();
+		final Button add_answer_b = getButton("quizAddAnswerButton");
 		if (work_around_bug) {
 			getTextContainer();
 			getImageUploaderContainer();
 			getVideoUploaderContainer();
 			getVideoContainer();
+			getQuizAnswerContainer();
 		}
 
 		title_tb = getTextBox("titleTextBox");
@@ -217,7 +223,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
+		text_text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				getCurrentPage().getTextItem().setText(event.getValue());
@@ -341,6 +347,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		};
 
+		// image
 		final SingleUploader image_uploader = new SingleUploaderModal();
 		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff",
 				".gif");
@@ -348,12 +355,23 @@ public class AuthoringTool implements EntryPoint {
 		image_uploader.addOnFinishUploadHandler(onImageFinishUploaderHandler);
 		getImageUploaderContainer().add(image_uploader);
 
+		// video
 		final SingleUploader video_uploader = new SingleUploaderModal();
 		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi",
 				".mov");
 		video_uploader.setAutoSubmit(true);
 		video_uploader.addOnFinishUploadHandler(onVideoFinishUploaderHandler);
 		getVideoUploaderContainer().add(video_uploader);
+
+		// quiz
+		add_answer_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final QuizAnswer quiz_question = new QuizAnswer(
+						getCurrentPage().getQuizItem());
+				getQuizAnswerContainer().add(quiz_question);
+			}
+		});
 
 		splashScreenLabel.setText("Reading Lesson...");
 		final String url = null;
@@ -473,6 +491,10 @@ public class AuthoringTool implements EntryPoint {
 		return getTextArea("textTextArea");
 	}
 
+	private static TextArea getQuizTextArea() {
+		return getTextArea("quizTextArea");
+	}
+
 	private static Button getButton(String id) {
 		return Button.wrap(DOM.getElementById(id));
 	}
@@ -507,6 +529,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getQuizContainer() {
 		return RootPanel.get("quizContainer");
+	}
+
+	private static RootPanel getQuizAnswerContainer() {
+		return RootPanel.get("quizAnswerContainer");
 	}
 
 	private static RootPanel getErrorLabelContainer() {
@@ -595,10 +621,7 @@ public class AuthoringTool implements EntryPoint {
 			switch (type) {
 			case TEXT:
 				getTextContainer().setVisible(true);
-				text_area.setText(page.getTextItem().getText());
-				break;
-			case QUIZ:
-				quizContainer.setVisible(true);
+				text_text_area.setText(page.getTextItem().getText());
 				break;
 			case IMAGE:
 				canvasContainer.setVisible(true);
@@ -607,7 +630,19 @@ public class AuthoringTool implements EntryPoint {
 			case VIDEO:
 				getVideoContainer().setVisible(true);
 				break;
-			/** todo TODO handle the other types */
+			case QUIZ:
+				quizContainer.setVisible(true);
+				final RootPanel quizAnswerContainer = getQuizAnswerContainer();
+				quiz_text_area.setText("");
+				quizAnswerContainer.clear();
+				final QuizItem quiz_item = page.getQuizItem();
+				if (quiz_item != null) {
+					quiz_text_area.setText(quiz_item.getText());
+					for (final Integer id : quiz_item.getAnswerMap().keySet()) {
+						quizAnswerContainer.add(new QuizAnswer(quiz_item, id));
+					}
+				}
+				break;
 			}
 		}
 	}
