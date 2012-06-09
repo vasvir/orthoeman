@@ -44,6 +44,7 @@
       </div>
     </noscript>
     
+    <!--
     <div id="splashPopup" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 1">
     	<div class="border" style="position: absolute; top: 25%; left: 25%; right: 25%; bottom: 25%; z-index: 2;">
 			<img src="logo.png" width="100%" height="100%"/>
@@ -53,6 +54,7 @@
 			</div>
     	</div>
     </div>
+    -->
     
 	<div class="table_abs full_x full_y fill_x fill_y">
 		<div class="row"><div class="cell"><div class="table fill_x">
@@ -104,37 +106,44 @@
 				<div class="cell center" style="width: 76%;">
 					<div id="pageContainer" class="fill_x fill_y scroll">
 						<div class="noborder fill_x">
-							<h1 style="padding: 0; margin: 0;">
-							<div style="float: left;" class="gwt-Label">Title: </div>
+							<div style="float: left;" class="gwt-Label"><h2 style="padding: 0; margin: 0;">Title: </h2></div>
 							<div style="overflow: auto;">
 								<input id="titleTextBox" type="text" class="gwt-TextBox noborder fill_x"
 									title="Leave it blank if there is no need for a title in this page"/>
 							</div>
-							</h1>
 						</div>
 
-						<h2>Page Type:
-							<select id="itemCombobox" class="gwt-ListBox"></select>
-						</h2>
+						<h2 class="inline">Page Type:</h2><select id="itemCombobox" class="gwt-ListBox"></select>
 
 						<div id="textContainer" class="noborder fill_x">
-							<h3>
-							<div style="float: left;">Text: </div>
+							<div style="float: left;"><h3>Text: </h3></div>
 							<div style="overflow: auto;">
-								<textarea id="textArea" class="gwt-TextArea fill_x noborder"></textarea>
+								<textarea id="textTextArea" class="gwt-TextArea fill_x noborder"></textarea>
 							</div>
 						</div>
 
-						<h3><div id="canvasContainer">
-							<h3>Image: <div id="imageUploaderContainer" class="inline"></div>
-						</div></h3>
+						<div id="canvasContainer">
+							<h3 class="inline">Image: </h3><div id="imageUploaderContainer"></div>
+						</div>
 
-						<h3><div id="videoContainer" class="center">
-							Video: <div id="videoUploaderContainer" class="inline"></div>
-						</div></h3>
-
-						<div id="quizContainer">
-							Quiz container
+						<div id="videoContainer">
+							<h3 class="inline">Video: </h3><div id="videoUploaderContainer"></div>
+						</div>
+						
+						<div id="quizContainer" class="noborder center fill_x">
+							<div style="float: left;"><h3>Quiz: </h3></div>
+							<div style="overflow: auto;">
+								<textarea id="quizTextArea" class="gwt-TextArea fill_x noborder"></textarea>
+							</div>
+							<center>
+								<div id="quizAnswerContainer" style="width: 60%; text-align: left;">
+									a<p>
+									fsdfdsafasfasfasf<p>
+									fsfasfasfasf<p>
+									dsadada
+								</div>
+							</center>
+							<button id="quizAddAnswerButton" class="gwt-Button" type="button">Add Answer</button>
 						</div>
 
 						<div style="text-align: right;">
