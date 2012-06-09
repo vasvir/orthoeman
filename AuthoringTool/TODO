@@ -25,9 +25,6 @@ Authoring Tool:
 
 		Image and Video are not perfectly algined due to inline block and spaces?
 
-		move image editing buttons in the image container. Use
-		tables to perform sane layout for the page
-
 	BUGS:
 		crash on 0x0 canvas resize
 

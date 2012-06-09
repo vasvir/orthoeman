@@ -133,6 +133,10 @@ html {
 	display: inline-block;
 }
 
+.block {
+	display: block;
+}
+
 .margin_left {
 	margin-left: 1em;
 }
@@ -150,4 +154,9 @@ html {
 	-webkit-box-sizing:border-box;
 	-ms-box-sizing:border-box;
 	box-sizing:border-box;
+}
+
+.nospace {
+	margin: 0;
+	padding: 0;
 }
