@@ -467,8 +467,9 @@ public class AuthoringTool implements EntryPoint {
 			context.setFillStyle(CssColor.make("white"));
 			context.fillRect(0, 0, canvas_width, canvas_height);
 		}
-		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0,
-				canvas_width, canvas_height);
+		if (canvas_width != 0 && canvas_height != 0)
+			back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0,
+					0, canvas_width, canvas_height);
 	}
 
 	private static ListBox getListBox(String id) {
