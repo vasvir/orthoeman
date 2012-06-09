@@ -470,7 +470,7 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static TextArea getTextTextArea() {
-		return getTextArea("textArea");
+		return getTextArea("textTextArea");
 	}
 
 	private static Button getButton(String id) {

@@ -169,7 +169,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public Page(String title) {
 			setTitle(title);
-			setItemTypeCombination(validItemTypeCombinations[0]);
+			setItemTypeCombination(validItemTypeCombinations[validItemTypeCombinations.length - 1]);
 			setTextItem(new TextItem());
 			setImageItem(new ImageItem());
 		}
