@@ -66,6 +66,7 @@ public class AuthoringTool implements EntryPoint {
 	private RootPanel quizContainer;
 	private TextArea quiz_text_area;
 
+	private RootPanel imageContainer;
 	private RootPanel canvasContainer;
 	private Canvas canvas;
 	private Canvas back_canvas;
@@ -122,7 +123,6 @@ public class AuthoringTool implements EntryPoint {
 		final Widget divLogger = Log.getLogger(DivLogger.class).getWidget();
 
 		final Label splashScreenLabel = getLabel("splashScreenLabel");
-		final Label errorLabel = getLabel("errorLabel");
 
 		combobox = getListBox("itemCombobox");
 		combobox.addChangeHandler(new ChangeHandler() {
@@ -210,6 +210,7 @@ public class AuthoringTool implements EntryPoint {
 		if (work_around_bug) {
 			getTextContainer();
 			getImageUploaderContainer();
+			getCanvasContainer();
 			getVideoUploaderContainer();
 			getVideoContainer();
 			getQuizAnswerContainer();
@@ -230,6 +231,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		imageContainer = getImageContainer();
 		quizContainer = getQuizContainer();
 
 		canvas = Canvas.createIfSupported();
@@ -238,13 +240,14 @@ public class AuthoringTool implements EntryPoint {
 					new Label("No canvas, get a proper browser!"));
 			return;
 		}
-		canvas.setStyleName("border", true);
+		canvas.addStyleName("block");
+		canvas.addStyleName("noborder");
+		canvas.addStyleName("fill_x");
+
 		back_canvas = Canvas.createIfSupported();
 
 		canvasContainer = getCanvasContainer();
 		canvasContainer.add(canvas);
-
-		canvas.setWidth("100%");
 
 		final Context2d context = canvas.getContext2d();
 
@@ -280,7 +283,7 @@ public class AuthoringTool implements EntryPoint {
 				}
 				final int x = event.getRelativeX(canvas.getElement());
 				final int y = event.getRelativeY(canvas.getElement());
-				errorLabel.setText("Point " + x + " " + y);
+				Log.trace("Point " + x + " " + y);
 				start_point.x = x;
 				start_point.y = y;
 				start_point.valid = true;
@@ -438,14 +441,11 @@ public class AuthoringTool implements EntryPoint {
 		Log.trace("Browser resized canvas (offset size) " + width + " x "
 				+ height + " style " + canvas.getStyleName());
 
-		final int border_width = 1;
 		// let's keep the aspect ratio of the image if exists
-		// account for border (-2);
-		final int canvas_width = width - 2 * border_width;
-		final int new_height = getScaledImageHeight(img, canvas_width) + 2
-				* border_width;
+		final int canvas_width = width;
+		final int new_height = getScaledImageHeight(img, canvas_width);
 		canvas.setHeight(new_height + "px");
-		final int canvas_height = new_height - 2 * border_width;
+		final int canvas_height = new_height;
 
 		canvas.setCoordinateSpaceWidth(canvas_width);
 		canvas.setCoordinateSpaceHeight(canvas_height);
@@ -517,6 +517,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getCanvasContainer() {
 		return RootPanel.get("canvasContainer");
+	}
+
+	private static RootPanel getImageContainer() {
+		return RootPanel.get("imageContainer");
 	}
 
 	private static RootPanel getVideoContainer() {
@@ -608,7 +612,7 @@ public class AuthoringTool implements EntryPoint {
 
 		getTextContainer().setVisible(false);
 		quizContainer.setVisible(false);
-		canvasContainer.setVisible(false);
+		imageContainer.setVisible(false);
 		getVideoContainer().setVisible(false);
 
 		final Page.Item.Type[] itemTypeCombination = page
@@ -624,7 +628,7 @@ public class AuthoringTool implements EntryPoint {
 				text_text_area.setText(page.getTextItem().getText());
 				break;
 			case IMAGE:
-				canvasContainer.setVisible(true);
+				imageContainer.setVisible(true);
 				redrawCanvas();
 				break;
 			case VIDEO:
