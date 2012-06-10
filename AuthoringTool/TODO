@@ -7,7 +7,6 @@ Display:
 
 	correct entries should be green not red
 
-
 Authoring Tool:
 	Image Editor
 		handle zoom
@@ -17,13 +16,13 @@ Authoring Tool:
 	read xml
 	up down via drag & drop
 
-	hide right panel if imageItem is not selected
-
 	HTML:
 		Title and inputbox are not nicely aligned due to float exceeding containing div
 		Page,
 
 		Image and Video are not perfectly algined due to inline block and spaces?
+
+		in case of no script don't use hard wired numbers
 
 	BUGS:
 		crash on 0x0 canvas resize
