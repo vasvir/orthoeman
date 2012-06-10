@@ -22,11 +22,6 @@ Authoring Tool:
 
 		Image and Video are not perfectly algined due to inline block and spaces?
 
-		in case of no script don't use hard wired numbers
-
-	BUGS:
-		crash on 0x0 canvas resize
-
 	Build:
 		fix gwt compilation. With this we could automate the deploy
 
