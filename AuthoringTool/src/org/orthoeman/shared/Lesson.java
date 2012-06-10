@@ -217,6 +217,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		private TextItem textItem;
 		private QuizItem quizItem;
 		private VideoItem videoItem;
+		private double weight;
+		private boolean block;
 
 		private Collection<TitleChangedListener> titleChangedListeners = new ArrayList<TitleChangedListener>();
 
@@ -290,6 +292,22 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public void setVideoItem(VideoItem videoItem) {
 			this.videoItem = videoItem;
+		}
+
+		public double getWeight() {
+			return weight;
+		}
+
+		public void setWeight(double weight) {
+			this.weight = weight;
+		}
+
+		public boolean isBlock() {
+			return block;
+		}
+
+		public void setBlock(boolean block) {
+			this.block = block;
 		}
 
 		@Override

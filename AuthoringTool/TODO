@@ -14,7 +14,6 @@ Authoring Tool:
 		handle brightness / contrast
 	write xml
 	read xml
-	up down via drag & drop
 
 	HTML:
 		Title and inputbox are not nicely aligned due to float exceeding containing div
@@ -22,8 +21,20 @@ Authoring Tool:
 
 		Image and Video are not perfectly algined due to inline block and spaces?
 
+	Code:
+		-CheckBox vs SimpleCheckBox: SimpleCheckBox does not
+		have valueChangeHandler althouch ClickHandler works ok. CheckBox
+		does not have static .wrap method
+
+		use private variables to store containers and DOM stuff
+
 	Build:
 		fix gwt compilation. With this we could automate the deploy
+
+	Later:
+		up down via drag & drop. Note that buttons don't seem to be
+		able to listen to drag events
+
 
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
