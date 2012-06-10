@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,6 +75,9 @@ public class AuthoringTool implements EntryPoint {
 	private RootPanel canvasContainer;
 	private Canvas canvas;
 	private Canvas back_canvas;
+
+	private TextBox weight_tb;
+	private SimpleCheckBox block_cb;
 
 	private class Point {
 		double x;
@@ -230,6 +234,8 @@ public class AuthoringTool implements EntryPoint {
 		final boolean work_around_bug = true;
 		text_text_area = getTextTextArea();
 		quiz_text_area = getQuizTextArea();
+		weight_tb = getTextBox("weightTextBox");
+		block_cb = getSimpleCheckBox("blockCheckBox");
 		final Button add_answer_b = getButton("quizAddAnswerButton");
 		if (work_around_bug) {
 			getTextContainer();
@@ -416,6 +422,27 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		weight_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				double weight = getCurrentPage().getWeight();
+				try {
+					weight = Double.valueOf(event.getValue());
+				} catch (Exception e) {
+					Log.warn("Invalid weight " + event.getValue());
+					weight_tb.setText(weight + "");
+				}
+				getCurrentPage().setWeight(weight);
+			}
+		});
+
+		block_cb.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				getCurrentPage().setBlock(block_cb.getValue());
+			}
+		});
+
 		splashScreenLabel.setText("Reading Lesson...");
 		final String url = null;
 		lesson = Lesson.readXML(url);
@@ -522,6 +549,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static TextBox getTextBox(String id) {
 		return TextBox.wrap(DOM.getElementById(id));
+	}
+
+	private static SimpleCheckBox getSimpleCheckBox(String id) {
+		return SimpleCheckBox.wrap(DOM.getElementById(id));
 	}
 
 	private static TextArea getTextArea(String id) {
@@ -709,6 +740,8 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			}
 		}
+		weight_tb.setText(page.getWeight() + "");
+		block_cb.setValue(page.isBlock());
 	}
 
 	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
