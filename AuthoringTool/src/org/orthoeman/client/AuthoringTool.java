@@ -1,5 +1,7 @@
 package org.orthoeman.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,8 +79,10 @@ public class AuthoringTool implements EntryPoint {
 		boolean valid;
 	}
 
-	final Point start_point = new Point();
-	final Point old_point = new Point();
+	private final Point start_point = new Point();
+	private final Point old_point = new Point();
+
+	private final Collection<Collection<? extends Widget>> equal_width_widget_groups = new ArrayList<Collection<? extends Widget>>();
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -200,6 +204,11 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		final Button up_b = getButton("upButton");
+		final Button down_b = getButton("downButton");
+		equal_width_widget_groups.add(Arrays.asList(add_b, remove_b, up_b, down_b));
+		
+		
 		// BUG: workaround of GWT weird behaviour
 		// A widget that has an existing parent widget may not be added to the
 		// detach list
@@ -260,6 +269,22 @@ public class AuthoringTool implements EntryPoint {
 			}
 
 			public void onResize() {
+				for (final Collection<? extends Widget> equal_width_widget_group : equal_width_widget_groups) {
+					// find the maximum width
+					// assumes sane layout info (width include padding border
+					// margin)
+					int max_width = 0;
+					for (final Widget w : equal_width_widget_group) {
+						final int width = w.getOffsetWidth();
+						if (width > max_width) {
+							max_width = width;
+						}
+					}
+					// set everybody to max_width
+					for (final Widget w : equal_width_widget_group) {
+						w.setWidth(max_width + "px");
+					}
+				}
 				redrawCanvas();
 			}
 		}
