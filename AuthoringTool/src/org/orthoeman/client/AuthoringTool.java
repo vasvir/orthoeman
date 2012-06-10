@@ -59,6 +59,8 @@ public class AuthoringTool implements EntryPoint {
 	private Lesson.Page currentPage = null;
 
 	private Map<Lesson.Page, Button> page_button_map = new HashMap<Lesson.Page, Button>();
+	private Button up_b;
+	private Button down_b;
 
 	private TextBox title_tb;
 	private ListBox combobox;
@@ -197,18 +199,31 @@ public class AuthoringTool implements EntryPoint {
 				final Lesson.Page new_page = findCurrentItemAfterRemove(lesson,
 						page);
 
-				setCurrentPage(new_page);
-
 				lesson.remove(page);
 				removePageButton(page);
+
+				setCurrentPage(new_page);
 			}
 		});
 
-		final Button up_b = getButton("upButton");
-		final Button down_b = getButton("downButton");
-		equal_width_widget_groups.add(Arrays.asList(add_b, remove_b, up_b, down_b));
-		
-		
+		up_b = getButton("upButton");
+		up_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				onUpDownClick(true);
+			}
+		});
+
+		down_b = getButton("downButton");
+		down_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				onUpDownClick(false);
+			}
+		});
+		equal_width_widget_groups.add(Arrays.asList(add_b, remove_b, up_b,
+				down_b));
+
 		// BUG: workaround of GWT weird behaviour
 		// A widget that has an existing parent widget may not be added to the
 		// detach list
@@ -626,6 +641,24 @@ public class AuthoringTool implements EntryPoint {
 		return currentPage;
 	}
 
+	private void updateUpDownButtons(int index, int count) {
+		Log.debug("Checking index " + index + " vs. count " + count);
+		up_b.setEnabled(index != 0);
+		down_b.setEnabled(index != count - 1);
+	}
+
+	private void updateUpDownButtons(Lesson.Page page) {
+		if (page == null) {
+			up_b.setEnabled(false);
+			down_b.setEnabled(false);
+			return;
+		}
+		final RootPanel page_button_container = getPageButtonContainer();
+		updateUpDownButtons(
+				page_button_container.getWidgetIndex(page_button_map.get(page)),
+				page_button_container.getWidgetCount());
+	}
+
 	private void setCurrentPage(Lesson.Page page) {
 		this.currentPage = page;
 		final RootPanel pageContainer = getPageContainer();
@@ -634,6 +667,7 @@ public class AuthoringTool implements EntryPoint {
 			pageContainer.setVisible(false);
 			return;
 		}
+		updateUpDownButtons(page);
 		pageContainer.setVisible(true);
 
 		getTextContainer().setVisible(false);
@@ -724,5 +758,19 @@ public class AuthoringTool implements EntryPoint {
 		final Lesson.Page.Item.Type item2_type = Lesson.Page.Item.Type
 				.getTypeByName(type_names_a[1]);
 		return new Page.Item.Type[] { item1_type, item2_type };
+	}
+
+	private void onUpDownClick(boolean up) {
+		final Page current_page = getCurrentPage();
+		final Button current_button = page_button_map.get(current_page);
+		final RootPanel page_button_container = getPageButtonContainer();
+		final int current_index = page_button_container
+				.getWidgetIndex(current_button);
+		final int next_index = current_index + ((up) ? (-1) : 2);
+		final int check_index = current_index + ((up) ? (-1) : 1);
+		Log.debug("Up " + up + " next_index " + next_index + " check_index "
+				+ check_index);
+		page_button_container.insert(current_button, next_index);
+		updateUpDownButtons(check_index, page_button_container.getWidgetCount());
 	}
 }
