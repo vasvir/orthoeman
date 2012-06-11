@@ -28,6 +28,10 @@ Authoring Tool:
 
 		use private variables to store containers and DOM stuff
 
+		have a common way to represent
+			-document loading
+			-document changes via widgets
+
 	Build:
 		fix gwt compilation. With this we could automate the deploy
 
