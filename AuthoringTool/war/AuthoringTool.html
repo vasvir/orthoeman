@@ -132,39 +132,49 @@
 							<h3 class="inline">Image: </h3><div id="imageUploaderContainer"></div>
 							<div id="canvasContainer" class="border"></div>
 							<div>
-								<button class="gwt-Button" type="button" title="Zoom in">
+								<button id="zoomOne2OneButton" class="gwt-Button" type="button" title="1:1">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+										<g transform="translate(10 18)">
+											<text text-anchor="middle">1:1</text>
+ 										</g>
+									</svg>
+								</button>
+								<button id="zoomInButton" class="gwt-Button" type="button" title="Zoom in">
 									<img src="icons/File_View-zoom-in.svg" width="24" height="24"/>
 								</button>
-								<button class="gwt-Button" type="button" title="Zoom out" >
+								<button id="zoomOutButton" class="gwt-Button" type="button" title="Zoom out" >
 									<img src="icons/File_View-zoom-out.svg" width="24" height="24"/>
 								</button>
-								<button class="gwt-Button" type="button" title="Zoom to Fit">
+								<button id="zoomToFitButton" class="gwt-Button" type="button" title="Zoom to Fit (default)">
 									<img src="icons/File_View-zoom-fit.svg" width="24" height="24"/>
 								</button>
-								<button class="gwt-Button" type="button" title="Zoom target">
+								<button id="zoomTargetButton" class="gwt-Button" type="button" title="Zoom target">
 									<img src="icons/File_View-zoom-target.svg" width="24" height="24"/>
 								</button>
-								<button class="gwt-Button" type="button" title="Rectangle">
+								<button id="rectangleHotspotButton" class="gwt-Button" type="button" title="Rectangle hotspot">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 										<rect x="2" y="4" width="20" height="14" stroke="black" fill="none"/>
 									</svg>
 								</button>
-								<button class="gwt-Button" type="button" title="Ellipse">
+								<button id="ellipseHotspotButton" class="gwt-Button" type="button" title="Ellipse hotspot">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 										<ellipse cx="12" cy="12" rx="10" ry="7" stroke="black" fill="none" />
 									</svg>
 								</button>
-								<button class="gwt-Button" type="button" title="Polygon">
+								<button id="polygonHotspotButton" class="gwt-Button" type="button" title="Polygon hotspot">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 										<polygon points="2,21, 4,15, 5,7, 15,6, 20,5, 22,18, 12,12" stroke="black" fill="none" />
 									</svg>
 								</button>
-								<button class="gwt-Button" type="button" title="Line">
+								<button id="lineButton" class="gwt-Button" type="button" title="Line">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 										<line x1="3" y1="18" x2="21" y2="6" style="stroke:black; stroke-width:2"/>
 									</svg>
 								</button>
-								<button class="gwt-Button" type="button" title="Edit Image">
+								<button id="eraseButton" class="gwt-Button" type="button" title="Erase hotspot or helper line">
+									<img src="icons/Eraser.svg" width="24" height="24"/>
+								</button>
+								<button id="editImageButton" class="gwt-Button" type="button" title="Edit Image">
 									<img src="icons/Image-x-generic.svg" width="24" height="24"/>
 								</button>
 							</div>
