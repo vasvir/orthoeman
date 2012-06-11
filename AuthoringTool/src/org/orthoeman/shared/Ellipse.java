@@ -1,6 +1,6 @@
 package org.orthoeman.shared;
 
-public class Ellipse {
+public class Ellipse extends Drawing {
 	private int x;
 	private int y;
 	private int width;
