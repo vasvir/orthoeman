@@ -1,6 +1,6 @@
 package org.orthoeman.shared;
 
-public class Line {
+public class Line extends Drawing {
 	private Point a;
 	private Point b;
 
