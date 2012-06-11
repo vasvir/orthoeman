@@ -310,6 +310,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			this.block = block;
 		}
 
+		public void addHotSpot(Drawing drawing) {
+			// TODO Auto-generated method stub
+		}
+		
+		public void removeHotSpot(Drawing drawing) {
+			// TODO Auto-generated method stub
+		}
+
 		@Override
 		public String toString() {
 			return "Page: " + getTitle() + " items: " + super.toString();

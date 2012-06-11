@@ -7,7 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orthoeman.client.log.DivLogger;
+import org.orthoeman.shared.Drawing;
 import org.orthoeman.shared.Lesson;
+import org.orthoeman.shared.Point;
+import org.orthoeman.shared.Rectangle;
+import org.orthoeman.shared.Zoom;
 import org.orthoeman.shared.Lesson.Page;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
 
@@ -79,16 +83,12 @@ public class AuthoringTool implements EntryPoint {
 	private TextBox weight_tb;
 	private SimpleCheckBox block_cb;
 
-	private class Point {
-		double x;
-		double y;
-		boolean valid;
-	}
-
 	private final Point start_point = new Point();
 	private final Point old_point = new Point();
 
 	private final Collection<Collection<? extends Widget>> equal_width_widget_groups = new ArrayList<Collection<? extends Widget>>();
+
+	private final Zoom zoom = new Zoom();
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -237,6 +237,18 @@ public class AuthoringTool implements EntryPoint {
 		weight_tb = getTextBox("weightTextBox");
 		block_cb = getSimpleCheckBox("blockCheckBox");
 		final Button add_answer_b = getButton("quizAddAnswerButton");
+		final Button zoom_121_b = getButton("zoomOne2OneButton");
+		final Button zoom_in_b = getButton("zoomInButton");
+		final Button zoom_out_b = getButton("zoomOutButton");
+		final Button zoom_fit_b = getButton("zoomToFitButton");
+		final Button zoom_target_b = getButton("zoomTargetButton");
+		final Button rect_hsp_b = getButton("rectangleHotspotButton");
+		final Button ellipse_hsp_b = getButton("ellipseHotspotButton");
+		final Button polygon_hsp_b = getButton("polygonHotspotButton");
+		final Button line_b = getButton("lineButton");
+		final Button erase_b = getButton("eraseButton");
+		final Button edit_image_b = getButton("editImageButton");
+
 		if (work_around_bug) {
 			getTextContainer();
 			getImageUploaderContainer();
@@ -403,6 +415,131 @@ public class AuthoringTool implements EntryPoint {
 		image_uploader.setAutoSubmit(true);
 		image_uploader.addOnFinishUploadHandler(onImageFinishUploaderHandler);
 		getImageUploaderContainer().add(image_uploader);
+
+		zoom_121_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				zoom.setType(Zoom.Type.ZOOM_121);
+				redrawCanvas();
+			}
+		});
+
+		zoom_in_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				zoom.setType(Zoom.Type.ZOOM_LEVEL);
+				zoom.increaseLevel();
+				redrawCanvas();
+			}
+		});
+
+		zoom_out_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				zoom.setType(Zoom.Type.ZOOM_LEVEL);
+				zoom.decreaseLevel();
+				redrawCanvas();
+			}
+		});
+
+		zoom_fit_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				zoom.setType(Zoom.Type.ZOOM_TO_FIT);
+			}
+		});
+
+		zoom_target_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				zoom.setType(Zoom.Type.ZOOM_TARGET);
+				waitUserDrawing(Drawing.Type.RECTANGLE,
+						new UserDrawingFinishedEventHandler() {
+							@Override
+							public void onUserDrawingFinishedEventHandler(
+									Drawing drawing) {
+								zoom.setTarget((Rectangle) drawing);
+								redrawCanvas();
+							}
+						});
+			}
+		});
+
+		rect_hsp_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				waitUserDrawing(Drawing.Type.RECTANGLE,
+						new UserDrawingFinishedEventHandler() {
+							@Override
+							public void onUserDrawingFinishedEventHandler(
+									Drawing drawing) {
+								getCurrentPage().addHotSpot(drawing);
+							}
+						});
+			}
+		});
+
+		ellipse_hsp_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				waitUserDrawing(Drawing.Type.ELLIPSE,
+						new UserDrawingFinishedEventHandler() {
+							@Override
+							public void onUserDrawingFinishedEventHandler(
+									Drawing drawing) {
+								getCurrentPage().addHotSpot(drawing);
+							}
+						});
+			}
+		});
+
+		polygon_hsp_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				waitUserDrawing(Drawing.Type.POLYGON,
+						new UserDrawingFinishedEventHandler() {
+							@Override
+							public void onUserDrawingFinishedEventHandler(
+									Drawing drawing) {
+								getCurrentPage().addHotSpot(drawing);
+							}
+						});
+			}
+		});
+
+		line_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				waitUserDrawing(Drawing.Type.LINE,
+						new UserDrawingFinishedEventHandler() {
+							@Override
+							public void onUserDrawingFinishedEventHandler(
+									Drawing drawing) {
+								getCurrentPage().addHotSpot(drawing);
+							}
+						});
+			}
+		});
+
+		erase_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				waitUserDrawing(null, new UserDrawingFinishedEventHandler() {
+					@Override
+					public void onUserDrawingFinishedEventHandler(
+							Drawing drawing) {
+						getCurrentPage().removeHotSpot(drawing);
+					}
+				});
+			}
+		});
+
+		edit_image_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+			}
+		});
 
 		// video
 		final SingleUploader video_uploader = new SingleUploaderModal();
@@ -805,5 +942,10 @@ public class AuthoringTool implements EntryPoint {
 				+ check_index);
 		page_button_container.insert(current_button, next_index);
 		updateUpDownButtons(check_index, page_button_container.getWidgetCount());
+	}
+
+	private void waitUserDrawing(Drawing.Type type,
+			UserDrawingFinishedEventHandler handler) {
+		// TODO Auto-generated method stub
 	}
 }
