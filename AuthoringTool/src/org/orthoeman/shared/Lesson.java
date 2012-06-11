@@ -379,7 +379,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		quiz_item.createAnswer("I don't know. I don't want to answer", false);
 
 		lesson.add(new Page("ouf"));
-		lesson.get(0).getTextItem().setText("ouf is a nice concept");
+		lesson.get(1).getTextItem().setText("ouf is a nice concept");
 
 		return lesson;
 	}
