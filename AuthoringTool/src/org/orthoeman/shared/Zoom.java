@@ -5,7 +5,7 @@ public class Zoom {
 		ZOOM_121, ZOOM_LEVEL, ZOOM_TO_FIT, ZOOM_TARGET
 	}
 
-	private Type type;
+	private Type type = Type.ZOOM_TO_FIT;
 	private double level = 1;
 	private Rectangle target;
 
