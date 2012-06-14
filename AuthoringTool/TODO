@@ -31,6 +31,11 @@ Authoring Tool:
 		have a common way to represent
 			-document loading
 			-document changes via widgets
+			-document changes via program logic (undo / redo)
+				The way to do this is the following
+				Implement Lesson listener that spawns events
+				on document change. All widget should listen
+				for document changes
 
 	Build:
 		fix gwt compilation. With this we could automate the deploy
