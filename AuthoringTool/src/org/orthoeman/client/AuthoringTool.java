@@ -284,7 +284,6 @@ public class AuthoringTool implements EntryPoint {
 		}
 		canvas.addStyleName("block");
 		canvas.addStyleName("noborder");
-		canvas.addStyleName("fill_x");
 
 		back_canvas = Canvas.createIfSupported();
 
@@ -446,6 +445,7 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				zoom.setType(Zoom.Type.ZOOM_TO_FIT);
+				redrawCanvas();
 			}
 		});
 
@@ -621,35 +621,65 @@ public class AuthoringTool implements EntryPoint {
 		// divLogger.setVisible(false);
 	}
 
-	private static int getScaledImageHeight(PreloadedImage img, int canvas_width) {
-		if (img == null)
-			return 3 * canvas_width / 4;
-		return img.getRealHeight() * canvas_width / img.getRealWidth();
-	}
-
 	private void redrawCanvas() {
 		final Page page = getCurrentPage();
 		if (page == null)
 			return;
-		final Page.ImageItem image_item = page.getImageItem();
-		if (image_item == null)
-			return;
-		final PreloadedImage img = image_item.getImage();
+		final PreloadedImage img = page.getImageItem().getImage();
+
+		start_point.valid = false;
+		old_point.valid = false;
+
+		int canvas_width = canvas.getOffsetWidth();
+		int canvas_height = canvas.getOffsetHeight();
+		int sx = 0, sy = 0, sw = -1, sh = -1;
+		int dx = sx, dy = sy, dw = sw, dh = sh;
+
+		Log.trace("Browser resized canvas (offset size) " + canvas_width
+				+ " x " + canvas_height + " style " + canvas.getStyleName());
+
+		final Context2d context = canvas.getContext2d();
+		if (img == null) {
+			canvas.setWidth("100%");
+			canvas_width = canvas.getOffsetWidth();
+			canvas_height = (canvas_width * 3 / 4);
+			canvas.setHeight(canvas_height + "px");
+		} else {
+			// default is zoom to fit with canvas set to auto width
+			sw = img.getRealWidth();
+			sh = img.getRealHeight();
+			dw = sw;
+			dh = sh;
+
+			switch (zoom.getType()) {
+			case ZOOM_121:
+				canvas_width = sw;
+				canvas_height = sh;
+				canvas.setWidth(canvas_width + "px");
+				canvas.setHeight(canvas_height + "px");
+				break;
+			case ZOOM_LEVEL:
+				break;
+			case ZOOM_TO_FIT:
+				// keep aspect ratio
+				canvas.setWidth("100%");
+				canvas_width = canvas.getOffsetWidth();
+				canvas_height = img.getRealHeight() * canvas_width
+						/ img.getRealWidth();
+				canvas.setHeight(canvas_height + "px");
+				break;
+			case ZOOM_TARGET:
+				break;
+			}
+		}
+		Log.trace("Zoom resized canvas (offset size) " + canvas_width + " x "
+				+ canvas_height + " style " + canvas.getStyleName());
+
 		final int div_width = canvasContainer.getOffsetWidth();
 		final int div_height = canvasContainer.getOffsetHeight();
 		Log.trace("Browser resized canvas container (offset size) " + div_width
 				+ " x " + div_height + " style "
 				+ canvasContainer.getStyleName());
-		final int width = canvas.getOffsetWidth();
-		final int height = canvas.getOffsetHeight();
-		Log.trace("Browser resized canvas (offset size) " + width + " x "
-				+ height + " style " + canvas.getStyleName());
-
-		// let's keep the aspect ratio of the image if exists
-		final int canvas_width = width;
-		final int new_height = getScaledImageHeight(img, canvas_width);
-		canvas.setHeight(new_height + "px");
-		final int canvas_height = new_height;
 
 		canvas.setCoordinateSpaceWidth(canvas_width);
 		canvas.setCoordinateSpaceHeight(canvas_height);
@@ -659,21 +689,36 @@ public class AuthoringTool implements EntryPoint {
 		back_canvas.setCoordinateSpaceWidth(canvas_width);
 		back_canvas.setCoordinateSpaceHeight(canvas_height);
 
-		start_point.valid = false;
-		old_point.valid = false;
-
-		final Context2d context = canvas.getContext2d();
-		if (img != null) {
-			img.setVisible(false);
-			context.drawImage((ImageElement) (Object) img.getElement(), 0, 0,
-					canvas_width, canvas_height);
-		} else {
+		if (img == null) {
 			context.setFillStyle(CssColor.make("white"));
 			context.fillRect(0, 0, canvas_width, canvas_height);
+		} else {
+			img.setVisible(false);
+			drawImage(context, img, canvas_width, canvas_height);
 		}
-		if (canvas_width != 0 && canvas_height != 0)
-			back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0,
-					0, canvas_width, canvas_height);
+		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
+	}
+
+	private void drawImage(Context2d context, PreloadedImage img,
+			int canvas_width, int canvas_height) {
+		// default is zoom to fit
+		double sx = 0, sy = 0, sw = img.getRealWidth(), sh = img
+				.getRealHeight();
+		double dx = 0, dy = 0, dw = canvas_width, dh = canvas_height;
+
+		switch (zoom.getType()) {
+		case ZOOM_121:
+			break;
+		case ZOOM_LEVEL:
+			break;
+		case ZOOM_TO_FIT:
+			break;
+		case ZOOM_TARGET:
+			break;
+		}
+
+		context.drawImage((ImageElement) (Object) img.getElement(), sx, sy, sw,
+				sh, dx, dy, dw, dh);
 	}
 
 	private static ListBox getListBox(String id) {
