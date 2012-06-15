@@ -623,8 +623,12 @@ public class AuthoringTool implements EntryPoint {
 
 	private void redrawCanvas() {
 		final Page page = getCurrentPage();
-		if (page == null)
+		if (page == null
+				|| !Arrays.asList(page.getItemTypeCombination()).contains(
+						Lesson.Page.Item.Type.IMAGE)) {
+			Log.trace("Drop...");
 			return;
+		}
 		final PreloadedImage img = page.getImageItem().getImage();
 
 		start_point.valid = false;
@@ -680,6 +684,13 @@ public class AuthoringTool implements EntryPoint {
 		Log.trace("Browser resized canvas container (offset size) " + div_width
 				+ " x " + div_height + " style "
 				+ canvasContainer.getStyleName());
+
+		final RootPanel pageContainer = getPageContainer();
+		final int page_width = pageContainer.getOffsetWidth();
+		final int page_height = pageContainer.getOffsetHeight();
+		Log.trace("Browser resized page container (offset size) " + page_width
+				+ " x " + page_height + " style "
+				+ pageContainer.getStyleName());
 
 		canvas.setCoordinateSpaceWidth(canvas_width);
 		canvas.setCoordinateSpaceHeight(canvas_height);
