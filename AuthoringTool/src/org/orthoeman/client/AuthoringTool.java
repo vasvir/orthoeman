@@ -626,7 +626,7 @@ public class AuthoringTool implements EntryPoint {
 		if (page == null
 				|| !Arrays.asList(page.getItemTypeCombination()).contains(
 						Lesson.Page.Item.Type.IMAGE)) {
-			Log.trace("Drop...");
+			Log.trace("Image does not exist. Nothing to redraw. Exiting...");
 			return;
 		}
 		final PreloadedImage img = page.getImageItem().getImage();
