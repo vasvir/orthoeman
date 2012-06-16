@@ -297,7 +297,14 @@ public class AuthoringTool implements EntryPoint {
 			public void onResize(ResizeEvent event) {
 				Log.trace("Browser resized " + event.getWidth() + " x "
 						+ event.getHeight());
-				onResize();
+
+				Scheduler.get().scheduleDeferred(
+						new Scheduler.ScheduledCommand() {
+							@Override
+							public void execute() {
+								onResize();
+							}
+						});
 			}
 
 			public void onResize() {
@@ -676,6 +683,16 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			}
 		}
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				final int canvas_width = canvas.getOffsetWidth();
+				final int canvas_height = canvas.getOffsetHeight();
+				Log.trace("[Deferred] Zoom resized canvas (offset size) "
+						+ canvas_width + " x " + canvas_height + " style "
+						+ canvas.getStyleName());
+			}
+		});
 		Log.trace("Zoom resized canvas (offset size) " + canvas_width + " x "
 				+ canvas_height + " style " + canvas.getStyleName());
 
@@ -686,11 +703,19 @@ public class AuthoringTool implements EntryPoint {
 				+ canvasContainer.getStyleName());
 
 		final RootPanel pageContainer = getPageContainer();
-		final int page_width = pageContainer.getOffsetWidth();
-		final int page_height = pageContainer.getOffsetHeight();
-		Log.trace("Browser resized page container (offset size) " + page_width
-				+ " x " + page_height + " style "
+		int page_width = pageContainer.getOffsetWidth();
+		int page_height = pageContainer.getOffsetHeight();
+		Log.trace("1: Browser resized page container (offset size) "
+				+ page_width + " x " + page_height + " style "
 				+ pageContainer.getStyleName());
+		pageContainer.setSize("100%", "100%");
+		page_width = pageContainer.getOffsetWidth();
+		page_height = pageContainer.getOffsetHeight();
+		pageContainer.setSize(page_width + "px", page_height + "px");
+		Log.trace("2: Browser resized page container (offset size) "
+				+ page_width + " x " + page_height + " style "
+				+ pageContainer.getStyleName());
+		Log.trace("-----------------------------------------");
 
 		canvas.setCoordinateSpaceWidth(canvas_width);
 		canvas.setCoordinateSpaceHeight(canvas_height);
