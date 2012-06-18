@@ -44,6 +44,9 @@ Authoring Tool:
 		up down via drag & drop. Note that buttons don't seem to be
 		able to listen to drag events
 
+	BUGS:
+		quiz text is not written in the lesson
+
 
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
