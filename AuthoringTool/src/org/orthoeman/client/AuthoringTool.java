@@ -698,6 +698,13 @@ public class AuthoringTool implements EntryPoint {
 		getVideoUploaderContainer().add(video_uploader);
 
 		// quiz
+		quiz_text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				getCurrentPage().getQuizItem().setText(event.getValue());
+			}
+		});
+
 		add_answer_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
