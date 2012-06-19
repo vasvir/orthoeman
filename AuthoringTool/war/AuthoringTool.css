@@ -65,17 +65,17 @@ h1 {
 }
 
 .table {
-	position: relative;
+	//position: relative;
 	display: table;
 }
 
 .row {
-	position: relative;
+	//position: relative;
 	display: table-row;
 }
 
 .cell {
-	position: relative;
+	//position: relative;
 	display: table-cell;
 	vertical-align: top;
 }
@@ -113,7 +113,7 @@ h1 {
 }
 	
 .scroll {
-	position: relative;
+	//position: relative;
 	overflow: auto;
 }
 	

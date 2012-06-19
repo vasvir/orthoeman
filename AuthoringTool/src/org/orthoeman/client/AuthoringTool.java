@@ -96,6 +96,12 @@ public class AuthoringTool implements EntryPoint {
 	 */
 	private long startTimeMillis;
 
+	private static class MyResizeEvent extends ResizeEvent {
+		public MyResizeEvent() {
+			super(Window.getClientWidth(), Window.getClientHeight());
+		}
+	}
+
 	//
 	/**
 	 * Note, we defer all application initialization code to
@@ -123,8 +129,11 @@ public class AuthoringTool implements EntryPoint {
 		});
 	}
 
-	private void onResize() {
+	private void onResize(ResizeEvent event) {
 		for (final Collection<? extends Widget> equal_width_widget_group : equal_width_widget_groups) {
+			Log.trace("Browser resized " + event.getWidth() + " x "
+					+ event.getHeight());
+
 			// find the maximum width
 			// assumes sane layout info (width include padding border
 			// margin)
@@ -140,10 +149,14 @@ public class AuthoringTool implements EntryPoint {
 				w.setWidth(max_width + "px");
 			}
 		}
-		redrawCanvas();
+		redrawCanvas(event);
 	}
 
 	private void redrawCanvas() {
+		redrawCanvas(new MyResizeEvent());
+	}
+
+	private void redrawCanvas(ResizeEvent event) {
 		final Page page = getCurrentPage();
 		if (page == null
 				|| !Arrays.asList(page.getItemTypeCombination()).contains(
@@ -151,10 +164,26 @@ public class AuthoringTool implements EntryPoint {
 			Log.trace("Image does not exist. Nothing to redraw. Exiting...");
 			return;
 		}
+
 		final PreloadedImage img = page.getImageItem().getImage();
 
 		start_point.valid = false;
 		old_point.valid = false;
+
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				final RootPanel pageContainer = getPageContainer();
+				final int page_width = Window.getClientWidth()
+						- getLeftPanelContainer().getOffsetWidth();
+				final int page_height = Window.getClientHeight()
+						- getMenuBarContainer().getOffsetHeight();
+				Log.trace("Browser resized page container (offset size) "
+						+ page_width + " x " + page_height + " style "
+						+ pageContainer.getStyleName());
+				pageContainer.setSize(page_width + "px", page_height + "px");
+			}
+		});
 
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
@@ -216,33 +245,6 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		final RootPanel pageContainer = getPageContainer();
-
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			@Override
-			public void execute() {
-				final int page_width = pageContainer.getOffsetWidth();
-				final int page_height = pageContainer.getOffsetHeight();
-				Log.trace("1: Browser resized page container (offset size) "
-						+ page_width + " x " + page_height + " style "
-						+ pageContainer.getStyleName());
-				pageContainer.setSize("100%", "100%");
-			}
-		});
-
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			@Override
-			public void execute() {
-				final int page_width = pageContainer.getOffsetWidth();
-				final int page_height = pageContainer.getOffsetHeight();
-				Log.trace("2: Browser resized page container (offset size) "
-						+ page_width + " x " + page_height + " style "
-						+ pageContainer.getStyleName());
-				Log.trace("-----------------------------------------");
-				pageContainer.setSize(page_width + "px", page_height + "px");
-			}
-		});
-
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
@@ -259,6 +261,7 @@ public class AuthoringTool implements EntryPoint {
 				}
 				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
 						0, 0);
+				Log.trace("-----------------------------------------");
 			}
 		});
 	}
@@ -456,15 +459,12 @@ public class AuthoringTool implements EntryPoint {
 
 		class MyResizeHandler implements ResizeHandler {
 			@Override
-			public void onResize(ResizeEvent event) {
-				Log.trace("Browser resized " + event.getWidth() + " x "
-						+ event.getHeight());
-
+			public void onResize(final ResizeEvent event) {
 				Scheduler.get().scheduleDeferred(
 						new Scheduler.ScheduledCommand() {
 							@Override
 							public void execute() {
-								AuthoringTool.this.onResize();
+								AuthoringTool.this.onResize(event);
 							}
 						});
 			}
@@ -472,7 +472,8 @@ public class AuthoringTool implements EntryPoint {
 		final MyResizeHandler rh = new MyResizeHandler();
 
 		Window.addResizeHandler(rh);
-		onResize();
+		final ResizeEvent event = new MyResizeEvent();
+		onResize(event);
 
 		canvas.addClickHandler(new ClickHandler() {
 			@Override
@@ -858,6 +859,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getMenuBarContainer() {
 		return RootPanel.get("menuBarContainer");
+	}
+
+	private static RootPanel getLeftPanelContainer() {
+		return RootPanel.get("leftPanelContainer");
 	}
 
 	private static RootPanel getPageContainer() {
