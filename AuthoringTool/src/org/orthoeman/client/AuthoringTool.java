@@ -170,15 +170,32 @@ public class AuthoringTool implements EntryPoint {
 		start_point.valid = false;
 		old_point.valid = false;
 
+		final int window_height = event.getHeight();
+		final int menubar_height = getMenuBarContainer().getOffsetHeight();
+
+		final RootPanel pageLabelContainer = RootPanel
+				.get("pageLabelContainer");
+		final RootPanel upDownButtonlContainer = RootPanel
+				.get("upDownButtonlContainer");
+		final RootPanel addRemoveButtonContainer = RootPanel
+				.get("addRemoveButtonContainer");
+
 		final RootPanel pageContainer = getPageContainer();
-		final int page_width = Window.getClientWidth()
+		final int page_width = event.getWidth()
 				- getLeftPanelContainer().getOffsetWidth();
-		final int page_height = Window.getClientHeight()
-				- getMenuBarContainer().getOffsetHeight();
+		final int page_height = window_height - menubar_height;
 		Log.trace("Browser resized page container (offset size) " + page_width
 				+ " x " + page_height + " style "
 				+ pageContainer.getStyleName());
 		pageContainer.setSize(page_width + "px", page_height + "px");
+
+		// page button container
+		final RootPanel pageButtonContainer = getPageButtonContainer();
+		final int page_button_cnt_height = window_height - menubar_height
+				- pageLabelContainer.getOffsetHeight()
+				- upDownButtonlContainer.getOffsetHeight()
+				- addRemoveButtonContainer.getOffsetHeight();
+		pageButtonContainer.setHeight(page_button_cnt_height + "px");
 
 		final int canvas_100 = page_width - 2;
 		int canvas_width = 0;
