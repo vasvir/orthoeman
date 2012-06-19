@@ -170,100 +170,65 @@ public class AuthoringTool implements EntryPoint {
 		start_point.valid = false;
 		old_point.valid = false;
 
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			@Override
-			public void execute() {
-				final RootPanel pageContainer = getPageContainer();
-				final int page_width = Window.getClientWidth()
-						- getLeftPanelContainer().getOffsetWidth();
-				final int page_height = Window.getClientHeight()
-						- getMenuBarContainer().getOffsetHeight();
-				Log.trace("Browser resized page container (offset size) "
-						+ page_width + " x " + page_height + " style "
-						+ pageContainer.getStyleName());
-				pageContainer.setSize(page_width + "px", page_height + "px");
+		final RootPanel pageContainer = getPageContainer();
+		final int page_width = Window.getClientWidth()
+				- getLeftPanelContainer().getOffsetWidth();
+		final int page_height = Window.getClientHeight()
+				- getMenuBarContainer().getOffsetHeight();
+		Log.trace("Browser resized page container (offset size) " + page_width
+				+ " x " + page_height + " style "
+				+ pageContainer.getStyleName());
+		pageContainer.setSize(page_width + "px", page_height + "px");
+
+		final int canvas_100 = page_width - 2;
+		int canvas_width = 0;
+		int canvas_height = 0;
+
+		if (img == null) {
+			canvas_width = canvas_100;
+			canvas_height = (canvas_width * 3 / 4);
+		} else {
+			switch (zoom.getType()) {
+			case ZOOM_121:
+				canvas_width = img.getRealWidth();
+				canvas_height = img.getRealHeight();
+				break;
+			case ZOOM_LEVEL:
+				break;
+			case ZOOM_TO_FIT:
+				// keep aspect ratio
+				canvas_width = canvas_100;
+				canvas_height = img.getRealHeight() * canvas_width
+						/ img.getRealWidth();
+				break;
+			case ZOOM_TARGET:
+				break;
 			}
-		});
+		}
 
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			@Override
-			public void execute() {
-				if (img == null) {
-					canvas.setWidth("100%");
-				} else {
-					switch (zoom.getType()) {
-					case ZOOM_121:
-						canvas.setWidth(img.getRealWidth() + "px");
-						break;
-					case ZOOM_LEVEL:
-						break;
-					case ZOOM_TO_FIT:
-						// keep aspect ratio
-						canvas.setWidth("100%");
-						break;
-					case ZOOM_TARGET:
-						break;
-					}
-				}
-			}
-		});
+		canvas.setSize(canvas_width + "px", canvas_height + "px");
+		Log.trace("Zoom resized canvas (offset size) " + canvas_width + " x "
+				+ canvas_height + " style " + canvas.getStyleName());
 
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			@Override
-			public void execute() {
-				final int canvas_width = canvas.getOffsetWidth();
-				int canvas_height = 0;
-				if (img == null) {
-					canvas_height = (canvas_width * 3 / 4);
-				} else {
-					switch (zoom.getType()) {
-					case ZOOM_121:
-						canvas_height = img.getRealHeight();
-						break;
-					case ZOOM_LEVEL:
-						break;
-					case ZOOM_TO_FIT:
-						canvas_height = img.getRealHeight() * canvas_width
-								/ img.getRealWidth();
-						break;
-					case ZOOM_TARGET:
-						break;
-					}
-				}
-				canvas.setHeight(canvas_height + "px");
-				Log.trace("Zoom resized canvas (offset size) " + canvas_width
-						+ " x " + canvas_height + " style "
-						+ canvas.getStyleName());
+		canvas.setCoordinateSpaceWidth(canvas_width);
+		canvas.setCoordinateSpaceHeight(canvas_height);
 
-				canvas.setCoordinateSpaceWidth(canvas_width);
-				canvas.setCoordinateSpaceHeight(canvas_height);
+		back_canvas.setWidth(canvas_width + "px");
+		back_canvas.setHeight(canvas_height + "px");
+		back_canvas.setCoordinateSpaceWidth(canvas_width);
+		back_canvas.setCoordinateSpaceHeight(canvas_height);
 
-				back_canvas.setWidth(canvas_width + "px");
-				back_canvas.setHeight(canvas_height + "px");
-				back_canvas.setCoordinateSpaceWidth(canvas_width);
-				back_canvas.setCoordinateSpaceHeight(canvas_height);
-			}
-		});
+		final Context2d context = canvas.getContext2d();
 
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			@Override
-			public void execute() {
-				final Context2d context = canvas.getContext2d();
-				final int canvas_width = canvas.getOffsetWidth();
-				final int canvas_height = canvas.getOffsetHeight();
-
-				if (img == null) {
-					context.setFillStyle(CssColor.make("white"));
-					context.fillRect(0, 0, canvas_width, canvas_height);
-				} else {
-					img.setVisible(false);
-					drawImage(context, img, canvas_width, canvas_height);
-				}
-				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
-						0, 0);
-				Log.trace("-----------------------------------------");
-			}
-		});
+		if (img == null) {
+			context.setFillStyle(CssColor.make("white"));
+			context.fillRect(0, 0, canvas_width, canvas_height);
+		} else {
+			img.setVisible(false);
+			drawImage(context, img, canvas_width, canvas_height);
+		}
+		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
+		Log.trace("-----------------------------------------");
 	}
 
 	private void drawImage(Context2d context, PreloadedImage img,

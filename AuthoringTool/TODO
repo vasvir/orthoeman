@@ -45,6 +45,10 @@ Authoring Tool:
 		able to listen to drag events
 
 
+	rename zoom to fit --> fit width
+	handle the scrollbar of the pagebuttons
+
+
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
 	Use data backend for storing resources (xml & images & videos)
