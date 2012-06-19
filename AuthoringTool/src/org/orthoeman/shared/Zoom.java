@@ -2,10 +2,10 @@ package org.orthoeman.shared;
 
 public class Zoom {
 	public static enum Type {
-		ZOOM_121, ZOOM_LEVEL, ZOOM_TO_FIT, ZOOM_TARGET
+		ZOOM_121, ZOOM_LEVEL, ZOOM_TO_FIT_WIDTH, ZOOM_TARGET
 	}
 
-	private Type type = Type.ZOOM_TO_FIT;
+	private Type type = Type.ZOOM_TO_FIT_WIDTH;
 	private double level = 1;
 	private Rectangle target;
 

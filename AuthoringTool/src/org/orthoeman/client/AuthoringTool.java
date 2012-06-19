@@ -195,7 +195,7 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			case ZOOM_LEVEL:
 				break;
-			case ZOOM_TO_FIT:
+			case ZOOM_TO_FIT_WIDTH:
 				// keep aspect ratio
 				canvas_width = canvas_100;
 				canvas_height = img.getRealHeight() * canvas_width
@@ -243,7 +243,7 @@ public class AuthoringTool implements EntryPoint {
 			break;
 		case ZOOM_LEVEL:
 			break;
-		case ZOOM_TO_FIT:
+		case ZOOM_TO_FIT_WIDTH:
 			break;
 		case ZOOM_TARGET:
 			break;
@@ -370,7 +370,7 @@ public class AuthoringTool implements EntryPoint {
 		final Button zoom_121_b = getButton("zoomOne2OneButton");
 		final Button zoom_in_b = getButton("zoomInButton");
 		final Button zoom_out_b = getButton("zoomOutButton");
-		final Button zoom_fit_b = getButton("zoomToFitButton");
+		final Button zoom_fit_b = getButton("zoomToFitWidthButton");
 		final Button zoom_target_b = getButton("zoomTargetButton");
 		final Button rect_hsp_b = getButton("rectangleHotspotButton");
 		final Button ellipse_hsp_b = getButton("ellipseHotspotButton");
@@ -558,7 +558,7 @@ public class AuthoringTool implements EntryPoint {
 		zoom_fit_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				zoom.setType(Zoom.Type.ZOOM_TO_FIT);
+				zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
 				redrawCanvas();
 			}
 		});
