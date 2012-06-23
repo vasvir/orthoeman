@@ -6,6 +6,24 @@ public class Rectangle extends Drawing {
 	private int width;
 	private int height;
 
+	public Rectangle() {
+	}
+
+	public Rectangle(int x, int y, int width, int heigth) {
+		set(x, y, width, heigth);
+	}
+
+	public void set(int x, int y, int width, int heigth) {
+		setX(x);
+		setY(y);
+		setWidth(width);
+		setHeight(heigth);
+	}
+
+	public void set(Rectangle target) {
+		set(target.getX(), target.getY(), target.getWidth(), target.getHeight());
+	}
+
 	public int getX() {
 		return x;
 	}
@@ -36,5 +54,10 @@ public class Rectangle extends Drawing {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	@Override
+	public String toString() {
+		return "R:" + x + ":" + y + ":" + width + ":" + height;
 	}
 }

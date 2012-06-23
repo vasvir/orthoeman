@@ -9,11 +9,12 @@ import java.util.Map;
 import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Drawing;
 import org.orthoeman.shared.Lesson;
+import org.orthoeman.shared.Lesson.Page.ImageItem.Zoom.Type;
 import org.orthoeman.shared.Point;
 import org.orthoeman.shared.Rectangle;
-import org.orthoeman.shared.Zoom;
 import org.orthoeman.shared.Lesson.Page;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
+import org.orthoeman.shared.Lesson.Page.ImageItem.Zoom;
 
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
@@ -87,8 +88,6 @@ public class AuthoringTool implements EntryPoint {
 	private final Point old_point = new Point();
 
 	private final Collection<Collection<? extends Widget>> equal_width_widget_groups = new ArrayList<Collection<? extends Widget>>();
-
-	private final Zoom zoom = new Zoom();
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -166,6 +165,7 @@ public class AuthoringTool implements EntryPoint {
 		}
 
 		final PreloadedImage img = page.getImageItem().getImage();
+		final Zoom zoom = page.getImageItem().getZoom();
 
 		start_point.valid = false;
 		old_point.valid = false;
@@ -207,20 +207,18 @@ public class AuthoringTool implements EntryPoint {
 		} else {
 			switch (zoom.getType()) {
 			case ZOOM_121:
-				canvas_width = img.getRealWidth();
-				canvas_height = img.getRealHeight();
-				break;
 			case ZOOM_LEVEL:
-				canvas_width = (int) (zoom.getLevel() * img.getRealWidth());
-				canvas_height = (int) (zoom.getLevel() * img.getRealHeight());
+			case ZOOM_TARGET:
+				canvas_width = (int) (zoom.getLevel() * zoom.getTarget()
+						.getWidth());
+				canvas_height = (int) (zoom.getLevel() * zoom.getTarget()
+						.getHeight());
 				break;
 			case ZOOM_TO_FIT_WIDTH:
 				// keep aspect ratio
 				canvas_width = canvas_100;
 				canvas_height = img.getRealHeight() * canvas_width
 						/ img.getRealWidth();
-				break;
-			case ZOOM_TARGET:
 				break;
 			}
 		}
@@ -244,32 +242,14 @@ public class AuthoringTool implements EntryPoint {
 			context.fillRect(0, 0, canvas_width, canvas_height);
 		} else {
 			img.setVisible(false);
-			drawImage(context, img, canvas_width, canvas_height);
+			Log.trace("Zoom Target (src) rectangle " + zoom.getTarget());
+			context.drawImage((ImageElement) (Object) img.getElement(), zoom
+					.getTarget().getX(), zoom.getTarget().getY(), zoom
+					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
+					0, canvas_width, canvas_height);
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 		Log.trace("-----------------------------------------");
-	}
-
-	private void drawImage(Context2d context, PreloadedImage img,
-			int canvas_width, int canvas_height) {
-		// default is zoom to fit width
-		double sx = 0, sy = 0, sw = img.getRealWidth(), sh = img
-				.getRealHeight();
-		double dx = 0, dy = 0, dw = canvas_width, dh = canvas_height;
-
-		switch (zoom.getType()) {
-		case ZOOM_121:
-			break;
-		case ZOOM_LEVEL:
-			break;
-		case ZOOM_TO_FIT_WIDTH:
-			break;
-		case ZOOM_TARGET:
-			break;
-		}
-
-		context.drawImage((ImageElement) (Object) img.getElement(), sx, sy, sw,
-				sh, dx, dy, dw, dh);
 	}
 
 	/**
@@ -508,6 +488,13 @@ public class AuthoringTool implements EntryPoint {
 		final OnLoadPreloadedImageHandler showImageHandler = new OnLoadPreloadedImageHandler() {
 			@Override
 			public void onLoad(PreloadedImage img) {
+				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
+				Log.trace("Got image " + img.getRealWidth() + " x "
+						+ img.getRealHeight());
+				zoom.setType(Type.ZOOM_TO_FIT_WIDTH);
+				zoom.setLevel(1);
+				zoom.getTarget().set(0, 0, img.getRealWidth(),
+						img.getRealHeight());
 				redrawCanvas();
 			}
 		};
@@ -551,8 +538,15 @@ public class AuthoringTool implements EntryPoint {
 		zoom_121_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_121);
 				zoom.setLevel(1);
+				final PreloadedImage img = getCurrentPage().getImageItem()
+						.getImage();
+				if (img != null) {
+					zoom.getTarget().set(0, 0, img.getRealWidth(),
+							img.getRealHeight());
+				}
 				redrawCanvas();
 			}
 		});
@@ -560,6 +554,7 @@ public class AuthoringTool implements EntryPoint {
 		zoom_in_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_LEVEL);
 				zoom.increaseLevel();
 				redrawCanvas();
@@ -569,6 +564,7 @@ public class AuthoringTool implements EntryPoint {
 		zoom_out_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_LEVEL);
 				zoom.decreaseLevel();
 				redrawCanvas();
@@ -578,12 +574,15 @@ public class AuthoringTool implements EntryPoint {
 		zoom_fit_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
 				final PreloadedImage img = getCurrentPage().getImageItem()
 						.getImage();
 				if (img != null) {
 					zoom.setLevel(((double) canvas.getOffsetWidth())
 							/ ((double) img.getWidth()));
+					zoom.getTarget().set(0, 0, img.getRealWidth(),
+							img.getRealHeight());
 				}
 				redrawCanvas();
 			}
@@ -592,16 +591,20 @@ public class AuthoringTool implements EntryPoint {
 		zoom_target_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_TARGET);
 				waitUserDrawing(Drawing.Type.RECTANGLE,
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								zoom.setTarget((Rectangle) drawing);
+								zoom.getTarget().set((Rectangle) drawing);
 								redrawCanvas();
 							}
 						});
+
+				zoom.getTarget().set(0, 0, 100, 100);
+				redrawCanvas();
 			}
 		});
 
