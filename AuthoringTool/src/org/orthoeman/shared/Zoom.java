@@ -24,11 +24,13 @@ public class Zoom {
 	public void setLevel(double level) {
 		this.level = level;
 	}
-	
+
 	public void increaseLevel() {
+		level *= 1.2;
 	}
-	
+
 	public void decreaseLevel() {
+		level /= 1.2;
 	}
 
 	public Rectangle getTarget() {

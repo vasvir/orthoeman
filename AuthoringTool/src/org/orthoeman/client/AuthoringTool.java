@@ -211,6 +211,8 @@ public class AuthoringTool implements EntryPoint {
 				canvas_height = img.getRealHeight();
 				break;
 			case ZOOM_LEVEL:
+				canvas_width = (int) (zoom.getLevel() * img.getRealWidth());
+				canvas_height = (int) (zoom.getLevel() * img.getRealHeight());
 				break;
 			case ZOOM_TO_FIT_WIDTH:
 				// keep aspect ratio
@@ -250,7 +252,7 @@ public class AuthoringTool implements EntryPoint {
 
 	private void drawImage(Context2d context, PreloadedImage img,
 			int canvas_width, int canvas_height) {
-		// default is zoom to fit
+		// default is zoom to fit width
 		double sx = 0, sy = 0, sw = img.getRealWidth(), sh = img
 				.getRealHeight();
 		double dx = 0, dy = 0, dw = canvas_width, dh = canvas_height;
@@ -550,6 +552,7 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				zoom.setType(Zoom.Type.ZOOM_121);
+				zoom.setLevel(1);
 				redrawCanvas();
 			}
 		});
@@ -576,6 +579,12 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
+				final PreloadedImage img = getCurrentPage().getImageItem()
+						.getImage();
+				if (img != null) {
+					zoom.setLevel(((double) canvas.getOffsetWidth())
+							/ ((double) img.getWidth()));
+				}
 				redrawCanvas();
 			}
 		});
