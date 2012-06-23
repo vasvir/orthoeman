@@ -602,9 +602,6 @@ public class AuthoringTool implements EntryPoint {
 								redrawCanvas();
 							}
 						});
-
-				zoom.getTarget().set(0, 0, 100, 100);
-				redrawCanvas();
 			}
 		});
 
