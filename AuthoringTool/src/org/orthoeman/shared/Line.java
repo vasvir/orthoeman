@@ -4,6 +4,12 @@ public class Line extends Drawing {
 	private Point a;
 	private Point b;
 
+	public Line(Point a, Point b) {
+		super(Type.LINE);
+		this.a = new Point(a);
+		this.b = new Point(b);
+	}
+	
 	public Point getA() {
 		return a;
 	}

@@ -6,6 +6,14 @@ public class Ellipse extends Drawing {
 	private int width;
 	private int height;
 
+	public Ellipse(int x, int y, int width, int height) {
+		super(Type.ELLIPSE);
+		setX(x);
+		setY(y);
+		setWidth(width);
+		setHeight(height);
+	}
+	
 	public int getX() {
 		return x;
 	}

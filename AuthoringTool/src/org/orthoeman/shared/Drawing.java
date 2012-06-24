@@ -7,6 +7,10 @@ public class Drawing {
 
 	private Type type;
 
+	public Drawing(Type type) {
+		setType(type);
+	}
+	
 	public Type getType() {
 		return type;
 	}

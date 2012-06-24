@@ -1,20 +1,20 @@
 package org.orthoeman.shared;
 
 public class Point {
-	public double x;
-	public double y;
+	public int x;
+	public int y;
 	public boolean valid;
 
 	public Point() {
 	}
 
-	public Point(double x, double y, boolean valid) {
+	public Point(int x, int y, boolean valid) {
 		this.x = x;
 		this.y = y;
 		this.valid = valid;
 	}
 
-	public Point(double x, double y) {
+	public Point(int x, int y) {
 		this(x, y, true);
 	}
 
