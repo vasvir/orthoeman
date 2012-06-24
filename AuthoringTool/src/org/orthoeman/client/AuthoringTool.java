@@ -728,6 +728,7 @@ public class AuthoringTool implements EntryPoint {
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
 								zoom.getTarget().set((Rectangle) drawing);
+								zoom.setLevel(1);
 								redrawCanvas();
 							}
 						});
