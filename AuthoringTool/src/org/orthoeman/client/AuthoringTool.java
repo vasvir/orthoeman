@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Drawing;
@@ -89,6 +91,7 @@ public class AuthoringTool implements EntryPoint {
 
 	private final Collection<Collection<? extends Widget>> equal_width_widget_groups = new ArrayList<Collection<? extends Widget>>();
 
+	private final Queue<UserDrawingRequest> udr_queue = new LinkedList<UserDrawingRequest>();
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
 	 * <code>log_level</code> higher than <code>DEBUG</code>.
@@ -443,14 +446,24 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (start_point.valid) {
+					// this is the end of the drawing operation
 					start_point.valid = false;
 					old_point.valid = false;
 
 					back_canvas.getContext2d().drawImage(
 							canvas.getCanvasElement(), 0, 0);
 
+					// pop the request and run the handler that returns the
+					// information
+					final UserDrawingRequest udr = udr_queue.poll();
+					udr.handler.onUserDrawingFinishedEventHandler(null);
 					return;
 				}
+
+				final UserDrawingRequest udr = udr_queue.peek();
+				if (udr == null)
+					return;
+
 				final int x = event.getRelativeX(canvas.getElement());
 				final int y = event.getRelativeY(canvas.getElement());
 				Log.trace("Point " + x + " " + y);
@@ -466,18 +479,74 @@ public class AuthoringTool implements EntryPoint {
 			public void onMouseMove(MouseMoveEvent event) {
 				if (!start_point.valid)
 					return;
+				final UserDrawingRequest udr = udr_queue.peek();
+				if (udr == null)
+					return;
 				final int x = event.getRelativeX(canvas.getElement());
 				final int y = event.getRelativeY(canvas.getElement());
 
+				// restore original image
 				if (old_point.valid) {
 					context.drawImage(back_canvas.getCanvasElement(), 0, 0);
 				}
 
-				context.beginPath();
-				context.moveTo(start_point.x, start_point.y);
-				context.lineTo(x, y);
-				context.closePath();
-				context.stroke();
+				// here we draw the user interaction
+				switch (udr.type) {
+				case ELLIPSE:
+					// find the bounding box
+					final double w = 2 * (x > start_point.x ? x - start_point.x
+							: start_point.x - x);
+					final double h = 2 * (y > start_point.y ? y - start_point.y
+							: start_point.y - y);
+					final double xl = start_point.x - w / 2;
+					final double yt = start_point.y - h / 2;
+
+					final double kappa = .5522848;
+					final double ox = (w / 2) * kappa; // control point offset
+														// horizontal
+					final double oy = (h / 2) * kappa; // control point offset
+														// vertical
+					final double xe = xl + w; // x-end
+					final double ye = yt + h; // y-end
+					final double xm = xl + w / 2; // x-middle
+					final double ym = yt + h / 2; // y-middle
+
+					context.beginPath();
+					context.moveTo(xl, ym);
+					context.bezierCurveTo(xl, ym - oy, xm - ox, yt, xm, yt);
+					context.bezierCurveTo(xm + ox, yt, xe, ym - oy, xe, ym);
+					context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+					context.bezierCurveTo(xm - ox, ye, xl, ym + oy, xl, ym);
+					context.closePath();
+					context.stroke();
+					break;
+				case LINE:
+					context.beginPath();
+					context.moveTo(start_point.x, start_point.y);
+					context.lineTo(x, y);
+					context.closePath();
+					context.stroke();
+					break;
+				case POLYGON:
+					break;
+				case RECTANGLE:
+					final double wr = x > start_point.x ? x - start_point.x
+							: start_point.x - x;
+					final double hr = y > start_point.y ? y - start_point.y
+							: start_point.y - y;
+					final double xlr = x > start_point.x ? start_point.x : x;
+					final double ytr = y > start_point.y ? start_point.y : y;
+
+					context.beginPath();
+					context.moveTo(xlr, ytr);
+					context.rect(xlr, ytr, wr, hr);
+					context.closePath();
+					context.stroke();
+
+					break;
+				case ERASER:
+					break;
+				}
 
 				old_point.x = x;
 				old_point.y = y;
@@ -664,13 +733,14 @@ public class AuthoringTool implements EntryPoint {
 		erase_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(null, new UserDrawingFinishedEventHandler() {
-					@Override
-					public void onUserDrawingFinishedEventHandler(
-							Drawing drawing) {
-						getCurrentPage().removeHotSpot(drawing);
-					}
-				});
+				waitUserDrawing(Drawing.Type.ERASER,
+						new UserDrawingFinishedEventHandler() {
+							@Override
+							public void onUserDrawingFinishedEventHandler(
+									Drawing drawing) {
+								getCurrentPage().removeHotSpot(drawing);
+							}
+						});
 			}
 		});
 
@@ -925,6 +995,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private void setCurrentPage(Lesson.Page page) {
 		this.currentPage = page;
+
+		// resets user drawing requests
+		udr_queue.clear();
+
 		final RootPanel pageContainer = getPageContainer();
 
 		if (page == null) {
@@ -1042,6 +1116,6 @@ public class AuthoringTool implements EntryPoint {
 
 	private void waitUserDrawing(Drawing.Type type,
 			UserDrawingFinishedEventHandler handler) {
-		// TODO Auto-generated method stub
+		udr_queue.add(new UserDrawingRequest(type, handler));
 	}
 }

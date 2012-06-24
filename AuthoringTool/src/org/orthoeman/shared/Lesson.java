@@ -10,8 +10,6 @@ import java.util.Map;
 
 import org.orthoeman.shared.Lesson.Page.QuizItem;
 
-import com.allen_sauer.gwt.log.client.Log;
-
 public class Lesson extends ArrayList<Lesson.Page> {
 	public interface PageListener {
 		public void pageAdded(Page page);
