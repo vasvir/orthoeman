@@ -10,6 +10,10 @@ public class Line extends Drawing {
 		this.b = new Point(b);
 	}
 	
+	public Line() {
+		this(new Point(), new Point());
+	}
+
 	public Point getA() {
 		return a;
 	}
@@ -24,6 +28,11 @@ public class Line extends Drawing {
 
 	public void setB(Point b) {
 		this.b = b;
+	}
+	
+	public void set(int xa, int ya, int xb, int yb) {
+		getA().set(xa, ya);
+		getB().set(xb, yb);
 	}
 
 }
