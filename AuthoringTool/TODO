@@ -36,6 +36,8 @@ Authoring Tool:
 
 
 	Immediate for TC meeting:
+		fix coordinates to always use image world coordinates
+
 		Image Editor
 			eraser
 			handle brightness / contrast
