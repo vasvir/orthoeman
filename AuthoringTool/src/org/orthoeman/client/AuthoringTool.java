@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -62,6 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class AuthoringTool implements EntryPoint {
 	private static final String itemTypeSeparator = " - ";
+	private static final double polygonDistanceThreshold = 20;
 
 	private Lesson lesson = null;
 	private Lesson.Page currentPage = null;
@@ -442,7 +444,31 @@ public class AuthoringTool implements EntryPoint {
 		final ResizeEvent event = new MyResizeEvent();
 		onResize(event);
 
+		final List<Point> polygon_points = new ArrayList<Point>();
+
 		canvas.addClickHandler(new ClickHandler() {
+			private void startDrawingOperation(int x, int y) {
+				Log.trace("Starting Point " + x + " " + y);
+				start_point.x = x;
+				start_point.y = y;
+				start_point.valid = true;
+
+				polygon_points.clear();
+			}
+
+			private void finishDrawingOperation() {
+				start_point.valid = false;
+				old_point.valid = false;
+
+				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
+						0, 0);
+
+				// pop the request and run the handler that returns the
+				// information
+				final UserDrawingRequest udr = udr_queue.poll();
+				udr.handler.onUserDrawingFinishedEventHandler(null);
+			}
+
 			@Override
 			public void onClick(ClickEvent event) {
 				final UserDrawingRequest udr = udr_queue.peek();
@@ -452,27 +478,35 @@ public class AuthoringTool implements EntryPoint {
 					return;
 				}
 
-				if (start_point.valid) {
-					// this is the end of the drawing operation
-					start_point.valid = false;
-					old_point.valid = false;
+				if (udr.type != Drawing.Type.POLYGON) {
+					// this is the end of the drawing operation. Click ends the
+					// operation in all cases except polygon which is multi
+					// click
+					// operation
+					if (start_point.valid) {
+						finishDrawingOperation();
+					} else {
+						final int x = event.getRelativeX(canvas.getElement());
+						final int y = event.getRelativeY(canvas.getElement());
+						startDrawingOperation(x, y);
+					}
+				} else {
+					// polygon case
+					final int x = event.getRelativeX(canvas.getElement());
+					final int y = event.getRelativeY(canvas.getElement());
+					Log.trace("Polygon Point " + x + " " + y);
 
-					back_canvas.getContext2d().drawImage(
-							canvas.getCanvasElement(), 0, 0);
-
-					// pop the request and run the handler that returns the
-					// information
-					final UserDrawingRequest udr = udr_queue.poll();
-					udr.handler.onUserDrawingFinishedEventHandler(null);
-					return;
+					final double distance = getDistance(start_point, x, y);
+					if (distance >= 0 && distance < polygonDistanceThreshold) {
+						polygon_points.add(new Point(start_point));
+						finishDrawingOperation();
+					} else {
+						if (!start_point.valid) {
+							startDrawingOperation(x, y);
+						}
+						polygon_points.add(new Point(x, y));
+					}
 				}
-
-				final int x = event.getRelativeX(canvas.getElement());
-				final int y = event.getRelativeY(canvas.getElement());
-				Log.trace("Point " + x + " " + y);
-				start_point.x = x;
-				start_point.y = y;
-				start_point.valid = true;
 			}
 		});
 
@@ -531,6 +565,24 @@ public class AuthoringTool implements EntryPoint {
 					context.stroke();
 					break;
 				case POLYGON:
+					context.beginPath();
+					context.moveTo(start_point.x, start_point.y);
+					for (final Point point : polygon_points) {
+						context.lineTo(point.x, point.y);
+					}
+					context.lineTo(x, y);
+					context.closePath();
+					context.stroke();
+
+					final double distance = getDistance(start_point, x, y);
+					if (distance < polygonDistanceThreshold) {
+						context.beginPath();
+						context.arc(start_point.x, start_point.y,
+								polygonDistanceThreshold, 0, Math.PI * 2, true);
+						context.closePath();
+						context.stroke();
+					}
+
 					break;
 				case RECTANGLE:
 					final double wr = x > start_point.x ? x - start_point.x
@@ -1120,5 +1172,11 @@ public class AuthoringTool implements EntryPoint {
 	private void waitUserDrawing(Drawing.Type type,
 			UserDrawingFinishedEventHandler handler) {
 		udr_queue.add(new UserDrawingRequest(type, handler));
+	}
+
+	private static double getDistance(Point start_point, double x, double y) {
+		return start_point.valid ? Math.sqrt((start_point.x - x)
+				* (start_point.x - x) + (start_point.y - y)
+				* (start_point.y - y)) : -1;
 	}
 }
