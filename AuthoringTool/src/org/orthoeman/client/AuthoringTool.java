@@ -445,6 +445,13 @@ public class AuthoringTool implements EntryPoint {
 		canvas.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				final UserDrawingRequest udr = udr_queue.peek();
+				if (udr == null) {
+					if (start_point.valid)
+						Log.error("Valid starting point without a drawing request. Please report");
+					return;
+				}
+
 				if (start_point.valid) {
 					// this is the end of the drawing operation
 					start_point.valid = false;
@@ -459,10 +466,6 @@ public class AuthoringTool implements EntryPoint {
 					udr.handler.onUserDrawingFinishedEventHandler(null);
 					return;
 				}
-
-				final UserDrawingRequest udr = udr_queue.peek();
-				if (udr == null)
-					return;
 
 				final int x = event.getRelativeX(canvas.getElement());
 				final int y = event.getRelativeY(canvas.getElement());

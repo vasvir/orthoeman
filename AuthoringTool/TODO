@@ -22,6 +22,9 @@ Authoring Tool:
 
 		Image and Video are not perfectly algined due to inline block and spaces?
 
+		Make buttons in pageButton have aspect 4/3 with padding
+			-add selection color if you can
+
 	Code:
 		-CheckBox vs SimpleCheckBox: SimpleCheckBox does not
 		have valueChangeHandler althouch ClickHandler works ok. CheckBox
