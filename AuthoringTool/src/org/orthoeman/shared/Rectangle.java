@@ -11,6 +11,10 @@ public class Rectangle extends Drawing {
 		set(x, y, width, heigth);
 	}
 
+	public Rectangle(Rectangle rect) {
+		this(rect.x, rect.y, rect.width, rect.height);
+	}
+
 	public Rectangle() {
 		this(0, 0, 0, 0);
 	}

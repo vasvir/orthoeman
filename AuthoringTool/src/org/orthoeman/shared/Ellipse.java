@@ -11,6 +11,10 @@ public class Ellipse extends Drawing {
 		set(x, y, width, height);
 	}
 
+	public Ellipse(Ellipse ellipse) {
+		this(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
+	}
+
 	public Ellipse() {
 		this(0, 0, 0, 0);
 	}
