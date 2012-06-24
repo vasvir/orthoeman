@@ -9,9 +9,10 @@ Display:
 
 Authoring Tool:
 	Image Editor
-		handle zoom
-		add lines and shapes
 		handle brightness / contrast
+		eraser
+
+	Range Question Editor
 	write xml
 	read xml
 
@@ -35,7 +36,7 @@ Authoring Tool:
 				The way to do this is the following
 				Implement Lesson listener that spawns events
 				on document change. All widget should listen
-				for document changes
+				for document changes and update their selves
 
 	Build:
 		fix gwt compilation. With this we could automate the deploy
@@ -43,6 +44,16 @@ Authoring Tool:
 	Later:
 		up down via drag & drop. Note that buttons don't seem to be
 		able to listen to drag events
+
+	Immediate:
+		Disable image editing buttons
+			if there is no image
+			if a drawing operation is in proceess
+
+		move hotspots to ImageItem
+		clear hotspots on Image reset
+
+		add hotspots so they are redrawn
 
 
 Moodle Integration:

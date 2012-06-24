@@ -2,7 +2,7 @@ package org.orthoeman.shared;
 
 public class Drawing {
 	public enum Type {
-		RECTANGLE, ELLIPSE, POLYGON, LINE
+		RECTANGLE, ELLIPSE, POLYGON, LINE, ERASER
 	}
 
 	private Type type;
