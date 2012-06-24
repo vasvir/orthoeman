@@ -9,8 +9,7 @@ public class Point {
 	}
 
 	public Point(int x, int y, boolean valid) {
-		this.x = x;
-		this.y = y;
+		set(x, y);
 		this.valid = valid;
 	}
 
@@ -20,5 +19,10 @@ public class Point {
 
 	public Point(Point p) {
 		this(p.x, p.y, p.valid);
+	}
+	
+	public void set(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 }

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -447,7 +446,10 @@ public class AuthoringTool implements EntryPoint {
 		final ResizeEvent event = new MyResizeEvent();
 		onResize(event);
 
-		final List<Point> polygon_points = new ArrayList<Point>();
+		final Ellipse ellipse = new Ellipse();
+		final Rectangle rect = new Rectangle();
+		final Line line = new Line();
+		final Polygon polygon = new Polygon();
 
 		canvas.addClickHandler(new ClickHandler() {
 			private void startDrawingOperation(int x, int y) {
@@ -456,7 +458,7 @@ public class AuthoringTool implements EntryPoint {
 				start_point.y = y;
 				start_point.valid = true;
 
-				polygon_points.clear();
+				polygon.getPoints().clear();
 			}
 
 			private void finishDrawingOperation() {
@@ -497,19 +499,18 @@ public class AuthoringTool implements EntryPoint {
 					// polygon case
 					final int x = event.getRelativeX(canvas.getElement());
 					final int y = event.getRelativeY(canvas.getElement());
-					Log.trace("Polygon Point " + x + " " + y);
 
 					final double distance = getDistance(start_point, x, y);
-					if (polygon_points.size() > 1 && distance >= 0
+					if (polygon.getPoints().size() > 1 && distance >= 0
 							&& distance < polygonDistanceThreshold) {
-						polygon_points.add(new Point(start_point));
+						polygon.getPoints().add(new Point(start_point));
 						finishDrawingOperation();
 					} else {
 						if (!start_point.valid) {
-							polygon_points.add(new Point(x, y));
+							polygon.getPoints().add(new Point(x, y));
 							startDrawingOperation(x, y);
 						}
-						polygon_points.add(new Point(x, y));
+						polygon.getPoints().add(new Point(x, y));
 					}
 				}
 			}
@@ -540,20 +541,20 @@ public class AuthoringTool implements EntryPoint {
 							: start_point.x - x);
 					final int h = 2 * (y > start_point.y ? y - start_point.y
 							: start_point.y - y);
-					draw(context, new Ellipse(start_point.x, start_point.y, w,
-							h));
+					ellipse.set(start_point.x, y, w, h);
+					draw(context, ellipse);
 					break;
 				case LINE:
-					draw(context, new Line(start_point, new Point(x, y)));
+					line.set(start_point.x, start_point.y, x, y);
+					draw(context, line);
 					break;
 				case POLYGON:
-					final List<Point> current_polygon_points = new ArrayList<Point>(
-							polygon_points);
-					current_polygon_points.add(new Point(x, y));
-					draw(context, new Polygon(current_polygon_points));
+					polygon.getPoints().add(new Point(x, y));
+					draw(context, polygon);
+					polygon.getPoints().remove(polygon.getPoints().size() - 1);
 
 					final double distance = getDistance(start_point, x, y);
-					if (polygon_points.size() > 1 && distance > 0
+					if (polygon.getPoints().size() > 1 && distance > 0
 							&& distance < polygonDistanceThreshold) {
 						context.beginPath();
 						context.arc(start_point.x, start_point.y,
@@ -571,7 +572,8 @@ public class AuthoringTool implements EntryPoint {
 					final int xlr = x > start_point.x ? start_point.x : x;
 					final int ytr = y > start_point.y ? start_point.y : y;
 
-					draw(context, new Rectangle(xlr, ytr, wr, hr));
+					rect.set(xlr, ytr, wr, hr);
+					draw(context, rect);
 					break;
 				case ERASER:
 					break;

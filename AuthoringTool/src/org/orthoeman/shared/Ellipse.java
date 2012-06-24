@@ -8,12 +8,20 @@ public class Ellipse extends Drawing {
 
 	public Ellipse(int x, int y, int width, int height) {
 		super(Type.ELLIPSE);
+		set(x, y, width, height);
+	}
+
+	public Ellipse() {
+		this(0, 0, 0, 0);
+	}
+
+	public void set(int x, int y, int width, int height) {
 		setX(x);
 		setY(y);
 		setWidth(width);
 		setHeight(height);
 	}
-	
+
 	public int getX() {
 		return x;
 	}
