@@ -17,11 +17,6 @@ Authoring Tool:
 	read xml
 
 	HTML:
-		Title and inputbox are not nicely aligned due to float exceeding containing div
-		Page,
-
-		Image and Video are not perfectly algined due to inline block and spaces?
-
 		Make buttons in pageButton have aspect 4/3 with padding
 			-add selection color if you can
 

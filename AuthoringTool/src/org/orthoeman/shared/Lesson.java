@@ -413,6 +413,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 	}
 
 	public static Lesson readXML(String url) {
+		// TODO read from url
 		final Lesson lesson = new Lesson();
 
 		lesson.add(new Page("opa"));
@@ -432,7 +433,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 	}
 
 	public static void writeXML(Lesson lesson) {
-
+		// TODO writeXML
 	}
 
 	private void notifyPageListeners(Page page, boolean added) {

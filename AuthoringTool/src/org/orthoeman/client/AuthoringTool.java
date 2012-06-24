@@ -517,7 +517,6 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		canvas.addMouseMoveHandler(new MouseMoveHandler() {
-
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
 				if (!start_point.valid)
@@ -778,7 +777,7 @@ public class AuthoringTool implements EntryPoint {
 		edit_image_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				// TODO brightness contrast
 			}
 		});
 
