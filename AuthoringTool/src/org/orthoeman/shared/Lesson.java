@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.orthoeman.shared.Lesson.Page.QuizItem;
@@ -154,6 +155,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 			private PreloadedImage image;
 			private Zoom zoom = new Zoom();
+			private List<Drawing> hotSpots = new ArrayList<Drawing>();
 
 			public ImageItem() {
 				super(Type.IMAGE);
@@ -173,6 +175,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 			public void setZoom(Zoom zoom) {
 				this.zoom = zoom;
+			}
+
+			public List<Drawing> getHotSpots() {
+				return hotSpots;
+			}
+
+			public void setHotSpots(List<Drawing> hotSpots) {
+				this.hotSpots = hotSpots;
 			}
 		}
 
@@ -355,14 +365,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public void setBlock(boolean block) {
 			this.block = block;
-		}
-
-		public void addHotSpot(Drawing drawing) {
-			// TODO Auto-generated method stub
-		}
-
-		public void removeHotSpot(Drawing drawing) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
