@@ -8,17 +8,8 @@ Display:
 	correct entries should be green not red
 
 Authoring Tool:
-	Image Editor
-		eraser
-		handle brightness / contrast
-
-	Range Question Editor
 	write xml
 	read xml
-
-	HTML:
-		Make buttons in pageButton have aspect 4/3 with padding
-			-add selection color if you can
 
 	Code:
 		-CheckBox vs SimpleCheckBox: SimpleCheckBox does not
@@ -43,10 +34,17 @@ Authoring Tool:
 		up down via drag & drop. Note that buttons don't seem to be
 		able to listen to drag events
 
-	Immediate:
-		Disable image editing buttons
-			if there is no image
-			if a drawing operation is in proceess
+
+	Immediate for TC meeting:
+		Image Editor
+			eraser
+			handle brightness / contrast
+		Range Question Editor
+		HTML:
+			Make buttons in pageButton have aspect 4/3 with padding
+				-add selection color if you can
+		Power point presentation
+
 
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)

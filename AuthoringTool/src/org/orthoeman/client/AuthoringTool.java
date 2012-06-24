@@ -96,6 +96,9 @@ public class AuthoringTool implements EntryPoint {
 	private final Collection<Collection<? extends Widget>> equal_width_widget_groups = new ArrayList<Collection<? extends Widget>>();
 
 	private final Queue<UserDrawingRequest> udr_queue = new LinkedList<UserDrawingRequest>();
+
+	private Collection<Button> image_edit_buttons;
+
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
 	 * <code>log_level</code> higher than <code>DEBUG</code>.
@@ -389,6 +392,9 @@ public class AuthoringTool implements EntryPoint {
 		final Button erase_b = getButton("eraseButton");
 		final Button edit_image_b = getButton("editImageButton");
 
+		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
+				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
+				polygon_hsp_b, line_b, erase_b, edit_image_b);
 		if (work_around_bug) {
 			getTextContainer();
 			getImageUploaderContainer();
@@ -467,6 +473,7 @@ public class AuthoringTool implements EntryPoint {
 				start_point.valid = true;
 
 				polygon.getPoints().clear();
+				setButtonsEnabled(image_edit_buttons, false);
 			}
 
 			private void finishDrawingOperation() {
@@ -500,6 +507,7 @@ public class AuthoringTool implements EntryPoint {
 				case ERASER:
 					break;
 				}
+				setButtonsEnabled(image_edit_buttons, true);
 			}
 
 			@Override
@@ -625,6 +633,7 @@ public class AuthoringTool implements EntryPoint {
 						img.getRealHeight());
 				getCurrentPage().getImageItem().getHotSpots().clear();
 				redrawCanvas();
+				setButtonsEnabled(image_edit_buttons, true);
 			}
 		};
 
@@ -635,12 +644,14 @@ public class AuthoringTool implements EntryPoint {
 						.getImageItem();
 				final PreloadedImage img = image_item.getImage();
 				if (img != null) {
+					setButtonsEnabled(image_edit_buttons, false);
 					img.removeFromParent();
 					image_item.setImage(null);
 				}
 				if (uploader.getStatus() == Status.SUCCESS) {
 					image_item.setImage(new PreloadedImage(uploader.fileUrl(),
 							showImageHandler));
+					setButtonsEnabled(image_edit_buttons, true);
 				}
 			}
 		};
@@ -1120,6 +1131,8 @@ public class AuthoringTool implements EntryPoint {
 		}
 		weight_tb.setText(page.getWeight() + "");
 		block_cb.setValue(page.isBlock());
+		setButtonsEnabled(image_edit_buttons,
+				page.getImageItem().getImage() != null);
 	}
 
 	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
@@ -1260,5 +1273,11 @@ public class AuthoringTool implements EntryPoint {
 		case ERASER:
 			break;
 		}
+	}
+
+	private static void setButtonsEnabled(Collection<Button> buttons,
+			boolean enabled) {
+		for (final Button button : buttons)
+			button.setEnabled(enabled);
 	}
 }
