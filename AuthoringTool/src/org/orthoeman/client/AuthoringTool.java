@@ -254,6 +254,10 @@ public class AuthoringTool implements EntryPoint {
 					.getTarget().getX(), zoom.getTarget().getY(), zoom
 					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
 					0, canvas_width, canvas_height);
+			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
+				draw(context, drawing);
+			}
+
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 		Log.trace("-----------------------------------------");
@@ -452,13 +456,32 @@ public class AuthoringTool implements EntryPoint {
 		final Polygon polygon = new Polygon();
 
 		canvas.addClickHandler(new ClickHandler() {
-			private void startDrawingOperation(int x, int y) {
+			Drawing drawing = null;
+
+			private void startDrawingOperation(UserDrawingRequest udr, int x,
+					int y) {
 				Log.trace("Starting Point " + x + " " + y);
 				start_point.x = x;
 				start_point.y = y;
 				start_point.valid = true;
 
-				polygon.getPoints().clear();
+				switch (udr.type) {
+				case ELLIPSE:
+					drawing = ellipse;
+					break;
+				case LINE:
+					drawing = line;
+					break;
+				case POLYGON:
+					polygon.getPoints().clear();
+					drawing = polygon;
+					break;
+				case RECTANGLE:
+					drawing = rect;
+					break;
+				case ERASER:
+					break;
+				}
 			}
 
 			private void finishDrawingOperation() {
@@ -471,7 +494,7 @@ public class AuthoringTool implements EntryPoint {
 				// pop the request and run the handler that returns the
 				// information
 				final UserDrawingRequest udr = udr_queue.poll();
-				udr.handler.onUserDrawingFinishedEventHandler(null);
+				udr.handler.onUserDrawingFinishedEventHandler(drawing);
 			}
 
 			@Override
@@ -484,16 +507,17 @@ public class AuthoringTool implements EntryPoint {
 				}
 
 				if (udr.type != Drawing.Type.POLYGON) {
-					// this is the end of the drawing operation. Click ends the
-					// operation in all cases except polygon which is multi
-					// click
-					// operation
+					/*
+					 * his is the end of the drawing operation. Click ends the
+					 * operation in all cases except polygon which is multi
+					 * click operation
+					 */
 					if (start_point.valid) {
 						finishDrawingOperation();
 					} else {
 						final int x = event.getRelativeX(canvas.getElement());
 						final int y = event.getRelativeY(canvas.getElement());
-						startDrawingOperation(x, y);
+						startDrawingOperation(udr, x, y);
 					}
 				} else {
 					// polygon case
@@ -508,7 +532,7 @@ public class AuthoringTool implements EntryPoint {
 					} else {
 						if (!start_point.valid) {
 							polygon.getPoints().add(new Point(x, y));
-							startDrawingOperation(x, y);
+							startDrawingOperation(udr, x, y);
 						}
 						polygon.getPoints().add(new Point(x, y));
 					}
@@ -594,6 +618,7 @@ public class AuthoringTool implements EntryPoint {
 				zoom.setLevel(1);
 				zoom.getTarget().set(0, 0, img.getRealWidth(),
 						img.getRealHeight());
+				getCurrentPage().getImageItem().getHotSpots().clear();
 				redrawCanvas();
 			}
 		};
@@ -712,7 +737,9 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().addHotSpot(drawing);
+								getCurrentPage().getImageItem().getHotSpots()
+										.add(drawing);
+								redrawCanvas();
 							}
 						});
 			}
@@ -726,7 +753,9 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().addHotSpot(drawing);
+								getCurrentPage().getImageItem().getHotSpots()
+										.add(drawing);
+								redrawCanvas();
 							}
 						});
 			}
@@ -740,7 +769,9 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().addHotSpot(drawing);
+								getCurrentPage().getImageItem().getHotSpots()
+										.add(drawing);
+								redrawCanvas();
 							}
 						});
 			}
@@ -754,7 +785,9 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().addHotSpot(drawing);
+								getCurrentPage().getImageItem().getHotSpots()
+										.add(drawing);
+								redrawCanvas();
 							}
 						});
 			}
@@ -768,7 +801,9 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().removeHotSpot(drawing);
+								getCurrentPage().getImageItem().getHotSpots()
+										.remove(drawing);
+								redrawCanvas();
 							}
 						});
 			}
