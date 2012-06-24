@@ -34,6 +34,7 @@ Authoring Tool:
 		up down via drag & drop. Note that buttons don't seem to be
 		able to listen to drag events
 
+	Mouse move should print angles as overlays
 
 	Immediate for TC meeting:
 		fix coordinates to always use image world coordinates

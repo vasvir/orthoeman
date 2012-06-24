@@ -738,8 +738,10 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								zoom.getTarget().set((Rectangle) drawing);
-								zoom.setLevel(1);
+								final Rectangle rect = (Rectangle) drawing;
+								zoom.getTarget().set(rect);
+								zoom.setLevel(((double) canvas.getOffsetWidth())
+										/ ((double) rect.getWidth()));
 								redrawCanvas();
 							}
 						});
