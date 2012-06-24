@@ -541,7 +541,7 @@ public class AuthoringTool implements EntryPoint {
 							: start_point.x - x);
 					final int h = 2 * (y > start_point.y ? y - start_point.y
 							: start_point.y - y);
-					ellipse.set(start_point.x, y, w, h);
+					ellipse.set(start_point.x, start_point.y, w, h);
 					draw(context, ellipse);
 					break;
 				case LINE:
