@@ -11,6 +11,10 @@ public class Polygon extends Drawing {
 		this.points = points;
 	}
 	
+	public Polygon(Polygon polygon) {
+		this(copyPoints(polygon));
+	}
+
 	public Polygon() {
 		this(new ArrayList<Point>());
 	}
@@ -21,5 +25,12 @@ public class Polygon extends Drawing {
 
 	public void setPoints(List<Point> points) {
 		this.points = points;
+	}
+	
+	private static List<Point> copyPoints(Polygon polygon) {
+		final List<Point> points = new ArrayList<Point>();
+		for (final Point point : polygon.points)
+			points.add(new Point(point));
+		return points;
 	}
 }

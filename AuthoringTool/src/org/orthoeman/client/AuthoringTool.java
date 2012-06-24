@@ -456,32 +456,17 @@ public class AuthoringTool implements EntryPoint {
 		final Polygon polygon = new Polygon();
 
 		canvas.addClickHandler(new ClickHandler() {
-			Drawing drawing = null;
+			private UserDrawingRequest udr;
 
 			private void startDrawingOperation(UserDrawingRequest udr, int x,
 					int y) {
-				Log.trace("Starting Point " + x + " " + y);
+				this.udr = udr;
+				Log.trace(udr.type + " Starting Point " + x + " " + y);
 				start_point.x = x;
 				start_point.y = y;
 				start_point.valid = true;
 
-				switch (udr.type) {
-				case ELLIPSE:
-					drawing = ellipse;
-					break;
-				case LINE:
-					drawing = line;
-					break;
-				case POLYGON:
-					polygon.getPoints().clear();
-					drawing = polygon;
-					break;
-				case RECTANGLE:
-					drawing = rect;
-					break;
-				case ERASER:
-					break;
-				}
+				polygon.getPoints().clear();
 			}
 
 			private void finishDrawingOperation() {
@@ -493,8 +478,28 @@ public class AuthoringTool implements EntryPoint {
 
 				// pop the request and run the handler that returns the
 				// information
-				final UserDrawingRequest udr = udr_queue.poll();
-				udr.handler.onUserDrawingFinishedEventHandler(drawing);
+				udr_queue.poll();
+				switch (udr.type) {
+				case ELLIPSE:
+					udr.handler.onUserDrawingFinishedEventHandler(new Ellipse(
+							ellipse));
+					break;
+				case LINE:
+					udr.handler
+							.onUserDrawingFinishedEventHandler(new Line(line));
+					break;
+				case POLYGON:
+					udr.handler.onUserDrawingFinishedEventHandler(new Polygon(
+							polygon));
+					break;
+				case RECTANGLE:
+					udr.handler
+							.onUserDrawingFinishedEventHandler(new Rectangle(
+									rect));
+					break;
+				case ERASER:
+					break;
+				}
 			}
 
 			@Override
