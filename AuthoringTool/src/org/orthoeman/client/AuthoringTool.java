@@ -11,9 +11,12 @@ import java.util.Queue;
 
 import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Drawing;
+import org.orthoeman.shared.Ellipse;
 import org.orthoeman.shared.Lesson;
 import org.orthoeman.shared.Lesson.Page.ImageItem.Zoom.Type;
+import org.orthoeman.shared.Line;
 import org.orthoeman.shared.Point;
+import org.orthoeman.shared.Polygon;
 import org.orthoeman.shared.Rectangle;
 import org.orthoeman.shared.Lesson.Page;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
@@ -497,11 +500,13 @@ public class AuthoringTool implements EntryPoint {
 					Log.trace("Polygon Point " + x + " " + y);
 
 					final double distance = getDistance(start_point, x, y);
-					if (distance >= 0 && distance < polygonDistanceThreshold) {
+					if (polygon_points.size() > 1 && distance >= 0
+							&& distance < polygonDistanceThreshold) {
 						polygon_points.add(new Point(start_point));
 						finishDrawingOperation();
 					} else {
 						if (!start_point.valid) {
+							polygon_points.add(new Point(x, y));
 							startDrawingOperation(x, y);
 						}
 						polygon_points.add(new Point(x, y));
@@ -531,51 +536,25 @@ public class AuthoringTool implements EntryPoint {
 				switch (udr.type) {
 				case ELLIPSE:
 					// find the bounding box
-					final double w = 2 * (x > start_point.x ? x - start_point.x
+					final int w = 2 * (x > start_point.x ? x - start_point.x
 							: start_point.x - x);
-					final double h = 2 * (y > start_point.y ? y - start_point.y
+					final int h = 2 * (y > start_point.y ? y - start_point.y
 							: start_point.y - y);
-					final double xl = start_point.x - w / 2;
-					final double yt = start_point.y - h / 2;
-
-					final double kappa = .5522848;
-					final double ox = (w / 2) * kappa; // control point offset
-														// horizontal
-					final double oy = (h / 2) * kappa; // control point offset
-														// vertical
-					final double xe = xl + w; // x-end
-					final double ye = yt + h; // y-end
-					final double xm = xl + w / 2; // x-middle
-					final double ym = yt + h / 2; // y-middle
-
-					context.beginPath();
-					context.moveTo(xl, ym);
-					context.bezierCurveTo(xl, ym - oy, xm - ox, yt, xm, yt);
-					context.bezierCurveTo(xm + ox, yt, xe, ym - oy, xe, ym);
-					context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-					context.bezierCurveTo(xm - ox, ye, xl, ym + oy, xl, ym);
-					context.closePath();
-					context.stroke();
+					draw(context, new Ellipse(start_point.x, start_point.y, w,
+							h));
 					break;
 				case LINE:
-					context.beginPath();
-					context.moveTo(start_point.x, start_point.y);
-					context.lineTo(x, y);
-					context.closePath();
-					context.stroke();
+					draw(context, new Line(start_point, new Point(x, y)));
 					break;
 				case POLYGON:
-					context.beginPath();
-					context.moveTo(start_point.x, start_point.y);
-					for (final Point point : polygon_points) {
-						context.lineTo(point.x, point.y);
-					}
-					context.lineTo(x, y);
-					context.closePath();
-					context.stroke();
+					final List<Point> current_polygon_points = new ArrayList<Point>(
+							polygon_points);
+					current_polygon_points.add(new Point(x, y));
+					draw(context, new Polygon(current_polygon_points));
 
 					final double distance = getDistance(start_point, x, y);
-					if (distance < polygonDistanceThreshold) {
+					if (polygon_points.size() > 1 && distance > 0
+							&& distance < polygonDistanceThreshold) {
 						context.beginPath();
 						context.arc(start_point.x, start_point.y,
 								polygonDistanceThreshold, 0, Math.PI * 2, true);
@@ -585,19 +564,14 @@ public class AuthoringTool implements EntryPoint {
 
 					break;
 				case RECTANGLE:
-					final double wr = x > start_point.x ? x - start_point.x
+					final int wr = x > start_point.x ? x - start_point.x
 							: start_point.x - x;
-					final double hr = y > start_point.y ? y - start_point.y
+					final int hr = y > start_point.y ? y - start_point.y
 							: start_point.y - y;
-					final double xlr = x > start_point.x ? start_point.x : x;
-					final double ytr = y > start_point.y ? start_point.y : y;
+					final int xlr = x > start_point.x ? start_point.x : x;
+					final int ytr = y > start_point.y ? start_point.y : y;
 
-					context.beginPath();
-					context.moveTo(xlr, ytr);
-					context.rect(xlr, ytr, wr, hr);
-					context.closePath();
-					context.stroke();
-
+					draw(context, new Rectangle(xlr, ytr, wr, hr));
 					break;
 				case ERASER:
 					break;
@@ -1178,5 +1152,71 @@ public class AuthoringTool implements EntryPoint {
 		return start_point.valid ? Math.sqrt((start_point.x - x)
 				* (start_point.x - x) + (start_point.y - y)
 				* (start_point.y - y)) : -1;
+	}
+
+	private static void draw(Context2d context, Drawing drawing) {
+		switch (drawing.getType()) {
+		case ELLIPSE:
+			final Ellipse ellipse = (Ellipse) drawing;
+			final double w = ellipse.getWidth();
+			final double h = ellipse.getHeight();
+			final double xl = ellipse.getX() - w / 2;
+			final double yt = ellipse.getY() - h / 2;
+
+			final double kappa = .5522848;
+			// control point offset horizontal
+			final double ox = (w / 2) * kappa;
+			// control point offset vertical
+			final double oy = (h / 2) * kappa;
+			final double xe = xl + w; // x-end
+			final double ye = yt + h; // y-end
+			final double xm = xl + w / 2; // x-middle
+			final double ym = yt + h / 2; // y-middle
+
+			context.beginPath();
+			context.moveTo(xl, ym);
+			context.bezierCurveTo(xl, ym - oy, xm - ox, yt, xm, yt);
+			context.bezierCurveTo(xm + ox, yt, xe, ym - oy, xe, ym);
+			context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+			context.bezierCurveTo(xm - ox, ye, xl, ym + oy, xl, ym);
+			context.closePath();
+			context.stroke();
+			break;
+		case LINE:
+			final Line line = (Line) drawing;
+			context.beginPath();
+			context.moveTo(line.getA().x, line.getA().y);
+			context.lineTo(line.getB().x, line.getB().y);
+			context.closePath();
+			context.stroke();
+			break;
+		case POLYGON:
+			final Polygon polygon = (Polygon) drawing;
+			context.beginPath();
+			boolean start = true;
+			for (final Point point : polygon.getPoints()) {
+				if (start) {
+					context.moveTo(point.x, point.y);
+					start = false;
+				} else {
+					context.lineTo(point.x, point.y);
+				}
+			}
+			context.closePath();
+			context.stroke();
+			break;
+		case RECTANGLE:
+			final Rectangle rect = (Rectangle) drawing;
+
+			context.beginPath();
+			context.moveTo(rect.getX(), rect.getY());
+			context.rect(rect.getX(), rect.getY(), rect.getWidth(),
+					rect.getHeight());
+			context.closePath();
+			context.stroke();
+			break;
+		case ERASER:
+			break;
+		}
 	}
 }

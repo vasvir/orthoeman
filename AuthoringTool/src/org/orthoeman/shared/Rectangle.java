@@ -6,11 +6,13 @@ public class Rectangle extends Drawing {
 	private int width;
 	private int height;
 
-	public Rectangle() {
+	public Rectangle(int x, int y, int width, int heigth) {
+		super(Type.RECTANGLE);
+		set(x, y, width, heigth);
 	}
 
-	public Rectangle(int x, int y, int width, int heigth) {
-		set(x, y, width, heigth);
+	public Rectangle() {
+		this(0, 0, 0, 0);
 	}
 
 	public void set(int x, int y, int width, int heigth) {
