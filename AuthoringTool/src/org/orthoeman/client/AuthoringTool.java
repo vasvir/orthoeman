@@ -12,14 +12,13 @@ import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Drawing;
 import org.orthoeman.shared.Ellipse;
 import org.orthoeman.shared.Lesson;
-import org.orthoeman.shared.Lesson.Page.ImageItem.Zoom.Type;
 import org.orthoeman.shared.Line;
 import org.orthoeman.shared.Point;
 import org.orthoeman.shared.Polygon;
 import org.orthoeman.shared.Rectangle;
 import org.orthoeman.shared.Lesson.Page;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
-import org.orthoeman.shared.Lesson.Page.ImageItem.Zoom;
+import org.orthoeman.shared.Zoom;
 
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
@@ -229,6 +228,8 @@ public class AuthoringTool implements EntryPoint {
 				canvas_width = canvas_100;
 				canvas_height = img.getRealHeight() * canvas_width
 						/ img.getRealWidth();
+				zoom.setLevel(((double) canvas_width)
+						/ ((double) img.getRealWidth()));
 				break;
 			}
 		}
@@ -252,13 +253,14 @@ public class AuthoringTool implements EntryPoint {
 			context.fillRect(0, 0, canvas_width, canvas_height);
 		} else {
 			img.setVisible(false);
-			Log.trace("Zoom Target (src) rectangle " + zoom.getTarget());
+			Log.trace("Zoom Level: " + zoom.getLevel()
+					+ " Target (src) rectangle " + zoom.getTarget());
 			context.drawImage((ImageElement) (Object) img.getElement(), zoom
 					.getTarget().getX(), zoom.getTarget().getY(), zoom
 					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
 					0, canvas_width, canvas_height);
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
-				draw(context, drawing);
+				draw(context, drawing.toCanvas(page.getImageItem().getZoom()));
 			}
 
 		}
@@ -488,21 +490,20 @@ public class AuthoringTool implements EntryPoint {
 				udr_queue.poll();
 				switch (udr.type) {
 				case ELLIPSE:
-					udr.handler.onUserDrawingFinishedEventHandler(new Ellipse(
-							ellipse));
+					udr.handler.onUserDrawingFinishedEventHandler(ellipse
+							.toImage(getCurrentPage().getImageItem().getZoom()));
 					break;
 				case LINE:
-					udr.handler
-							.onUserDrawingFinishedEventHandler(new Line(line));
+					udr.handler.onUserDrawingFinishedEventHandler(line
+							.toImage(getCurrentPage().getImageItem().getZoom()));
 					break;
 				case POLYGON:
-					udr.handler.onUserDrawingFinishedEventHandler(new Polygon(
-							polygon));
+					udr.handler.onUserDrawingFinishedEventHandler(polygon
+							.toImage(getCurrentPage().getImageItem().getZoom()));
 					break;
 				case RECTANGLE:
-					udr.handler
-							.onUserDrawingFinishedEventHandler(new Rectangle(
-									rect));
+					udr.handler.onUserDrawingFinishedEventHandler(rect
+							.toImage(getCurrentPage().getImageItem().getZoom()));
 					break;
 				case ERASER:
 					break;
@@ -627,8 +628,9 @@ public class AuthoringTool implements EntryPoint {
 				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				Log.trace("Got image " + img.getRealWidth() + " x "
 						+ img.getRealHeight());
-				zoom.setType(Type.ZOOM_TO_FIT_WIDTH);
-				zoom.setLevel(1);
+				zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
+				zoom.setLevel(((double) canvas.getOffsetWidth())
+						/ ((double) img.getRealWidth()));
 				zoom.getTarget().set(0, 0, img.getRealWidth(),
 						img.getRealHeight());
 				getCurrentPage().getImageItem().getHotSpots().clear();
@@ -720,7 +722,7 @@ public class AuthoringTool implements EntryPoint {
 						.getImage();
 				if (img != null) {
 					zoom.setLevel(((double) canvas.getOffsetWidth())
-							/ ((double) img.getWidth()));
+							/ ((double) img.getRealWidth()));
 					zoom.getTarget().set(0, 0, img.getRealWidth(),
 							img.getRealHeight());
 				}
