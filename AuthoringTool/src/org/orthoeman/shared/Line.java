@@ -48,4 +48,10 @@ public class Line extends Drawing {
 	public Drawing toCanvas(Zoom zoom) {
 		return new Line(a.toCanvas(zoom), b.toCanvas(zoom));
 	}
+
+	@Override
+	public double distance(Point point) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

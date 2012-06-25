@@ -88,4 +88,10 @@ public class Ellipse extends Drawing {
 				+ this + " to " + ellipse);
 		return ellipse;
 	}
+
+	@Override
+	public double distance(Point point) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

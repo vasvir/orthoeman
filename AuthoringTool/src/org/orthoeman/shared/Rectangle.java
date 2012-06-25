@@ -93,4 +93,19 @@ public class Rectangle extends Drawing {
 				+ this + " to " + rectangle);
 		return rectangle;
 	}
+
+	@Override
+	public double distance(Point point) {
+		final Point p1 = new Point(x, y);
+		final Point p2 = new Point(x + width, y);
+		final Point p3 = new Point(x + width, y + height);
+		final Point p4 = new Point(x, y + height);
+
+		final double d1 = new Line(p1, p2).distance(point);
+		final double d2 = new Line(p2, p3).distance(point);
+		final double d3 = new Line(p3, p4).distance(point);
+		final double d4 = new Line(p4, p1).distance(point);
+
+		return Math.min(Math.min(d1, d2), Math.min(d3, d4));
+	}
 }

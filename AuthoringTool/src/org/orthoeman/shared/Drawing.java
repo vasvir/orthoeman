@@ -10,7 +10,7 @@ public abstract class Drawing {
 	public Drawing(Type type) {
 		setType(type);
 	}
-	
+
 	public Type getType() {
 		return type;
 	}
@@ -18,7 +18,10 @@ public abstract class Drawing {
 	public void setType(Type type) {
 		this.type = type;
 	}
-	
+
 	public abstract Drawing toImage(Zoom zoom);
+
 	public abstract Drawing toCanvas(Zoom zoom);
+
+	public abstract double distance(Point point);
 }
