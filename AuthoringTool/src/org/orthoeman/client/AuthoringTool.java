@@ -70,6 +70,7 @@ public class AuthoringTool implements EntryPoint {
 	private static final String drawingColor = "black";
 	private static final String drawingActiveColor = "green";
 	private static final String drawingEraseColor = "red";
+	private static double eraseDistanceThreshold = 5;
 
 	private Lesson lesson = null;
 	private Lesson.Page currentPage = null;
@@ -1303,8 +1304,19 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static Drawing getNearestDrawing(List<Drawing> drawings, Point point) {
-		if (drawings.isEmpty())
-			return null;
-		return drawings.get(0);
+		Drawing min_distance_drawing = null;
+		double min_distance = Double.MAX_VALUE;
+		for (final Drawing drawing : drawings) {
+			final double distance = drawing.distance(point);
+			if (distance < min_distance) {
+				min_distance = distance;
+				min_distance_drawing = drawing;
+			}
+		}
+
+		if (min_distance > eraseDistanceThreshold)
+			min_distance_drawing = null;
+
+		return min_distance_drawing;
 	}
 }
