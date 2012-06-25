@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -16,6 +17,7 @@ import org.orthoeman.shared.Line;
 import org.orthoeman.shared.Point;
 import org.orthoeman.shared.Polygon;
 import org.orthoeman.shared.Rectangle;
+import org.orthoeman.shared.Drawing.Type;
 import org.orthoeman.shared.Lesson.Page;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
 import org.orthoeman.shared.Zoom;
@@ -65,6 +67,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class AuthoringTool implements EntryPoint {
 	private static final String itemTypeSeparator = " - ";
 	private static final double polygonDistanceThreshold = 20;
+	private static final String drawingColor = "black";
+	private static final String drawingActiveColor = "green";
+	private static final String drawingEraseColor = "red";
 
 	private Lesson lesson = null;
 	private Lesson.Page currentPage = null;
@@ -97,6 +102,10 @@ public class AuthoringTool implements EntryPoint {
 	private final Queue<UserDrawingRequest> udr_queue = new LinkedList<UserDrawingRequest>();
 
 	private Collection<Button> image_edit_buttons;
+
+	private UserDrawingRequest udr;
+	private final Polygon polygon = new Polygon();
+	private Drawing erase_drawing = null;
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -260,7 +269,8 @@ public class AuthoringTool implements EntryPoint {
 					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
 					0, canvas_width, canvas_height);
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
-				draw(context, drawing.toCanvas(page.getImageItem().getZoom()));
+				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
+						drawingColor);
 			}
 
 		}
@@ -461,23 +471,9 @@ public class AuthoringTool implements EntryPoint {
 		final Ellipse ellipse = new Ellipse();
 		final Rectangle rect = new Rectangle();
 		final Line line = new Line();
-		final Polygon polygon = new Polygon();
+		final Point erase_point = new Point();
 
 		canvas.addClickHandler(new ClickHandler() {
-			private UserDrawingRequest udr;
-
-			private void startDrawingOperation(UserDrawingRequest udr, int x,
-					int y) {
-				this.udr = udr;
-				Log.trace(udr.type + " Starting Point " + x + " " + y);
-				start_point.x = x;
-				start_point.y = y;
-				start_point.valid = true;
-
-				polygon.getPoints().clear();
-				setButtonsEnabled(image_edit_buttons, false);
-			}
-
 			private void finishDrawingOperation() {
 				start_point.valid = false;
 				old_point.valid = false;
@@ -488,24 +484,27 @@ public class AuthoringTool implements EntryPoint {
 				// pop the request and run the handler that returns the
 				// information
 				udr_queue.poll();
+				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				switch (udr.type) {
 				case ELLIPSE:
 					udr.handler.onUserDrawingFinishedEventHandler(ellipse
-							.toImage(getCurrentPage().getImageItem().getZoom()));
+							.toImage(zoom));
 					break;
 				case LINE:
 					udr.handler.onUserDrawingFinishedEventHandler(line
-							.toImage(getCurrentPage().getImageItem().getZoom()));
+							.toImage(zoom));
 					break;
 				case POLYGON:
 					udr.handler.onUserDrawingFinishedEventHandler(polygon
-							.toImage(getCurrentPage().getImageItem().getZoom()));
+							.toImage(zoom));
 					break;
 				case RECTANGLE:
 					udr.handler.onUserDrawingFinishedEventHandler(rect
-							.toImage(getCurrentPage().getImageItem().getZoom()));
+							.toImage(zoom));
 					break;
 				case ERASER:
+					udr.handler
+							.onUserDrawingFinishedEventHandler(erase_drawing);
 					break;
 				}
 				setButtonsEnabled(image_edit_buttons, true);
@@ -579,15 +578,15 @@ public class AuthoringTool implements EntryPoint {
 					final int h = 2 * (y > start_point.y ? y - start_point.y
 							: start_point.y - y);
 					ellipse.set(start_point.x, start_point.y, w, h);
-					draw(context, ellipse);
+					draw(context, ellipse, drawingActiveColor);
 					break;
 				case LINE:
 					line.set(start_point.x, start_point.y, x, y);
-					draw(context, line);
+					draw(context, line, drawingActiveColor);
 					break;
 				case POLYGON:
 					polygon.getPoints().add(new Point(x, y));
-					draw(context, polygon);
+					draw(context, polygon, drawingActiveColor);
 					polygon.getPoints().remove(polygon.getPoints().size() - 1);
 
 					final double distance = getDistance(start_point, x, y);
@@ -610,9 +609,17 @@ public class AuthoringTool implements EntryPoint {
 					final int ytr = y > start_point.y ? start_point.y : y;
 
 					rect.set(xlr, ytr, wr, hr);
-					draw(context, rect);
+					draw(context, rect, drawingActiveColor);
 					break;
 				case ERASER:
+					final Zoom zoom = getCurrentPage().getImageItem().getZoom();
+					erase_point.set(x, y);
+					erase_drawing = getNearestDrawing(getCurrentPage()
+							.getImageItem().getHotSpots(), erase_point
+							.toImage(zoom));
+					if (erase_drawing != null)
+						draw(context, erase_drawing.toCanvas(zoom),
+								drawingEraseColor);
 					break;
 				}
 
@@ -822,6 +829,8 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
+								if (drawing == null)
+									return;
 								getCurrentPage().getImageItem().getHotSpots()
 										.remove(drawing);
 								redrawCanvas();
@@ -1204,7 +1213,11 @@ public class AuthoringTool implements EntryPoint {
 
 	private void waitUserDrawing(Drawing.Type type,
 			UserDrawingFinishedEventHandler handler) {
-		udr_queue.add(new UserDrawingRequest(type, handler));
+		final UserDrawingRequest udr = new UserDrawingRequest(type, handler);
+		udr_queue.add(udr);
+		if (type == Type.ERASER) {
+			startDrawingOperation(udr, -1, -1);
+		}
 	}
 
 	private static double getDistance(Point start_point, double x, double y) {
@@ -1213,7 +1226,10 @@ public class AuthoringTool implements EntryPoint {
 				* (start_point.y - y)) : -1;
 	}
 
-	private static void draw(Context2d context, Drawing drawing) {
+	private static void draw(Context2d context, Drawing drawing, String color) {
+		context.beginPath();
+		context.setStrokeStyle(color);
+
 		switch (drawing.getType()) {
 		case ELLIPSE:
 			final Ellipse ellipse = (Ellipse) drawing;
@@ -1232,26 +1248,19 @@ public class AuthoringTool implements EntryPoint {
 			final double xm = xl + w / 2; // x-middle
 			final double ym = yt + h / 2; // y-middle
 
-			context.beginPath();
 			context.moveTo(xl, ym);
 			context.bezierCurveTo(xl, ym - oy, xm - ox, yt, xm, yt);
 			context.bezierCurveTo(xm + ox, yt, xe, ym - oy, xe, ym);
 			context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
 			context.bezierCurveTo(xm - ox, ye, xl, ym + oy, xl, ym);
-			context.closePath();
-			context.stroke();
 			break;
 		case LINE:
 			final Line line = (Line) drawing;
-			context.beginPath();
 			context.moveTo(line.getA().x, line.getA().y);
 			context.lineTo(line.getB().x, line.getB().y);
-			context.closePath();
-			context.stroke();
 			break;
 		case POLYGON:
 			final Polygon polygon = (Polygon) drawing;
-			context.beginPath();
 			boolean start = true;
 			for (final Point point : polygon.getPoints()) {
 				if (start) {
@@ -1261,27 +1270,41 @@ public class AuthoringTool implements EntryPoint {
 					context.lineTo(point.x, point.y);
 				}
 			}
-			context.closePath();
-			context.stroke();
 			break;
 		case RECTANGLE:
 			final Rectangle rect = (Rectangle) drawing;
 
-			context.beginPath();
 			context.moveTo(rect.getX(), rect.getY());
 			context.rect(rect.getX(), rect.getY(), rect.getWidth(),
 					rect.getHeight());
-			context.closePath();
-			context.stroke();
 			break;
 		case ERASER:
 			break;
 		}
+		context.closePath();
+		context.stroke();
 	}
 
 	private static void setButtonsEnabled(Collection<Button> buttons,
 			boolean enabled) {
 		for (final Button button : buttons)
 			button.setEnabled(enabled);
+	}
+
+	private void startDrawingOperation(UserDrawingRequest udr, int x, int y) {
+		AuthoringTool.this.udr = udr;
+		Log.trace(udr.type + " Starting Point " + x + " " + y);
+		start_point.x = x;
+		start_point.y = y;
+		start_point.valid = true;
+
+		polygon.getPoints().clear();
+		setButtonsEnabled(image_edit_buttons, false);
+	}
+
+	private static Drawing getNearestDrawing(List<Drawing> drawings, Point point) {
+		if (drawings.isEmpty())
+			return null;
+		return drawings.get(0);
 	}
 }
