@@ -92,6 +92,6 @@ public class Ellipse extends Drawing {
 	@Override
 	public double distance(Point point) {
 		// TODO Auto-generated method stub
-		return 0;
+		return Double.MAX_VALUE;
 	}
 }

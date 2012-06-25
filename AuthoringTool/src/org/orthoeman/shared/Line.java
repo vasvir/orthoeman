@@ -51,7 +51,30 @@ public class Line extends Drawing {
 
 	@Override
 	public double distance(Point point) {
-		// TODO Auto-generated method stub
-		return 0;
+		final double A = point.x - a.x;
+		final double B = point.y - a.y;
+		final double C = b.x - a.x;
+		final double D = b.y - a.y;
+
+		final double dot = A * C + B * D;
+		final double len_sq = C * C + D * D;
+		final double param = dot / len_sq;
+
+		double xx, yy;
+
+		if (param < 0 || (a.x == b.x && a.y == b.y)) {
+			xx = a.x;
+			yy = a.y;
+		} else if (param > 1) {
+			xx = b.x;
+			yy = b.y;
+		} else {
+			xx = a.x + param * C;
+			yy = a.y + param * D;
+		}
+
+		final double dx = point.x - xx;
+		final double dy = point.y - yy;
+		return Math.sqrt(dx * dx + dy * dy);
 	}
 }

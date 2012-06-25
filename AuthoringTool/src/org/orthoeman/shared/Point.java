@@ -2,15 +2,17 @@ package org.orthoeman.shared;
 
 import com.allen_sauer.gwt.log.client.Log;
 
-public class Point {
+public class Point extends Drawing {
 	public int x;
 	public int y;
 	public boolean valid;
 
 	public Point() {
+		super(null);
 	}
 
 	public Point(int x, int y, boolean valid) {
+		super(null);
 		set(x, y);
 		this.valid = valid;
 	}
@@ -33,6 +35,7 @@ public class Point {
 		return "Point:" + x + ":" + y;
 	}
 
+	@Override
 	public Point toImage(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
@@ -43,6 +46,7 @@ public class Point {
 		return point;
 	}
 
+	@Override
 	public Point toCanvas(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
@@ -51,5 +55,11 @@ public class Point {
 		Log.trace("toCanvas: level " + level + " target " + rect + " from "
 				+ this + " to " + point);
 		return point;
+	}
+
+	@Override
+	public double distance(Point point) {
+		return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y)
+				* (y - point.y));
 	}
 }
