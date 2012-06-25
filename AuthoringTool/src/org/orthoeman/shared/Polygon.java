@@ -33,4 +33,20 @@ public class Polygon extends Drawing {
 			points.add(new Point(point));
 		return points;
 	}
+
+	@Override
+	public Drawing toImage(Zoom zoom) {
+		final List<Point> newpoints = new ArrayList<Point>();
+		for (final Point point : points)
+			newpoints.add(point.toImage(zoom));
+		return new Polygon(newpoints);
+	}
+
+	@Override
+	public Drawing toCanvas(Zoom zoom) {
+		final List<Point> newpoints = new ArrayList<Point>();
+		for (final Point point : points)
+			newpoints.add(point.toCanvas(zoom));
+		return new Polygon(newpoints);
+	}
 }

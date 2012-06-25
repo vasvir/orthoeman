@@ -39,4 +39,13 @@ public class Line extends Drawing {
 		getB().set(xb, yb);
 	}
 
+	@Override
+	public Drawing toImage(Zoom zoom) {
+		return new Line(a.toImage(zoom), b.toImage(zoom));
+	}
+
+	@Override
+	public Drawing toCanvas(Zoom zoom) {
+		return new Line(a.toCanvas(zoom), b.toCanvas(zoom));
+	}
 }

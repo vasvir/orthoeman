@@ -37,8 +37,6 @@ Authoring Tool:
 	Mouse move should print angles as overlays
 
 	Immediate for TC meeting:
-		fix coordinates to always use image world coordinates
-
 		Image Editor
 			eraser
 			handle brightness / contrast

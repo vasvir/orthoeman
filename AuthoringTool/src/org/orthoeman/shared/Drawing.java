@@ -1,6 +1,6 @@
 package org.orthoeman.shared;
 
-public class Drawing {
+public abstract class Drawing {
 	public enum Type {
 		RECTANGLE, ELLIPSE, POLYGON, LINE, ERASER
 	}
@@ -18,4 +18,7 @@ public class Drawing {
 	public void setType(Type type) {
 		this.type = type;
 	}
+	
+	public abstract Drawing toImage(Zoom zoom);
+	public abstract Drawing toCanvas(Zoom zoom);
 }
