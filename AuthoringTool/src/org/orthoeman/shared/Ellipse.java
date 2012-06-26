@@ -91,7 +91,22 @@ public class Ellipse extends Drawing {
 
 	@Override
 	public double distance(Point point) {
-		// TODO Auto-generated method stub
-		return Double.MAX_VALUE;
+		final double a = width / 2.;
+		final double b = height / 2.;
+		final double dx = point.x - x;
+		final double dy = point.y - y;
+		final double a2 = a * a;
+		final double b2 = b * b;
+		final double dx2 = dx * dx;
+		final double dy2 = dy * dy;
+
+		final double distance = Math.abs(Math.sqrt(Math.sqrt(dx2 * b2 + dy2
+				* a2))
+				- Math.sqrt(a * b));
+
+		Log.trace("Distance " + this + " from point " + point + " distance = "
+				+ distance + " a = " + a + " b = " + b + " dx = " + dx
+				+ " dy = " + dy);
+		return distance;
 	}
 }
