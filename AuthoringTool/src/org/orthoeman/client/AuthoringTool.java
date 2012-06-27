@@ -47,16 +47,22 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimpleCheckBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -107,6 +113,10 @@ public class AuthoringTool implements EntryPoint {
 	private UserDrawingRequest udr;
 	private final Polygon polygon = new Polygon();
 	private Drawing erase_drawing = null;
+
+	private Slider brightness_sl;
+	private Slider contrast_sl;
+	private SimpleCheckBox invert_cb;
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -841,9 +851,126 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		edit_image_b.addClickHandler(new ClickHandler() {
+			private PopupPanel pp;
+			private Panel panel;
+			private Label brightness_l;
+			private Label contrast_l;
+			private Button reset_b;
+			private NumberFormat format;
+
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO brightness contrast
+				if (pp == null) {
+					pp = new PopupPanel(true, true);
+					panel = new FlowPanel();
+					panel.addStyleName("center");
+
+					format = NumberFormat.getFormat("#.##");
+
+					brightness_l = new Label();
+					brightness_l
+							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+					brightness_sl = new Slider(1024, 0, 1, 0.5);
+					setBrightnessLabel(brightness_sl.getValue());
+
+					contrast_l = new Label();
+					contrast_l
+							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+					contrast_sl = new Slider(1024, 0, 1, 0.5);
+					setContrastLabel(brightness_sl.getValue());
+
+					final Label invert_l = new Label("Invert: ");
+					invert_l.addStyleName("inline");
+					invert_cb = new SimpleCheckBox();
+
+					reset_b = new Button("Reset");
+
+					panel.add(brightness_l);
+					panel.add(brightness_sl);
+
+					panel.add(createSpace(10));
+					panel.add(contrast_l);
+					panel.add(contrast_sl);
+
+					panel.add(createSpace(10));
+
+					panel.add(invert_l);
+					panel.add(invert_cb);
+
+					panel.add(createSpace(15));
+					panel.add(reset_b);
+
+					pp.setWidget(panel);
+
+					brightness_sl
+							.addValueChangeHandler(new ValueChangeHandler<Double>() {
+								@Override
+								public void onValueChange(
+										ValueChangeEvent<Double> event) {
+									setBrightnessLabel(brightness_sl.getValue());
+									redrawCanvas();
+								}
+							});
+
+					contrast_sl
+							.addValueChangeHandler(new ValueChangeHandler<Double>() {
+								@Override
+								public void onValueChange(
+										ValueChangeEvent<Double> event) {
+									setContrastLabel(contrast_sl.getValue());
+									redrawCanvas();
+								}
+							});
+
+					invert_cb.addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							redrawCanvas();
+						}
+					});
+
+					reset_b.addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							brightness_sl.reset();
+							contrast_sl.reset();
+							invert_cb.setValue(false);
+							redrawCanvas();
+						}
+					});
+				}
+
+				final int slider_width = Window.getClientWidth() * 2 / 10;
+
+				brightness_sl.setWidth(slider_width);
+				contrast_sl.setWidth(slider_width);
+
+				pp.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+					@Override
+					public void setPosition(int offsetWidth, int offsetHeight) {
+						int left = (Window.getClientWidth() - offsetWidth) / 2;
+						int top = (Window.getClientHeight() - offsetHeight) / 2;
+						pp.setPopupPosition(left, top);
+					}
+				});
+			}
+
+			private void setLabel(Label label, String text, double value) {
+				label.setText(text + ": " + format.format(value));
+			}
+
+			private void setBrightnessLabel(double value) {
+				setLabel(brightness_l, "Brightness", value);
+			}
+
+			private void setContrastLabel(double value) {
+				setLabel(contrast_l, "Contrast", value);
+			}
+
+			private Panel createSpace(int height) {
+				final Panel space = new SimplePanel();
+				space.setSize("100%", height + "px");
+				return space;
 			}
 		});
 
@@ -1289,7 +1416,7 @@ public class AuthoringTool implements EntryPoint {
 	private static void setButtonsEnabled(Collection<Button> buttons,
 			boolean enabled) {
 		for (final Button button : buttons)
-			button.setEnabled(enabled);
+			button.setEnabled(true);
 	}
 
 	private void startDrawingOperation(UserDrawingRequest udr, int x, int y) {
