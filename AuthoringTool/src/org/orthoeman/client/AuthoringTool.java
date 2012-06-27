@@ -31,8 +31,10 @@ import gwtupload.client.SingleUploaderModal;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -279,6 +281,36 @@ public class AuthoringTool implements EntryPoint {
 					.getTarget().getX(), zoom.getTarget().getY(), zoom
 					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
 					0, canvas_width, canvas_height);
+			// apply image processing filters
+			final ImageData imgData = context.getImageData(0, 0, canvas_width,
+					canvas_height);
+			final CanvasPixelArray data = imgData.getData();
+			final int length = data.getLength();
+			final double brightness = brightness_sl.getValue();
+			final double contrast = contrast_sl.getValue();
+			final double contrast_factor = 259. * (contrast + 255)
+					/ (255 * (259 - contrast));
+			final boolean invert = invert_cb.getValue();
+
+			for (int i = 0; i < length; i += 4) {
+				final double r = data.get(i);
+				final double g = data.get(i + 1);
+				final double b = data.get(i + 2);
+				final double r1 = r + brightness;
+				final double g1 = g + brightness;
+				final double b1 = b + brightness;
+				final double r2 = contrast_factor * (r1 - 128) + 128;
+				final double g2 = contrast_factor * (g1 - 128) + 128;
+				final double b2 = contrast_factor * (b1 - 128) + 128;
+				final double r3 = (!invert) ? r2 : 255 - r2;
+				final double g3 = (!invert) ? g2 : 255 - g2;
+				final double b3 = (!invert) ? b2 : 255 - b2;
+				data.set(i, truncate(r3));
+				data.set(i + 1, truncate(g3));
+				data.set(i + 2, truncate(b3));
+			}
+			context.putImageData(imgData, 0, 0);
+			
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
 				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
 						drawingColor);
@@ -287,6 +319,14 @@ public class AuthoringTool implements EntryPoint {
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 		Log.trace("-----------------------------------------");
+	}
+
+	private static int truncate(double value) {
+		if (value >= 0 && value <= 255)
+			return (int) value;
+		if (value < 0)
+			return 0;
+		return 255;
 	}
 
 	/**
@@ -426,6 +466,10 @@ public class AuthoringTool implements EntryPoint {
 			getVideoContainer();
 			getQuizAnswerContainer();
 		}
+
+		brightness_sl = new Slider(1024, -255, 255, 0);
+		contrast_sl = new Slider(1024, -255, 255, 0);
+		invert_cb = new SimpleCheckBox();
 
 		title_tb = getTextBox("titleTextBox");
 		title_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -870,18 +914,15 @@ public class AuthoringTool implements EntryPoint {
 					brightness_l = new Label();
 					brightness_l
 							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-					brightness_sl = new Slider(1024, 0, 1, 0.5);
 					setBrightnessLabel(brightness_sl.getValue());
 
 					contrast_l = new Label();
 					contrast_l
 							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-					contrast_sl = new Slider(1024, 0, 1, 0.5);
 					setContrastLabel(brightness_sl.getValue());
 
 					final Label invert_l = new Label("Invert: ");
 					invert_l.addStyleName("inline");
-					invert_cb = new SimpleCheckBox();
 
 					reset_b = new Button("Reset");
 
@@ -1416,7 +1457,7 @@ public class AuthoringTool implements EntryPoint {
 	private static void setButtonsEnabled(Collection<Button> buttons,
 			boolean enabled) {
 		for (final Button button : buttons)
-			button.setEnabled(true);
+			button.setEnabled(enabled);
 	}
 
 	private void startDrawingOperation(UserDrawingRequest udr, int x, int y) {
