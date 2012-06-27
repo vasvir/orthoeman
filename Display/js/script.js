@@ -651,7 +651,17 @@ function DisableButtonLink(id) {
     $("#" + id).unbind('click');
     if (id === "SubmitAnswer") {OrthoVariables.PageTracking[OrthoVariables.lessonPage].submitbutton = false;}
     if (id  === "NextTest") {$('#lesson').turn('disable', true);}
-
+    switch (id) {
+        case "NextTest":
+            $("#" + id).animate({right:"-150px"},2000, 'easeInElastic'  );
+            break;
+        case "PreviousTest":
+            $("#" + id).animate({left:"-150px"},2000, 'easeInElastic'  );
+           break;
+        case "SubmitAnswer":
+            $("#" + id).animate({top:"-50px"},2000, 'easeInElastic'  );
+            break;
+    }
 }
 
 function EnableButtonLink(id) {
@@ -663,19 +673,23 @@ function EnableButtonLink(id) {
                     IncreasePage();
                 });
                 $('#lesson').turn('disable', false);
+                $("#" + id).animate({right:"10px"},2000, 'easeOutElastic'  );
                 break;
             case "PreviousTest":
                 $("#" + id).on("click",function () {
                     DecreasePage();
                 });
+                $("#" + id).animate({left:"10px"},2000, 'easeOutElastic'  );
                 break;
             case "SubmitAnswer":
                 $("#" + id).on("click",function () {
                     SubmitAnswer();
                 });
                 OrthoVariables.PageTracking[OrthoVariables.lessonPage].submitbutton = true;
+                $("#" + id).animate({top:"+=50px"},2000, 'easeOutElastic'  );
                 break;
         }
+
     }
 }
 
