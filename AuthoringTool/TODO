@@ -1,9 +1,53 @@
-up down via drag & drop
+Display:
+	scale resize images otherwise brightness contrast controls are out of screen
 
-Available combinations
+	brightness contrast loose the orignal image
 
-	Image Text
-	Image Quiz
-	Video Text
-	Video Quiz
-	Text Quiz
+	on reload user spots should be visible
+
+	correct entries should be green not red
+
+Authoring Tool:
+	write xml
+	read xml
+
+	Code:
+		-CheckBox vs SimpleCheckBox: SimpleCheckBox does not
+		have valueChangeHandler althouch ClickHandler works ok. CheckBox
+		does not have static .wrap method
+
+		use private variables to store containers and DOM stuff
+
+		have a common way to represent
+			-document loading
+			-document changes via widgets
+			-document changes via program logic (undo / redo)
+				The way to do this is the following
+				Implement Lesson listener that spawns events
+				on document change. All widget should listen
+				for document changes and update their selves
+
+	Build:
+		fix gwt compilation. With this we could automate the deploy
+
+	Later:
+		up down via drag & drop. Note that buttons don't seem to be
+		able to listen to drag events
+
+	Mouse move should print angles as overlays
+
+	Immediate for TC meeting:
+		Image Editor
+			eraser
+			handle brightness / contrast
+		Range Question Editor
+		HTML:
+			Make buttons in pageButton have aspect 4/3 with padding
+				-add selection color if you can
+		Power point presentation
+
+
+Moodle Integration:
+	Authentication - Authorization (moodle should provide us with some id)
+	Use data backend for storing resources (xml & images & videos)
+	Authoring Tool should be able to launch the Display Tool
