@@ -85,17 +85,19 @@
      <div id="pointer_{{:Image.id}}" class="{{if Image.HotSpots=='yes'}}pointcursor{{/if}}" style="width:{{:Image.width}}px;height:{{:Image.height}}px"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
           <div id="container_{{:Image.id}}" style="top:-{{:Image.height}}px;position:relative;"></div>
     </div>
-     	  		<span class="ColorFunctions">
+     	  <div style="width:{{:Image.width}}px;text-align: right;">
+          <span class="ColorFunctions">
           		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
-          		<img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
+              <img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
                 <img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" />
           		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'draw' )" onmouseout="ShowOffImage('{{:Image.id}}', 'draw' )" onclick="TogglePaint('line','{{:Image.id}}',{{if Image.HotSpots=='yes'}}'pointcursor'{{else}}''{{/if}})" />
           		<img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'reset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'reset' )" />
           	</span>
+           </div>
 
-     <div style="position:relative"><div id="slider_b_{{:Image.id}}" style="left:70px;top:10px;" class="cssSlider"></div>
-     <div id="slider_c_{{:Image.id}}" style="left:118px;top:10px;" class="cssSlider"></div></div>
-          </div>
+     <div style="width:{{:Image.width}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:10px;" class="cssSlider"></div>
+     <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:10px;" class="cssSlider"></div></div>
+      </div>
  </script>
 
   <!-- Quiz Template -->

@@ -179,8 +179,8 @@ header nav ul li#current span {
 
 /* Contents */
 #content_wrap {
-    top: 120px;
-    width: 80%;
+    top: 85px;
+    width: 90%;
     position: absolute;
     margin: auto;
     left: 0px;
@@ -200,11 +200,11 @@ section {
 } */
 #NextTest {
     position: absolute;
-    right:-150px;
+    right:-130px;
 }
 #PreviousTest {
    position: absolute;
-   left:-150px;
+   left:-130px;
 }
 
 #SubmitAnswer {
@@ -280,6 +280,12 @@ span.ColorFunctions img {
 
 }
 
+.ColorFunctions {
+    margin-left: auto;
+    margin-right: 0;
+
+}
+
 .submit {
     width: 200px;
 }
@@ -349,9 +355,10 @@ a:hover.disablemore {
     position: fixed;
     min-width: 350px;
     max-width: 450px;
-    bottom: 100px;
+    bottom: 10px;
     z-index: 8;
-    right: 40px;
+    left: 10px;
+
 }
 
 #msg_area .ui-icon-closethick {
