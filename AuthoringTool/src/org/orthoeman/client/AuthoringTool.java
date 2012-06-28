@@ -282,35 +282,37 @@ public class AuthoringTool implements EntryPoint {
 					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
 					0, canvas_width, canvas_height);
 			// apply image processing filters
-			final ImageData imgData = context.getImageData(0, 0, canvas_width,
-					canvas_height);
-			final CanvasPixelArray data = imgData.getData();
-			final int length = data.getLength();
 			final double brightness = brightness_sl.getValue();
 			final double contrast = contrast_sl.getValue();
-			final double contrast_factor = 259. * (contrast + 255)
-					/ (255 * (259 - contrast));
 			final boolean invert = invert_cb.getValue();
+			boolean skip = false;
+			if (skip && (brightness != 0 || contrast != 0 || invert)) {
+				final ImageData imgData = context.getImageData(0, 0,
+						canvas_width, canvas_height);
+				final CanvasPixelArray data = imgData.getData();
+				final double contrast_factor = 259. * (contrast + 255)
+						/ (255 * (259 - contrast));
+				final int length = data.getLength();
 
-			for (int i = 0; i < length; i += 4) {
-				final double r = data.get(i);
-				final double g = data.get(i + 1);
-				final double b = data.get(i + 2);
-				final double r1 = r + brightness;
-				final double g1 = g + brightness;
-				final double b1 = b + brightness;
-				final double r2 = contrast_factor * (r1 - 128) + 128;
-				final double g2 = contrast_factor * (g1 - 128) + 128;
-				final double b2 = contrast_factor * (b1 - 128) + 128;
-				final double r3 = (!invert) ? r2 : 255 - r2;
-				final double g3 = (!invert) ? g2 : 255 - g2;
-				final double b3 = (!invert) ? b2 : 255 - b2;
-				data.set(i, truncate(r3));
-				data.set(i + 1, truncate(g3));
-				data.set(i + 2, truncate(b3));
+				for (int i = 0; i < length; i += 4) {
+					final double r = data.get(i);
+					final double g = data.get(i + 1);
+					final double b = data.get(i + 2);
+					final double r1 = r + brightness;
+					final double g1 = g + brightness;
+					final double b1 = b + brightness;
+					final double r2 = contrast_factor * (r1 - 128) + 128;
+					final double g2 = contrast_factor * (g1 - 128) + 128;
+					final double b2 = contrast_factor * (b1 - 128) + 128;
+					final double r3 = (!invert) ? r2 : 255 - r2;
+					final double g3 = (!invert) ? g2 : 255 - g2;
+					final double b3 = (!invert) ? b2 : 255 - b2;
+					data.set(i, truncate(r3));
+					data.set(i + 1, truncate(g3));
+					data.set(i + 2, truncate(b3));
+				}
+				context.putImageData(imgData, 0, 0);
 			}
-			context.putImageData(imgData, 0, 0);
-			
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
 				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
 						drawingColor);
