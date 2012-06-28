@@ -5,8 +5,8 @@
 var OrthoVariables = {
 	maxPages : 5,
 	CurPage : 1,
-	HeightFromBottom : 200, //$('#navigation').height() - $('footer').height();
-	origCanvas : [],
+	HeightFromBottom : 120, //$('#navigation').height() - $('footer').height();
+	origCanvas : [], // is array with [0] original image, [1] imageurl, [2] stage [3] brightness [4] contrast, [5] is invert
 	JsonUrl : "sslayer.php",
 	LessonData : "",
 	buttonState : {
@@ -99,7 +99,8 @@ function LoadImages(Page) {
 		orig.height = c.height;
 		orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
 		//orig.getContext("2d").drawImage(c, 0 , 0);
-		OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url];
+
+        OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url,0,0, false];
         OrthoVariables.MaxHotSpots[imagesToLoad[i].id[0]] = imagesToLoad[i].MaxSpots;
 		//sliders
 		$('#slider_b_' + imagesToLoad[i].id).slider({
@@ -110,7 +111,9 @@ function LoadImages(Page) {
 			slide : function(event, ui) {
 				var id = this.id.substr(this.id.lastIndexOf("_") + 1, this.id.length);
 				var value = ui.value / 100;
-				Brightness(id, value, OrthoVariables.origCanvas[id][0].zag_Clone());
+                OrthoVariables.origCanvas[id][3] = value;
+				//Brightness(id, value, OrthoVariables.origCanvas[id][0].zag_Clone());
+                ApplyImageOperations(id);
 			}
 		});
 		$('#slider_c_' + imagesToLoad[i].id).slider({
@@ -121,7 +124,9 @@ function LoadImages(Page) {
 			slide : function(event, ui) {
 				var id = getID(this.id);
 				var value = ui.value / 100;
-				Contrast(id, value, OrthoVariables.origCanvas[id][0].zag_Clone());
+				OrthoVariables.origCanvas[id][4] = value;
+                //Contrast(id, value, OrthoVariables.origCanvas[id][0].zag_Clone());
+                ApplyImageOperations(id);
 			}
 		});
 		//for shapes
@@ -511,9 +516,34 @@ function InvertImage(id) {
 		});
 		OrthoVariables.buttonState["b"] = false;
 	}
-	var mycanvas = $('#canvasid_' + id).get(0);
-	mycanvas.getContext("2d").zag_Invert(0, 0, mycanvas.width, mycanvas.height);
-	OrthoVariables.origCanvas[id][0] = mycanvas.zag_Clone();
+	//var mycanvas = $('#canvasid_' + id).get(0);
+	//mycanvas.getContext("2d").zag_Invert(0, 0, mycanvas.width, mycanvas.height);
+	//OrthoVariables.origCanvas[id][0] = mycanvas.zag_Clone();
+    OrthoVariables.origCanvas[id][5] = !OrthoVariables.origCanvas[id][5];
+    ApplyImageOperations(id);
+}
+
+function ApplyImageOperations(id) {
+    var mycanvas = $('#canvasid_' + id).get(0);
+    var canvasobj = OrthoVariables.origCanvas[id][0].zag_Clone();
+    var canvasobjcontext = canvasobj.getContext("2d");
+    var bright = OrthoVariables.origCanvas[id][3];
+    var contr = OrthoVariables.origCanvas[id][4];
+    var invert = OrthoVariables.origCanvas[id][5];
+    /*if (bright !== 0) {
+        canvasobjcontext.zag_Brightening(bright, 0, 0, mycanvas.width, mycanvas.height);
+    }
+
+    if (contr !== 0) {
+        canvasobjcontext.zag_Contrast(contr, 0, 0, mycanvas.width, mycanvas.height);
+    }
+
+    if (invert) {
+        canvasobjcontext.zag_Invert(0, 0, mycanvas.width, mycanvas.height);
+    }*/
+    canvasobjcontext.zag_BCI(bright,contr, invert,0,0,mycanvas.width, mycanvas.height);
+    mycanvas.getContext("2d").drawImage(canvasobj, 0, 0);
+
 }
 
 function SaveImageState(id) {
@@ -565,7 +595,13 @@ function Contrast(id, value, canvasobj) {
 function ReloadImage(id) {
 	//alert(id);
 	//$('#canvasid_' + id).get(0).getContext("2d").drawImage(OrthoVariables.origCanvas[id],0,0);
-	$('#canvasid_' + id).get(0).getContext("2d").zag_LoadImage(OrthoVariables.origCanvas[id][1]);
+    $('#slider_b_' + id).slider('value',0);
+    $('#slider_c_' + id).slider('value',0);
+    OrthoVariables.origCanvas[id][3] = 0;
+    OrthoVariables.origCanvas[id][4] = 0;
+    OrthoVariables.origCanvas[id][5] = false;
+    //mycanvas.getContext("2d").drawImage(canvasobj, 0, 0);
+	$('#canvasid_' + id).get(0).getContext("2d").drawImage(OrthoVariables.origCanvas[id][0],0,0);
 	var mystage = OrthoVariables.origCanvas[id][2];
 	var myshapelayer = mystage.get("#shapelayer")[0];
 	myshapelayer.removeChildren();
@@ -589,8 +625,8 @@ function ActionSlider(sliderid, action) {
 		case 'hide':
 			if(OrthoVariables.buttonState[borc]) {
 				var id = getID(sliderid)
-				SaveImageState(id);
-				myslide.slider('value', 0);
+				//SaveImageState(id);
+				//myslide.slider('value', 0);
 				myslide.hide('slide', function() {
 					ShowOffImage(id, (borc === "c") ? "contrast" : "brightness");
 				});
@@ -653,15 +689,19 @@ function DisableButtonLink(id) {
     if (id  === "NextTest") {$('#lesson').turn('disable', true);}
     switch (id) {
         case "NextTest":
-            $("#" + id).animate({right:"-150px"},2000, 'easeInElastic'  );
+            $("#" + id).animate({right:"-130px"},500, 'linear'  );
             break;
         case "PreviousTest":
-            $("#" + id).animate({left:"-150px"},2000, 'easeInElastic'  );
+            $("#" + id).animate({left:"-130px"},500, 'linear'  );
            break;
         case "SubmitAnswer":
-            $("#" + id).animate({top:"-50px"},2000, 'easeInElastic'  );
+            $("#" + id).animate({top:"-50px"},500, 'linear'  );
             break;
     }
+}
+
+function IsEnabledButtonLink(id) {
+    return ($("#" + id).hasClass("disablemore")) ? false : true;
 }
 
 function EnableButtonLink(id) {
@@ -673,20 +713,20 @@ function EnableButtonLink(id) {
                     IncreasePage();
                 });
                 $('#lesson').turn('disable', false);
-                $("#" + id).animate({right:"10px"},2000, 'easeOutElastic'  );
+                $("#" + id).animate({right:"10px"},1000, 'easeOutElastic'  );
                 break;
             case "PreviousTest":
                 $("#" + id).on("click",function () {
                     DecreasePage();
                 });
-                $("#" + id).animate({left:"10px"},2000, 'easeOutElastic'  );
+                $("#" + id).animate({left:"10px"},1000, 'easeOutElastic'  );
                 break;
             case "SubmitAnswer":
                 $("#" + id).on("click",function () {
                     SubmitAnswer();
                 });
                 OrthoVariables.PageTracking[OrthoVariables.lessonPage].submitbutton = true;
-                $("#" + id).animate({top:"+=50px"},2000, 'easeOutElastic'  );
+                $("#" + id).animate({top:"+=50px"},1000, 'easeOutElastic'  );
                 break;
         }
 
@@ -730,7 +770,7 @@ function ShowMsg(message, type) {
 	$("#msgbox_" + id).slideDown("slow");
 
 	var msgfadeout = setTimeout(function() {
-		$("#msgbox_" + id).fadeOut(3000, function() {
+		$("#msgbox_" + id).fadeOut(2000,"easeInQuart" ,function() {
 			var myid = getID(this.id);
 			OrthoVariables.msg_info[id] = null;
 			$(this).remove();
@@ -765,13 +805,21 @@ function ToggleQuizSelection(element) {
 		$("[name='" + element.name + "']").parent().removeClass("quizselected");
 	}
 
-    DisableButtonLink("SubmitAnswer");
+
+    var todisable = true;
     for (var i=0;i< OrthoVariables.lessonAnswers[myPage].quiz.length; i ++){
         if (OrthoVariables.lessonAnswers[myPage].quiz[i]) {
-            EnableButtonLink("SubmitAnswer");
+            todisable = false;
             break;
         }
     }
+    if (todisable) {
+        DisableButtonLink("SubmitAnswer");
+    }
+    else if (!IsEnabledButtonLink("SubmitAnswer")) {
+       EnableButtonLink("SubmitAnswer");
+    }
+
 
 }
 
@@ -893,17 +941,21 @@ function ApplyQuizResult(data) {
     if(data.Answer === "correct") {
 		ShowMsg("Your Answer is Correct!", "highlight");
         myanswer = "correct";
+        //$("#Page" + (OrthoVariables.CurPage-1)).css("background-color","#D4FFAF");
 	} else {
 		ShowMsg("Your Answer is Wrong!", "alert");
+        //$("#Page" + (OrthoVariables.CurPage-1)).css("background-color","#FF9397");
+
         myanswer = "wrong";
 	}
 	var length = data.PaintShapes.length;
 
     if(length > 0) {
-		var mypage = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage];
-		var subid = (mypage.Widget[0].type === "compleximage") ? 0 : 1;
-		var id = OrthoVariables.lessonPage.toString() + subid.toString();
-		var mystage = OrthoVariables.origCanvas[id][2];
+        var mypage = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage];
+        var subid = (mypage.Widget[0].type === "compleximage") ? 0 : 1;
+        var id = OrthoVariables.lessonPage.toString() + subid.toString();
+
+        var mystage = OrthoVariables.origCanvas[id][2];
 		var myshapelayer = mystage.get("#answerlayer")[0];
 		myshapelayer.removeChildren();
         var fillcolor = (myanswer==="correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
@@ -934,10 +986,16 @@ function ApplyQuizResult(data) {
 
     if (data.CorrectAnswer !== "") {
         var ca = data.CorrectAnswer.split(";");
+
+         if (data.Answer === "wrong") {
+             ApplyQuizColors(ca);
+         }
         for (var i=1;i< ca.length;i++) {
            ApplyQuizColor(ca[i],data.Answer)
         }
+
     }
+
     CheckReadyNextText(myanswer,blocked);
     PageTracking(myanswer,blocked);
     RemoveOverlay();
@@ -952,11 +1010,40 @@ function ApplyQuizColor(index, result) {
         }
     }
     id = index + ".answer_" + id;
-    if (result==="correct") {
-        $("[name='" + id + "']").parent().css("text-shadow", "1px 1px 0 black").animate({backgroundColor: OrthoVariables.ColorRight, color:"white"},2000);
-    } else {
-        $("[name='" + id + "']").parent().css("text-shadow", "1px 1px 0 black").animate({backgroundColor: OrthoVariables.ColorWrong, color:"white"},2000);
+     var inputlelem = $("[name='" + id + "']");
+    inputlelem.parent().css("text-shadow", "1px 1px 0 black").animate({backgroundColor: OrthoVariables.ColorRight, color:"white"},2000);
+}
+
+function ApplyQuizColors(ca) {
+    var id = "";
+    var widgets = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].Widget;
+    for(var i=0; i<widgets.length;i++) {
+        if (widgets[i].type ==="quiz") {
+            id = widgets[i].Quiz.id;
+        }
     }
+
+    for (var i=0;i< OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].quiz.length;i++)
+    {
+        console.log (Iscontains(i,ca));
+        if (!Iscontains(i,ca) === true && OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].quiz[i] === true){
+                var input = $("[name='" + i + ".answer_" +  id + "']");
+                input.parent().removeClass("quizselected").css("text-shadow", "1px 1px 0 black").animate({backgroundColor: OrthoVariables.ColorWrong, color:"white"},2000);
+        }
+
+    }
+}
+
+function Iscontains (value, tables) {
+
+    var contains = false;
+    for (var j=0;j < tables.length; j++) {
+        if (tables[j] === value) {
+            contains = true;
+            break;
+        }
+    }
+    return contains;
 
 }
 
@@ -974,7 +1061,11 @@ function ApplyHotspotResult(data) {
 
     }
     var length = data.PaintShapes.length;
-    var fillcolor = (myanswer==="correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
+    //var fillcolor = (myanswer==="correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
+    var fillcolor = function (fillanswer) {
+        //console.log(fillanswer);
+        return   (fillanswer) ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
+    }
     var strikecolor = (myanswer==="correct") ? OrthoVariables.ColorRightEdge : OrthoVariables.ColorWrongEdge;
 
     if(length > 0) {
@@ -987,16 +1078,16 @@ function ApplyHotspotResult(data) {
         for(var i = 0; i < length; i++) {
             switch (data.PaintShapes[i][0]) {
                 case "Circle":
-                    myshapelayer.add(PaintCircle(data.PaintShapes[i],fillcolor,strikecolor));
+                    myshapelayer.add(PaintCircle(data.PaintShapes[i],fillcolor(data.Fill[i]),strikecolor));
                     break;
                 case "Rect":
-                    myshapelayer.add(PaintRect(data.PaintShapes[i],fillcolor,strikecolor));
+                    myshapelayer.add(PaintRect(data.PaintShapes[i],fillcolor(data.Fill[i]),strikecolor));
                     break;
                 case "Polygon":
-                    myshapelayer.add(PaintPolygon(data.PaintShapes[i],fillcolor,strikecolor));
+                    myshapelayer.add(PaintPolygon(data.PaintShapes[i],fillcolor(data.Fill[i]),strikecolor));
                     break;
                 case 'Eclipse':
-                    myshapelayer.add(PaintEclipse(data.PaintShapes[i],fillcolor,strikecolor));
+                    myshapelayer.add(PaintEclipse(data.PaintShapes[i],fillcolor(data.Fill[i]),strikecolor));
                     break;
             }
         }
