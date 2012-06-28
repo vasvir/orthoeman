@@ -69,6 +69,10 @@ function GetHotspotsAnswer() {
     $myimg = GetHotSpotImage($Page,$xml);
     $result = true;
     $burnded = array();
+    $fillcolors = array();
+    for ($j=0;$j<count($myimg);$j++){
+        $fillcolors[$j] = false;
+    }
      $r = array();
     for ($i=0;$i< count($useranswer);$i++) {
         $r[$i] = false;
@@ -77,10 +81,13 @@ function GetHotspotsAnswer() {
         for ($j=0;$j<count($myimg);$j++){
             if (!array_key_exists($j, $burnded)) {
                 $colorint = imagecolorat($myimg[$j],$x,$y);
-                if ($colorint === 1) {$r[$i] =true; $burnded[]=$j;break;}
+                if ($colorint === 1) {$r[$i] =true; $burnded[]=$j; $fillcolors[$j] = true;break;}
             }
         }
-        if ($r[$i]===false){$result=false;break;}
+        if ($r[$i]===false){
+            $result=false;
+            //break;
+        }
     }
 
     foreach($r as $rs){
@@ -94,6 +101,7 @@ function GetHotspotsAnswer() {
 	$return["Answer"] = $result && count($useranswer) > 0 ? "correct" : "wrong";
     $isblocked = strval($xml->Page[intval($Page)]["Blocked"]);
     $return["PaintShapes"] = ($isblocked === "yes" && $return["Answer"] === "wrong") ? "" : GetShapesFromImage($Page, $xml);
+    $return["Fill"] = $fillcolors;
     return $return;
 }
 
