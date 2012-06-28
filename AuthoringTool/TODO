@@ -1,11 +1,7 @@
 Display:
 	scale resize images otherwise brightness contrast controls are out of screen
 
-	brightness contrast loose the orignal image
-
 	on reload user spots should be visible
-
-	correct entries should be green not red
 
 Authoring Tool:
 	write xml
