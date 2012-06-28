@@ -39,7 +39,9 @@ public class Slider extends ScrollPanel implements
 				 * getMinimumHorizontalScrollPosition() + " max " +
 				 * getMaximumHorizontalScrollPosition());
 				 */
-				value = getValue();
+				value = Slider.this.min + (Slider.this.max - Slider.this.min)
+						* getHorizontalScrollPosition()
+						/ Slider.this.total_ticks;
 				ValueChangeEvent.fire(Slider.this, value);
 			}
 		});
@@ -56,7 +58,7 @@ public class Slider extends ScrollPanel implements
 	}
 
 	public double getValue() {
-		return min + (max - min) * getHorizontalScrollPosition() / total_ticks;
+		return value;
 	}
 
 	public void setValue(double value) {

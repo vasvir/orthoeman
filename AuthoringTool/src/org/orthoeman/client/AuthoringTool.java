@@ -316,7 +316,6 @@ public class AuthoringTool implements EntryPoint {
 				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
 						drawingColor);
 			}
-
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 		Log.trace("-----------------------------------------");
