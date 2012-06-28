@@ -31,8 +31,10 @@ import gwtupload.client.SingleUploaderModal;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -47,16 +49,22 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimpleCheckBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -107,6 +115,10 @@ public class AuthoringTool implements EntryPoint {
 	private UserDrawingRequest udr;
 	private final Polygon polygon = new Polygon();
 	private Drawing erase_drawing = null;
+
+	private Slider brightness_sl;
+	private Slider contrast_sl;
+	private SimpleCheckBox invert_cb;
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -269,6 +281,38 @@ public class AuthoringTool implements EntryPoint {
 					.getTarget().getX(), zoom.getTarget().getY(), zoom
 					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
 					0, canvas_width, canvas_height);
+			// apply image processing filters
+			final double brightness = brightness_sl.getValue();
+			final double contrast = contrast_sl.getValue();
+			final boolean invert = invert_cb.getValue();
+			boolean skip = false;
+			if (skip && (brightness != 0 || contrast != 0 || invert)) {
+				final ImageData imgData = context.getImageData(0, 0,
+						canvas_width, canvas_height);
+				final CanvasPixelArray data = imgData.getData();
+				final double contrast_factor = 259. * (contrast + 255)
+						/ (255 * (259 - contrast));
+				final int length = data.getLength();
+
+				for (int i = 0; i < length; i += 4) {
+					final double r = data.get(i);
+					final double g = data.get(i + 1);
+					final double b = data.get(i + 2);
+					final double r1 = r + brightness;
+					final double g1 = g + brightness;
+					final double b1 = b + brightness;
+					final double r2 = contrast_factor * (r1 - 128) + 128;
+					final double g2 = contrast_factor * (g1 - 128) + 128;
+					final double b2 = contrast_factor * (b1 - 128) + 128;
+					final double r3 = (!invert) ? r2 : 255 - r2;
+					final double g3 = (!invert) ? g2 : 255 - g2;
+					final double b3 = (!invert) ? b2 : 255 - b2;
+					data.set(i, truncate(r3));
+					data.set(i + 1, truncate(g3));
+					data.set(i + 2, truncate(b3));
+				}
+				context.putImageData(imgData, 0, 0);
+			}
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
 				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
 						drawingColor);
@@ -277,6 +321,14 @@ public class AuthoringTool implements EntryPoint {
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 		Log.trace("-----------------------------------------");
+	}
+
+	private static int truncate(double value) {
+		if (value >= 0 && value <= 255)
+			return (int) value;
+		if (value < 0)
+			return 0;
+		return 255;
 	}
 
 	/**
@@ -416,6 +468,10 @@ public class AuthoringTool implements EntryPoint {
 			getVideoContainer();
 			getQuizAnswerContainer();
 		}
+
+		brightness_sl = new Slider(1024, -255, 255, 0);
+		contrast_sl = new Slider(1024, -255, 255, 0);
+		invert_cb = new SimpleCheckBox();
 
 		title_tb = getTextBox("titleTextBox");
 		title_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -841,9 +897,123 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		edit_image_b.addClickHandler(new ClickHandler() {
+			private PopupPanel pp;
+			private Panel panel;
+			private Label brightness_l;
+			private Label contrast_l;
+			private Button reset_b;
+			private NumberFormat format;
+
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO brightness contrast
+				if (pp == null) {
+					pp = new PopupPanel(true, true);
+					panel = new FlowPanel();
+					panel.addStyleName("center");
+
+					format = NumberFormat.getFormat("#.##");
+
+					brightness_l = new Label();
+					brightness_l
+							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+					setBrightnessLabel(brightness_sl.getValue());
+
+					contrast_l = new Label();
+					contrast_l
+							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+					setContrastLabel(brightness_sl.getValue());
+
+					final Label invert_l = new Label("Invert: ");
+					invert_l.addStyleName("inline");
+
+					reset_b = new Button("Reset");
+
+					panel.add(brightness_l);
+					panel.add(brightness_sl);
+
+					panel.add(createSpace(10));
+					panel.add(contrast_l);
+					panel.add(contrast_sl);
+
+					panel.add(createSpace(10));
+
+					panel.add(invert_l);
+					panel.add(invert_cb);
+
+					panel.add(createSpace(15));
+					panel.add(reset_b);
+
+					pp.setWidget(panel);
+
+					brightness_sl
+							.addValueChangeHandler(new ValueChangeHandler<Double>() {
+								@Override
+								public void onValueChange(
+										ValueChangeEvent<Double> event) {
+									setBrightnessLabel(brightness_sl.getValue());
+									redrawCanvas();
+								}
+							});
+
+					contrast_sl
+							.addValueChangeHandler(new ValueChangeHandler<Double>() {
+								@Override
+								public void onValueChange(
+										ValueChangeEvent<Double> event) {
+									setContrastLabel(contrast_sl.getValue());
+									redrawCanvas();
+								}
+							});
+
+					invert_cb.addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							redrawCanvas();
+						}
+					});
+
+					reset_b.addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							brightness_sl.reset();
+							contrast_sl.reset();
+							invert_cb.setValue(false);
+							redrawCanvas();
+						}
+					});
+				}
+
+				final int slider_width = Window.getClientWidth() * 2 / 10;
+
+				brightness_sl.setWidth(slider_width);
+				contrast_sl.setWidth(slider_width);
+
+				pp.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+					@Override
+					public void setPosition(int offsetWidth, int offsetHeight) {
+						int left = (Window.getClientWidth() - offsetWidth) / 2;
+						int top = (Window.getClientHeight() - offsetHeight) / 2;
+						pp.setPopupPosition(left, top);
+					}
+				});
+			}
+
+			private void setLabel(Label label, String text, double value) {
+				label.setText(text + ": " + format.format(value));
+			}
+
+			private void setBrightnessLabel(double value) {
+				setLabel(brightness_l, "Brightness", value);
+			}
+
+			private void setContrastLabel(double value) {
+				setLabel(contrast_l, "Contrast", value);
+			}
+
+			private Panel createSpace(int height) {
+				final Panel space = new SimplePanel();
+				space.setSize("100%", height + "px");
+				return space;
 			}
 		});
 
