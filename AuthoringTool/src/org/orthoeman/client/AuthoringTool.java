@@ -285,8 +285,7 @@ public class AuthoringTool implements EntryPoint {
 			final double brightness = brightness_sl.getValue();
 			final double contrast = contrast_sl.getValue();
 			final boolean invert = invert_cb.getValue();
-			boolean skip = false;
-			if (skip && (brightness != 0 || contrast != 0 || invert)) {
+			if ((brightness != 0 || contrast != 0 || invert)) {
 				final ImageData imgData = context.getImageData(0, 0,
 						canvas_width, canvas_height);
 				final CanvasPixelArray data = imgData.getData();
