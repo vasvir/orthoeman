@@ -39,6 +39,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -187,6 +188,7 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private void redrawCanvas(ResizeEvent event) {
+		final int window_width = event.getWidth();
 		final int window_height = event.getHeight();
 		final int menubar_height = getMenuBarContainer().getOffsetHeight();
 
@@ -198,7 +200,7 @@ public class AuthoringTool implements EntryPoint {
 				.get("addRemoveButtonContainer");
 
 		final RootPanel pageContainer = getPageContainer();
-		final int page_width = event.getWidth()
+		final int page_width = window_width
 				- getLeftPanelContainer().getOffsetWidth();
 		final int page_height = window_height - menubar_height;
 		Log.trace("Browser resized page container (offset size) " + page_width
@@ -223,6 +225,13 @@ public class AuthoringTool implements EntryPoint {
 				+ pageButtonContainer.getOffsetWidth() + " x "
 				+ page_button_cnt_height + " style "
 				+ pageButtonContainer.getStyleName());
+		final double ratio = ((double) (window_width))
+				/ ((double) (window_height));
+		for (final Button page_button : page_button_map.values()) {
+			page_button
+					.setHeight((page_button.getElement().getClientWidth() / ratio)
+							+ "px");
+		}
 
 		final Page page = getCurrentPage();
 		if (page == null
@@ -1205,6 +1214,11 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private void addPageButton(final Lesson.Page page) {
+		final FlowPanel p = new FlowPanel();
+		p.getElement().getStyle().setBorderWidth(12, Unit.PX);
+		p.getElement().getStyle().setBorderColor("transparent");
+		p.addStyleName("border");
+
 		final Button button = new Button(page.getTitle());
 		button.setWidth("100%");
 
@@ -1222,7 +1236,8 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		getPageButtonContainer().add(button);
+		p.add(button);
+		getPageButtonContainer().add(p);
 
 		page_button_map.put(page, button);
 	}
