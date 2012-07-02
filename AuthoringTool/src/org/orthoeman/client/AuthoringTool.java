@@ -187,20 +187,6 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private void redrawCanvas(ResizeEvent event) {
-		final Page page = getCurrentPage();
-		if (page == null
-				|| !Arrays.asList(page.getItemTypeCombination()).contains(
-						Lesson.Page.Item.Type.IMAGE)) {
-			Log.trace("Image does not exist. Nothing to redraw. Exiting...");
-			return;
-		}
-
-		final PreloadedImage img = page.getImageItem().getImage();
-		final Zoom zoom = page.getImageItem().getZoom();
-
-		start_point.valid = false;
-		old_point.valid = false;
-
 		final int window_height = event.getHeight();
 		final int menubar_height = getMenuBarContainer().getOffsetHeight();
 
@@ -222,11 +208,35 @@ public class AuthoringTool implements EntryPoint {
 
 		// page button container
 		final RootPanel pageButtonContainer = getPageButtonContainer();
+		Log.trace("Chrome weird behavior: label_cnt_height: "
+				+ pageLabelContainer.getOffsetHeight()
+				+ " up_down_cnt_height: "
+				+ upDownButtonlContainer.getOffsetHeight()
+				+ " add_remove_cnt_heigth: "
+				+ addRemoveButtonContainer.getOffsetHeight());
 		final int page_button_cnt_height = window_height - menubar_height
 				- pageLabelContainer.getOffsetHeight()
 				- upDownButtonlContainer.getOffsetHeight()
 				- addRemoveButtonContainer.getOffsetHeight();
 		pageButtonContainer.setHeight(page_button_cnt_height + "px");
+		Log.trace("Browser resized button container (offset size) "
+				+ pageButtonContainer.getOffsetWidth() + " x "
+				+ page_button_cnt_height + " style "
+				+ pageButtonContainer.getStyleName());
+
+		final Page page = getCurrentPage();
+		if (page == null
+				|| !Arrays.asList(page.getItemTypeCombination()).contains(
+						Lesson.Page.Item.Type.IMAGE)) {
+			Log.trace("Image does not exist. Nothing to redraw. Exiting...");
+			return;
+		}
+
+		final PreloadedImage img = page.getImageItem().getImage();
+		final Zoom zoom = page.getImageItem().getZoom();
+
+		start_point.valid = false;
+		old_point.valid = false;
 
 		final int canvas_100 = page_width - 2;
 		int canvas_width = 0;
@@ -521,7 +531,7 @@ public class AuthoringTool implements EntryPoint {
 
 		Window.addResizeHandler(rh);
 		final ResizeEvent event = new MyResizeEvent();
-		onResize(event);
+		rh.onResize(event);
 
 		final Ellipse ellipse = new Ellipse();
 		final Rectangle rect = new Rectangle();
