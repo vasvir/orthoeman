@@ -13,6 +13,7 @@ import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Drawing;
 import org.orthoeman.shared.Ellipse;
 import org.orthoeman.shared.Lesson;
+import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
 import org.orthoeman.shared.Line;
 import org.orthoeman.shared.Point;
 import org.orthoeman.shared.Polygon;
@@ -95,6 +96,11 @@ public class AuthoringTool implements EntryPoint {
 
 	private RootPanel quizContainer;
 	private TextArea quiz_text_area;
+
+	private RootPanel rangeQuizContainer;
+	private TextArea range_quiz_text_area;
+	private TextBox range_quiz_min_tb;
+	private TextBox range_quiz_max_tb;
 
 	private RootPanel imageContainer;
 	private RootPanel canvasContainer;
@@ -459,6 +465,9 @@ public class AuthoringTool implements EntryPoint {
 		final boolean work_around_bug = true;
 		text_text_area = getTextTextArea();
 		quiz_text_area = getQuizTextArea();
+		range_quiz_text_area = getRangeQuizTextArea();
+		range_quiz_min_tb = getTextBox("rangeQuizMinTextBox");
+		range_quiz_max_tb = getTextBox("rangeQuizMaxTextBox");
 		weight_tb = getTextBox("weightTextBox");
 		block_cb = getSimpleCheckBox("blockCheckBox");
 		final Button add_answer_b = getButton("quizAddAnswerButton");
@@ -507,6 +516,8 @@ public class AuthoringTool implements EntryPoint {
 
 		imageContainer = getImageContainer();
 		quizContainer = getQuizContainer();
+
+		rangeQuizContainer = getRangeQuizContainer();
 
 		canvas = Canvas.createIfSupported();
 		if (canvas == null) {
@@ -1059,6 +1070,44 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		// range quiz
+		range_quiz_text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				getCurrentPage().getRangeQuizItem().setText(event.getValue());
+			}
+		});
+
+		range_quiz_min_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				final RangeQuizItem range_quiz_item = getCurrentPage().getRangeQuizItem();
+				double min = range_quiz_item.getMin();
+				try {
+					min = Double.valueOf(event.getValue());
+				} catch (Exception e) {
+					Log.warn("Invalid Range Quiz min value " + event.getValue());
+					range_quiz_min_tb.setText(min + "");
+				}
+				range_quiz_item.setMin(min);
+			}
+		});
+
+		range_quiz_max_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				final RangeQuizItem range_quiz_item = getCurrentPage().getRangeQuizItem();
+				double max = range_quiz_item.getMax();
+				try {
+					max = Double.valueOf(event.getValue());
+				} catch (Exception e) {
+					Log.warn("Invalid Range Quiz max value " + event.getValue());
+					range_quiz_max_tb.setText(max + "");
+				}
+				range_quiz_item.setMax(max);
+			}
+		});
+
 		weight_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -1149,6 +1198,10 @@ public class AuthoringTool implements EntryPoint {
 		return getTextArea("quizTextArea");
 	}
 
+	private static TextArea getRangeQuizTextArea() {
+		return getTextArea("rangeQuizTextArea");
+	}
+
 	private static Button getButton(String id) {
 		return Button.wrap(DOM.getElementById(id));
 	}
@@ -1187,6 +1240,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getQuizContainer() {
 		return RootPanel.get("quizContainer");
+	}
+
+	private static RootPanel getRangeQuizContainer() {
+		return RootPanel.get("rangeQuizContainer");
 	}
 
 	private static RootPanel getQuizAnswerContainer() {
@@ -1299,6 +1356,7 @@ public class AuthoringTool implements EntryPoint {
 
 		getTextContainer().setVisible(false);
 		quizContainer.setVisible(false);
+		rangeQuizContainer.setVisible(false);
 		imageContainer.setVisible(false);
 		getVideoContainer().setVisible(false);
 
@@ -1324,15 +1382,19 @@ public class AuthoringTool implements EntryPoint {
 			case QUIZ:
 				quizContainer.setVisible(true);
 				final RootPanel quizAnswerContainer = getQuizAnswerContainer();
-				quiz_text_area.setText("");
 				quizAnswerContainer.clear();
 				final QuizItem quiz_item = page.getQuizItem();
-				if (quiz_item != null) {
-					quiz_text_area.setText(quiz_item.getText());
-					for (final Integer id : quiz_item.getAnswerMap().keySet()) {
-						quizAnswerContainer.add(new QuizAnswer(quiz_item, id));
-					}
+				quiz_text_area.setText(quiz_item.getText());
+				for (final Integer id : quiz_item.getAnswerMap().keySet()) {
+					quizAnswerContainer.add(new QuizAnswer(quiz_item, id));
 				}
+				break;
+			case RANGE_QUIZ:
+				rangeQuizContainer.setVisible(true);
+				final RangeQuizItem range_quiz_item = page.getRangeQuizItem();
+				range_quiz_text_area.setText(range_quiz_item.getText());
+				range_quiz_min_tb.setText(range_quiz_item.getMin() + "");
+				range_quiz_max_tb.setText(range_quiz_item.getMax() + "");
 				break;
 			}
 		}
