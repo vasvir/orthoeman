@@ -85,7 +85,7 @@
      <div id="pointer_{{:Image.id}}" class="{{if Image.HotSpots=='yes'}}pointcursor{{/if}}" style="width:{{:Image.width}}px;height:{{:Image.height}}px"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
           <div id="container_{{:Image.id}}" style="top:-{{:Image.height}}px;position:relative;"></div>
     </div>
-     	  <div style="width:{{:Image.width}}px;text-align: right;">
+     	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;text-align: right;">
           <span class="ColorFunctions">
           		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
               <img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
@@ -95,7 +95,7 @@
           	</span>
            </div>
 
-     <div style="width:{{:Image.width}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:10px;" class="cssSlider"></div>
+     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:10px;" class="cssSlider"></div>
      <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:10px;" class="cssSlider"></div></div>
       </div>
  </script>
