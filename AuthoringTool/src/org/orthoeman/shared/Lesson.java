@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orthoeman.shared.Lesson.Page.QuizItem;
+import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
 
 public class Lesson extends ArrayList<Lesson.Page> {
 	public interface PageListener {
@@ -22,6 +23,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		public static final Page.Item.Type[][] validItemTypeCombinations = {
 				{ Item.Type.TEXT, Item.Type.IMAGE },
 				{ Item.Type.IMAGE, Item.Type.QUIZ },
+				{ Item.Type.IMAGE, Item.Type.RANGE_QUIZ },
 				{ Item.Type.TEXT, Item.Type.VIDEO },
 				{ Item.Type.VIDEO, Item.Type.QUIZ },
 				{ Item.Type.TEXT, Item.Type.QUIZ } };
@@ -32,7 +34,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public static class Item {
 			public static enum Type {
-				TEXT("Text"), QUIZ("Quiz"), IMAGE("Image"), VIDEO("Video");
+				TEXT("Text"), QUIZ("Quiz"), IMAGE("Image"), VIDEO("Video"), RANGE_QUIZ(
+						"Range Quiz");
 
 				// enums are initialized before any static initializers are run
 				private static Map<String, Type> name2TypeMap = new HashMap<String, Type>();
@@ -230,12 +233,54 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			}
 		}
 
+		public static class RangeQuizItem extends Item {
+			private String text;
+			private double min;
+			private double max;
+
+			public RangeQuizItem(String text, double min, double max) {
+				super(Type.RANGE_QUIZ);
+				setText(text);
+				setMin(min);
+				setMax(max);
+			}
+
+			public RangeQuizItem() {
+				this("", 0, 1);
+			}
+
+			public String getText() {
+				return text;
+			}
+
+			public void setText(String text) {
+				this.text = text;
+			}
+
+			public double getMin() {
+				return min;
+			}
+
+			public void setMin(double min) {
+				this.min = min;
+			}
+
+			public double getMax() {
+				return max;
+			}
+
+			public void setMax(double max) {
+				this.max = max;
+			}
+		}
+
 		private String title;
 		private Page.Item.Type[] itemTypeCombination;
 		private ImageItem imageItem;
 		private TextItem textItem;
 		private QuizItem quizItem;
 		private VideoItem videoItem;
+		private RangeQuizItem rangeQuizItem;
 		private double weight;
 		private boolean block;
 
@@ -248,6 +293,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			setImageItem(new ImageItem());
 			setVideoItem(new VideoItem());
 			setQuizItem(new QuizItem());
+			setRangeQuizItem(new RangeQuizItem());
 		}
 
 		public Page() {
@@ -311,6 +357,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public void setVideoItem(VideoItem videoItem) {
 			this.videoItem = videoItem;
+		}
+
+		public RangeQuizItem getRangeQuizItem() {
+			return rangeQuizItem;
+		}
+
+		public void setRangeQuizItem(RangeQuizItem rangeQuizItem) {
+			this.rangeQuizItem = rangeQuizItem;
 		}
 
 		public double getWeight() {
@@ -389,6 +443,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		quiz_item.createAnswer("Not sure", false);
 		quiz_item.createAnswer("Yes", true);
 		quiz_item.createAnswer("I don't know. I don't want to answer", false);
+		final RangeQuizItem range_quiz_item = lesson.get(0).getRangeQuizItem();
+		range_quiz_item.setText("What is the correct range?");
+		range_quiz_item.setMin(-1);
+		range_quiz_item.setMax(4.8);
 
 		lesson.add(new Page("ouf"));
 		lesson.get(1).getTextItem().setText("ouf is a nice concept");
