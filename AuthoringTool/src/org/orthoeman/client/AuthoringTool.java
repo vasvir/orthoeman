@@ -1309,7 +1309,7 @@ public class AuthoringTool implements EntryPoint {
 
 	private void removePageButton(Lesson.Page page) {
 		final Button button = page_button_map.get(page);
-		getPageButtonContainer().remove(button);
+		getPageButtonContainer().remove(button.getParent());
 		page_button_map.remove(page);
 	}
 
@@ -1471,7 +1471,7 @@ public class AuthoringTool implements EntryPoint {
 		final int check_index = current_index + ((up) ? (-1) : 1);
 		Log.debug("Up " + up + " next_index " + next_index + " check_index "
 				+ check_index);
-		page_button_container.insert(current_button, next_index);
+		page_button_container.insert(current_button.getParent(), next_index);
 		updateUpDownButtons(check_index, page_button_container.getWidgetCount());
 	}
 
