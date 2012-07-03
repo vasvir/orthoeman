@@ -1071,42 +1071,50 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		// range quiz
-		range_quiz_text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				getCurrentPage().getRangeQuizItem().setText(event.getValue());
-			}
-		});
+		range_quiz_text_area
+				.addValueChangeHandler(new ValueChangeHandler<String>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<String> event) {
+						getCurrentPage().getRangeQuizItem().setText(
+								event.getValue());
+					}
+				});
 
-		range_quiz_min_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				final RangeQuizItem range_quiz_item = getCurrentPage().getRangeQuizItem();
-				double min = range_quiz_item.getMin();
-				try {
-					min = Double.valueOf(event.getValue());
-				} catch (Exception e) {
-					Log.warn("Invalid Range Quiz min value " + event.getValue());
-					range_quiz_min_tb.setText(min + "");
-				}
-				range_quiz_item.setMin(min);
-			}
-		});
+		range_quiz_min_tb
+				.addValueChangeHandler(new ValueChangeHandler<String>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<String> event) {
+						final RangeQuizItem range_quiz_item = getCurrentPage()
+								.getRangeQuizItem();
+						double min = range_quiz_item.getMin();
+						try {
+							min = Double.valueOf(event.getValue());
+						} catch (Exception e) {
+							Log.warn("Invalid Range Quiz min value "
+									+ event.getValue());
+							range_quiz_min_tb.setText(min + "");
+						}
+						range_quiz_item.setMin(min);
+					}
+				});
 
-		range_quiz_max_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				final RangeQuizItem range_quiz_item = getCurrentPage().getRangeQuizItem();
-				double max = range_quiz_item.getMax();
-				try {
-					max = Double.valueOf(event.getValue());
-				} catch (Exception e) {
-					Log.warn("Invalid Range Quiz max value " + event.getValue());
-					range_quiz_max_tb.setText(max + "");
-				}
-				range_quiz_item.setMax(max);
-			}
-		});
+		range_quiz_max_tb
+				.addValueChangeHandler(new ValueChangeHandler<String>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<String> event) {
+						final RangeQuizItem range_quiz_item = getCurrentPage()
+								.getRangeQuizItem();
+						double max = range_quiz_item.getMax();
+						try {
+							max = Double.valueOf(event.getValue());
+						} catch (Exception e) {
+							Log.warn("Invalid Range Quiz max value "
+									+ event.getValue());
+							range_quiz_max_tb.setText(max + "");
+						}
+						range_quiz_item.setMax(max);
+					}
+				});
 
 		weight_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
@@ -1335,8 +1343,8 @@ public class AuthoringTool implements EntryPoint {
 		}
 		final RootPanel page_button_container = getPageButtonContainer();
 		updateUpDownButtons(
-				page_button_container.getWidgetIndex(page_button_map.get(page)),
-				page_button_container.getWidgetCount());
+				page_button_container.getWidgetIndex(page_button_map.get(page)
+						.getParent()), page_button_container.getWidgetCount());
 	}
 
 	private void setCurrentPage(Lesson.Page page) {
@@ -1458,7 +1466,7 @@ public class AuthoringTool implements EntryPoint {
 		final Button current_button = page_button_map.get(current_page);
 		final RootPanel page_button_container = getPageButtonContainer();
 		final int current_index = page_button_container
-				.getWidgetIndex(current_button);
+				.getWidgetIndex(current_button.getParent());
 		final int next_index = current_index + ((up) ? (-1) : 2);
 		final int check_index = current_index + ((up) ? (-1) : 1);
 		Log.debug("Up " + up + " next_index " + next_index + " check_index "
