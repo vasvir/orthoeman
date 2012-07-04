@@ -1,6 +1,4 @@
 Display:
-	scale resize images otherwise brightness contrast controls are out of screen
-
 	on reload user spots should be visible
 
 Authoring Tool:
@@ -30,11 +28,19 @@ Authoring Tool:
 		up down via drag & drop. Note that buttons don't seem to be
 		able to listen to drag events
 
-	Mouse move should print angles as overlays
-
 	Immediate for TC meeting:
 		Power point presentation
 
+	Missing:
+		drawing areas that are not hotspots (extra toggle drawing button required)
+			different colors for hotspots, info areas
+		calculate and display angles between lines in mouse move
+		crosshair pointer
+
+	HTML:
+		IE:
+			eraser svg icon
+			scrollbars are counted in the box model. Find the fix
 
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
