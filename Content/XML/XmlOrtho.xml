@@ -82,4 +82,43 @@
       <Answer IsCorrect="no">The dynamic screw screw is too short</Answer>
     </Widget>
   </Page>
+  <Page Grade="10" Blocked="no">
+    <Widget type="compleximage">
+      <Image ShowRegions="yes" width="1023" height="732" HotSpots="yes" MaxSpots="1">
+        <ImageURI>../Content/Media/Image/lesson1/2.png</ImageURI>
+        <Eclipse IsHotSpot="yes" RadiusX="70" RadiusY="40">
+          <Center X="446" Y="407"/>
+        </Eclipse>
+      </Image>
+    </Widget>
+    <Widget type="text">
+      <Text>Identify (point) the position of the patient center of mass.</Text>
+    </Widget>
+  </Page>
+  <Page Grade="10" Blocked="no">
+    <Widget type="compleximage">
+      <Image ShowRegions="yes" width="1023" height="732" HotSpots="no" MaxSpots="0">
+        <ImageURI>../Content/Media/Image/lesson1/2.png</ImageURI>
+      </Image>
+    </Widget>
+    <Widget type="quiz">
+      <Question>Do you observe any anomaly in left-right dividing of the percentage of the body weight?</Question>
+      <Answer IsCorrect="no">No</Answer>
+      <Answer IsCorrect="no">yes, the distribution is higher for the left side</Answer>
+      <Answer IsCorrect="yes">yes, the distribution is higher for the right side</Answer>
+    </Widget>
+  </Page>
+  <Page Grade="10" Blocked="no">
+    <Widget type="compleximage">
+      <Image ShowRegions="yes" width="1024" height="734" HotSpots="no" MaxSpots="0">
+        <ImageURI>../Content/Media/Image/lesson1/3.png</ImageURI>
+      </Image>
+    </Widget>
+    <Widget type="quiz">
+      <Question>1.	Please indicate the region that has an abnormal contact percentage:</Question>
+      <Answer IsCorrect="no">Rearfoot</Answer>
+      <Answer IsCorrect="yes">Midfoot</Answer>
+      <Answer IsCorrect="no">Forefoot</Answer>
+    </Widget>
+  </Page>
 </Lesson>
