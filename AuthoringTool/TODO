@@ -31,11 +31,14 @@ Authoring Tool:
 	Immediate for TC meeting:
 		Power point presentation
 
-	Missing:
+	Missing features:
 		drawing areas that are not hotspots (extra toggle drawing button required)
 			different colors for hotspots, info areas
 		calculate and display angles between lines in mouse move
 		crosshair pointer
+
+	BUGS:
+		brightness & contrast should be per image
 
 	HTML:
 		IE:
