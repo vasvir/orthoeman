@@ -115,7 +115,7 @@
       </Image>
     </Widget>
     <Widget type="quiz">
-      <Question>1.	Please indicate the region that has an abnormal contact percentage:</Question>
+      <Question>Please indicate the region that has an abnormal contact percentage:</Question>
       <Answer IsCorrect="no">Rearfoot</Answer>
       <Answer IsCorrect="yes">Midfoot</Answer>
       <Answer IsCorrect="no">Forefoot</Answer>
