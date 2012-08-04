@@ -43,6 +43,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.util.Iterator;
 
@@ -74,7 +75,7 @@ public class JettyLauncher extends ServletContainerLauncher {
 		/**
 		 * Log an HTTP request/response to TreeLogger.
 		 */
-		@SuppressWarnings("unchecked")
+		@Override
 		public void log(Request request, Response response) {
 			int status = response.getStatus();
 			if (status < 0) {
@@ -164,40 +165,48 @@ public class JettyLauncher extends ServletContainerLauncher {
 			this.logger = logger;
 		}
 
+		@Override
 		public void debug(String msg, Object arg0, Object arg1) {
 			if (logger.isLoggable(TreeLogger.SPAM)) {
 				logger.log(TreeLogger.SPAM, format(msg, arg0, arg1));
 			}
 		}
 
+		@Override
 		public void debug(String msg, Throwable th) {
 			logger.log(TreeLogger.SPAM, msg, th);
 		}
 
+		@Override
 		public Logger getLogger(String name) {
 			return this;
 		}
 
+		@Override
 		public void info(String msg, Object arg0, Object arg1) {
 			if (logger.isLoggable(TreeLogger.TRACE)) {
 				logger.log(TreeLogger.TRACE, format(msg, arg0, arg1));
 			}
 		}
 
+		@Override
 		public boolean isDebugEnabled() {
 			return logger.isLoggable(TreeLogger.SPAM);
 		}
 
+		@Override
 		public void setDebugEnabled(boolean enabled) {
 			// ignored
 		}
 
+		@Override
 		public void warn(String msg, Object arg0, Object arg1) {
 			if (logger.isLoggable(TreeLogger.WARN)) {
 				logger.log(TreeLogger.WARN, format(msg, arg0, arg1));
 			}
 		}
 
+		@Override
 		public void warn(String msg, Throwable th) {
 			logger.log(TreeLogger.WARN, msg, th);
 		}
@@ -205,17 +214,18 @@ public class JettyLauncher extends ServletContainerLauncher {
 		/**
 		 * Copied from org.mortbay.log.StdErrLog.
 		 */
-		private String format(String msg, Object arg0, Object arg1) {
+		private static String format(String msg, Object arg0, Object arg1) {
 			int i0 = msg.indexOf("{}");
 			int i1 = i0 < 0 ? -1 : msg.indexOf("{}", i0 + 2);
 
+			String msg2 = msg;
 			if (arg1 != null && i1 >= 0) {
-				msg = msg.substring(0, i1) + arg1 + msg.substring(i1 + 2);
+				msg2 = msg.substring(0, i1) + arg1 + msg.substring(i1 + 2);
 			}
 			if (arg0 != null && i0 >= 0) {
-				msg = msg.substring(0, i0) + arg0 + msg.substring(i0 + 2);
+				msg2 = msg.substring(0, i0) + arg0 + msg.substring(i0 + 2);
 			}
-			return msg;
+			return msg2;
 		}
 	}
 
@@ -310,6 +320,12 @@ public class JettyLauncher extends ServletContainerLauncher {
 
 			public WebAppClassLoaderExtension() throws IOException {
 				super(bootStrapOnlyClassLoader, WebAppContextWithReload.this);
+
+				URLClassLoader loader = (URLClassLoader) Thread.currentThread()
+						.getContextClassLoader();
+				for (URL url : loader.getURLs()) {
+					addURL(url);
+				}
 			}
 
 			@Override
@@ -360,10 +376,10 @@ public class JettyLauncher extends ServletContainerLauncher {
 			 */
 			@Override
 			public boolean isSystemPath(String name) {
-				name = name.replace('/', '.');
-				return super.isSystemPath(name)
-						|| name.startsWith("org.apache.jasper.")
-						|| name.startsWith("org.apache.xerces.");
+				final String package_name = name.replace('/', '.');
+				return super.isSystemPath(package_name)
+						|| package_name.startsWith("org.apache.jasper.")
+						|| package_name.startsWith("org.apache.xerces.");
 			}
 
 			@Override
@@ -374,6 +390,7 @@ public class JettyLauncher extends ServletContainerLauncher {
 					try {
 						return systemClassLoader.loadClass(name);
 					} catch (ClassNotFoundException e) {
+						/* we don't handle the exception? */
 					}
 				}
 
@@ -450,6 +467,7 @@ public class JettyLauncher extends ServletContainerLauncher {
 		 */
 		private final ClassLoader bootStrapOnlyClassLoader = new ClassLoader(
 				null) {
+			/* empty implementation? */
 		};
 
 		private final TreeLogger logger;
@@ -463,7 +481,6 @@ public class JettyLauncher extends ServletContainerLauncher {
 
 		private WebAppClassLoaderExtension classLoader;
 
-		@SuppressWarnings("unchecked")
 		private WebAppContextWithReload(TreeLogger logger, String webApp,
 				String contextPath) {
 			super(webApp, contextPath);
@@ -717,13 +734,14 @@ public class JettyLauncher extends ServletContainerLauncher {
 				connectorPort);
 	}
 
-	protected JettyServletContainer createServletContainer(TreeLogger logger,
-			File appRootDir, Server server, WebAppContext wac, int localPort) {
+	protected static JettyServletContainer createServletContainer(
+			TreeLogger logger, File appRootDir, Server server,
+			WebAppContext wac, int localPort) {
 		return new JettyServletContainer(logger, server, wac, localPort,
 				appRootDir);
 	}
 
-	protected WebAppContext createWebAppContext(TreeLogger logger,
+	protected static WebAppContext createWebAppContext(TreeLogger logger,
 			File appRootDir) {
 		return new WebAppContextWithReload(logger,
 				appRootDir.getAbsolutePath(), "/");
@@ -766,7 +784,8 @@ public class JettyLauncher extends ServletContainerLauncher {
 		return new SelectChannelConnector();
 	}
 
-	private void checkStartParams(TreeLogger logger, int port, File appRootDir) {
+	private static void checkStartParams(TreeLogger logger, int port,
+			File appRootDir) {
 		if (logger == null) {
 			throw new NullPointerException("logger cannot be null");
 		}
@@ -805,7 +824,7 @@ public class JettyLauncher extends ServletContainerLauncher {
 	 * This product includes software developed by The Apache Software
 	 * Foundation (http://www.apache.org/).
 	 */
-	private void jreLeakPrevention(TreeLogger logger) {
+	private static void jreLeakPrevention(TreeLogger logger) {
 		// Trigger a call to sun.awt.AppContext.getAppContext(). This will
 		// pin the common class loader in memory but that shouldn't be an
 		// issue.
