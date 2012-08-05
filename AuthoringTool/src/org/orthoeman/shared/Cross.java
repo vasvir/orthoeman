@@ -25,4 +25,9 @@ public class Cross extends Point {
 	public Cross toCanvas(Zoom zoom) {
 		return new Cross(super.toCanvas(zoom));
 	}
+
+	@Override
+	public double distance(Point point) {
+		return Math.min(Math.abs(point.x - x), Math.abs(point.y - y));
+	}
 }
