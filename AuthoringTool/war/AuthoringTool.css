@@ -149,11 +149,16 @@ html {
 	box-sizing:border-box;
 }
 
-.noborder {
+.noborder, .button_group {
 	-moz-box-sizing:border-box;
 	-webkit-box-sizing:border-box;
 	-ms-box-sizing:border-box;
 	box-sizing:border-box;
+}
+
+.button_group {
+	border-left: 1px dotted gray;
+	padding-left: 3px;
 }
 
 .nospace {
