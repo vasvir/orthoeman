@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.orthoeman.client.log.DivLogger;
+import org.orthoeman.shared.Cross;
 import org.orthoeman.shared.Drawing;
 import org.orthoeman.shared.Ellipse;
 import org.orthoeman.shared.Lesson;
@@ -79,6 +80,7 @@ public class AuthoringTool implements EntryPoint {
 	private static final double polygonDistanceThreshold = 20;
 	private static final String drawingColor = "black";
 	private static final String drawingActiveColor = "green";
+	private static final String drawingHelperColor = "yellow";
 	private static final String drawingEraseColor = "red";
 	private static double eraseDistanceThreshold = 5;
 
@@ -480,12 +482,13 @@ public class AuthoringTool implements EntryPoint {
 		final Button ellipse_hsp_b = getButton("ellipseHotspotButton");
 		final Button polygon_hsp_b = getButton("polygonHotspotButton");
 		final Button line_b = getButton("lineButton");
+		final Button cross_b = getButton("crossButton");
 		final Button erase_b = getButton("eraseButton");
 		final Button edit_image_b = getButton("editImageButton");
 
 		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
 				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
-				polygon_hsp_b, line_b, erase_b, edit_image_b);
+				polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b);
 		if (work_around_bug) {
 			getTextContainer();
 			getImageUploaderContainer();
@@ -556,6 +559,7 @@ public class AuthoringTool implements EntryPoint {
 		final Ellipse ellipse = new Ellipse();
 		final Rectangle rect = new Rectangle();
 		final Line line = new Line();
+		final Cross cross = new Cross();
 		final Point erase_point = new Point();
 
 		canvas.addClickHandler(new ClickHandler() {
@@ -587,6 +591,10 @@ public class AuthoringTool implements EntryPoint {
 					udr.handler.onUserDrawingFinishedEventHandler(rect
 							.toImage(zoom));
 					break;
+				case CROSS:
+					udr.handler.onUserDrawingFinishedEventHandler(cross
+							.toImage(zoom));
+					break;
 				case ERASER:
 					udr.handler
 							.onUserDrawingFinishedEventHandler(erase_drawing);
@@ -606,7 +614,7 @@ public class AuthoringTool implements EntryPoint {
 
 				if (udr.type != Drawing.Type.POLYGON) {
 					/*
-					 * his is the end of the drawing operation. Click ends the
+					 * This is the end of the drawing operation. Click ends the
 					 * operation in all cases except polygon which is multi
 					 * click operation
 					 */
@@ -695,6 +703,10 @@ public class AuthoringTool implements EntryPoint {
 
 					rect.set(xlr, ytr, wr, hr);
 					draw(context, rect, drawingActiveColor);
+					break;
+				case CROSS:
+					cross.set(x, y);
+					draw(context, cross, drawingHelperColor);
 					break;
 				case ERASER:
 					final Zoom zoom = getCurrentPage().getImageItem().getZoom();
@@ -894,6 +906,22 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				waitUserDrawing(Drawing.Type.LINE,
+						new UserDrawingFinishedEventHandler() {
+							@Override
+							public void onUserDrawingFinishedEventHandler(
+									Drawing drawing) {
+								getCurrentPage().getImageItem().getHotSpots()
+										.add(drawing);
+								redrawCanvas();
+							}
+						});
+			}
+		});
+
+		cross_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				waitUserDrawing(Drawing.Type.CROSS,
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -1479,7 +1507,7 @@ public class AuthoringTool implements EntryPoint {
 			UserDrawingFinishedEventHandler handler) {
 		final UserDrawingRequest udr = new UserDrawingRequest(type, handler);
 		udr_queue.add(udr);
-		if (type == Type.ERASER) {
+		if (type == Type.ERASER || type == Type.CROSS) {
 			startDrawingOperation(udr, -1, -1);
 		}
 	}
@@ -1541,6 +1569,13 @@ public class AuthoringTool implements EntryPoint {
 			context.moveTo(rect.getX(), rect.getY());
 			context.rect(rect.getX(), rect.getY(), rect.getWidth(),
 					rect.getHeight());
+			break;
+		case CROSS:
+			final Cross cross = (Cross) drawing;
+			context.moveTo(0, cross.y);
+			context.lineTo(context.getCanvas().getWidth(), cross.y);
+			context.moveTo(cross.x, 0);
+			context.lineTo(cross.x, context.getCanvas().getHeight());
 			break;
 		case ERASER:
 			break;
