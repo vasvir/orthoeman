@@ -78,10 +78,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class AuthoringTool implements EntryPoint {
 	private static final String itemTypeSeparator = " - ";
 	private static final double polygonDistanceThreshold = 20;
-	private static final String drawingColor = "black";
-	private static final String drawingActiveColor = "green";
-	private static final String drawingHelperColor = "yellow";
-	private static final String drawingEraseColor = "red";
 	private static double eraseDistanceThreshold = 5;
 
 	private Lesson lesson = null;
@@ -345,8 +341,7 @@ public class AuthoringTool implements EntryPoint {
 				context.putImageData(imgData, 0, 0);
 			}
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
-				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
-						drawingColor);
+				draw(context, drawing.toCanvas(page.getImageItem().getZoom()));
 			}
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
@@ -676,15 +671,15 @@ public class AuthoringTool implements EntryPoint {
 					final int h = 2 * (y > start_point.y ? y - start_point.y
 							: start_point.y - y);
 					ellipse.set(start_point.x, start_point.y, w, h);
-					draw(context, ellipse, drawingActiveColor);
+					draw(context, ellipse);
 					break;
 				case LINE:
 					line.set(start_point.x, start_point.y, x, y);
-					draw(context, line, drawingActiveColor);
+					draw(context, line);
 					break;
 				case POLYGON:
 					polygon.getPoints().add(new Point(x, y));
-					draw(context, polygon, drawingActiveColor);
+					draw(context, polygon);
 					polygon.getPoints().remove(polygon.getPoints().size() - 1);
 
 					final double distance = getDistance(start_point, x, y);
@@ -707,11 +702,11 @@ public class AuthoringTool implements EntryPoint {
 					final int ytr = y > start_point.y ? start_point.y : y;
 
 					rect.set(xlr, ytr, wr, hr);
-					draw(context, rect, drawingActiveColor);
+					draw(context, rect);
 					break;
 				case CROSS:
 					cross.set(x, y);
-					draw(context, cross, drawingHelperColor);
+					draw(context, cross);
 					break;
 				case ERASER:
 					final Zoom zoom = getCurrentPage().getImageItem().getZoom();
@@ -720,8 +715,7 @@ public class AuthoringTool implements EntryPoint {
 							.getImageItem().getHotSpots(), erase_point
 							.toImage(zoom));
 					if (erase_drawing != null)
-						draw(context, erase_drawing.toCanvas(zoom),
-								drawingEraseColor);
+						draw(context, erase_drawing.toCanvas(zoom));
 					break;
 				}
 
@@ -1533,9 +1527,9 @@ public class AuthoringTool implements EntryPoint {
 				* (start_point.y - y)) : -1;
 	}
 
-	private static void draw(Context2d context, Drawing drawing, String color) {
+	private static void draw(Context2d context, Drawing drawing) {
 		context.beginPath();
-		context.setStrokeStyle(color);
+		context.setStrokeStyle(drawing.getColor());
 
 		switch (drawing.getType()) {
 		case ELLIPSE:
