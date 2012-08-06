@@ -4,6 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Drawing {
+	private static final String drawingBlockingColor = "orange";
+	private static final String drawingInformationalColor = "blue";
+	private static final String drawingHelperColor = "yellow";
+	private static final String drawingEraseColor = "red";
+	private static final String drawingDefaultColor = "black";
+
 	public enum Type {
 		RECTANGLE, ELLIPSE, POLYGON, LINE, ERASER, CROSS
 	}
@@ -55,4 +61,17 @@ public abstract class Drawing {
 	public abstract Drawing toCanvas(Zoom zoom);
 
 	public abstract double distance(Point point);
+
+	public String getColor() {
+		if (getKind() == Kind.BLOCKING)
+			return drawingBlockingColor;
+		if (getKind() == Kind.INFORMATIONAL)
+			return drawingInformationalColor;
+		if (getKind() == Kind.HELPER) {
+			if (getType() == Type.ERASER)
+				return drawingEraseColor;
+			return drawingHelperColor;
+		}
+		return drawingDefaultColor;
+	}
 }
