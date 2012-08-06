@@ -4,18 +4,22 @@ public class Line extends Drawing {
 	private Point a;
 	private Point b;
 
-	public Line(Point a, Point b) {
-		super(Type.LINE);
+	public Line(Kind kind, Point a, Point b) {
+		super(Type.LINE, kind);
 		this.a = new Point(a);
 		this.b = new Point(b);
 	}
 
-	public Line(Line line) {
-		this(line.a, line.b);
+	public Line(Point a, Point b) {
+		this(Kind.HELPER, a, b);
 	}
 
-	public Line() {
-		this(new Point(), new Point());
+	public Line(Kind kind, Line line) {
+		this(kind, line.a, line.b);
+	}
+
+	public Line(Kind kind) {
+		this(kind, new Point(), new Point());
 	}
 
 	public Point getA() {

@@ -8,17 +8,13 @@ public class Rectangle extends Drawing {
 	private int width;
 	private int height;
 
-	public Rectangle(int x, int y, int width, int heigth) {
-		super(Type.RECTANGLE);
+	public Rectangle(Kind kind, int x, int y, int width, int heigth) {
+		super(Type.RECTANGLE, kind);
 		set(x, y, width, heigth);
 	}
 
-	public Rectangle(Rectangle rect) {
-		this(rect.x, rect.y, rect.width, rect.height);
-	}
-
-	public Rectangle() {
-		this(0, 0, 0, 0);
+	public Rectangle(Kind kind) {
+		this(kind, 0, 0, 0, 0);
 	}
 
 	public void set(int x, int y, int width, int heigth) {
@@ -73,7 +69,7 @@ public class Rectangle extends Drawing {
 	public Drawing toImage(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Rectangle rectangle = new Rectangle((int) (x / level)
+		final Rectangle rectangle = new Rectangle(getKind(), (int) (x / level)
 				+ rect.getX(), (int) (y / level) + rect.getY(),
 				(int) (width / level), (int) (height / level));
 		Log.trace("toImage: level " + level + " target " + rect + " from "
@@ -85,7 +81,7 @@ public class Rectangle extends Drawing {
 	public Drawing toCanvas(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Rectangle rectangle = new Rectangle(
+		final Rectangle rectangle = new Rectangle(getKind(),
 				(int) ((x - rect.getX()) * level),
 				(int) ((y - rect.getY()) * level), (int) (width * level),
 				(int) (height * level));

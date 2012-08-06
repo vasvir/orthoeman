@@ -8,11 +8,15 @@ public class Point extends Drawing {
 	public boolean valid;
 
 	public Point() {
-		super(null);
+		super(null, null);
+	}
+
+	public Point(Type type, Kind kind) {
+		super(type, kind);
 	}
 
 	public Point(int x, int y, boolean valid) {
-		super(null);
+		this();
 		set(x, y);
 		this.valid = valid;
 	}
