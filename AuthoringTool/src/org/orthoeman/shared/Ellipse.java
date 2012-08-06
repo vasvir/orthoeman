@@ -8,17 +8,13 @@ public class Ellipse extends Drawing {
 	private int width;
 	private int height;
 
-	public Ellipse(int x, int y, int width, int height) {
-		super(Type.ELLIPSE);
+	public Ellipse(Kind kind, int x, int y, int width, int height) {
+		super(Type.ELLIPSE, kind);
 		set(x, y, width, height);
 	}
 
-	public Ellipse(Ellipse ellipse) {
-		this(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
-	}
-
-	public Ellipse() {
-		this(0, 0, 0, 0);
+	public Ellipse(Kind kind) {
+		this(kind, 0, 0, 0, 0);
 	}
 
 	public void set(int x, int y, int width, int height) {
@@ -69,9 +65,9 @@ public class Ellipse extends Drawing {
 	public Drawing toImage(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Ellipse ellipse = new Ellipse((int) (x / level) + rect.getX(),
-				(int) (y / level) + rect.getY(), (int) (width / level),
-				(int) (height / level));
+		final Ellipse ellipse = new Ellipse(getKind(), (int) (x / level)
+				+ rect.getX(), (int) (y / level) + rect.getY(),
+				(int) (width / level), (int) (height / level));
 		Log.trace("toImage: level " + level + " target " + rect + " from "
 				+ this + " to " + ellipse);
 		return ellipse;
@@ -81,7 +77,8 @@ public class Ellipse extends Drawing {
 	public Drawing toCanvas(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Ellipse ellipse = new Ellipse((int) ((x - rect.getX()) * level),
+		final Ellipse ellipse = new Ellipse(getKind(),
+				(int) ((x - rect.getX()) * level),
 				(int) ((y - rect.getY()) * level), (int) (width * level),
 				(int) (height * level));
 		Log.trace("toCanvas: level " + level + " target " + rect + " from "

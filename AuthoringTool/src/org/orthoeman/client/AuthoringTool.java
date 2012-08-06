@@ -108,6 +108,7 @@ public class AuthoringTool implements EntryPoint {
 	private RootPanel canvasContainer;
 	private Canvas canvas;
 	private Canvas back_canvas;
+	private ListBox areaTypeCombobox;
 
 	private TextBox weight_tb;
 	private SimpleCheckBox block_cb;
@@ -122,7 +123,12 @@ public class AuthoringTool implements EntryPoint {
 	private Collection<Button> image_edit_buttons;
 
 	private UserDrawingRequest udr;
-	private final Polygon polygon = new Polygon();
+	private Ellipse ellipse;
+	private Rectangle rect;
+	private Polygon polygon;
+	private Line line;
+	private Cross cross;
+	private Point erase_point;
 	private Drawing erase_drawing = null;
 
 	private Slider brightness_sl;
@@ -141,7 +147,6 @@ public class AuthoringTool implements EntryPoint {
 		}
 	}
 
-	//
 	/**
 	 * Note, we defer all application initialization code to
 	 * {@link #onModuleLoad2()} so that the UncaughtExceptionHandler can catch
@@ -489,6 +494,11 @@ public class AuthoringTool implements EntryPoint {
 		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
 				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
 				polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b);
+
+		areaTypeCombobox = getListBox("areaTypeCombobox");
+		areaTypeCombobox.addItem(Drawing.Kind.BLOCKING.getDisplayName());
+		areaTypeCombobox.addItem(Drawing.Kind.INFORMATIONAL.getDisplayName());
+
 		if (work_around_bug) {
 			getTextContainer();
 			getImageUploaderContainer();
@@ -555,12 +565,6 @@ public class AuthoringTool implements EntryPoint {
 		Window.addResizeHandler(rh);
 		final ResizeEvent event = new MyResizeEvent();
 		rh.onResize(event);
-
-		final Ellipse ellipse = new Ellipse();
-		final Rectangle rect = new Rectangle();
-		final Line line = new Line();
-		final Cross cross = new Cross();
-		final Point erase_point = new Point();
 
 		canvas.addClickHandler(new ClickHandler() {
 			private void finishDrawingOperation() {
@@ -630,16 +634,17 @@ public class AuthoringTool implements EntryPoint {
 					final int x = event.getRelativeX(canvas.getElement());
 					final int y = event.getRelativeY(canvas.getElement());
 
-					final double distance = getDistance(start_point, x, y);
-					if (polygon.getPoints().size() > 1 && distance >= 0
-							&& distance < polygonDistanceThreshold) {
-						polygon.getPoints().add(new Point(start_point));
-						finishDrawingOperation();
-					} else {
-						if (!start_point.valid) {
+					if (start_point.valid) {
+						final double distance = getDistance(start_point, x, y);
+						if (polygon.getPoints().size() > 1 && distance >= 0
+								&& distance < polygonDistanceThreshold) {
+							polygon.getPoints().add(new Point(start_point));
+							finishDrawingOperation();
+						} else {
 							polygon.getPoints().add(new Point(x, y));
-							startDrawingOperation(udr, x, y);
 						}
+					} else {
+						startDrawingOperation(udr, x, y);
 						polygon.getPoints().add(new Point(x, y));
 					}
 				}
@@ -839,7 +844,7 @@ public class AuthoringTool implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_TARGET);
-				waitUserDrawing(Drawing.Type.RECTANGLE,
+				waitUserDrawing(Drawing.Type.RECTANGLE, Drawing.Kind.ZOOM,
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -857,7 +862,10 @@ public class AuthoringTool implements EntryPoint {
 		rect_hsp_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.RECTANGLE,
+				waitUserDrawing(Drawing.Type.RECTANGLE, Drawing.Kind
+						.getByDisplayName(areaTypeCombobox
+								.getItemText(areaTypeCombobox
+										.getSelectedIndex())),
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -873,7 +881,10 @@ public class AuthoringTool implements EntryPoint {
 		ellipse_hsp_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.ELLIPSE,
+				waitUserDrawing(Drawing.Type.ELLIPSE, Drawing.Kind
+						.getByDisplayName(areaTypeCombobox
+								.getItemText(areaTypeCombobox
+										.getSelectedIndex())),
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -889,7 +900,10 @@ public class AuthoringTool implements EntryPoint {
 		polygon_hsp_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.POLYGON,
+				waitUserDrawing(Drawing.Type.POLYGON, Drawing.Kind
+						.getByDisplayName(areaTypeCombobox
+								.getItemText(areaTypeCombobox
+										.getSelectedIndex())),
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -905,7 +919,7 @@ public class AuthoringTool implements EntryPoint {
 		line_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.LINE,
+				waitUserDrawing(Drawing.Type.LINE, Drawing.Kind.HELPER,
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -921,7 +935,7 @@ public class AuthoringTool implements EntryPoint {
 		cross_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.CROSS,
+				waitUserDrawing(Drawing.Type.CROSS, Drawing.Kind.HELPER,
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -937,7 +951,7 @@ public class AuthoringTool implements EntryPoint {
 		erase_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.ERASER,
+				waitUserDrawing(Drawing.Type.ERASER, Drawing.Kind.HELPER,
 						new UserDrawingFinishedEventHandler() {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
@@ -1503,9 +1517,10 @@ public class AuthoringTool implements EntryPoint {
 		updateUpDownButtons(check_index, page_button_container.getWidgetCount());
 	}
 
-	private void waitUserDrawing(Drawing.Type type,
+	private void waitUserDrawing(Drawing.Type type, Drawing.Kind kind,
 			UserDrawingFinishedEventHandler handler) {
-		final UserDrawingRequest udr = new UserDrawingRequest(type, handler);
+		final UserDrawingRequest udr = new UserDrawingRequest(type, kind,
+				handler);
 		udr_queue.add(udr);
 		if (type == Type.ERASER || type == Type.CROSS) {
 			startDrawingOperation(udr, -1, -1);
@@ -1584,10 +1599,10 @@ public class AuthoringTool implements EntryPoint {
 		context.stroke();
 	}
 
-	private static void setButtonsEnabled(Collection<Button> buttons,
-			boolean enabled) {
+	private void setButtonsEnabled(Collection<Button> buttons, boolean enabled) {
 		for (final Button button : buttons)
 			button.setEnabled(enabled);
+		areaTypeCombobox.setEnabled(enabled);
 	}
 
 	private void startDrawingOperation(UserDrawingRequest udr, int x, int y) {
@@ -1597,7 +1612,29 @@ public class AuthoringTool implements EntryPoint {
 		start_point.y = y;
 		start_point.valid = true;
 
-		polygon.getPoints().clear();
+		switch (udr.type) {
+		case CROSS:
+			cross = new Cross(udr.kind);
+			break;
+		case ELLIPSE:
+			ellipse = new Ellipse(udr.kind);
+			break;
+		case ERASER:
+			erase_point = new Point();
+			break;
+		case LINE:
+			line = new Line(udr.kind);
+			break;
+		case POLYGON:
+			polygon = new Polygon(udr.kind);
+			break;
+		case RECTANGLE:
+			rect = new Rectangle(udr.kind);
+			break;
+		default:
+			Log.error("Unknown type: " + udr.type + ". Please report");
+			break;
+		}
 		setButtonsEnabled(image_edit_buttons, false);
 	}
 

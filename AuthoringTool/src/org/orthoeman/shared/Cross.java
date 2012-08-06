@@ -1,14 +1,13 @@
 package org.orthoeman.shared;
 
 public class Cross extends Point {
-	public Cross() {
-		super();
-		setType(Type.CROSS);
+	public Cross(Kind kind) {
+		super(Type.CROSS, kind);
 	}
 
-	public Cross(Point point) {
-		super(point);
-		setType(Type.CROSS);
+	public Cross(Kind kind, Point point) {
+		this(kind);
+		set(point.x, point.y);
 	}
 
 	@Override
@@ -18,12 +17,12 @@ public class Cross extends Point {
 
 	@Override
 	public Cross toImage(Zoom zoom) {
-		return new Cross(super.toImage(zoom));
+		return new Cross(getKind(), super.toImage(zoom));
 	}
 
 	@Override
 	public Cross toCanvas(Zoom zoom) {
-		return new Cross(super.toCanvas(zoom));
+		return new Cross(getKind(), super.toCanvas(zoom));
 	}
 
 	@Override

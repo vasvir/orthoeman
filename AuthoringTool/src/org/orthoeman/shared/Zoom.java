@@ -1,5 +1,7 @@
 package org.orthoeman.shared;
 
+import org.orthoeman.shared.Drawing.Kind;
+
 public class Zoom {
 	public static enum Type {
 		ZOOM_121, ZOOM_LEVEL, ZOOM_TO_FIT_WIDTH, ZOOM_TARGET
@@ -7,7 +9,7 @@ public class Zoom {
 
 	private Zoom.Type type = Type.ZOOM_TO_FIT_WIDTH;
 	private double level = 1;
-	private Rectangle target = new Rectangle();
+	private Rectangle target = new Rectangle(Kind.ZOOM);
 
 	public Zoom.Type getType() {
 		return type;
