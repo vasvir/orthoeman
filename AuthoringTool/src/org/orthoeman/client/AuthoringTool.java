@@ -343,6 +343,19 @@ public class AuthoringTool implements EntryPoint {
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
 				draw(context, drawing.toCanvas(page.getImageItem().getZoom()));
 			}
+			for (final Point point : page.getImageItem().getHotSpots()
+					.getIntersectionPoints()) {
+				final Point draw_point = point.toCanvas(page.getImageItem()
+						.getZoom());
+				context.beginPath();
+				context.setStrokeStyle(point.getColor());
+				context.setFillStyle(point.getColor());
+				context.arc(draw_point.x, draw_point.y, 10, 0, Math.PI * 2,
+						true);
+				context.closePath();
+				context.stroke();
+			}
+
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 		Log.trace("-----------------------------------------");

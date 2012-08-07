@@ -81,4 +81,23 @@ public class Line extends Drawing {
 		final double dy = point.y - yy;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
+
+	public static Point getIntersectionPoint(Line line1, Line line2) {
+		final Point p1 = line1.a;
+		final Point p2 = line1.b;
+		final Point p3 = line2.a;
+		final Point p4 = line2.b;
+
+		final double det = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y)
+				* (p3.x - p4.x);
+		if (det == 0)
+			return new Point();
+
+		final double a = (p1.x * p2.y - p1.y * p2.x);
+		final double b = (p3.x * p4.y - p3.y * p4.x);
+		final double dx = a * (p3.x - p4.x) - b * (p1.x - p2.x);
+		final double dy = a * (p3.y - p4.y) - b * (p1.y - p2.y);
+
+		return new Point((int) Math.round(dx / det), (int) Math.round(dy / det));
+	}
 }

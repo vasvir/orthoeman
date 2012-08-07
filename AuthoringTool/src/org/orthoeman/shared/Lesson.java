@@ -2,9 +2,11 @@ package org.orthoeman.shared;
 
 import gwtupload.client.PreloadedImage;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,9 +120,115 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		public static class ImageItem extends ResourceItem {
+			public static class HotSpotList extends ArrayList<Drawing> {
+				private final List<List<Point>> intersection_point_lists = new ArrayList<List<Point>>();
+
+				@Override
+				public boolean add(Drawing e) {
+					if (e.getType() == Drawing.Type.LINE) {
+						final Line line1 = (Line) e;
+
+						final List<Point> new_intersection_point_list = new ArrayList<Point>();
+						for (Drawing drawing : this) {
+							if (drawing.getType() != Drawing.Type.LINE)
+								continue;
+							final Line line2 = (Line) drawing;
+							new_intersection_point_list.add(Line
+									.getIntersectionPoint(line1, line2));
+						}
+						intersection_point_lists
+								.add(new_intersection_point_list);
+					}
+					return super.add(e);
+				}
+
+				@Override
+				public boolean remove(Object o) {
+					if (o instanceof Line) {
+						final Line line = (Line) o;
+
+						// we need to find the index to remove
+						int line_index = 0;
+						for (Drawing drawing : this) {
+							if (drawing.getType() != Drawing.Type.LINE)
+								continue;
+							if (line == drawing)
+								break;
+							line_index++;
+						}
+
+						// remove columns after the row
+						for (int list_index = line_index + 1; list_index < intersection_point_lists
+								.size(); list_index++) {
+							final List<Point> list = intersection_point_lists
+									.get(list_index);
+							list.remove(line_index);
+						}
+						// remove the row
+						intersection_point_lists.remove(line_index);
+					}
+					return super.remove(o);
+				}
+
+				@Override
+				public void clear() {
+					intersection_point_lists.clear();
+					super.clear();
+				}
+
+				public Collection<Point> getIntersectionPoints() {
+					return new AbstractCollection<Point>() {
+						class TriangularIterator implements Iterator<Point> {
+							private int i = 1;
+							private int j = 0;
+
+							@Override
+							public boolean hasNext() {
+								final boolean finished = (j == 0)
+										&& i >= intersection_point_lists.size();
+								return !finished;
+							}
+
+							@Override
+							public Point next() {
+								final Point next_point = intersection_point_lists
+										.get(i).get(j);
+
+								if (j != i - 1) {
+									j++;
+								} else {
+									i++;
+									j = 0;
+								}
+
+								return next_point;
+							}
+
+							@Override
+							public void remove() {
+								throw new RuntimeException(
+										"Cannot alter the Triangular collection "
+												+ "through the iterator");
+							}
+						}
+
+						@Override
+						public Iterator<Point> iterator() {
+							return new TriangularIterator();
+						}
+
+						@Override
+						public int size() {
+							final int n = intersection_point_lists.size();
+							return n * (n - 1) / 2;
+						}
+					};
+				}
+			}
+
 			private PreloadedImage image;
 			private Zoom zoom = new Zoom();
-			private List<Drawing> hotSpots = new ArrayList<Drawing>();
+			private HotSpotList hotSpots = new HotSpotList();
 
 			public ImageItem() {
 				super(Type.IMAGE);
@@ -142,12 +250,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				this.zoom = zoom;
 			}
 
-			public List<Drawing> getHotSpots() {
+			public HotSpotList getHotSpots() {
 				return hotSpots;
-			}
-
-			public void setHotSpots(List<Drawing> hotSpots) {
-				this.hotSpots = hotSpots;
 			}
 		}
 
