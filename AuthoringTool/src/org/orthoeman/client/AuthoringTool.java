@@ -699,9 +699,10 @@ public class AuthoringTool implements EntryPoint {
 							.getHotSpots()
 							.getInterSectionLines(min_distance_point);
 
-					final String angle_str = ""
-							+ getAngle(intersection_lines[0],
-									intersection_lines[1], query_point);
+					final String angle_str = 
+							NumberFormat.getFormat("0.0").format(
+							getAngle(intersection_lines[0],
+									intersection_lines[1], query_point));
 
 					context.fillText(angle_str, x, y);
 				} else {
