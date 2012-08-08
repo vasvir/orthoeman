@@ -1,5 +1,7 @@
 package org.orthoeman.shared;
 
+import java.util.Collection;
+
 import com.allen_sauer.gwt.log.client.Log;
 
 public class Point extends Drawing {
@@ -65,5 +67,20 @@ public class Point extends Drawing {
 	public double distance(Point point) {
 		return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y)
 				* (y - point.y));
+	}
+
+	public static Point getNearestPoint(Collection<Point> points,
+			Point query_point) {
+		Point min_distance_point = null;
+		double min_distance = Double.MAX_VALUE;
+
+		for (final Point point : points) {
+			final double distance = query_point.distance(point);
+			if (distance < min_distance) {
+				min_distance = distance;
+				min_distance_point = point;
+			}
+		}
+		return min_distance_point;
 	}
 }

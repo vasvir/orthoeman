@@ -77,7 +77,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class AuthoringTool implements EntryPoint {
 	private static final String itemTypeSeparator = " - ";
 	private static final double polygonDistanceThreshold = 20;
-	private static double eraseDistanceThreshold = 5;
+	private static final double angleBulletRadius = 5;
+	private static final double angleDistanceThreshold = 30;
+	private static final double eraseDistanceThreshold = 5;
 
 	private Lesson lesson = null;
 	private Lesson.Page currentPage = null;
@@ -342,20 +344,21 @@ public class AuthoringTool implements EntryPoint {
 			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
 				draw(context, drawing.toCanvas(page.getImageItem().getZoom()));
 			}
-			for (final Point point : page.getImageItem().getHotSpots()
-					.getIntersectionPoints()) {
-				final Point draw_point = point.toCanvas(page.getImageItem()
-						.getZoom());
-				context.beginPath();
-				context.setStrokeStyle("yellow");
-				context.setFillStyle(point.getColor());
-				context.arc(draw_point.x, draw_point.y, 10, 0, Math.PI * 2,
-						true);
-				context.fill();
-				context.closePath();
-				context.stroke();
+			if (angleBulletRadius > 0) {
+				for (final Point point : page.getImageItem().getHotSpots()
+						.getIntersectionPoints()) {
+					final Point draw_point = point.toCanvas(page.getImageItem()
+							.getZoom());
+					context.beginPath();
+					context.setStrokeStyle("yellow");
+					context.setFillStyle(point.getColor());
+					context.arc(draw_point.x, draw_point.y, angleBulletRadius,
+							0, Math.PI * 2, true);
+					context.fill();
+					context.closePath();
+					context.stroke();
+				}
 			}
-
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 		Log.trace("-----------------------------------------");
@@ -662,11 +665,6 @@ public class AuthoringTool implements EntryPoint {
 		canvas.addMouseMoveHandler(new MouseMoveHandler() {
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
-				if (!start_point.valid)
-					return;
-				final UserDrawingRequest udr = udr_queue.peek();
-				if (udr == null)
-					return;
 				final int x = event.getRelativeX(canvas.getElement());
 				final int y = event.getRelativeY(canvas.getElement());
 
@@ -675,63 +673,94 @@ public class AuthoringTool implements EntryPoint {
 					context.drawImage(back_canvas.getCanvasElement(), 0, 0);
 				}
 
-				// here we draw the user interaction
-				switch (udr.type) {
-				case ELLIPSE:
-					// find the bounding box
-					final int w = 2 * (x > start_point.x ? x - start_point.x
-							: start_point.x - x);
-					final int h = 2 * (y > start_point.y ? y - start_point.y
-							: start_point.y - y);
-					ellipse.set(start_point.x, start_point.y, w, h);
-					draw(context, ellipse);
-					break;
-				case LINE:
-					line.set(start_point.x, start_point.y, x, y);
-					draw(context, line);
-					break;
-				case POLYGON:
-					polygon.getPoints().add(new Point(x, y));
-					draw(context, polygon);
-					polygon.getPoints().remove(polygon.getPoints().size() - 1);
+				if (!start_point.valid) {
+					// here we display angles
+					final Page page = getCurrentPage();
 
-					final double distance = getDistance(start_point, x, y);
-					if (polygon.getPoints().size() > 1 && distance > 0
-							&& distance < polygonDistanceThreshold) {
-						context.beginPath();
-						context.arc(start_point.x, start_point.y,
-								polygonDistanceThreshold, 0, Math.PI * 2, true);
-						context.closePath();
-						context.stroke();
+					final Point query_point = (new Point(x, y)).toImage(page
+							.getImageItem().getZoom());
+					final Point min_distance_point = Point.getNearestPoint(page
+							.getImageItem().getHotSpots()
+							.getIntersectionPoints(), query_point);
+
+					// maybe we are out
+					old_point.valid = false;
+
+					if (min_distance_point == null)
+						return;
+
+					double min_distance = query_point
+							.distance(min_distance_point);
+
+					if (min_distance > angleDistanceThreshold)
+						return;
+
+					context.fillText("Youhoo", x, y);
+				} else {
+					final UserDrawingRequest udr = udr_queue.peek();
+					if (udr == null)
+						return;
+
+					// here we draw the user interaction
+					switch (udr.type) {
+					case ELLIPSE:
+						// find the bounding box
+						final int w = 2 * (x > start_point.x ? x
+								- start_point.x : start_point.x - x);
+						final int h = 2 * (y > start_point.y ? y
+								- start_point.y : start_point.y - y);
+						ellipse.set(start_point.x, start_point.y, w, h);
+						draw(context, ellipse);
+						break;
+					case LINE:
+						line.set(start_point.x, start_point.y, x, y);
+						draw(context, line);
+						break;
+					case POLYGON:
+						polygon.getPoints().add(new Point(x, y));
+						draw(context, polygon);
+						polygon.getPoints().remove(
+								polygon.getPoints().size() - 1);
+
+						final double distance = getDistance(start_point, x, y);
+						if (polygon.getPoints().size() > 1 && distance > 0
+								&& distance < polygonDistanceThreshold) {
+							context.beginPath();
+							context.arc(start_point.x, start_point.y,
+									polygonDistanceThreshold, 0, Math.PI * 2,
+									true);
+							context.closePath();
+							context.stroke();
+						}
+
+						break;
+					case RECTANGLE:
+						final int wr = x > start_point.x ? x - start_point.x
+								: start_point.x - x;
+						final int hr = y > start_point.y ? y - start_point.y
+								: start_point.y - y;
+						final int xlr = x > start_point.x ? start_point.x : x;
+						final int ytr = y > start_point.y ? start_point.y : y;
+
+						rect.set(xlr, ytr, wr, hr);
+						draw(context, rect);
+						break;
+					case CROSS:
+						cross.set(x, y);
+						draw(context, cross);
+						break;
+					case ERASER:
+						final Zoom zoom = getCurrentPage().getImageItem()
+								.getZoom();
+						erase_point.set(x, y);
+						erase_drawing = getNearestDrawing(getCurrentPage()
+								.getImageItem().getHotSpots(), erase_point
+								.toImage(zoom));
+						if (erase_drawing != null)
+							draw(context, erase_drawing.toCanvas(zoom));
+						break;
 					}
-
-					break;
-				case RECTANGLE:
-					final int wr = x > start_point.x ? x - start_point.x
-							: start_point.x - x;
-					final int hr = y > start_point.y ? y - start_point.y
-							: start_point.y - y;
-					final int xlr = x > start_point.x ? start_point.x : x;
-					final int ytr = y > start_point.y ? start_point.y : y;
-
-					rect.set(xlr, ytr, wr, hr);
-					draw(context, rect);
-					break;
-				case CROSS:
-					cross.set(x, y);
-					draw(context, cross);
-					break;
-				case ERASER:
-					final Zoom zoom = getCurrentPage().getImageItem().getZoom();
-					erase_point.set(x, y);
-					erase_drawing = getNearestDrawing(getCurrentPage()
-							.getImageItem().getHotSpots(), erase_point
-							.toImage(zoom));
-					if (erase_drawing != null)
-						draw(context, erase_drawing.toCanvas(zoom));
-					break;
 				}
-
 				old_point.x = x;
 				old_point.y = y;
 				old_point.valid = true;
