@@ -122,6 +122,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		public static class ImageItem extends ResourceItem {
 			public static class HotSpotList extends ArrayList<Drawing> {
 				private final List<List<Point>> intersection_point_lists = new ArrayList<List<Point>>();
+				private final Map<Point, Line[]> intersection_point_lines_map = new HashMap<Point, Line[]>();
 
 				@Override
 				public boolean add(Drawing e) {
@@ -133,8 +134,12 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							if (drawing.getType() != Drawing.Type.LINE)
 								continue;
 							final Line line2 = (Line) drawing;
-							new_intersection_point_list.add(Line
-									.getIntersectionPoint(line1, line2));
+							final Point intersection_point = Line
+									.getIntersectionPoint(line1, line2);
+							new_intersection_point_list.add(intersection_point);
+							intersection_point_lines_map.put(
+									intersection_point, new Line[] { line1,
+											line2 });
 						}
 						intersection_point_lists
 								.add(new_intersection_point_list);
@@ -157,7 +162,22 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							line_index++;
 						}
 
-						// remove columns after the row
+						// first remove elements from the map
+						// remove columns in rows bigger than line_index
+						for (int list_index = line_index + 1; list_index < intersection_point_lists
+								.size(); list_index++) {
+							intersection_point_lines_map
+									.remove(intersection_point_lists.get(
+											list_index).get(line_index));
+						}
+						// remove the row
+						for (int j = 0; j < line_index; j++)
+							intersection_point_lines_map
+									.remove(intersection_point_lists.get(
+											line_index).get(j));
+
+						// now the data store: lower triangular 2d array
+						// remove columns in rows bigger than line_index
 						for (int list_index = line_index + 1; list_index < intersection_point_lists
 								.size(); list_index++) {
 							final List<Point> list = intersection_point_lists
@@ -173,6 +193,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				@Override
 				public void clear() {
 					intersection_point_lists.clear();
+					intersection_point_lines_map.clear();
 					super.clear();
 				}
 
@@ -223,6 +244,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							return n * (n - 1) / 2;
 						}
 					};
+				}
+
+				public Line[] getInterSectionLines(Point intersection_point) {
+					return intersection_point_lines_map.get(intersection_point);
 				}
 			}
 

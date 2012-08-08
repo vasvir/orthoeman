@@ -695,7 +695,15 @@ public class AuthoringTool implements EntryPoint {
 					if (min_distance > angleDistanceThreshold)
 						return;
 
-					context.fillText("Youhoo", x, y);
+					final Line[] intersection_lines = page.getImageItem()
+							.getHotSpots()
+							.getInterSectionLines(min_distance_point);
+
+					final String angle_str = ""
+							+ getAngle(intersection_lines[0],
+									intersection_lines[1], query_point);
+
+					context.fillText(angle_str, x, y);
 				} else {
 					final UserDrawingRequest udr = udr_queue.peek();
 					if (udr == null)
@@ -1689,5 +1697,43 @@ public class AuthoringTool implements EntryPoint {
 			min_distance_drawing = null;
 
 		return min_distance_drawing;
+	}
+
+	private static double[] getLineEquation(Line line) {
+		final double x1 = line.getA().x;
+		final double y1 = line.getA().y;
+		final double x2 = line.getB().x;
+		final double y2 = line.getB().y;
+
+		return new double[] { y2 - y1, -x2 + x1, x2 * y1 - x1 * y2 };
+	}
+
+	private static double getAngle(Line line1, Line line2, Point query_point) {
+		final double[] line1_eq = getLineEquation(line1);
+		final double A1 = line1_eq[0];
+		final double B1 = line1_eq[1];
+		final double C1 = line1_eq[2];
+
+		final double[] line2_eq = getLineEquation(line2);
+		final double A2 = line2_eq[0];
+		final double B2 = line2_eq[1];
+		final double C2 = line2_eq[2];
+
+		final double angle_cos = (A1 * A2 + B1 * B2)
+				/ (Math.sqrt(A1 * A1 + B1 * B1) * Math.sqrt(A2 * A2 + B2 * B2));
+		double angle = Math.acos(angle_cos);
+
+		// In which quadrant are we?
+		int cnt = 0;
+		if (A1 * query_point.x + B1 * query_point.y + C1 >= 0)
+			cnt++;
+		if (A2 * query_point.x + B2 * query_point.y + C2 >= 0)
+			cnt++;
+
+		if (cnt != 1) {
+			angle = Math.PI - angle;
+		}
+
+		return angle * 180 / Math.PI;
 	}
 }
