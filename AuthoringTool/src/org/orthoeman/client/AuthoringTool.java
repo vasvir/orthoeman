@@ -35,7 +35,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
@@ -299,7 +298,7 @@ public class AuthoringTool implements EntryPoint {
 		final Context2d context = canvas.getContext2d();
 
 		if (img == null) {
-			context.setFillStyle(CssColor.make("white"));
+			context.setFillStyle("white");
 			context.fillRect(0, 0, canvas_width, canvas_height);
 		} else {
 			img.setVisible(false);
@@ -348,10 +347,11 @@ public class AuthoringTool implements EntryPoint {
 				final Point draw_point = point.toCanvas(page.getImageItem()
 						.getZoom());
 				context.beginPath();
-				context.setStrokeStyle(point.getColor());
+				context.setStrokeStyle("yellow");
 				context.setFillStyle(point.getColor());
 				context.arc(draw_point.x, draw_point.y, 10, 0, Math.PI * 2,
 						true);
+				context.fill();
 				context.closePath();
 				context.stroke();
 			}
