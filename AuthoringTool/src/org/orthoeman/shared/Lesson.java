@@ -11,8 +11,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.orthoeman.shared.Drawing.Kind;
+import org.orthoeman.shared.Lesson.Page.Item.Type;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
+import org.orthoeman.shared.Lesson.Page.QuizItem.Answer;
 import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.XMLParser;
 
 public class Lesson extends ArrayList<Lesson.Page> {
 	public interface PageListener {
@@ -120,7 +129,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		public static class ImageItem extends ResourceItem {
-			public static class HotSpotList extends ArrayList<Drawing> {
+			public static class DrawingList extends ArrayList<Drawing> {
 				private final List<List<Point>> intersection_point_lists = new ArrayList<List<Point>>();
 				private final Map<Point, Line[]> intersection_point_lines_map = new HashMap<Point, Line[]>();
 
@@ -253,7 +262,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 			private PreloadedImage image;
 			private Zoom zoom = new Zoom();
-			private HotSpotList hotSpots = new HotSpotList();
+			private DrawingList drawings = new DrawingList();
 
 			public ImageItem() {
 				super(Type.IMAGE);
@@ -275,24 +284,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				this.zoom = zoom;
 			}
 
-			public HotSpotList getHotSpots() {
-				return hotSpots;
+			public DrawingList getDrawings() {
+				return drawings;
 			}
 		}
 
 		public static class VideoItem extends ResourceItem {
-			private String videoURL;
-
 			public VideoItem() {
 				super(Type.VIDEO);
-			}
-
-			public String getVideoURL() {
-				return videoURL;
-			}
-
-			public void setVideoURL(String videoURL) {
-				this.videoURL = videoURL;
 			}
 		}
 
@@ -532,8 +531,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 	private Collection<PageListener> pageListeners = new ArrayList<PageListener>();
 
-	private String title;
-	private String author;
+	/** TODO Lesson must be initialized with id, author, title, abstract */
+	private String id = "lesson_id";
+	private String author = "A. Authoropoulos";
+	private String title = "Nice title";
+	private String abstrakt = "A very nice lesson. Really...";
 
 	public String getTitle() {
 		return title;
@@ -543,8 +545,16 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		this.title = title;
 	}
 
+	public String getId() {
+		return id;
+	}
+
 	public String getAuthor() {
 		return author;
+	}
+
+	public String getAbstract() {
+		return abstrakt;
 	}
 
 	public void setAuthor(String author) {
@@ -584,7 +594,179 @@ public class Lesson extends ArrayList<Lesson.Page> {
 	}
 
 	public static void writeXML(Lesson lesson) {
-		// TODO writeXML
+		final Document doc = XMLParser.createDocument();
+
+		final Element root_e = doc.createElement("Lesson");
+		root_e.setAttribute("xmlns", "http://orthoeman.iit.demokritos.gr/");
+		root_e.setAttribute("xmlns:xsi",
+				"http://www.w3.org/2001/XMLSchema-instance");
+		root_e.setAttribute("xsi:schemaLocation",
+				"http://orthoeman.iit.demokritos.gr/orthoeman.xsd");
+		root_e.setAttribute("Id", lesson.getId());
+		root_e.setAttribute("Author", lesson.getAuthor());
+		root_e.setAttribute("Title", lesson.getTitle());
+
+		final Element abstrakt_e = doc.createElement("Abstract");
+		abstrakt_e.appendChild(doc.createTextNode(lesson.getAbstract()));
+		root_e.appendChild(abstrakt_e);
+
+		for (final Page page : lesson) {
+			final Element page_e = doc.createElement("Page");
+			page_e.setAttribute("Title", "" + page.getTitle());
+			page_e.setAttribute("Grade", "" + page.getWeight());
+			page_e.setAttribute("Blocked", "" + page.isBlock());
+
+			final Type[] item_types = page.getItemTypeCombination();
+			for (Type item_type : item_types) {
+				final Element widget_e = doc.createElement("Widget");
+
+				String xml_type = "";
+				switch (item_type) {
+				case IMAGE:
+					xml_type = "Image";
+
+					final Element image_e = doc.createElement("Image");
+					// image.setAttribute("ShowRegions", "yes");
+					final PreloadedImage img = page.getImageItem().getImage();
+					if (img != null) {
+						image_e.setAttribute("uri", img.getUrl());
+
+						for (final Drawing drawing : page.getImageItem()
+								.getDrawings()) {
+							switch (drawing.getType()) {
+							case ELLIPSE:
+								final Element ellipse_e = doc
+										.createElement("Ellipse");
+								final Ellipse ellipse = (Ellipse) drawing;
+								ellipse_e.setAttribute("IsHotSpot", ""
+										+ (ellipse.getKind() == Kind.BLOCKING));
+								ellipse_e
+										.setAttribute("X", "" + ellipse.getX());
+								ellipse_e
+										.setAttribute("Y", "" + ellipse.getY());
+								ellipse_e.setAttribute("A",
+										"" + ellipse.getWidth());
+								ellipse_e.setAttribute("B",
+										"" + ellipse.getHeight());
+								image_e.appendChild(ellipse_e);
+								break;
+							case POLYGON:
+								final Element polygon_e = doc
+										.createElement("Polygon");
+								final Polygon polygon = (Polygon) drawing;
+								polygon_e.setAttribute("IsHotSpot", ""
+										+ (polygon.getKind() == Kind.BLOCKING));
+								for (final Point point : polygon.getPoints()) {
+									final Element point_e = doc
+											.createElement("Point");
+									point_e.setAttribute("X", "" + point.x);
+									point_e.setAttribute("Y", "" + point.y);
+									polygon_e.appendChild(point_e);
+								}
+								image_e.appendChild(polygon_e);
+								break;
+							case RECTANGLE:
+								final Element rectangle_e = doc
+										.createElement("Ellipse");
+								final Rectangle rectangle = (Rectangle) drawing;
+								rectangle_e
+										.setAttribute(
+												"IsHotSpot",
+												""
+														+ (rectangle.getKind() == Kind.BLOCKING));
+								rectangle_e.setAttribute("X",
+										"" + rectangle.getX());
+								rectangle_e.setAttribute("Y",
+										"" + rectangle.getY());
+								rectangle_e.setAttribute("Width", ""
+										+ rectangle.getWidth());
+								rectangle_e.setAttribute("Height", ""
+										+ rectangle.getHeight());
+								image_e.appendChild(rectangle_e);
+								break;
+							case CROSS:
+							case LINE:
+							case ERASER:
+								// skip
+								break;
+							default:
+								Log.error("Invalid Drawing type: "
+										+ drawing.getType()
+										+ ". You should never see this message. Please report...");
+								break;
+							}
+						}
+					}
+					widget_e.appendChild(image_e);
+					break;
+				case QUIZ:
+					xml_type = "Quiz";
+					final Element quiz_e = doc.createElement("Quiz");
+					final QuizItem quiz_item = page.getQuizItem();
+					final Element question_e = doc.createElement("Question");
+					question_e.appendChild(doc.createTextNode(quiz_item
+							.getText()));
+					quiz_e.appendChild(question_e);
+					for (final Answer answer : quiz_item.getAnswerMap()
+							.values()) {
+						final Element answer_e = doc.createElement("Answer");
+						answer_e.setAttribute("IsCorrect",
+								"" + answer.isCorrect());
+						;
+						answer_e.appendChild(doc.createTextNode(answer
+								.getText()));
+						quiz_e.appendChild(answer_e);
+					}
+					widget_e.appendChild(quiz_e);
+					break;
+				case RANGE_QUIZ:
+					xml_type = "RangeQuiz";
+					final Element range_quiz_e = doc.createElement("RangeQuiz");
+					final RangeQuizItem range_quiz_item = page
+							.getRangeQuizItem();
+					final Element range_question_e = doc
+							.createElement("Question");
+					range_question_e.appendChild(doc
+							.createTextNode(range_quiz_item.getText()));
+					range_quiz_e.appendChild(range_question_e);
+					final Element min_e = doc.createElement("min");
+					min_e.appendChild(doc.createTextNode(""
+							+ range_quiz_item.getMin()));
+					range_quiz_e.appendChild(min_e);
+					final Element max_e = doc.createElement("max");
+					max_e.appendChild(doc.createTextNode(""
+							+ range_quiz_item.getMax()));
+					range_quiz_e.appendChild(max_e);
+					widget_e.appendChild(range_quiz_e);
+					break;
+				case TEXT:
+					xml_type = "Text";
+					final Element text_e = doc.createElement("Text");
+					text_e.appendChild(doc.createTextNode(page.getTextItem()
+							.getText()));
+					widget_e.appendChild(text_e);
+					break;
+				case VIDEO:
+					xml_type = "Video";
+					final Element video_e = doc.createElement("Video");
+					video_e.setAttribute("uri", page.getVideoItem().getURL());
+					widget_e.appendChild(video_e);
+					break;
+				default:
+					break;
+				}
+
+				widget_e.setAttribute("Type", xml_type);
+
+				page_e.appendChild(widget_e);
+			}
+
+			root_e.appendChild(page_e);
+		}
+
+		doc.appendChild(root_e);
+
+		Window.alert(doc.toString());
 	}
 
 	private void notifyPageListeners(Page page, boolean added) {

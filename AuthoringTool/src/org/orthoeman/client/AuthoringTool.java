@@ -341,11 +341,11 @@ public class AuthoringTool implements EntryPoint {
 				}
 				context.putImageData(imgData, 0, 0);
 			}
-			for (final Drawing drawing : page.getImageItem().getHotSpots()) {
+			for (final Drawing drawing : page.getImageItem().getDrawings()) {
 				draw(context, drawing.toCanvas(page.getImageItem().getZoom()));
 			}
 			if (angleBulletRadius > 0) {
-				for (final Point point : page.getImageItem().getHotSpots()
+				for (final Point point : page.getImageItem().getDrawings()
 						.getIntersectionPoints()) {
 					final Point draw_point = point.toCanvas(page.getImageItem()
 							.getZoom());
@@ -405,7 +405,12 @@ public class AuthoringTool implements EntryPoint {
 
 		splashScreenLabel.setText("Loading menu...");
 		final MenuBar file_menu = new MenuBar(true);
-		file_menu.addItem(new MenuItem("Save", command));
+		file_menu.addItem(new MenuItem("Save", new Command() {
+			@Override
+			public void execute() {
+				Lesson.writeXML(lesson);
+			}
+		}));
 		file_menu.addItem(new MenuItem("Preview", command));
 
 		final MenuBar edit_menu = new MenuBar(true);
@@ -680,7 +685,7 @@ public class AuthoringTool implements EntryPoint {
 					final Point query_point = (new Point(x, y)).toImage(page
 							.getImageItem().getZoom());
 					final Point min_distance_point = Point.getNearestPoint(page
-							.getImageItem().getHotSpots()
+							.getImageItem().getDrawings()
 							.getIntersectionPoints(), query_point);
 
 					// maybe we are out
@@ -696,7 +701,7 @@ public class AuthoringTool implements EntryPoint {
 						return;
 
 					final Line[] intersection_lines = page.getImageItem()
-							.getHotSpots()
+							.getDrawings()
 							.getInterSectionLines(min_distance_point);
 
 					final String angle_str = 
@@ -763,7 +768,7 @@ public class AuthoringTool implements EntryPoint {
 								.getZoom();
 						erase_point.set(x, y);
 						erase_drawing = getNearestDrawing(getCurrentPage()
-								.getImageItem().getHotSpots(), erase_point
+								.getImageItem().getDrawings(), erase_point
 								.toImage(zoom));
 						if (erase_drawing != null)
 							draw(context, erase_drawing.toCanvas(zoom));
@@ -787,7 +792,7 @@ public class AuthoringTool implements EntryPoint {
 						/ ((double) img.getRealWidth()));
 				zoom.getTarget().set(0, 0, img.getRealWidth(),
 						img.getRealHeight());
-				getCurrentPage().getImageItem().getHotSpots().clear();
+				getCurrentPage().getImageItem().getDrawings().clear();
 				redrawCanvas();
 				setButtonsEnabled(image_edit_buttons, true);
 			}
@@ -819,7 +824,7 @@ public class AuthoringTool implements EntryPoint {
 					return;
 				final Page.VideoItem video_item = getCurrentPage()
 						.getVideoItem();
-				video_item.setVideoURL(uploader.fileUrl());
+				video_item.setURL(uploader.fileUrl());
 			}
 		};
 
@@ -915,7 +920,7 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().getImageItem().getHotSpots()
+								getCurrentPage().getImageItem().getDrawings()
 										.add(drawing);
 								redrawCanvas();
 							}
@@ -934,7 +939,7 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().getImageItem().getHotSpots()
+								getCurrentPage().getImageItem().getDrawings()
 										.add(drawing);
 								redrawCanvas();
 							}
@@ -953,7 +958,7 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().getImageItem().getHotSpots()
+								getCurrentPage().getImageItem().getDrawings()
 										.add(drawing);
 								redrawCanvas();
 							}
@@ -969,7 +974,7 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().getImageItem().getHotSpots()
+								getCurrentPage().getImageItem().getDrawings()
 										.add(drawing);
 								redrawCanvas();
 							}
@@ -985,7 +990,7 @@ public class AuthoringTool implements EntryPoint {
 							@Override
 							public void onUserDrawingFinishedEventHandler(
 									Drawing drawing) {
-								getCurrentPage().getImageItem().getHotSpots()
+								getCurrentPage().getImageItem().getDrawings()
 										.add(drawing);
 								redrawCanvas();
 							}
@@ -1003,7 +1008,7 @@ public class AuthoringTool implements EntryPoint {
 									Drawing drawing) {
 								if (drawing == null)
 									return;
-								getCurrentPage().getImageItem().getHotSpots()
+								getCurrentPage().getImageItem().getDrawings()
 										.remove(drawing);
 								redrawCanvas();
 							}
