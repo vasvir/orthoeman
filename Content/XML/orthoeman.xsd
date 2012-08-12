@@ -41,18 +41,18 @@
     <!-- definition of complex types-->
     <xs:complexType name="PageType">
         <xs:sequence>
-            <xs:element name="Widget" type="WidgetComplexType" minOccurs="2" maxOccurs="2"/>
+            <xs:element name="widget" type="WidgetComplexType" minOccurs="2" maxOccurs="2"/>
         </xs:sequence>
-        <xs:attribute name="Title" type="xs:string" use="optional"/>
-        <xs:attribute name="Grade" type="GradeType" use="required"/>
-      <xs:attribute name="Blocked" type="YesNoValues" use="required"/>
+        <xs:attribute name="title" type="xs:string" use="optional"/>
+        <xs:attribute name="grade" type="GradeType" use="required"/>
+      <xs:attribute name="blocked" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="WidgetComplexType">
         <xs:choice>
-            <xs:element name="Text" type="UnconstrainedText"/>
+            <xs:element name="text" type="UnconstrainedText"/>
             <xs:group ref="QuizGroupElements"/>
-            <xs:element name="Image" type="ComplexImageType"/>
+            <xs:element name="image" type="ComplexImageType"/>
         </xs:choice>
         <xs:attribute name="type" type="WidgetTypeValues" use="required"/>
     </xs:complexType>
@@ -61,72 +61,72 @@
     <xs:complexType name="ComplexImageType">
         <xs:sequence>
             <xs:group ref="ImageDef" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Circle" type="CircleType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Eclipse" type="EclipseType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Rect" type="RectType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Polygon" type="PolygonType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="circle" type="CircleType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="eclipse" type="EclipseType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="rect" type="RectType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="polygon" type="PolygonType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="ShowRegions" type="YesNoValues" use="required"/>
-        <xs:attribute name="HotSpots" type="YesNoValues" use="required"/>
+        <xs:attribute name="showregions" type="YesNoValues" use="required"/>
+        <xs:attribute name="hotspots" type="YesNoValues" use="required"/>
         <xs:attribute name="width" type="xs:integer" use="required"/>
         <xs:attribute name="height" type="xs:integer" use="required"/>
-      <xs:attribute name="MaxSpots" type="xs:integer" use="required" />
+      <xs:attribute name="maxspots" type="xs:integer" use="required" />
     </xs:complexType>
 
     <xs:complexType name="CircleType">
         <xs:sequence>
-            <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="center" type="PointType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="Radius" type="xs:integer" use="required"/>
-        <xs:attribute name="IsHotSpot" type="YesNoValues" use="required"/>
+        <xs:attribute name="radius" type="xs:integer" use="required"/>
+        <xs:attribute name="ishotspot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="EclipseType">
         <xs:sequence>
-            <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="center" type="PointType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="IsHotSpot" type="YesNoValues" use="required"/>
-        <xs:attribute name="RadiusX" type="xs:integer" use="required"/>
-        <xs:attribute name="RadiusY" type="xs:integer" use="required"/>
+        <xs:attribute name="ishotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="radiusx" type="xs:integer" use="required"/>
+        <xs:attribute name="radiusy" type="xs:integer" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="RectType">
         <xs:all>
-            <xs:element name="Point" type="PointType"/>
-            <xs:element name="Width" type="xs:integer"/>
-            <xs:element name="Height" type="xs:integer"/>
+            <xs:element name="point" type="PointType"/>
+            <xs:element name="width" type="xs:integer"/>
+            <xs:element name="height" type="xs:integer"/>
         </xs:all>
-        <xs:attribute name="IsHotSpot" type="YesNoValues" use="required"/>
+        <xs:attribute name="ishotspot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="PolygonType">
         <xs:sequence>
-            <xs:element name="Point" type="PointType" minOccurs="3" maxOccurs="unbounded"/>
+            <xs:element name="point" type="PointType" minOccurs="3" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="IsHotSpot" type="YesNoValues" use="required"/>
+        <xs:attribute name="ishotspot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="PointType">
-        <xs:attribute name="X" use="required" type="xs:integer"/>
-        <xs:attribute name="Y" use="required" type="xs:integer"/>
+        <xs:attribute name="x" use="required" type="xs:integer"/>
+        <xs:attribute name="y" use="required" type="xs:integer"/>
     </xs:complexType>
 
 
     <xs:group name="ImageDef">
         <xs:choice>
-            <xs:element name="ImageID" type="xs:integer"/>
-            <xs:element name="ImageURI" type="xs:anyURI"/>
+            <xs:element name="imageid" type="xs:integer"/>
+            <xs:element name="imageuri" type="xs:anyURI"/>
         </xs:choice>
     </xs:group>
 
     <xs:group name="QuizGroupElements">
         <xs:sequence>
-            <xs:element name="Question" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Answer" minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="question" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="answer" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
-                            <xs:attribute name="IsCorrect" type="YesNoValues" use="required"/>
+                            <xs:attribute name="iscorrect" type="YesNoValues" use="required"/>
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
@@ -136,15 +136,15 @@
 
     <!--definition of elements-->
 
-    <xs:element name="Lesson">
+    <xs:element name="lesson">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="abstract" type="xs:string" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="Page" type="PageType" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element name="page" type="PageType" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
 
             <xs:attribute name="id" type="xs:integer" use="required"/>
-            <xs:attribute name="Title" type="xs:string" use="required"/>
+            <xs:attribute name="title" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
 
