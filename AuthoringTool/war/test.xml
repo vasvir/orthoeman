@@ -1,0 +1,75 @@
+<Lesson
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://orthoeman.iit.demokritos.gr/orthoeman.xsd"
+	Id="lesson_id"
+	Author="A. Authoropoulos"
+	Title="Nice title">
+	<Abstract>A very nice lesson. Really...</Abstract>
+	<Page
+		Title="opa"
+		Grade="0.0"
+		Blocked="false">
+		<Widget Type="Image">
+			<Image
+				uri="http://127.0.0.1:8888/servlet.gupld?show=GWTU-012026485050169522&amp;gwt.codesvr=127.0.0.1:9997&amp;random=0.821230918143638">
+				<Ellipse
+					IsHotSpot="true"
+					X="128"
+					Y="161"
+					Width="195"
+					Height="132" />
+				<Ellipse
+					IsHotSpot="true"
+					X="475"
+					Y="182"
+					A="281"
+					B="262" />
+				<Polygon IsHotSpot="false">
+					<Point
+						X="704"
+						Y="369" />
+					<Point
+						X="348"
+						Y="378" />
+					<Point
+						X="299"
+						Y="136" />
+					<Point
+						X="632"
+						Y="132" />
+					<Point
+						X="753"
+						Y="217" />
+					<Point
+						X="704"
+						Y="369" />
+				</Polygon>
+			</Image>
+		</Widget>
+		<Widget Type="Quiz">
+			<Quiz>
+				<Question>This statement is correct.</Question>
+				<Answer IsCorrect="false">I don't think so</Answer>
+				<Answer IsCorrect="false">really?</Answer>
+				<Answer IsCorrect="false">Not sure</Answer>
+				<Answer IsCorrect="true">Yes</Answer>
+				<Answer IsCorrect="false">I don't know. I don't want to answer</Answer>
+				<Answer IsCorrect="true">ela twra.???</Answer>
+			</Quiz>
+		</Widget>
+	</Page>
+	<Page
+		Title="ouf"
+		Grade="39.0"
+		Blocked="true">
+		<Widget Type="Video">
+			<Video
+				uri="servlet.gupld?show=GWTU-05880229170670555&amp;gwt.codesvr=127.0.0.1:9997&amp;random=0.14656990064111652" />
+		</Widget>
+		<Widget Type="Quiz">
+			<Quiz>
+				<Question></Question>
+			</Quiz>
+		</Widget>
+	</Page>
+</Lesson>
