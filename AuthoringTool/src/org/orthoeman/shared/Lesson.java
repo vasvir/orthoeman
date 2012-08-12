@@ -11,16 +11,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.orthoeman.client.NodeListWrapperList;
 import org.orthoeman.shared.Drawing.Kind;
 import org.orthoeman.shared.Lesson.Page.Item.Type;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
 import org.orthoeman.shared.Lesson.Page.QuizItem.Answer;
 import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
 public class Lesson extends ArrayList<Lesson.Page> {
@@ -50,9 +52,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 				// enums are initialized before any static initializers are run
 				private static Map<String, Type> name2TypeMap = new HashMap<String, Type>();
+				private static Map<String, Type> typeName2TypeMap = new HashMap<String, Type>();
 				static {
 					for (final Type type : values()) {
 						name2TypeMap.put(type.getName(), type);
+						typeName2TypeMap.put(type.getTypeName(), type);
 					}
 				}
 
@@ -66,8 +70,16 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					return name;
 				}
 
+				public String getTypeName() {
+					return name.replaceAll(" ", "");
+				}
+
 				public static Type getTypeByName(String name) {
 					return name2TypeMap.get(name);
+				}
+
+				public static Type getTypeByTypeName(String name) {
+					return typeName2TypeMap.get(name);
 				}
 			}
 
@@ -549,16 +561,24 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		return id;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getAuthor() {
 		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	public String getAbstract() {
 		return abstrakt;
 	}
 
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setAbstract(String abstrakt) {
+		this.abstrakt = abstrakt;
 	}
 
 	public void addPageListener(PageListener li) {
@@ -569,28 +589,126 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		pageListeners.remove(li);
 	}
 
+	private static String getTextValue(Text text_n) {
+		if (text_n == null)
+			return "";
+		return text_n.getNodeValue();
+	}
+
+	private static String getTextValue(Element e) {
+		return getTextValue((Text) e.getFirstChild());
+	}
+
+	private static String getTextValue(Element e, String tag_name) {
+		return getTextValue((Text) e.getElementsByTagName(tag_name).item(0)
+				.getFirstChild());
+	}
+
 	public static Lesson readXML(String contents) {
-		Log.trace("Parsing: " + contents);
-		final Document doc = XMLParser.parse(contents);
+		// Log.trace("Parsing: " + contents);
 		final Lesson lesson = new Lesson();
 
-		lesson.add(new Page("opa"));
-		lesson.get(0).getTextItem().setText("This is a very interesting opa");
-		final QuizItem quiz_item = lesson.get(0).getQuizItem();
-		quiz_item.setText("This statement is correct.");
-		quiz_item.createAnswer("I don't think so", false);
-		quiz_item.createAnswer("really?", false);
-		quiz_item.createAnswer("Not sure", false);
-		quiz_item.createAnswer("Yes", true);
-		quiz_item.createAnswer("I don't know. I don't want to answer", false);
-		final RangeQuizItem range_quiz_item = lesson.get(0).getRangeQuizItem();
-		range_quiz_item.setText("What is the correct range?");
-		range_quiz_item.setMin(-1);
-		range_quiz_item.setMax(4.8);
+		final Document doc = XMLParser.parse(contents);
+		final Element lesson_e = (Element) doc.getElementsByTagName("Lesson")
+				.item(0);
 
-		lesson.add(new Page("ouf"));
-		lesson.get(1).getTextItem().setText("ouf is a nice concept");
+		lesson.setId(lesson_e.getAttribute("Id"));
+		lesson.setAuthor(lesson_e.getAttribute("Author"));
+		lesson.setTitle(lesson_e.getAttribute("Title"));
+		lesson.setAbstract(getTextValue(lesson_e, "Abstract"));
 
+		final NodeListWrapperList pages_nl = new NodeListWrapperList(
+				lesson_e.getElementsByTagName("Page"));
+		for (final Node page_n : pages_nl) {
+			final Page page = new Page();
+			final Element page_e = (Element) page_n;
+
+			page.setTitle(page_e.getAttribute("Title"));
+			page.setWeight(Double.valueOf(page_e.getAttribute("Grade")));
+			page.setBlock(Boolean.valueOf(page_e.getAttribute("Blocked")));
+
+			final Type[] itemTypeCombinationsFound = { null, null };
+			int itemTypeCombinationsFoundCount = 0;
+
+			final NodeListWrapperList widget_nl = new NodeListWrapperList(
+					page_e.getElementsByTagName("Widget"));
+			for (final Node widget_n : widget_nl) {
+				final Element widget_e = (Element) widget_n;
+				final Type item_type = Type.getTypeByTypeName(widget_e
+						.getAttribute("Type"));
+				itemTypeCombinationsFound[itemTypeCombinationsFoundCount++] = item_type;
+				switch (item_type) {
+				case IMAGE:
+					break;
+				case QUIZ:
+					final Element quiz_e = (Element) widget_e
+							.getElementsByTagName(item_type.getTypeName())
+							.item(0);
+					page.getQuizItem()
+							.setText(getTextValue(quiz_e, "Question"));
+					final NodeListWrapperList answer_nl = new NodeListWrapperList(
+							quiz_e.getElementsByTagName("Answer"));
+					for (final Node answer_n : answer_nl) {
+						final Element answer_e = (Element) answer_n;
+						page.getQuizItem().createAnswer(
+								getTextValue(answer_e),
+								Boolean.valueOf(answer_e
+										.getAttribute("IsCorrect")));
+					}
+					break;
+				case RANGE_QUIZ:
+					final Element range_quiz_e = (Element) widget_e
+							.getElementsByTagName(item_type.getTypeName())
+							.item(0);
+					page.getRangeQuizItem().setText(
+							getTextValue(range_quiz_e, "Question"));
+					page.getRangeQuizItem().setMin(
+							Double.valueOf(getTextValue(range_quiz_e, "min")));
+					page.getRangeQuizItem().setMax(
+							Double.valueOf(getTextValue(range_quiz_e, "max")));
+					break;
+				case TEXT:
+					page.getTextItem().setText(
+							getTextValue(widget_e, item_type.getTypeName()));
+					break;
+				case VIDEO:
+					final Element video_e = (Element) widget_e
+							.getElementsByTagName(item_type.getTypeName())
+							.item(0);
+					page.getVideoItem().setURL(video_e.getAttribute("uri"));
+					break;
+				}
+
+				for (final Type[] validItemTypeCombination : Page.validItemTypeCombinations) {
+					if ((validItemTypeCombination[0] == itemTypeCombinationsFound[0] && validItemTypeCombination[1] == itemTypeCombinationsFound[1])
+							|| (validItemTypeCombination[0] == itemTypeCombinationsFound[1] && validItemTypeCombination[1] == itemTypeCombinationsFound[0])) {
+						page.setItemTypeCombination(validItemTypeCombination);
+						break;
+					}
+				}
+			}
+
+			lesson.add(page);
+		}
+
+		/*
+		 * lesson.add(new Page("opa"));
+		 * lesson.get(0).getTextItem().setText("This is a very interesting opa"
+		 * ); final QuizItem quiz_item = lesson.get(0).getQuizItem();
+		 * quiz_item.setText("This statement is correct.");
+		 * quiz_item.createAnswer("I don't think so", false);
+		 * quiz_item.createAnswer("really?", false);
+		 * quiz_item.createAnswer("Not sure", false);
+		 * quiz_item.createAnswer("Yes", true);
+		 * quiz_item.createAnswer("I don't know. I don't want to answer",
+		 * false); final RangeQuizItem range_quiz_item =
+		 * lesson.get(0).getRangeQuizItem();
+		 * range_quiz_item.setText("What is the correct range?");
+		 * range_quiz_item.setMin(-1); range_quiz_item.setMax(4.8);
+		 * 
+		 * lesson.add(new Page("ouf"));
+		 * lesson.get(1).getTextItem().setText("ouf is a nice concept");
+		 */
 		return lesson;
 	}
 
@@ -620,13 +738,12 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			final Type[] item_types = page.getItemTypeCombination();
 			for (Type item_type : item_types) {
 				final Element widget_e = doc.createElement("Widget");
+				widget_e.setAttribute("Type", item_type.getTypeName());
 
-				String xml_type = "";
 				switch (item_type) {
 				case IMAGE:
-					xml_type = "Image";
-
-					final Element image_e = doc.createElement("Image");
+					final Element image_e = doc.createElement(item_type
+							.getTypeName());
 					// image.setAttribute("ShowRegions", "yes");
 					final PreloadedImage img = page.getImageItem().getImage();
 					if (img != null) {
@@ -690,19 +807,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							case ERASER:
 								// skip
 								break;
-							default:
-								Log.error("Invalid Drawing type: "
-										+ drawing.getType()
-										+ ". You should never see this message. Please report...");
-								break;
 							}
 						}
 					}
 					widget_e.appendChild(image_e);
 					break;
 				case QUIZ:
-					xml_type = "Quiz";
-					final Element quiz_e = doc.createElement("Quiz");
+					final Element quiz_e = doc.createElement(item_type
+							.getTypeName());
 					final QuizItem quiz_item = page.getQuizItem();
 					final Element question_e = doc.createElement("Question");
 					question_e.appendChild(doc.createTextNode(quiz_item
@@ -721,8 +833,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					widget_e.appendChild(quiz_e);
 					break;
 				case RANGE_QUIZ:
-					xml_type = "RangeQuiz";
-					final Element range_quiz_e = doc.createElement("RangeQuiz");
+					final Element range_quiz_e = doc.createElement(item_type
+							.getTypeName());
 					final RangeQuizItem range_quiz_item = page
 							.getRangeQuizItem();
 					final Element range_question_e = doc
@@ -741,24 +853,19 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					widget_e.appendChild(range_quiz_e);
 					break;
 				case TEXT:
-					xml_type = "Text";
-					final Element text_e = doc.createElement("Text");
+					final Element text_e = doc.createElement(item_type
+							.getTypeName());
 					text_e.appendChild(doc.createTextNode(page.getTextItem()
 							.getText()));
 					widget_e.appendChild(text_e);
 					break;
 				case VIDEO:
-					xml_type = "Video";
-					final Element video_e = doc.createElement("Video");
+					final Element video_e = doc.createElement(item_type
+							.getTypeName());
 					video_e.setAttribute("uri", page.getVideoItem().getURL());
 					widget_e.appendChild(video_e);
 					break;
-				default:
-					break;
 				}
-
-				widget_e.setAttribute("Type", xml_type);
-
 				page_e.appendChild(widget_e);
 			}
 
