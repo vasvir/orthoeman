@@ -1705,9 +1705,6 @@ public class AuthoringTool implements EntryPoint {
 		case RECTANGLE:
 			rect = new Rectangle(udr.kind);
 			break;
-		default:
-			Log.error("Unknown type: " + udr.type + ". Please report");
-			break;
 		}
 		setButtonsEnabled(image_edit_buttons, false);
 	}
