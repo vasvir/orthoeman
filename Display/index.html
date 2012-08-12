@@ -1,0 +1,217 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8">
+    <meta name="description" content="Testing for Lesson Interface">
+
+
+
+  <title>ORTHO e-Man</title>
+
+
+  <!-- Mobile viewport optimized: h5bp.com/viewport -->
+  <!-- <meta name="viewport" content="width=device-width"> -->
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/ortho_interface.css">
+  <link rel="stylesheet" href="css/jquery-ui-1.8.20.custom.css">
+
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+  <!-- All JavaScript at the bottom, except this Modernizr build.
+       Modernizr enables HTML5 elements & feature detects for optimal performance.
+       Create your own custom Modernizr build: www.modernizr.com/download/ -->
+  <!-- <script src="js/libs/modernizr-2.5.3.min.js"></script> -->
+</head>
+<body>
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+  <!-- Begin Templates Section -->
+
+
+  <!-- Main Lesson Template -->
+  <script id="LessonTemplate" type="text/x-jsrender">
+      <!-- The First Page -->
+      <div id="Page0">
+          <h1>Lesson {{:attributes.id}}</h1>
+          <h2>{{:attributes.Title}}</h2>
+          <p>{{:attributes.abstract}}</p>
+      </div>
+      {{for Page tmpl="#PageTemplate" /}}
+      <div id="Page{{:2*Page.length+1}}"><div id="pageresults"></div></div>
+  </script>
+
+  <!-- Main Page Template -->
+  <script id="PageTemplate" type="text/x-jsrender">
+      <div id="Page{{:(2*#index + 1)}}">
+          {{if Widget[0].type == "image"}}
+            {{for Widget[0] tmpl="#ComplexImageTemplate"/}}
+          {{else if Widget[1].type == "image"}}
+            {{for Widget[1] tmpl="#ComplexImageTemplate"/}}
+          {{else if Widget[0].type == "text"}}
+            {{for Widget[0] tmpl="#TextTemplate"/}}
+          {{else if Widget[1].type == "text"}}
+            {{for Widget[1] tmpl="#TextTemplate"/}}
+          {{/if}}
+     </div>
+      <div id="Page{{:(2*#index + 2)}}">
+          {{if Widget[0].type == "quiz"}}
+            {{for Widget[0] tmpl="#QuizTemplate"/}}
+          {{else if Widget[1].type == "quiz"}}
+            {{for Widget[1] tmpl="#QuizTemplate"/}}
+          {{else if Widget[0].type == "text"}}
+             {{for Widget[0] tmpl="#TextTemplate"/}}
+          {{else if Widget[1].type == "text"}}
+            {{for Widget[1] tmpl="#TextTemplate"/}}
+          {{/if}}
+      </div>
+
+  </script>
+
+  <!-- Complex - Simple Image Template -->
+ <script id="ComplexImageTemplate" type="text/x-jsrender">
+      <div>
+     <div id="pointer_{{:Image.id}}" class="{{if Image.HotSpots=='yes'}}pointcursor{{/if}}" style="width:{{:Image.width}}px;height:{{:Image.height}}px"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
+          <div id="container_{{:Image.id}}" style="top:-{{:Image.height}}px;position:relative;"></div>
+    </div>
+     	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;text-align: right;">
+          <span class="ColorFunctions">
+          		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
+              <img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
+                <img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" />
+          		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'draw' )" onmouseout="ShowOffImage('{{:Image.id}}', 'draw' )" onclick="TogglePaint('line','{{:Image.id}}',{{if Image.HotSpots=='yes'}}'pointcursor'{{else}}''{{/if}})" />
+          		<img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'reset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'reset' )" />
+          	</span>
+           </div>
+
+     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:10px;" class="cssSlider"></div>
+     <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:10px;" class="cssSlider"></div></div>
+      </div>
+ </script>
+
+  <!-- Quiz Template -->
+  <script id="QuizTemplate" type="text/x-jsrender">
+      <div id="quiz_{{:Quiz.id}}">
+          <p>{{:Quiz.Question}}</p>
+          <ul>
+              {{for Quiz.Answer ~id=Quiz.id}}
+              <li><input type="checkbox" name="{{:#index}}.answer_{{:~id}}" onchange="ToggleQuizSelection(this)" /><span onclick="ToggleText(this)">{{:#data}}</span></li>
+              {{/for}}
+          </ul>
+
+      </div>
+  </script>
+
+  <!-- Text Template, Seems simple, but I cannot escape the logic and at the future may need expansion. -->
+  <script id="TextTemplate" type="text/x-jsrender">
+   <p>{{:Text}}</p>
+ </script>
+
+  <!-- Message Template -->
+  <script id="msgboxTemplate" type="text/x-jsrender">
+      <div id="msgbox_{{:id}}" class="ui-widget" style="margin-top:5px;display:none;">
+          <div class="{{if type === 'alert'}}ui-state-error{{else if type === 'highlight'}}ui-state-highlight{{/if}} ui-corner-all" style="padding: 0 .7em;">
+              <span title="Close the Message Box" class="ui-icon ui-icon-closethick" />
+              <p><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else if type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;margin-top: 4px;"></span>
+                  <strong>Alert:</strong> {{:message}}. </p>
+          </div>
+      </div>
+  </script>
+
+  <!-- Final Page Template  -->
+   <script id="EndPageTemplate" type="text/x-jsrender">
+       <h1>Results</h1>
+       <table>
+       <tr><th>Page Number</th><th>Your Answer</th><th>Your Grade</th></tr>
+       {{for PageTracking}}
+       <tr><td>Page {{:#index+1}}</td><td><span style="padding:0 20px;" class="ui-corner-all {{if status=='correct'}}quizcorrect{{else}}quizwrong{{/if}}">{{:status}}</span></td><td>{{:grade}}</td></tr>
+       {{/for}}
+       </table>
+   </script>
+  <!-- End Templates Section -->
+
+
+  <header>
+      <!-- <nav style="visibility: collapse;">
+          <ul>
+              <li id="current"><a href="index.html">Home</a><span></span></li>
+              <li><a href="style.html">Style Demo</a><span></span></li>
+              <li><a href="blog.html">Blog</a><span></span></li>
+              <li><a href="archive.html">Archives</a><span></span></li>
+              <li><a href="index.html">Support</a><span></span></li>
+              <li><a href="index.html">About</a><span></span></li>
+          </ul>
+      </nav> -->
+      <section id="navigation">
+          <a class="more disablemore" id="PreviousTest" href="#">Previous</a>
+          <a class="more submit disablemore" id="SubmitAnswer" href="#">Submit your Answer</a>
+          <a class="more disablemore" id="NextTest" href="#">Next</a>
+      </section>
+  </header>
+
+  <div id="content_wrap" role="main">
+
+      <section id="lesson">
+
+      </section>
+
+      <!-- <section id="navigation">
+          <a class="more disablemore" id="PreviousTest" href="#">Previous</a>
+          <a class="more submit disablemore" style="width:150px;" id="SubmitAnswer" href="#">Submit your Answer</a>
+          <a class="more disablemore" id="NextTest" href="#">Next</a>
+      </section> -->
+ 
+ <div id="msg_area">
+
+ </div>
+
+
+
+  </div>
+  <div id="overlay" class="overlay_hidden" />
+  <footer>
+
+  </footer>
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script> -->
+  <script src="js/libs/jquery-1.7.2.min.js"></script>
+  <script src="js/libs/jquery-ui-1.8.20.custom.min.js"></script>
+
+  <!-- scripts concatenated and minified via build script -->
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/libs/jsrender.js"></script>
+  <script src="js/libs/pixastic.custom.js"></script>
+  <script src="js/libs/kinetic-v3.9.4.min.js"></script>
+  <script src="js/libs/myimagetools.js"></script>
+  <script src="js/libs/turn.min.js"></script>
+  <script src="js/libs/jquery.prettyLoader.js"></script>
+
+  <!-- end scripts -->
+
+  <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
+       mathiasbynens.be/notes/async-analytics-snippet -->
+ <!-- <script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script> -->
+</body>
+</html>
