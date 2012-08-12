@@ -14,7 +14,7 @@
     <xs:simpleType name="WidgetTypeValues">
         <xs:restriction base="xs:string">
             <xs:enumeration value="text"/>
-            <xs:enumeration value="compleximage"/>
+            <xs:enumeration value="image"/>
             <xs:enumeration value="quiz"/>
         </xs:restriction>
     </xs:simpleType>
