@@ -51,6 +51,10 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -522,6 +526,7 @@ public class AuthoringTool implements EntryPoint {
 			getVideoUploaderContainer();
 			getVideoContainer();
 			getQuizAnswerContainer();
+			getPageButtonContainer();
 		}
 
 		brightness_sl = new Slider(1024, -255, 255, 0);
@@ -704,9 +709,8 @@ public class AuthoringTool implements EntryPoint {
 							.getDrawings()
 							.getInterSectionLines(min_distance_point);
 
-					final String angle_str = 
-							NumberFormat.getFormat("0.0").format(
-							getAngle(intersection_lines[0],
+					final String angle_str = NumberFormat.getFormat("0.0")
+							.format(getAngle(intersection_lines[0],
 									intersection_lines[1], query_point));
 
 					context.fillText(angle_str, x, y);
@@ -1230,30 +1234,54 @@ public class AuthoringTool implements EntryPoint {
 		});
 
 		splashScreenLabel.setText("Reading Lesson...");
-		final String url = null;
-		lesson = Lesson.readXML(url);
 
-		lesson.addPageListener(new Lesson.PageListener() {
-			@Override
-			public void pageRemoved(Page page) {
-				remove_b.setEnabled(!lesson.isEmpty());
-			}
+		final String url = "test.xml";
+		final RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url);
+		try {
+			rb.sendRequest(null, new RequestCallback() {
+				@Override
+				public void onError(final Request request, final Throwable e) {
+					Log.error(e.getMessage(), e);
+				}
 
-			@Override
-			public void pageAdded(Page page) {
-				remove_b.setEnabled(!lesson.isEmpty());
-			}
-		});
+				@Override
+				public void onResponseReceived(final Request request,
+						final Response response) {
+					lesson = Lesson.readXML(response.getText());
 
-		splashScreenLabel.setText("Updating GUI...");
-		updateGUI();
+					lesson.addPageListener(new Lesson.PageListener() {
+						@Override
+						public void pageRemoved(Page page) {
+							remove_b.setEnabled(!lesson.isEmpty());
+						}
 
-		if (lesson.isEmpty())
-			setCurrentPage(new Lesson.Page());
-		else
-			setCurrentPage(lesson.get(0));
+						@Override
+						public void pageAdded(Page page) {
+							remove_b.setEnabled(!lesson.isEmpty());
+						}
+					});
 
-		getSplashPopup().setVisible(false);
+					splashScreenLabel.setText("Updating Lesson pages...");
+					updatePages();
+
+					if (lesson.isEmpty())
+						setCurrentPage(new Lesson.Page());
+					else
+						setCurrentPage(lesson.get(0));
+
+					getSplashPopup().setVisible(false);
+
+					if (Log.isDebugEnabled()) {
+						long endTimeMillis = System.currentTimeMillis();
+						float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
+						Log.debug("Lesson loading finsihed in: "
+								+ durationSeconds + " seconds");
+					}
+				}
+			});
+		} catch (final Exception e) {
+			Log.error(e.getMessage(), e);
+		}
 
 		/*
 		 * Again, we need a guard here, otherwise <code>log_level=OFF</code>
@@ -1411,10 +1439,6 @@ public class AuthoringTool implements EntryPoint {
 		for (final Lesson.Page page : lesson) {
 			addPageButton(page);
 		}
-	}
-
-	private void updateGUI() {
-		updatePages();
 	}
 
 	private Lesson.Page getCurrentPage() {

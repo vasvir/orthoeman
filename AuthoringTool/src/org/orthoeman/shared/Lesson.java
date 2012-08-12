@@ -569,8 +569,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		pageListeners.remove(li);
 	}
 
-	public static Lesson readXML(String url) {
-		// TODO read from url
+	public static Lesson readXML(String contents) {
+		Log.trace("Parsing: " + contents);
+		final Document doc = XMLParser.parse(contents);
 		final Lesson lesson = new Lesson();
 
 		lesson.add(new Page("opa"));
