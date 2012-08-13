@@ -645,23 +645,27 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							.getElementsByTagName(item_type.getTypeName())
 							.item(0);
 					final String url = image_e.getAttribute("uri");
-					final PreloadedImage img = new PreloadedImage(url,
-							onload_handler);
-					/*
-					 * Here is the trick. Either the loading finishes real fast
-					 * or not
-					 * 
-					 * Case 1: Real fast: Then the lesson has not been
-					 * initialized yet. The handler does not redraw because
-					 * current page is null. When readXML returns the master
-					 * code will set the currentPage to the first and a redraw
-					 * will be issued
-					 * 
-					 * Case 2: Real slow: Lesson is returned with images half
-					 * loaded. The guard checks inside redraw protect the image.
-					 * When the image is loaded a redraw is executed.
-					 */
-					page.getImageItem().setImage(img);
+					if (url != null) {
+						final PreloadedImage img = new PreloadedImage(url,
+								onload_handler);
+						/*
+						 * Here is the trick. Either the loading finishes real
+						 * fast or not
+						 * 
+						 * Case 1: Real fast: Then the lesson has not been
+						 * initialized yet. The handler does not redraw because
+						 * current page is null. When readXML returns the master
+						 * code will set the currentPage to the first and a
+						 * redraw will be issued
+						 * 
+						 * Case 2: Real slow: Lesson is returned with images
+						 * half loaded. The guard checks inside redraw protect
+						 * the image. When the image is loaded a redraw is
+						 * executed.
+						 */
+						page.getImageItem().setImage(img);
+					}
+
 					// now let's get all drawings
 					final NodeListWrapperList drawing_nl = new NodeListWrapperList(
 							image_e.getChildNodes());
