@@ -2,9 +2,6 @@ Display:
 	on reload user spots should be visible
 
 Authoring Tool:
-	write xml
-	read xml
-
 	Code:
 		-CheckBox vs SimpleCheckBox: SimpleCheckBox does not
 		have valueChangeHandler althouch ClickHandler works ok. CheckBox
@@ -31,9 +28,6 @@ Authoring Tool:
 	Immediate for TC meeting:
 		Power point presentation
 
-	BUGS:
-		brightness & contrast should be per image
-
 	HTML:
 		IE:
 			eraser svg icon
@@ -43,3 +37,9 @@ Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
 	Use data backend for storing resources (xml & images & videos)
 	Authoring Tool should be able to launch the Display Tool
+
+
+Task list:
+	XML writing for image
+	Moodle integration
+	XML schema discussions

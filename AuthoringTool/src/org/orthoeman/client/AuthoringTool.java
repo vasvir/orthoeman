@@ -265,7 +265,7 @@ public class AuthoringTool implements EntryPoint {
 		int canvas_width = 0;
 		int canvas_height = 0;
 
-		if (img == null) {
+		if (!isImageLoaded(img)) {
 			canvas_width = canvas_100;
 			canvas_height = (canvas_width * 3 / 4);
 		} else {
@@ -303,7 +303,7 @@ public class AuthoringTool implements EntryPoint {
 
 		final Context2d context = canvas.getContext2d();
 
-		if (img == null) {
+		if (!isImageLoaded(img)) {
 			context.setFillStyle("white");
 			context.fillRect(0, 0, canvas_width, canvas_height);
 		} else {
@@ -848,7 +848,7 @@ public class AuthoringTool implements EntryPoint {
 				zoom.setLevel(1);
 				final PreloadedImage img = getCurrentPage().getImageItem()
 						.getImage();
-				if (img != null) {
+				if (isImageLoaded(img)) {
 					zoom.getTarget().set(0, 0, img.getRealWidth(),
 							img.getRealHeight());
 				}
@@ -883,7 +883,7 @@ public class AuthoringTool implements EntryPoint {
 				zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
 				final PreloadedImage img = getCurrentPage().getImageItem()
 						.getImage();
-				if (img != null) {
+				if (isImageLoaded(img)) {
 					zoom.setLevel(((double) canvas.getOffsetWidth())
 							/ ((double) img.getRealWidth()));
 					zoom.getTarget().set(0, 0, img.getRealWidth(),
@@ -1247,7 +1247,18 @@ public class AuthoringTool implements EntryPoint {
 				@Override
 				public void onResponseReceived(final Request request,
 						final Response response) {
-					lesson = Lesson.readXML(response.getText());
+					lesson = Lesson.readXML(response.getText(),
+							new PreloadedImage.OnLoadPreloadedImageHandler() {
+								@Override
+								public void onLoad(PreloadedImage img) {
+									final Page page = getCurrentPage();
+									if (page == null)
+										return;
+									if (page.getImageItem().getImage() != img)
+										return;
+									redrawCanvas();
+								}
+							});
 
 					lesson.addPageListener(new Lesson.PageListener() {
 						@Override
@@ -1264,10 +1275,10 @@ public class AuthoringTool implements EntryPoint {
 					splashScreenLabel.setText("Updating Lesson pages...");
 					updatePages();
 
-					if (lesson.isEmpty())
-						setCurrentPage(new Lesson.Page());
-					else
-						setCurrentPage(lesson.get(0));
+					if (lesson.isEmpty()) {
+						lesson.add(new Lesson.Page());
+					}
+					setCurrentPage(lesson.get(0));
 
 					getSplashPopup().setVisible(false);
 
@@ -1762,5 +1773,13 @@ public class AuthoringTool implements EntryPoint {
 		}
 
 		return angle * 180 / Math.PI;
+	}
+
+	private static boolean isImageLoaded(PreloadedImage img) {
+		if (img == null)
+			return false;
+		if (img.getRealWidth() == 0 && img.getRealHeight() == 0)
+			return false;
+		return true;
 	}
 }

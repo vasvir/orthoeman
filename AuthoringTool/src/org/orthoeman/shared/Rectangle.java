@@ -8,20 +8,20 @@ public class Rectangle extends Drawing {
 	private int width;
 	private int height;
 
-	public Rectangle(Kind kind, int x, int y, int width, int heigth) {
+	public Rectangle(Kind kind, int x, int y, int width, int height) {
 		super(Type.RECTANGLE, kind);
-		set(x, y, width, heigth);
+		set(x, y, width, height);
 	}
 
 	public Rectangle(Kind kind) {
 		this(kind, 0, 0, 0, 0);
 	}
 
-	public void set(int x, int y, int width, int heigth) {
+	public void set(int x, int y, int width, int height) {
 		setX(x);
 		setY(y);
 		setWidth(width);
-		setHeight(heigth);
+		setHeight(height);
 	}
 
 	public void set(Rectangle target) {

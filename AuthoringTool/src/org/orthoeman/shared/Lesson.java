@@ -18,6 +18,7 @@ import org.orthoeman.shared.Lesson.Page.QuizItem;
 import org.orthoeman.shared.Lesson.Page.QuizItem.Answer;
 import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -604,7 +605,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				.getFirstChild());
 	}
 
-	public static Lesson readXML(String contents) {
+	public static Lesson readXML(String contents,
+			PreloadedImage.OnLoadPreloadedImageHandler onload_handler) {
 		// Log.trace("Parsing: " + contents);
 		final Lesson lesson = new Lesson();
 
@@ -639,6 +641,70 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				itemTypeCombinationsFound[itemTypeCombinationsFoundCount++] = item_type;
 				switch (item_type) {
 				case IMAGE:
+					final Element image_e = (Element) widget_e
+							.getElementsByTagName(item_type.getTypeName())
+							.item(0);
+					final String url = image_e.getAttribute("uri");
+					final PreloadedImage img = new PreloadedImage(url,
+							onload_handler);
+					/*
+					 * Here is the trick. Either the loading finishes real fast
+					 * or not
+					 * 
+					 * Case 1: Real fast: Then the lesson has not been
+					 * initialized yet. The handler does not redraw because
+					 * current page is null. When readXML returns the master
+					 * code will set the currentPage to the first and a redraw
+					 * will be issued
+					 * 
+					 * Case 2: Real slow: Lesson is returned with images half
+					 * loaded. The guard checks inside redraw protect the image.
+					 * When the image is loaded a redraw is executed.
+					 */
+					page.getImageItem().setImage(img);
+					// now let's get all drawings
+					final NodeListWrapperList drawing_nl = new NodeListWrapperList(
+							image_e.getChildNodes());
+					for (final Node drawing_n : drawing_nl) {
+						final Element drawing_e = (Element) drawing_n;
+						final String tagname = drawing_e.getTagName();
+						final Kind kind = Boolean.valueOf(drawing_e
+								.getAttribute("IsHotSpot")) ? Kind.BLOCKING
+								: Kind.INFORMATIONAL;
+						Drawing drawing = null;
+						if (tagname.equals("Polygon")) {
+							final NodeListWrapperList points_nl = new NodeListWrapperList(
+									drawing_e.getChildNodes());
+							final List<Point> points = new ArrayList<Point>();
+							for (final Node point_n : points_nl) {
+								final Element point_e = (Element) point_n;
+								final int x = Integer.valueOf(point_e
+										.getAttribute("X"));
+								final int y = Integer.valueOf(point_e
+										.getAttribute("Y"));
+								final Point point = new Point(x, y);
+								points.add(point);
+							}
+							drawing = new Polygon(kind, points);
+						} else if (tagname.equals("Ellipse")
+								|| tagname.equals("Rectangle")) {
+							final int x = Integer.valueOf(drawing_e
+									.getAttribute("X"));
+							final int y = Integer.valueOf(drawing_e
+									.getAttribute("Y"));
+							final int width = Integer.valueOf(drawing_e
+									.getAttribute("Width"));
+							final int height = Integer.valueOf(drawing_e
+									.getAttribute("Height"));
+							drawing = tagname.equals("Ellipse") ? new Ellipse(
+									kind, x, y, width, height) : new Rectangle(
+									kind, x, y, width, height);
+						} else {
+							Log.error("Unknown drawing type " + tagname);
+							continue;
+						}
+						page.getImageItem().getDrawings().add(drawing);
+					}
 					break;
 				case QUIZ:
 					final Element quiz_e = (Element) widget_e
@@ -691,24 +757,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			lesson.add(page);
 		}
 
-		/*
-		 * lesson.add(new Page("opa"));
-		 * lesson.get(0).getTextItem().setText("This is a very interesting opa"
-		 * ); final QuizItem quiz_item = lesson.get(0).getQuizItem();
-		 * quiz_item.setText("This statement is correct.");
-		 * quiz_item.createAnswer("I don't think so", false);
-		 * quiz_item.createAnswer("really?", false);
-		 * quiz_item.createAnswer("Not sure", false);
-		 * quiz_item.createAnswer("Yes", true);
-		 * quiz_item.createAnswer("I don't know. I don't want to answer",
-		 * false); final RangeQuizItem range_quiz_item =
-		 * lesson.get(0).getRangeQuizItem();
-		 * range_quiz_item.setText("What is the correct range?");
-		 * range_quiz_item.setMin(-1); range_quiz_item.setMax(4.8);
-		 * 
-		 * lesson.add(new Page("ouf"));
-		 * lesson.get(1).getTextItem().setText("ouf is a nice concept");
-		 */
 		return lesson;
 	}
 
@@ -762,9 +810,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 										.setAttribute("X", "" + ellipse.getX());
 								ellipse_e
 										.setAttribute("Y", "" + ellipse.getY());
-								ellipse_e.setAttribute("A",
+								ellipse_e.setAttribute("Width",
 										"" + ellipse.getWidth());
-								ellipse_e.setAttribute("B",
+								ellipse_e.setAttribute("Height",
 										"" + ellipse.getHeight());
 								image_e.appendChild(ellipse_e);
 								break;
