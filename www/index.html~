@@ -33,6 +33,12 @@
 <li><a href="http://127.0.0.1:8888/AuthoringTool.html?gwt.codesvr=127.0.0.1:9997">Authoring Tool (GWT-devel needs ports redirection)</a></li>
 </ul>
 
+<h2>Deprecated</h2>
+<ul>
+<li><a href="authoring-tool">Authoring Tool (Xerte)</a></li>
+<li><a href="authoring-tool/management.php">Authoring Tool (Xerte) - Administration</a></li>
+</ul>
+
 <h1>News</h1>
 
 <ul>
