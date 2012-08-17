@@ -36,6 +36,7 @@ Authoring Tool:
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
 	Use data backend for storing resources (xml & images & videos)
+	Tracking - Display tool should be able to inform moodle about the progress /grade of the student
 	Authoring Tool should be able to launch the Display Tool
 
 
