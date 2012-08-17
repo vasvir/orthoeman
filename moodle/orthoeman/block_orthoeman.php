@@ -1,7 +1,7 @@
 <?php
 class block_orthoeman extends block_base {
 	public function init() {
-		$this->title = get_string('simplehtml', 'block_simplehtml');
+		$this->title = get_string('orthoeman', 'block_orthoeman');
 	}
 
 
