@@ -1,5 +1,5 @@
 <?php
-class block_simplehtml extends block_base {
+class block_orthoeman extends block_base {
 	public function init() {
 		$this->title = get_string('simplehtml', 'block_simplehtml');
 	}
@@ -11,7 +11,7 @@ class block_simplehtml extends block_base {
 		}
 
 		$this->content         =  new stdClass;
-		$this->content->text   = 'The content of our SimpleHTML block!';
+		$this->content->text   = 'The content of our OrthoEMan? block!';
 		$this->content->footer = 'Footer here...';
 
 		return $this->content;
