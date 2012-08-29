@@ -16,6 +16,8 @@
             <xs:enumeration value="text"/>
             <xs:enumeration value="image"/>
             <xs:enumeration value="quiz"/>
+            <xs:enumeration value="video" />
+            <xs:enumeration value="input" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -53,6 +55,8 @@
             <xs:element name="text" type="UnconstrainedText"/>
             <xs:group ref="QuizGroupElements"/>
             <xs:element name="image" type="ComplexImageType"/>
+            <xs:element name="video" type="VideoType" />
+            <xs:element name="input" type="InputValueType" />
         </xs:choice>
         <xs:attribute name="type" type="WidgetTypeValues" use="required"/>
     </xs:complexType>
@@ -71,6 +75,21 @@
         <xs:attribute name="width" type="xs:integer" use="required"/>
         <xs:attribute name="height" type="xs:integer" use="required"/>
       <xs:attribute name="maxspots" type="xs:integer" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="VideoType">
+        <xs:group ref="VideoDef" minOccurs="1" maxOccurs="1" />
+        <xs:attribute name="video_mp4" type="YesNoValues" use="required" />
+        <xs:attribute name="video_webm" type="YesNoValues" use="required" />
+        <xs:attribute name="video_ogg" type="YesNoValues" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="InputValueType">
+        <xs:all>
+            <xs:element name="question" type="UnconstrainedText" minOccurs="1" />
+        </xs:all>
+        <xs:attribute name="minvalue" type="xs:float" use="required" />
+        <xs:attribute name="maxvalue" type="xs:float" use="required" />
     </xs:complexType>
 
     <xs:complexType name="CircleType">
@@ -116,6 +135,13 @@
         <xs:choice>
             <xs:element name="imageid" type="xs:integer"/>
             <xs:element name="imageuri" type="xs:anyURI"/>
+        </xs:choice>
+    </xs:group>
+
+    <xs:group name="VideoDef">
+        <xs:choice>
+            <xs:element name="videoid" type="xs:integer"/>
+            <xs:element name="videouri" type="xs:anyURI"/>
         </xs:choice>
     </xs:group>
 
