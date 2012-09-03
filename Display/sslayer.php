@@ -31,6 +31,9 @@ function GetAnswer() {
 		case 'hotspots':
 			$return = GetHotspotsAnswer();
 			break;
+        case 'input':
+            $return = getInputAnswer();
+            break;
 		default :
 			$return = "error";
 			break;
@@ -58,6 +61,23 @@ function GetQuizAnswer() {
         $return["PaintShapes"] =GetShapesFromImage($Page, $xml);
         $return["CorrectAnswer"] = $xmlquizanswer;
     }
+    return $return;
+}
+
+function getInputAnswer() {
+    $return = array();
+    $xml = GetXMLData();
+    $myvalue = intval((int)$_GET["value"]);
+    $Page = $_GET["Page"];
+    foreach ($xml->page[intval($Page)]->widget as $key=> $value) {
+        if (strval($value["type"]) == "input") {
+            $min = intval($value->input["minvalue"]);
+            $max = intval($value->input["maxvalue"]);
+        }
+    }
+    $isblocked = strval($xml->page[intval($Page)]["blocked"]);
+    $return["Answer"] = ($myvalue >= $min && $myvalue <= $max ) ? "correct" : "wrong";
+
     return $return;
 }
 
@@ -347,17 +367,27 @@ function GetTemplateData($data) {
 			$a["Page"][$index]["Widget"][$windex]["type"] = $widgetype;
 			switch ($widgetype) {
 				case 'image' :
-					$a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue -> image, $index . $windex);
-					$a["Images"][] = array('id' => $index . $windex, 'url' => strval($wvalue -> image -> imageuri), 'HotSpots' => strval($wvalue -> image["hotspots"]),'MaxSpots'=>strval($wvalue->image["maxspots"]), 'ShowRegions' => strval($wvalue -> image["showregions"]));
+					$a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue -> image, $index , $windex);
+					$a["Images"][] = array('id' => $index,'subid' => $windex,
+                        'url' => strval($wvalue -> image -> imageuri),
+                        'HotSpots' => strval($wvalue -> image["hotspots"]),
+                        'MaxSpots'=>strval($wvalue->image["maxspots"]),
+                        'ShowRegions' => strval($wvalue -> image["showregions"]),
+                        'EnableTracking' => strval($wvalue -> image["enabletracking"])
+                    );
 					break;
-					;
 				case 'quiz' :
-					$a["Page"][$index]["Widget"][$windex]["Quiz"] = GetDisplayQuizImg($wvalue, $index . $windex);
+					$a["Page"][$index]["Widget"][$windex]["Quiz"] = GetDisplayQuizImg($wvalue, $index , $windex);
 					break;
 				case 'text' :
 					$a["Page"][$index]["Widget"][$windex]["Text"] = GetDisplayText($wvalue -> text);
-
 					break;
+                case 'video':
+                    $a["Page"][$index]["Widget"][$windex]["Video"] = GetDisplayVideo($wvalue-> video, $index,$windex);
+                    break;
+                case "input" :
+                    $a["Page"][$index]["Widget"][$windex]["Input"] = GetDisplayInput($wvalue->input,$index,$windex);
+                    break;
 			}
 			$windex++;
 		}
@@ -366,9 +396,37 @@ function GetTemplateData($data) {
 	return $a;
 }
 
-function GetDisplayComplexImg($data, $id) {
+function GetDisplayInput($data,$id,$subid) {
+   $r = array();
+    $r["Question"] = strval($data -> question);
+    $r["id"] = $id;
+    $r["subid"] = $subid;
+    $min = (int)$data["minvalue"];
+    $max = (int)$data["maxvalue"];
+    $r["Min"] = ($min >=0 ) ? 0 : $min -  mt_rand(10,2* abs($min));
+    $r["Max"] = $max + mt_rand(10,2*$max);
+    return $r;
+}
+function GetDisplayVideo($data, $id, $subid) {
+    $r = array();
+    if (isset($data->videoid)) {
+        $r["VideoID"] = strval($data->videoid);
+        $r["LoadMethod"] = "ID";
+    } else {
+        $r["VideoURI"] = strval($data-> videouri);
+        $r["LoadMethod"] = "URI";
+    }
+    $r["id"] = $id;
+    $r["subid"] = $subid;
+    $r["video_mp4"] = strval($data["video_mp4"]);
+    $r["video_webm"] = strval($data["video_webm"]);
+    $r["video_ogg"] = strval($data["video_ogg"]);
+    return $r;
+}
+
+function GetDisplayComplexImg($data, $id ,$subid) {
 	$r = array();
-	if (isset($data -> ImageID)) {
+	if (isset($data -> imageid)) {
 		$r["ImageID"] = strval($data -> imageid);
 		$r["LoadMethod"] = "ID";
 	} else {
@@ -378,17 +436,20 @@ function GetDisplayComplexImg($data, $id) {
 
 	$r["ShowRegions"] = strval($data["showregions"]);
 	$r["HotSpots"] = strval($data["hotspots"]);
+    $r["EnableTracking"] = strval($data["enabletracking"]);
 	$r["id"] = $id;
+    $r["subid"] = $subid;
 	$r["width"] = strval($data["width"]);
 	$r["height"] = strval($data["height"]);
 	$r["ImageType"] = (count(get_object_vars($data)) > 2) ? "complex" : "simple";
 	return $r;
 }
 
-function GetDisplayQuizImg($data, $id) {
+function GetDisplayQuizImg($data, $id,$subid) {
 	$r = array();
 	$r["Question"] = strval($data -> question);
 	$r["id"] = $id;
+    $r["subid"] = $subid;
 	$count = count($data -> answer);
 	for ($i = 0; $i < $count; $i++)
 		$r["Answer"][$i] = strval($data -> answer[$i]);
