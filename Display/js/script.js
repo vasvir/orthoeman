@@ -1,5 +1,11 @@
 /* Author: Konstantinos Zagoris
  The script logic for ORTHO e-Man
+
+
+ TODO οι διαστάσεις του tooltip, infotip και point circles δεν είναι το ίδιο. Αυτό συμβαίνει γιατί εξαρτούνται από το zoomPage και scalePage, διόρθωσέ το ώστε να εξαρτάται από το ένα. Ίσως τότε να διορθωθεί.
+  TODO αλλαγή όλου του notification system.
+  TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
+
  */
 "use strict";
 
@@ -45,6 +51,8 @@ var OrthoVariables = {
 
 $(document).ready(function () {
     //_V_.options.flash.swf = "libs/video-js/video-js.swf";
+    $.pnotify.defaults.styling = "jqueryui";
+    $.pnotify.defaults.history = false;
     $("#NextTest").data("fire", true);
     $.prettyLoader({
         animation_speed:'normal',
@@ -112,28 +120,34 @@ function LoadVideo(Page) {
 }
 
 function loadSpinControl(Page) {
-    for (var wid in OrthoVariables.LessonData.Page[Page].Widget) {
-        if (OrthoVariables.LessonData.Page[Page].Widget[wid].type === "input") {
-            var wInput = OrthoVariables.LessonData.Page[Page].Widget[wid].Input;
+    if (Page < OrthoVariables.LessonData.Page.length && OrthoVariables.spinControls[Page] === undefined   ) {
+        for (var wid in OrthoVariables.LessonData.Page[Page].Widget) {
+            if (OrthoVariables.LessonData.Page[Page].Widget[wid].type === "input") {
+                var wInput = OrthoVariables.LessonData.Page[Page].Widget[wid].Input;
 
-            var spinCtrl = new SpinControl();
-            spinCtrl.Tag = wInput.id;
-            spinCtrl.AttachValueChangedListener(changedSpinControl);
-            spinCtrl.GetAccelerationCollection().Add(new SpinControlAcceleration(1, 500));
-            spinCtrl.GetAccelerationCollection().Add(new SpinControlAcceleration(5, 1750));
-            spinCtrl.GetAccelerationCollection().Add(new SpinControlAcceleration(10, 3500));
-            spinCtrl.SetMaxValue(wInput.Max);
-            spinCtrl.SetMinValue(wInput.Min);
-            spinCtrl.SetCurrentValue( 0 );
-            $("#input_" + wInput.id).append(spinCtrl.GetContainer());
-            spinCtrl.StartListening();
-            $("#input_" + wInput.id + " input.spinInput").attr("onkeydown", "return valid_num(event);");
-            OrthoVariables.spinControls[Page] = spinCtrl;
+                var spinCtrl = new SpinControl();
+                spinCtrl.Tag = wInput.id;
+                spinCtrl.AttachValueChangedListener(changedSpinControl);
+                spinCtrl.GetAccelerationCollection().Add(new SpinControlAcceleration(1, 500));
+                spinCtrl.GetAccelerationCollection().Add(new SpinControlAcceleration(5, 1750));
+                spinCtrl.GetAccelerationCollection().Add(new SpinControlAcceleration(10, 3500));
+                spinCtrl.SetMaxValue(wInput.Max);
+                spinCtrl.SetMinValue(wInput.Min);
+                spinCtrl.SetCurrentValue( 0 );
+                $("#input_" + wInput.id).append(spinCtrl.GetContainer());
+                spinCtrl.StartListening();
+                $("#input_" + wInput.id + " input.spinInput").attr("onkeydown", "return valid_num(event);").attr("onkeyup", "changeValueSpincontrol(this)");
+                OrthoVariables.spinControls[Page] = spinCtrl;
+            }
+
         }
-
     }
+
 }
 
+function changeValueSpincontrol(obj) {
+    OrthoVariables.spinControls[OrthoVariables.lessonPage].SetCurrentValue(parseFloat($(obj).val()));
+}
 function changedSpinControl(sender, newVal) {
    var id = sender.Tag;
     if (OrthoVariables.lessonPage === Number(id)) {
@@ -156,10 +170,8 @@ function LoadImages(Page) {
         }
     }
 
-    if (counter === 0) {
-        if (Page < OrthoVariables.LessonData.Page.length) {
+    if (counter === 0 && Page < OrthoVariables.LessonData.Page.length) {
             LoadVideo(Page);
-        }
     }
     for (var i = 0; i < imagesToLoad.length; i++) {
         /*$("#modal_" + imagesToLoad[i].id).dialog({
@@ -570,8 +582,6 @@ function DrawShape(strid) {
             id:"line_"+shapeid
         });
 
-        //console.log (OrthoVariables.line.startx, x1);
-        //console.log ( OrthoVariables.line.startx + Math.round((OrthoVariables.line.startx -x1)/2));
 
         var distance =  Math.round(10*EuclideanDistance(OrthoVariables.line.startx ,OrthoVariables.line.starty,x1, y1))/100;
         var text = "Distance :\t " + distance + "cm \nHorizontal Angle:\t " + horizAngle(OrthoVariables.line.startx ,OrthoVariables.line.starty,x1, y1) + "°";
@@ -617,8 +627,6 @@ function EuclideanDistance(x1,y1,x2,y2) {
 }
 
 function horizAngle(x1,y1,x2,y2) {
-    //console.log( Math.abs(x2-x1),Math.abs(y2-y1), Math.atan2(y2 - y1, x2-x1) ,Math.atan2(y2 - y1, x2-x1)*180/Math.PI );
-    //return Math.atan( y1-y2/x1-x2)*180/Math.PI;
     return Math.round(-Math.atan2(y2 - y1, x2-x1)*180/Math.PI);
 };
 
@@ -658,7 +666,6 @@ function SetonLine(strID) {
         SetCursor(id);
         var mylayer = this.getLayer();
         var shapeid = this.getId().split('_')[1];
-        //console.log(shapeid);
         mylayer.remove(mylayer.get("#infotip_"+shapeid)[0]);
         mylayer.remove(this);
         mylayer.draw();
@@ -762,6 +769,12 @@ function displayFunctions() {
         if (OrthoVariables.CurPage <= 1) {
             DisableButtonLink("PreviousTest");
             EnableButtonLink("NextTest");
+            DisableButtonLink("SubmitAnswer");
+        }
+        else if (OrthoVariables.CurPage >= OrthoVariables.maxPages) {
+            EnableButtonLink("PreviousTest");
+            DisableButtonLink("NextTest");
+            DisableButtonLink("SubmitAnswer");
         }
         else {
             EnableButtonLink("PreviousTest");
@@ -771,12 +784,14 @@ function displayFunctions() {
             else {
                 EnableButtonLink("NextTest");
             }
+
+            if (OrthoVariables.PageTracking[lessonpage].submitbutton) {
+                EnableButtonLink("SubmitAnswer");
+            } else {
+                DisableButtonLink("SubmitAnswer");
+            }
         }
-        if (OrthoVariables.PageTracking[lessonpage].submitbutton) {
-            EnableButtonLink("SubmitAnswer");
-        } else {
-            DisableButtonLink("SubmitAnswer");
-        }
+
 
         CheckResizeLimits();
     });
@@ -900,6 +915,7 @@ function zoomOutImage(id) {
     if (OrthoVariables.zoomPage[id] <= 0.35) {
         OrthoVariables.zoomPage[id] = 0.35
     }
+    $("#pointer_"+id).css("top","0px").css("left","0px");
     var ratio =  OrthoVariables.origCanvas[id][0].width/ OrthoVariables.origCanvas[id][0].height;
     var newWidth = Math.round(OrthoVariables.zoomPage[id]*OrthoVariables.scalePage[OrthoVariables.lessonPage]* OrthoVariables.origCanvas[id][0].width);
     var newHeight = Math.round( newWidth / ratio);
@@ -908,7 +924,7 @@ function zoomOutImage(id) {
 
 function zoomRsImage(id) {
     OrthoVariables.zoomPage[id] = 1;
-
+    $("#pointer_"+id).css("top","0px").css("left","0px");
     var ratio =  OrthoVariables.origCanvas[id][0].width/ OrthoVariables.origCanvas[id][0].height;
     var newWidth = Math.round(OrthoVariables.zoomPage[id]*OrthoVariables.scalePage[OrthoVariables.lessonPage]* OrthoVariables.origCanvas[id][0].width);
     var newHeight = Math.round( newWidth / ratio);
@@ -1113,7 +1129,7 @@ function ShowPage() {
 function DisableButtonLink(id) {
     $("#" + id).removeClass("more").addClass("disablemore");
     $("#" + id).unbind('click');
-    if (id === "SubmitAnswer") {
+    if (id === "SubmitAnswer" && OrthoVariables.PageTracking[OrthoVariables.lessonPage]!== undefined) {
         OrthoVariables.PageTracking[OrthoVariables.lessonPage].submitbutton = false;
     }
     if (id === "NextTest") {
@@ -1178,6 +1194,40 @@ function CreatePages() {
         pages += "<div id=\"Page" + i + "\"></div>";
     }
 
+}
+
+function newShowMsg(message,type) {
+    var vicon,vtype,vhide;
+    switch (type) {
+        case "alert":
+            vicon = "ui-icon-alert";
+            vtype = "error";
+            vhide = false;
+            break;
+        case "highlight":
+            vicon = "ui-icon-flag";
+            vtype = "success";
+            vhide = true;
+            break;
+        case "info":
+            vicon = "ui-icon-info";
+            vtype = "info";
+            vhide = false;
+            break;
+    }
+
+    var stack_bottomright = {"dir1":"up", "dir2":"left","firstpos1":25,"firstpos2":25};
+    $.pnotify({
+        title: 'Please Notice',
+        text: message,
+        icon: 'ui-icon ' + vicon,
+        type : vtype,
+        opacity: .8,
+        addclass: "stack-bottomright",
+        stack:stack_bottomright,
+        hide : vhide
+
+    });
 }
 
 // Message Functions
@@ -1606,7 +1656,6 @@ function RemoveOverlay() {
 }
 
 function PaintCircle(data, fillcolor, strokecolor) {
-    console.log (data[2]);
     var circle = new Kinetic.Circle({
         x:data[1]["X"],
         y:data[1]["Y"],

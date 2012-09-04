@@ -22,9 +22,11 @@
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/ortho_interface.css">
-  <link rel="stylesheet" href="css/jquery-ui-1.8.23.custom.css">
+   <link rel="stylesheet" href="css/jquery-ui-1.8.23.custom.css">
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css" media="all" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="js/libs/mediaelement/mediaelementplayer.min.css">
     <link ref="stylesheet" href="css/cloud-zoom.css">
+    <link ref="stylesheet" href="css/jquery.pnotify.default.css">
 
 
 
@@ -116,9 +118,9 @@
     </div>
      	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;text-align: right;position:absolute;top:{{:Image.height}}px;">
           <span class="ColorFunctions">
-          	  <img id="zoomreset_{{:Image.id}}" src="img/zoom.png" title="Zoom Reset" onclick="zoomRsImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomreset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomreset' )"/>
-              <img id="zoomout_{{:Image.id}}" src="img/zoom.png" title="Zoom Out" onclick="zoomOutImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomout' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomout' )"/>
-              <img id="zoomin_{{:Image.id}}" src="img/zoom.png" title="Zoom In" onclick="zoomInImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomin' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomin' )"/>
+          	  <img id="zoomreset_{{:Image.id}}" src="img/zoomrs.png" title="Zoom Reset" onclick="zoomRsImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomreset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomreset' )"/>
+              <img id="zoomout_{{:Image.id}}" src="img/zoomout.png" title="Zoom Out" onclick="zoomOutImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomout' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomout' )"/>
+              <img id="zoomin_{{:Image.id}}" src="img/zoomin.png" title="Zoom In" onclick="zoomInImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomin' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomin' )"/>
               <img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
                  <img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
                 <img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" />
@@ -248,7 +250,7 @@
   <script src="js/libs/jquery.prettyLoader.js"></script>
   <script src="js/libs/mediaelement/mediaelement-and-player.js"></script>
   <script src="js/libs/spincontrol.js"></script>
-  <script src="js/libs/cloud-zoom.1.0.2.js"></script>
+  <script src="js/libs/jquery.pnotify.min.js"></script>
 
 
   <!-- end scripts -->
