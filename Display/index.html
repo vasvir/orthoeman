@@ -22,7 +22,11 @@
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/ortho_interface.css">
-  <link rel="stylesheet" href="css/jquery-ui-1.8.20.custom.css">
+   <link rel="stylesheet" href="css/jquery-ui-1.8.23.custom.css">
+    <!-- <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css" media="all" rel="stylesheet" type="text/css"> -->
+    <link rel="stylesheet" href="js/libs/mediaelement/mediaelementplayer.min.css">
+    <link ref="stylesheet" href="css/jquery.pnotify.default.css">
+
 
 
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
@@ -59,6 +63,10 @@
             {{for Widget[0] tmpl="#ComplexImageTemplate"/}}
           {{else if Widget[1].type == "image"}}
             {{for Widget[1] tmpl="#ComplexImageTemplate"/}}
+          {{else if Widget[0].type == "video"}}
+            {{for Widget[0] tmpl="#VideoTemplate"/}}
+          {{else if Widget[1].type == "video"}}
+            {{for Widget[1] tmpl="#VideoTemplate"/}}
           {{else if Widget[0].type == "text"}}
             {{for Widget[0] tmpl="#TextTemplate"/}}
           {{else if Widget[1].type == "text"}}
@@ -74,31 +82,67 @@
              {{for Widget[0] tmpl="#TextTemplate"/}}
           {{else if Widget[1].type == "text"}}
             {{for Widget[1] tmpl="#TextTemplate"/}}
+          {{else if Widget[0].type == "input"}}
+            {{for Widget[0] tmpl="#InputTemplate"/}}
+          {{else if Widget[1].type == "input"}}
+            {{for Widget[1] tmpl="#InputTemplate"/}}
           {{/if}}
       </div>
-
   </script>
-
+<!-- Video Template -->
+  <script id="VideoTemplate" type="text/x-jsrender">
+      <div id="dvideo_{{:Video.id}}">
+          <video id="video_{{:Video.id}}" poster="{{:Video.VideoURI}}.jpg" class="video-js vjs-default-skin" controls preload="auto" data-setup='{"poster": "{{:Video.VideoURI}}.jpg"}'>
+              {{if Video.video_mp4 == "yes"}}
+              <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
+              <source type="video/mp4" src="{{:Video.VideoURI}}.mp4" />
+              {{/if}}
+              {{if Video.video_webm == "yes"}}
+              <!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
+              <source type="video/webm" src="{{:Video.VideoURI}}.webm" />
+              {{/if}}
+              {{if Video.video_ogg == "yes" }}
+              <!-- Ogg/Vorbis for older Firefox and Opera versions -->
+              <source type="video/ogg" src="{{:Video.VideoURI}}.ogv" />
+              {{/if}}
+          </video>
+      </div>
+  </script>
   <!-- Complex - Simple Image Template -->
  <script id="ComplexImageTemplate" type="text/x-jsrender">
-      <div>
-     <div id="pointer_{{:Image.id}}" class="{{if Image.HotSpots=='yes'}}pointcursor{{/if}}" style="width:{{:Image.width}}px;height:{{:Image.height}}px"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
+      <div style="overflow:hidden;width:90%;">
+     <div id="pointer_{{:Image.id}}" class="{{if Image.HotSpots=='yes'}}pointcursor{{/if}}" style="width:{{:Image.width}}px;height:{{:Image.height}}px;position:relative;left:0px;top:0px;"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
           <div id="container_{{:Image.id}}" style="top:-{{:Image.height}}px;position:relative;"></div>
     </div>
-     	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;text-align: right;">
+     	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;text-align: right;position:absolute;top:{{:Image.height}}px;">
           <span class="ColorFunctions">
-          		<img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
-              <img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
+          	  <img id="zoomreset_{{:Image.id}}" src="img/zoomrs.png" title="Zoom Reset" onclick="zoomRsImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomreset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomreset' )"/>
+              <img id="zoomout_{{:Image.id}}" src="img/zoomout.png" title="Zoom Out" onclick="zoomOutImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomout' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomout' )"/>
+              <img id="zoomin_{{:Image.id}}" src="img/zoomin.png" title="Zoom In" onclick="zoomInImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomin' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomin' )"/>
+              <img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
+                 <img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
                 <img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" />
           		<img id="draw_{{:Image.id}}" src="img/draw.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'draw' )" onmouseout="ShowOffImage('{{:Image.id}}', 'draw' )" onclick="TogglePaint('line','{{:Image.id}}',{{if Image.HotSpots=='yes'}}'pointcursor'{{else}}''{{/if}})" />
           		<img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'reset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'reset' )" />
           	</span>
            </div>
 
-     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:10px;" class="cssSlider"></div>
-     <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:10px;" class="cssSlider"></div></div>
+     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;position:absolute;top:{{:Image.height}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:50px;" class="cssSlider"></div>
+     <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:50px;" class="cssSlider"></div></div>
       </div>
+     <!-- <div id="modal_{{:Image.id}}" class="zoom_modal">
+         <a id="jqlink_{{:Image.id}}" href="{{:Image.ImageURI}}" title="Image1">
+            <img id="jqimg_{{:Image.id}}" src="{{:Image.ImageURI}}" style="height:100%" title="image2" />
+         </a>
+     </div>-->
  </script>
+
+  <!-- input type Template -->
+  <script id="InputTemplate" type="text/x-jsrender">
+     <div id="div_input"> <p>{{:Input.Question}}</p>
+        <p><div>Enter your Answer:</div> <div id="input_{{:Input.id}}"></div> </p>
+     </div>
+  </script>
 
   <!-- Quiz Template -->
   <script id="QuizTemplate" type="text/x-jsrender">
@@ -123,7 +167,7 @@
       <div id="msgbox_{{:id}}" class="ui-widget" style="margin-top:5px;display:none;">
           <div class="{{if type === 'alert'}}ui-state-error{{else if type === 'highlight'}}ui-state-highlight{{/if}} ui-corner-all" style="padding: 0 .7em;">
               <span title="Close the Message Box" class="ui-icon ui-icon-closethick" />
-              <p><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else if type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;margin-top: 4px;"></span>
+              <p style="text-shadow:none;"><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else if type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;"></span>
                   <strong>Alert:</strong> {{:message}}. </p>
           </div>
       </div>
@@ -190,18 +234,22 @@
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script> -->
-  <script src="js/libs/jquery-1.7.2.min.js"></script>
-  <script src="js/libs/jquery-ui-1.8.20.custom.min.js"></script>
+  <script src="js/libs/jquery-1.8.0.min.js"></script>
+  <script src="js/libs/jquery-ui-1.8.23.custom.min.js"></script>
 
   <!-- scripts concatenated and minified via build script -->
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="js/libs/jsrender.js"></script>
   <script src="js/libs/pixastic.custom.js"></script>
-  <script src="js/libs/kinetic-v3.9.4.min.js"></script>
+  <script src="js/libs/kinetic-v4.0.1.min.js"></script>
   <script src="js/libs/myimagetools.js"></script>
   <script src="js/libs/turn.min.js"></script>
   <script src="js/libs/jquery.prettyLoader.js"></script>
+  <script src="js/libs/mediaelement/mediaelement-and-player.js"></script>
+  <script src="js/libs/spincontrol.js"></script>
+  <script src="js/libs/jquery.pnotify.min.js"></script>
+
 
   <!-- end scripts -->
 
