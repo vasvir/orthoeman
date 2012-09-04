@@ -75,6 +75,7 @@
         <xs:attribute name="width" type="xs:integer" use="required"/>
         <xs:attribute name="height" type="xs:integer" use="required"/>
       <xs:attribute name="maxspots" type="xs:integer" use="required" />
+        <xs:attribute name="enabletracking" type="YesNoValues" use="required" />
     </xs:complexType>
 
     <xs:complexType name="VideoType">
