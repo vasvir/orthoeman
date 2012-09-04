@@ -3,8 +3,9 @@
 
 
  TODO οι διαστάσεις του tooltip, infotip και point circles δεν είναι το ίδιο. Αυτό συμβαίνει γιατί εξαρτούνται από το zoomPage και scalePage, διόρθωσέ το ώστε να εξαρτάται από το ένα. Ίσως τότε να διορθωθεί.
-  TODO αλλαγή όλου του notification system.
+  TODO αλλαγή όλου του notification system. -- ίσως να μην χρειάζεται πλέον
   TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
+   TODO *Bug IE only, fullscreen video not working
 
  */
 "use strict";
@@ -158,8 +159,6 @@ function changedSpinControl(sender, newVal) {
 }
 
 function LoadImages(Page) {
-
-
     // Loading the Image to Canvas
     var imagesToLoad = [];
     var counter = 0;
@@ -246,11 +245,12 @@ function LoadImages(Page) {
         });
         var tooltip = new Kinetic.Text({
             text:"",
-            textFill:"white",
+            textFill: "#FFCDC1",
             fontFamily:"MerriweatherRegular,Georgia",
             fontSize:9,
-            verticalAlign:"bottom",
-            padding:4,
+            verticalAlign:"middle",
+            lineHeight: 1,
+            padding:6,
             fill:"black",
             visible:false,
             opacity:0.75,
@@ -874,7 +874,7 @@ function resize(id, newHeight, newWidth) {
     OrthoVariables.scalePage[OrthoVariables.lessonPage] = newHeight / OrthoVariables.origCanvas[id][0].height;
     $("#canvasid_" + id).css("height", newHeight).css("width", newWidth);
     OrthoVariables.origCanvas[id][2].setSize(newWidth, newHeight);
-    OrthoVariables.origCanvas[id][2].setScale((OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),(OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
+    OrthoVariables.origCanvas[id][2].setScale(OrthoVariables.scalePage[OrthoVariables.lessonPage],OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
     OrthoVariables.origCanvas[id][2].draw();
     $("#pointer_" + id).css("height", newHeight).css("width", newWidth);
     $("#container_" + id).css("top", -newHeight);
@@ -883,6 +883,14 @@ function resize(id, newHeight, newWidth) {
     $("#slider_b_" + id).css("left", newWidth - 165);
     $("#slider_c_" + id).css("left", newWidth - 115);
     $("#pointer_" + id).parent().css("height", newHeight);
+    if (OrthoVariables.zoomPage[OrthoVariables.lessonPage] !== 1) {
+        $("#pointer_"+id).css("top","0px").css("left","0px");
+        var ratio =  OrthoVariables.origCanvas[id][0].width/ OrthoVariables.origCanvas[id][0].height;
+        var newWidth = Math.round(OrthoVariables.zoomPage[id]*OrthoVariables.scalePage[OrthoVariables.lessonPage]* OrthoVariables.origCanvas[id][0].width);
+        var newHeight = Math.round( newWidth / ratio);
+        zoomResize(id,newHeight, newWidth );
+
+    }
 
 }
 
@@ -901,8 +909,8 @@ function zoomInImage(id) {
     var ratio = cW / cH;
     div.css("height",OrthoVariables.origCanvas[id][0].height* OrthoVariables.scalePage[OrthoVariables.lessonPage]).css("width", w);*/
     OrthoVariables.zoomPage[id] *= 1.5;
-    if (OrthoVariables.zoomPage[id] >= 3 ) {
-        OrthoVariables.zoomPage[id] = 3;
+    if (OrthoVariables.zoomPage[id] >= 6 ) {
+        OrthoVariables.zoomPage[id] = 6;
     }
     var ratio =  OrthoVariables.origCanvas[id][0].width/ OrthoVariables.origCanvas[id][0].height;
     var newWidth = Math.round(OrthoVariables.zoomPage[id]*OrthoVariables.scalePage[OrthoVariables.lessonPage]* OrthoVariables.origCanvas[id][0].width);
@@ -912,8 +920,8 @@ function zoomInImage(id) {
 
 function zoomOutImage(id) {
     OrthoVariables.zoomPage[id] *= 0.7;
-    if (OrthoVariables.zoomPage[id] <= 0.35) {
-        OrthoVariables.zoomPage[id] = 0.35
+    if (OrthoVariables.zoomPage[id] <= 0.25) {
+        OrthoVariables.zoomPage[id] = 0.25
     }
     $("#pointer_"+id).css("top","0px").css("left","0px");
     var ratio =  OrthoVariables.origCanvas[id][0].width/ OrthoVariables.origCanvas[id][0].height;
@@ -1246,11 +1254,11 @@ function ShowMsg(message, type) {
             OrthoVariables.msg_info[myid] = null;
             $(this).stop(false, false);
             $("#" + this.id + "> div > .ui-icon-closethick").fadeIn('fast');
-            $(this).fadeOut(1).fadeIn();
+            $(this).fadeTo('fast',1);
         }
     });
-    $("#msgbox_" + id).click(function () {
-        $(this).fadeOut("slow", function () {
+    $("#msgbox_" + id + " span").click(function () {
+        $(this).parent().parent().fadeOut("slow", function () {
             $(this).remove();
         });
     });

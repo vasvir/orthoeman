@@ -23,9 +23,8 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/ortho_interface.css">
    <link rel="stylesheet" href="css/jquery-ui-1.8.23.custom.css">
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css" media="all" rel="stylesheet" type="text/css">
+    <!-- <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css" media="all" rel="stylesheet" type="text/css"> -->
     <link rel="stylesheet" href="js/libs/mediaelement/mediaelementplayer.min.css">
-    <link ref="stylesheet" href="css/cloud-zoom.css">
     <link ref="stylesheet" href="css/jquery.pnotify.default.css">
 
 
@@ -89,7 +88,6 @@
             {{for Widget[1] tmpl="#InputTemplate"/}}
           {{/if}}
       </div>
-
   </script>
 <!-- Video Template -->
   <script id="VideoTemplate" type="text/x-jsrender">
@@ -129,8 +127,8 @@
           	</span>
            </div>
 
-     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;position:absolute;top:{{:Image.height}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:10px;" class="cssSlider"></div>
-     <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:10px;" class="cssSlider"></div></div>
+     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;position:absolute;top:{{:Image.height}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:50px;" class="cssSlider"></div>
+     <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:50px;" class="cssSlider"></div></div>
       </div>
      <!-- <div id="modal_{{:Image.id}}" class="zoom_modal">
          <a id="jqlink_{{:Image.id}}" href="{{:Image.ImageURI}}" title="Image1">
@@ -169,7 +167,7 @@
       <div id="msgbox_{{:id}}" class="ui-widget" style="margin-top:5px;display:none;">
           <div class="{{if type === 'alert'}}ui-state-error{{else if type === 'highlight'}}ui-state-highlight{{/if}} ui-corner-all" style="padding: 0 .7em;">
               <span title="Close the Message Box" class="ui-icon ui-icon-closethick" />
-              <p><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else if type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;margin-top: 4px;"></span>
+              <p style="text-shadow:none;"><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else if type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;"></span>
                   <strong>Alert:</strong> {{:message}}. </p>
           </div>
       </div>
