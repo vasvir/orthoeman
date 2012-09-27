@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/orthoeman/db" VERSION="20101203" COMMENT="XMLDB file for Moodle mod/orthoeman"
+<XMLDB PATH="mod/orthoeman/db" VERSION="20120927" COMMENT="XMLDB file for Moodle mod/orthoeman"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="orthoeman" COMMENT="Default comment for orthoeman, please edit me">
+    <TABLE NAME="orthoeman" COMMENT="Default comment for orthoeman, please edit me" NEXT="orthoeman_resource">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course orthoeman activity belongs to" PREVIOUS="id" NEXT="name"/>
@@ -19,6 +19,20 @@
       </KEYS>
       <INDEXES>
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="orthoeman_resource" COMMENT="Orthoeman resources i.e. images, video, xml files" PREVIOUS="orthoeman">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="ype of the data" PREVIOUS="id" NEXT="md5"/>
+        <FIELD NAME="md5" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="md5 hash for data element" PREVIOUS="type" NEXT="data"/>
+        <FIELD NAME="data" TYPE="binary" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="resource data" PREVIOUS="md5"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="md5" UNIQUE="false" FIELDS="md5"/>
       </INDEXES>
     </TABLE>
   </TABLES>
