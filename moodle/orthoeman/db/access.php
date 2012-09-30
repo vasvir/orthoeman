@@ -52,12 +52,13 @@
  *
  * get_resource.php?id=XXX&resource_id=XXX
  * put_resource.php?id=XXX&type=XXX
+ * get_view?id=XXX...
+ * submit.php?id=XXX...
  *  id - orthoeman_id or course_id 
  *  resource_id the id of the resource as it stored in the XML. -1 to get the XML
  *  type - 	XML, VIDEO, IMAGE
  *  resource data are on post
- * get_view?id=XXX
- * submit.php?id=XXX
+ *  ...unknown required parameters
  *
  * capabilities are:
  *  VIEW
