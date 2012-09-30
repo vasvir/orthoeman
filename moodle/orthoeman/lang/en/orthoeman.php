@@ -30,12 +30,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'orthoeman';
+$string['modulename'] = 'Orthoeman';
 $string['modulenameplural'] = 'orthoemans';
 $string['modulename_help'] = 'Use the orthoeman module for... | The orthoeman module allows...';
 $string['orthoemanfieldset'] = 'Custom example fieldset';
 $string['orthoemanname'] = 'orthoeman name';
 $string['orthoemanname_help'] = 'This is the content of the help tooltip associated with the orthoemanname field. Markdown syntax is supported.';
 $string['orthoeman'] = 'orthoeman';
-$string['pluginadministration'] = 'orthoeman administration';
-$string['pluginname'] = 'orthoeman';
+$string['pluginadministration'] = 'Orthoeman Administration';
+$string['pluginname'] = 'Orthoeman';
+$string['orthoeman:view'] = 'Display an Orthoman lesson';
+$string['orthoeman:submit'] = 'Allows taking the course and submit answers';
+$string['orthoeman:read'] = 'Allows reading an Orthoman course';
+$string['orthoeman:write'] = 'Allows editing an Orthoman course';

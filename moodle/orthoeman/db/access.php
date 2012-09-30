@@ -44,6 +44,40 @@
  * @subpackage orthoeman
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ *
+ * There is a distinction between the functions and capabilities. The primary roles
+ * are student and teacher. Student should not be able to read the XML and the teacher
+ * should not submit but he should be able to see the course displayed from start to end
+ *
+ * get_resource.php?id=XXX&resource_id=XXX
+ * put_resource.php?id=XXX&type=XXX
+ *  id - orthoeman_id or course_id 
+ *  resource_id the id of the resource as it stored in the XML. -1 to get the XML
+ *  type - 	XML, VIDEO, IMAGE
+ *  resource data are on post
+ * get_view?id=XXX
+ * submit.php?id=XXX
+ *
+ * capabilities are:
+ *  VIEW
+ *  SUBMIT
+ *  READ
+ *  WRITE
+ *
+ * function\role		teacher		student		OTHER
+ *  get_resource_xml		READ		NO		NO
+ *  get_resource_other		VIEW		VIEW		NO
+ *  put_resource_xml		WRITE		NO		NO
+ *  put_resource_other		WRITE		NO		NO
+ *  view			VIEW		VIEW		NO
+ *  submit			NO*		SUBMIT		NO
+ *
+ * NO* means
+ *	* no error if role has READ capability. In that case the teacher can
+ *	preview the full activity
+ *	* error If no READ capability is set
+ *
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -72,5 +106,38 @@ $capabilities = array(
         )
     ),
 ******************************/
-);
+    'mod/orthoeman:view' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        )
+    ),
 
+    'mod/orthoeman:submit' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'student' => CAP_ALLOW,
+        )
+    ),
+
+    'mod/orthoeman:read' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        )
+    ),
+
+    'mod/orthoeman:write' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW
+        )
+    )
+);
