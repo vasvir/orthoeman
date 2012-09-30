@@ -49,6 +49,7 @@
  * There is a distinction between the functions and capabilities. The primary roles
  * are student and teacher. Student should not be able to read the XML and the teacher
  * should not submit but he should be able to see the course displayed from start to end
+ * so a phony submit is required.
  *
  * get_resource.php?id=XXX&resource_id=XXX
  * put_resource.php?id=XXX&type=XXX
