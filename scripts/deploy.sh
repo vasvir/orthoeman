@@ -3,8 +3,6 @@
 
 scriptdir=`dirname $0`;
 plugindir="$scriptdir/../moodle/orthoeman";
-ls -ltd $plugindir;
-ls $plugindir;
 rsync -av "$plugindir" root@orthoeman:/usr/share/moodle/mod/;
 ssh root@orthoeman '
 	chown root.www-data /usr/share/moodle/mod/orthoeman/db/install.xml /usr/share/moodle/mod/orthoeman/db;
