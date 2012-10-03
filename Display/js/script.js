@@ -44,7 +44,8 @@ var OrthoVariables = {
     ColorRightEdge:"#285935",
     ColorWrong:"#9C2100",
     ColorWrongEdge:"#592835",
-    zoomMouse: { isdown : false , x: -1, y:-1}
+    zoomMouse: { isdown : false , x: -1, y:-1},
+    disableturn:false
 };
 
 
@@ -65,6 +66,7 @@ $(document).ready(function () {
         return false;
     };
     OrthoVariables.InitialQueryString = getUrlVars();
+    OrthoVariables.disableturn = OrthoVariables.InitialQueryString["DisablePaging"] || OrthoVariables.disableturn;
     $.getJSON(OrthoVariables.JsonUrl, {
         "action":1, "name":OrthoVariables.InitialQueryString["name"]
 
@@ -100,7 +102,7 @@ function getUrlVars() {
     var hashes = window.location.href.replace("#", "").slice(window.location.href.indexOf('?') + 1).split('&');
     for (var i = 0; i < hashes.length; i++) {
         hash = hashes[i].split('=');
-        if (hash[0] === "name") {
+        if (hash[0] === "name" || hash[0] === "DisablePaging") {
             vars.push(hash[0]);
             vars[hash[0]] = hash[1];
         }
@@ -714,7 +716,7 @@ function getBrOrCo(strID) {
 function displayFunctions() {
     $('#lesson').turn({duration:600});
     $('#lesson').turn('size', $('#content_wrap').width(), $(window).height() - OrthoVariables.HeightFromBottom);
-    $('#lesson').turn('disable', true);
+    $('#lesson').turn('disable', OrthoVariables.disableturn);
     //for debuging
     //CurPage = 3; ShowPage();
 
@@ -729,9 +731,11 @@ function displayFunctions() {
             //$('body').prepend('<div>' + $('#content_wrap').width() + '</div>');
             var h = $(window).height() - OrthoVariables.HeightFromBottom;
             h = (h< 400) ? 400 : h;
+
             var w = $('#content_wrap').width();
-            w = (w< 500) ? 500 : w;
-            CheckResizeLimits();
+            w = (w< 760) ? 760 : w;
+            console.log(w);
+             CheckResizeLimits();
             $('#lesson').turn('size', w, h);
         });
 
@@ -834,10 +838,10 @@ function CheckResizeLimits(page) {
                 nW = w - 20;
                 nH = nW / ratio;
             }
-            if (nW < 380) {
+            /*if (nW < 380) {
                 nW = 380;
                 nH = nW /ratio;
-            }
+            }*/
             resize(id, nH, nW);
         }
         else {
@@ -880,8 +884,8 @@ function resize(id, newHeight, newWidth) {
     $("#container_" + id).css("top", -newHeight);
     $("#1_" + id).css("width", newWidth).css("top",newHeight);
     $("#2_" + id).css("width", newWidth).css("top",newHeight);
-    $("#slider_b_" + id).css("left", newWidth - 165);
-    $("#slider_c_" + id).css("left", newWidth - 115);
+    $("#slider_b_" + id).css("left", Math.max(newWidth,380) - 165);
+    $("#slider_c_" + id).css("left", Math.max(newWidth,380) - 115);
     $("#pointer_" + id).parent().css("height", newHeight);
     if (OrthoVariables.zoomPage[OrthoVariables.lessonPage] !== 1) {
         $("#pointer_"+id).css("top","0px").css("left","0px");
@@ -1170,7 +1174,7 @@ function EnableButtonLink(id) {
                         IncreasePage();
                     }
                 });
-                //$('#lesson').turn('disable', false);
+                $('#lesson').turn('disable', OrthoVariables.disableturn);
                 $("#" + id).animate({right:"10px"}, 1000, 'easeOutElastic');
                 break;
             case "PreviousTest":

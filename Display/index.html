@@ -114,7 +114,7 @@
      <div id="pointer_{{:Image.id}}" class="{{if Image.HotSpots=='yes'}}pointcursor{{/if}}" style="width:{{:Image.width}}px;height:{{:Image.height}}px;position:relative;left:0px;top:0px;"><canvas id="canvasid_{{:Image.id}}" style="position:relative" class="blocks" width="{{:Image.width}}" height="{{:Image.height}}" />
           <div id="container_{{:Image.id}}" style="top:-{{:Image.height}}px;position:relative;"></div>
     </div>
-     	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;text-align: right;position:absolute;top:{{:Image.height}}px;">
+     	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;min-width:380px;text-align: right;position:absolute;top:{{:Image.height}}px;">
           <span class="ColorFunctions">
           	  <img id="zoomreset_{{:Image.id}}" src="img/zoomrs.png" title="Zoom Reset" onclick="zoomRsImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomreset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomreset' )"/>
               <img id="zoomout_{{:Image.id}}" src="img/zoomout.png" title="Zoom Out" onclick="zoomOutImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomout' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomout' )"/>
@@ -127,7 +127,7 @@
           	</span>
            </div>
 
-     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;position:absolute;top:{{:Image.height}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{:Image.width - 165}}px;top:50px;" class="cssSlider"></div>
+     <div  id="2_{{:Image.id}}" style="width:{{:Image.width}}px;position:absolute;top:{{:Image.height}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{if (Image.width > 380)}}{{:Image.width - 165)}}{{else}}215{{/if}}px;top:50px;" class="cssSlider"></div>
      <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:50px;" class="cssSlider"></div></div>
       </div>
      <!-- <div id="modal_{{:Image.id}}" class="zoom_modal">
