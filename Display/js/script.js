@@ -45,7 +45,7 @@ var OrthoVariables = {
     ColorWrong:"#9C2100",
     ColorWrongEdge:"#592835",
     zoomMouse: { isdown : false , x: -1, y:-1},
-    disableturn:false
+    disableturn:true
 };
 
 
