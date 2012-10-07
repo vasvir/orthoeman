@@ -1,5 +1,7 @@
 Display:
 	on reload user spots should be visible
+	timeout option
+	Add the capability to run the course 3 times - Tracking
 
 Authoring Tool:
 	Code:
@@ -25,13 +27,18 @@ Authoring Tool:
 		up down via drag & drop. Note that buttons don't seem to be
 		able to listen to drag events
 
-	Immediate for TC meeting:
-		Power point presentation
-
 	HTML:
 		IE:
 			eraser svg icon
 			scrollbars are counted in the box model. Find the fix
+
+		Firefox:
+			also gets wrong the horizontall scrollbar
+
+	Requirements:
+		Positive, Negative points
+		Timeout option
+
 
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
@@ -39,7 +46,20 @@ Moodle Integration:
 	Tracking - Display tool should be able to inform moodle about the progress /grade of the student
 	Authoring Tool should be able to launch the Display Tool
 
+	Moodle:
+		allow everybody to see all lessons
+		share orthoeman activities
+		show documents inline (may require a plugin)
 
 Task list:
 	Moodle integration
 	XML schema discussions
+
+
+Immediate:
+	Image:
+		enable tracking checkbox
+		mmPerPixel textfield
+		showRegions checbox
+
+	Blocking /Informational -> mark as hotspot
