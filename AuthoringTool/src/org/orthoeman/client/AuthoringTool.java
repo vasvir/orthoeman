@@ -1306,7 +1306,7 @@ public class AuthoringTool implements EntryPoint {
 			float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
 			Log.debug("Duration: " + durationSeconds + " seconds");
 		}
-		// divLogger.setVisible(false);
+		divLogger.setVisible(false);
 	}
 
 	private static ListBox getListBox(String id) {
