@@ -1,11 +1,12 @@
 #!/bin/sh -e
 
+RSYNC="rsync -avz --delete";
 
 scriptdir=`dirname $0`;
 plugindir="$scriptdir/../moodle/orthoeman";
-rsync -av "$plugindir" root@orthoeman:/usr/share/moodle/mod/;
-ssh root@orthoeman '
-	chown root.www-data /usr/share/moodle/mod/orthoeman/db/install.xml /usr/share/moodle/mod/orthoeman/db;
-	chmod 664 /usr/share/moodle/mod/orthoeman/db/install.xml;
-	chmod 775 /usr/share/moodle/mod/orthoeman/db;
-';
+authoringtooldir="$scriptdir/../AuthoringTool/war/";
+displaydir="$scriptdir/../Display";
+
+$RSYNC --exclude AuthoringTool --exclude Display "$plugindir" www-data@orthoeman:/usr/share/moodle/mod/;
+$RSYNC --exclude WEB-INF "$authoringtooldir" www-data@orthoeman:/usr/share/moodle/mod/orthoeman/AuthoringTool;
+$RSYNC "$displaydir" www-data@orthoeman:/usr/share/moodle/mod/orthoeman;
