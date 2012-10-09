@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-RSYNC="rsync -avz --delete";
+RSYNC="rsync -avz --delete --exclude '*~'";
 
 scriptdir=`dirname $0`;
 plugindir="$scriptdir/../moodle/orthoeman";
