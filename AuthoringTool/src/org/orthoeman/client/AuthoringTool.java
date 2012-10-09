@@ -62,6 +62,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -834,6 +835,9 @@ public class AuthoringTool implements EntryPoint {
 
 		// image
 		final SingleUploader image_uploader = new SingleUploaderModal();
+		image_uploader
+				.add(new Hidden("APC_UPLOAD_PROGRESS", image_uploader
+						.getInputName()), 0);
 		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff",
 				".gif");
 		image_uploader.setAutoSubmit(true);
@@ -1143,6 +1147,9 @@ public class AuthoringTool implements EntryPoint {
 
 		// video
 		final SingleUploader video_uploader = new SingleUploaderModal();
+		video_uploader
+				.add(new Hidden("APC_UPLOAD_PROGRESS", video_uploader
+						.getInputName()), 0);
 		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi",
 				".mov");
 		video_uploader.setAutoSubmit(true);
