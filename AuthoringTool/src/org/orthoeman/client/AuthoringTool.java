@@ -838,6 +838,7 @@ public class AuthoringTool implements EntryPoint {
 		image_uploader
 				.add(new Hidden("APC_UPLOAD_PROGRESS", image_uploader
 						.getInputName()), 0);
+		image_uploader.setServletPath("../jsupload.php");
 		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff",
 				".gif");
 		image_uploader.setAutoSubmit(true);
@@ -1150,6 +1151,7 @@ public class AuthoringTool implements EntryPoint {
 		video_uploader
 				.add(new Hidden("APC_UPLOAD_PROGRESS", video_uploader
 						.getInputName()), 0);
+		video_uploader.setServletPath("../jsupload.php");
 		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi",
 				".mov");
 		video_uploader.setAutoSubmit(true);
