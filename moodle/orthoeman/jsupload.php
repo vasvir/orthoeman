@@ -113,7 +113,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
       }
   } else if(isset($_GET['new_session'])) {
     if (!file_exists($uploaddir))
-      mkdir($uploaddir);
+      mkdir($uploaddir, 0755, true);
     writeResponse("<session>ok</session>", 0);
   } else if(isset($_GET['show'])){
     $file = $uploaddir . $_GET['show'] . ".bin";
