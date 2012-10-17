@@ -53,26 +53,29 @@ if (! $orthoemans = get_all_instances_in_course('orthoeman', $course)) {
     notice(get_string('noorthoemans', 'orthoeman'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
+$table = new html_table();
+$table->attributes['class'] = 'generaltable mod_index';
+
 if ($course->format == 'weeks') {
     $table->head  = array(get_string('week'), get_string('name'));
     $table->align = array('center', 'left');
 } else if ($course->format == 'topics') {
     $table->head  = array(get_string('topic'), get_string('name'));
-    $table->align = array('center', 'left', 'left', 'left');
+    $table->align = array('center', 'left');
 } else {
     $table->head  = array(get_string('name'));
-    $table->align = array('left', 'left', 'left');
+    $table->align = array('left');
 }
 
 foreach ($orthoemans as $orthoeman) {
     if (!$orthoeman->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/orthoeman.php', array('id' => $orthoeman->coursemodule)),
+            new moodle_url('/mod/orthoeman/view.php', array('id' => $orthoeman->coursemodule)),
             format_string($orthoeman->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/orthoeman.php', array('id' => $orthoeman->coursemodule)),
+            new moodle_url('/mod/orthoeman/view.php', array('id' => $orthoeman->coursemodule)),
             format_string($orthoeman->name, true));
     }
 
