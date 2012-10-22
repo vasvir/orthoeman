@@ -23,8 +23,9 @@
     </TABLE>
     <TABLE NAME="orthoeman_resource" COMMENT="Orthoeman resources i.e. images, video, xml files" PREVIOUS="orthoeman">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="ype of the data" PREVIOUS="id" NEXT="md5"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="orthoeman_id"/>
+        <FIELD NAME="orthoeman_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="type of the data" PREVIOUS="orthoeman_id" NEXT="md5"/>
         <FIELD NAME="md5" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="md5 hash for data element" PREVIOUS="type" NEXT="data"/>
         <FIELD NAME="data" TYPE="binary" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="resource data" PREVIOUS="md5"/>
       </FIELDS>
@@ -32,7 +33,8 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="md5" UNIQUE="false" FIELDS="md5"/>
+        <INDEX NAME="orthoeman_id" UNIQUE="false" FIELDS="orthoeman_id" NEXT="md5"/>
+        <INDEX NAME="md5" UNIQUE="false" FIELDS="md5" PREVIOUS="orthoeman_id"/>
       </INDEXES>
     </TABLE>
   </TABLES>

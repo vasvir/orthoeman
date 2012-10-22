@@ -53,6 +53,9 @@
  *
  * get_resource.php?id=XXX&resource_id=XXX
  * put_resource.php?id=XXX&type=XXX
+ *	type=XML	POST_DATA=actual xml content Returns: nothing
+ *	type=IMAGE	POST_DATA=url of image	Returns: resource id of the image
+ *	type=VIDEO	POST_DATA=url of video	Returns: resource ids of the converted video (h264 and theora)
  * get_view?id=XXX...
  * submit.php?id=XXX...
  *  id - orthoeman_id or course_id 

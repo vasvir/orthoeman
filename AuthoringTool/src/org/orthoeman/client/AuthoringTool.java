@@ -54,9 +54,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -137,6 +140,8 @@ public class AuthoringTool implements EntryPoint {
 	private Slider contrast_sl;
 	private SimpleCheckBox invert_cb;
 
+	private OnLoadPreloadedImageHandler showImageHandler;
+
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
 	 * <code>log_level</code> higher than <code>DEBUG</code>.
@@ -147,6 +152,10 @@ public class AuthoringTool implements EntryPoint {
 		public MyResizeEvent() {
 			super(Window.getClientWidth(), Window.getClientHeight());
 		}
+	}
+
+	public enum ResourceType {
+		XML, IMAGE, VIDEO;
 	}
 
 	/**
@@ -413,7 +422,7 @@ public class AuthoringTool implements EntryPoint {
 		file_menu.addItem(new MenuItem("Save", new Command() {
 			@Override
 			public void execute() {
-				Lesson.writeXML(lesson);
+				putResource(ResourceType.XML, Lesson.writeXML(lesson), null);
 			}
 		}));
 		file_menu.addItem(new MenuItem("Preview", command));
@@ -786,7 +795,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		final OnLoadPreloadedImageHandler showImageHandler = new OnLoadPreloadedImageHandler() {
+		showImageHandler = new OnLoadPreloadedImageHandler() {
 			@Override
 			public void onLoad(PreloadedImage img) {
 				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
@@ -803,6 +812,8 @@ public class AuthoringTool implements EntryPoint {
 			}
 		};
 
+		final String php_session_id = "PHPSESSID";
+
 		final IUploader.OnFinishUploaderHandler onImageFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
 			@Override
 			public void onFinish(IUploader uploader) {
@@ -815,9 +826,11 @@ public class AuthoringTool implements EntryPoint {
 					image_item.setImage(null);
 				}
 				if (uploader.getStatus() == Status.SUCCESS) {
-					image_item.setImage(new PreloadedImage(uploader.fileUrl(),
-							showImageHandler));
-					setButtonsEnabled(image_edit_buttons, true);
+					putResource(
+							ResourceType.IMAGE,
+							uploader.fileUrl() + "&session_id="
+									+ Cookies.getCookie(php_session_id),
+							image_item);
 				}
 			}
 		};
@@ -1790,5 +1803,47 @@ public class AuthoringTool implements EntryPoint {
 		if (img.getRealWidth() == 0 && img.getRealHeight() == 0)
 			return false;
 		return true;
+	}
+
+	private void putResource(final ResourceType resource_type,
+			final String data, final Page.ImageItem image_item) {
+		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
+				"../put_resource.php?id=16&type=" + resource_type);
+		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		try {
+			rb.sendRequest(URL.encodeQueryString(data), new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request,
+						Response response) {
+					if (response.getStatusCode() != Response.SC_OK) {
+						final String error_msg = "HTTP Error for request: "
+								+ request + " Response: " + response
+								+ " status code: " + response.getStatusCode();
+						Log.error(error_msg);
+						Window.alert(error_msg);
+					}
+					Log.debug("Successfull request: " + request + " response: "
+							+ response.getText());
+					if (resource_type == ResourceType.IMAGE) {
+						image_item.setImage(new PreloadedImage(data,
+								showImageHandler));
+						setButtonsEnabled(image_edit_buttons, true);
+					}
+				}
+
+				@Override
+				public void onError(Request request, Throwable exception) {
+					final String error_msg = "RequestError for request: "
+							+ request;
+					Log.error(error_msg, exception);
+					Window.alert(error_msg);
+				}
+			});
+		} catch (RequestException e) {
+			final String error_msg = "Cannot save lesson. Please wait for server "
+					+ "communication to be restored " + "and retry later.";
+			Log.error(error_msg, e);
+			Window.alert(error_msg);
+		}
 	}
 }

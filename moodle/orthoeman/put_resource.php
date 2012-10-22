@@ -47,6 +47,8 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
+$type = required_param('type', PARAM_ALPHA);
+
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
@@ -71,8 +73,55 @@ require_capability('mod/orthoeman:write', $context);
 // Output starts here
 //echo $OUTPUT->header();
 
-echo"put_resource.php: Hello world<BR>\n";
-
 
 // Finish the page
 //echo $OUTPUT->footer();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($type == $TYPE_XML) {
+        $xml = urldecode(file_get_contents('php://input'));
+
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_XML_VALUE));
+        if ($resource_rec) {
+            $resource_rec->data = $xml;
+            $resource_rec->md5 = md5($xml);
+            $DB->update_record('orthoeman_resource', $resource_rec);
+        } else {
+            $resource_rec = new Object();
+            $resource_rec->orthoeman_id = $orthoeman->id;
+            $resource_rec->type = $TYPE_XML_VALUE;
+            $resource_rec->data = $xml;
+            $resource_rec->md5 = md5($xml);
+            $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
+            $resource_rec->id = $resource_id;
+        }
+        echo "$resource_rec->id";
+    } else if ($type == $TYPE_IMAGE) {
+        $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
+        //echo "url $url<BR>";
+        $current_url = get_current_url();
+        //echo "current_url $current_url<BR>";
+        $img_url = preg_replace('/\/put_resource.php.*$/', '', $current_url) . $url;
+        //echo "img_url $img_url<BR>";
+        $img = file_get_contents($img_url);
+        //echo "img XXX $img XXX<BR>";
+        $md5 = md5($img);
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('type' => $TYPE_IMAGE_VALUE, 'md5' => $md5));
+        if (!$resource_rec) {
+            $resource_rec = new Object();
+            $resource_rec->orthoeman_id = $orthoeman->id;
+            $resource_rec->type = $TYPE_IMAGE_VALUE;
+            $resource_rec->data = $img;
+            $resource_rec->md5 = $md5;
+            $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
+            $resource_rec->id = $resource_id;
+        }
+        echo "$resource_rec->id";
+    } else if ($type == $TYPE_VIDEO) {
+    } else {
+        echo "Undefined resource type $type";
+        http_response_code(403);
+    }
+} else {
+    echo "Invalid use of orthoeman plugin resource";
+    http_response_code(403);
+}

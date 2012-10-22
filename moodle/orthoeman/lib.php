@@ -32,6 +32,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+
+$RESOURCE_TABLE = 'orthoeman_resource';
+$TYPE_XML = 'XML';
+$TYPE_XML_VALUE = 0;
+$TYPE_IMAGE = 'IMAGE';
+$TYPE_IMAGE_VALUE = 1;
+$TYPE_VIDEO = 'VIDEO';
+$TYPE_VIDEO_VALUE = 2;
+
+
 /** example constant */
 //define('NEWMODULE_ULTIMATE_ANSWER', 42);
 
@@ -390,4 +400,18 @@ function orthoeman_extend_navigation(navigation_node $navref, stdclass $course, 
  * @param navigation_node $orthoemannode {@link navigation_node}
  */
 function orthoeman_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $orthoemannode=null) {
+}
+
+function get_current_url() {
+    $pageURL = 'http';
+    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
+        $pageURL .= "s";
+    }
+    $pageURL .= "://";
+    if ($_SERVER["SERVER_PORT"] != "80") {
+        $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+    } else {
+        $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+    }
+    return $pageURL;
 }

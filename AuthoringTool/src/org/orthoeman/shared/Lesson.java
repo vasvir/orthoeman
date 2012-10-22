@@ -19,7 +19,6 @@ import org.orthoeman.shared.Lesson.Page.QuizItem.Answer;
 import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
@@ -764,7 +763,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		return lesson;
 	}
 
-	public static void writeXML(Lesson lesson) {
+	public static String writeXML(Lesson lesson) {
 		final Document doc = XMLParser.createDocument();
 
 		final Element root_e = doc.createElement("Lesson");
@@ -926,7 +925,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		doc.appendChild(root_e);
 
-		Window.alert(doc.toString());
+		return doc.toString();
 	}
 
 	private void notifyPageListeners(Page page, boolean added) {
