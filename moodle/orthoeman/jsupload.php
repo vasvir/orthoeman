@@ -68,7 +68,8 @@
 
 session_start();
 
-$uploaddir = '/tmp/php_upload/' . session_id() . "/";
+$basedir = '/tmp/php_upload/';
+$uploaddir = $basedir . session_id() . "/";
 $version  = '0.6.4';
 
 function writeResponse($msg, $post) {
@@ -116,8 +117,12 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
       mkdir($uploaddir, 0755, true);
     writeResponse("<session>ok</session>", 0);
   } else if(isset($_GET['show'])){
-    $file = $uploaddir . $_GET['show'] . ".bin";
-    $info = $uploaddir . $_GET['show'] . ".info";
+    $show_uploaddir = $uploaddir;
+    if (isset($_GET['session_id'])) {
+      $show_uploaddir = $basedir . $_GET['session_id'] . "/";
+    }
+    $file = $show_uploaddir . $_GET['show'] . ".bin";
+    $info = $show_uploaddir . $_GET['show'] . ".info";
     if (file_exists($info)) {  
       $lines = file($info);
       header('Content-Type: ' . $lines[1]);
