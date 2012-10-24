@@ -68,4 +68,5 @@ Immediate:
 	add content type column
 	add depends on column
 
+	add lesson_id when invking Authoring Tool and Display Tool
 
