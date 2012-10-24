@@ -422,7 +422,10 @@ public class AuthoringTool implements EntryPoint {
 		file_menu.addItem(new MenuItem("Save", new Command() {
 			@Override
 			public void execute() {
-				putResource(ResourceType.XML, Lesson.writeXML(lesson), null);
+				final ProgressDialogBox pd = new ProgressDialogBox(
+						"Saving Lesson...");
+				pd.show();
+				putResource(ResourceType.XML, Lesson.writeXML(lesson), null, pd);
 			}
 		}));
 		file_menu.addItem(new MenuItem("Preview", command));
@@ -825,13 +828,14 @@ public class AuthoringTool implements EntryPoint {
 					img.removeFromParent();
 					image_item.setImage(null);
 				}
-				if (uploader.getStatus() == Status.SUCCESS) {
-					putResource(
-							ResourceType.IMAGE,
-							uploader.fileUrl() + "&session_id="
-									+ Cookies.getCookie(php_session_id),
-							image_item);
-				}
+				if (uploader.getStatus() != Status.SUCCESS)
+					return;
+				final ProgressDialogBox pd = new ProgressDialogBox(
+						"Saving Image...");
+				pd.show();
+				putResource(ResourceType.IMAGE, uploader.fileUrl()
+						+ "&session_id=" + Cookies.getCookie(php_session_id),
+						image_item, pd);
 			}
 		};
 
@@ -840,9 +844,12 @@ public class AuthoringTool implements EntryPoint {
 			public void onFinish(IUploader uploader) {
 				if (uploader.getStatus() != Status.SUCCESS)
 					return;
-				final Page.VideoItem video_item = getCurrentPage()
-						.getVideoItem();
-				video_item.setURL(uploader.fileUrl());
+				final ProgressDialogBox pd = new ProgressDialogBox(
+						"Saving & Converting video. Please wait...");
+				pd.show();
+				putResource(ResourceType.VIDEO, uploader.fileUrl()
+						+ "&session_id=" + Cookies.getCookie(php_session_id),
+						getCurrentPage().getVideoItem(), pd);
 			}
 		};
 
@@ -1806,7 +1813,8 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private void putResource(final ResourceType resource_type,
-			final String data, final Page.ImageItem image_item) {
+			final String data, final Page.ResourceItem item,
+			final ProgressDialogBox pd) {
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
 				"../put_resource.php?id=16&type=" + resource_type);
 		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -1820,15 +1828,22 @@ public class AuthoringTool implements EntryPoint {
 								+ request + " Response: " + response
 								+ " status code: " + response.getStatusCode();
 						Log.error(error_msg);
+						pd.hide();
 						Window.alert(error_msg);
+						return;
 					}
 					Log.debug("Successfull request: " + request + " response: "
 							+ response.getText());
 					if (resource_type == ResourceType.IMAGE) {
+						final Page.ImageItem image_item = (Page.ImageItem) item;
 						image_item.setImage(new PreloadedImage(data,
 								showImageHandler));
 						setButtonsEnabled(image_edit_buttons, true);
+					} else if (resource_type == ResourceType.VIDEO) {
+						final Page.VideoItem video_item = (Page.VideoItem) item;
+						video_item.setURL(data);
 					}
+					pd.hide();
 				}
 
 				@Override
@@ -1836,6 +1851,7 @@ public class AuthoringTool implements EntryPoint {
 					final String error_msg = "RequestError for request: "
 							+ request;
 					Log.error(error_msg, exception);
+					pd.hide();
 					Window.alert(error_msg);
 				}
 			});
