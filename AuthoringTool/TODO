@@ -63,3 +63,9 @@ Immediate:
 		showRegions checbox
 
 	Blocking /Informational -> mark as hotspot
+
+
+	add content type column
+	add depends on column
+
+

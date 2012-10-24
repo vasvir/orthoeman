@@ -117,6 +117,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         echo "$resource_rec->id";
     } else if ($type == $TYPE_VIDEO) {
+        $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
+        //echo "url $url<BR>";
+        $current_url = get_current_url();
+        //echo "current_url $current_url<BR>";
+        $video_url = preg_replace('/\/put_resource.php.*$/', '', $current_url) . $url;
+        //echo "img_url $img_url<BR>";
+        $video = file_get_contents($video_url);
+        //echo "img XXX $img XXX<BR>";
+        $md5 = md5($video);
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'md5' => $md5));
+        $ids = array();
+        if (!$resource_rec) {
+            $resource_rec = new Object();
+            $resource_rec->orthoeman_id = $orthoeman->id;
+            $resource_rec->type = $TYPE_VIDEO_VALUE;
+            $resource_rec->data = $video;
+            $resource_rec->md5 = $md5;
+            $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
+
+            $ids[] = $resource_id;
+
+            $formats = array('h264', 'ogg', 'webm');
+            foreach ($formats as $format) {
+                $resource_rec = new Object();
+                $resource_rec->orthoeman_id = $orthoeman->id;
+                $resource_rec->type = $TYPE_VIDEO_VALUE;
+                $ffmpeg = preg_replace('/&/', '\\&', "ffmpeg -i $video_url -f $format -");
+                $resource_rec->data = `$ffmpeg`;
+                $resource_rec->md5 = md5($resource_rec->data);
+                $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
+                $ids[] = $resource_id;
+            }
+        } else {
+            $ids[] = $resource_rec->id;
+        }
+        print_r($ids);
     } else {
         echo "Undefined resource type $type";
         http_response_code(403);
