@@ -73,9 +73,6 @@ if ($orthoeman->intro) { // Conditions to show the intro can change to look for 
     echo $OUTPUT->box(format_module_intro('orthoeman', $orthoeman, $cm->id), 'generalbox mod_introbox', 'orthoemanintro');
 }
 
-// Request the launch content with an object tag
-$frame_id = "orthoeman_display_frame";
-
 echo get_orthoeman_frame("Display/index.html?id=$cm->id");
 
 // Finish the page
