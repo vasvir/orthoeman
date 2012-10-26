@@ -419,6 +419,7 @@ function get_current_url() {
 function get_orthoeman_frame($url) {
     $frame_id = md5($url);
 
+    // Request the launch content with an object tag
     $frame = '<object id="' . $frame_id . '" style="width:100%; height: 600px;" type="text/html" data="' . $url . '"></object>';
 
     //Output script to make the object tag be as large as possible
