@@ -74,35 +74,9 @@ if ($orthoeman->intro) { // Conditions to show the intro can change to look for 
 }
 
 // Request the launch content with an object tag
-echo '<object id="orthoeman_display_frame" height="600px" width="100%" type="text/html" data="Display/index.html?id='.$cm->id.'"></object>';
-//echo '<object id="orthoeman_display_frame" style="width:100%; height: 600px;" type="text/html" data="AuthoringTool/AuthoringTool.html?id='.$cm->id.'"></object>';
-        
-//Output script to make the object tag be as large as possible
-$resize = '<script type="text/javascript">
-            //<![CDATA[
-                (function() {
-                    //Take scrollbars off the outer document to prevent double scroll bar effect
-                    document.body.style.overflow = "hidden";
-                    var dom = YAHOO.util.Dom;
-                    var frame = document.getElementById("orthoeman_display_frame");
-                    var padding = 15; //The bottom of the iframe wasn\'t visible on some themes. Probably because of border widths, etc.
-                    var lastHeight;
-                    var resize = function() {
-                        var viewportHeight = dom.getViewportHeight();
-                        if (lastHeight !== Math.min(dom.getDocumentHeight(), viewportHeight)) {
-                            frame.style.height = viewportHeight - dom.getY(frame) - padding + "px";
-                            lastHeight = Math.min(dom.getDocumentHeight(), dom.getViewportHeight());
-                        }
-                    };
-                    resize();
-                    //setInterval(resize, 250);
-                    onresize = resize;
-                })();
-            //]]
-        </script>
-';
+$frame_id = "orthoeman_display_frame";
 
-echo $resize;
+echo get_orthoeman_frame("Display/index.html?id=$cm->id");
 
 // Finish the page
 echo $OUTPUT->footer();

@@ -415,3 +415,35 @@ function get_current_url() {
     }
     return $pageURL;
 }
+
+function get_orthoeman_frame($url) {
+    $frame_id = md5($url);
+
+    $frame = '<object id="' . $frame_id . '" style="width:100%; height: 600px;" type="text/html" data="' . $url . '"></object>';
+
+    //Output script to make the object tag be as large as possible
+    $resize = '<script type="text/javascript">
+            //<![CDATA[
+                (function() {
+                    //Take scrollbars off the outer document to prevent double scroll bar effect
+                    document.body.style.overflow = "hidden";
+                    var dom = YAHOO.util.Dom;
+                    var frame = document.getElementById("' . $frame_id . '");
+                    var padding = 15; //The bottom of the iframe wasn\'t visible on some themes. Probably because of border widths, etc.
+                    var lastHeight;
+                    var resize = function() {
+                        var viewportHeight = dom.getViewportHeight();
+                        if (lastHeight !== Math.min(dom.getDocumentHeight(), viewportHeight)) {
+                            frame.style.height = viewportHeight - dom.getY(frame) - padding + "px";
+                            lastHeight = Math.min(dom.getDocumentHeight(), dom.getViewportHeight());
+                        }
+                    };
+                    resize();
+                    //setInterval(resize, 250);
+                    onresize = resize;
+                })();
+            //]]
+        </script>
+';
+    return $frame . $resize;
+}
