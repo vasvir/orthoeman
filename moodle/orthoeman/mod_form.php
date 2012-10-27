@@ -42,8 +42,9 @@ class mod_orthoeman_mod_form extends moodleform_mod {
      */
     public function definition() {
         $mform = $this->_form;
+        $cm = $this->_cm;
 
-        $authoring_tool_url = "../mod/orthoeman/AuthoringTool/AuthoringTool.html?id=16";
+        $authoring_tool_url = "../mod/orthoeman/AuthoringTool/AuthoringTool.html?id=$cm->id";
         $mform->addElement('html', get_orthoeman_frame($authoring_tool_url, "none", true));
 
         //-------------------------------------------------------------------------------
