@@ -68,5 +68,3 @@ Immediate:
 	add content type column
 	add depends on column
 	on save delete 
-
-	add lesson_id when invking Authoring Tool and Display Tool (fix view.php/edit.php)
