@@ -30,6 +30,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once(dirname(__FILE__).'/lib.php');
 
 /**
  * Module instance settings form
@@ -40,8 +41,12 @@ class mod_orthoeman_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-
         $mform = $this->_form;
+
+        $authoring_tool_url = "../mod/orthoeman/AuthoringTool/AuthoringTool.html?id=16";
+        $authoring_tool_html="<a href=\"#\" onclick=\"toggle_orthoeman();\">Show / Hide Edit Lesson</a>" . get_orthoeman_frame($authoring_tool_url, "none");
+
+        $mform->addElement('html', $authoring_tool_html);
 
         //-------------------------------------------------------------------------------
         // Adding the "general" fieldset, where all the common settings are showed
@@ -57,17 +62,6 @@ class mod_orthoeman_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'orthoemanname', 'orthoeman');
-
-        // Adding the standard "intro" and "introformat" fields
-        $this->add_intro_editor();
-
-        //-------------------------------------------------------------------------------
-        // Adding the rest of orthoeman settings, spreeading all them into this fieldset
-        // or adding more fieldsets ('header' elements) if needed for better logic
-        $mform->addElement('static', 'label1', 'orthoemansetting1', 'Your orthoeman fields go here. Replace me!');
-
-        $mform->addElement('header', 'orthoemanfieldset', get_string('orthoemanfieldset', 'orthoeman'));
-        $mform->addElement('static', 'label2', 'orthoemansetting2', 'Your orthoeman fields go here. Replace me!');
 
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
