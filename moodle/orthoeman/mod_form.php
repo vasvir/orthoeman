@@ -44,9 +44,7 @@ class mod_orthoeman_mod_form extends moodleform_mod {
         $mform = $this->_form;
 
         $authoring_tool_url = "../mod/orthoeman/AuthoringTool/AuthoringTool.html?id=16";
-        $authoring_tool_html="<a href=\"#\" onclick=\"toggle_orthoeman();\">Show / Hide Edit Lesson</a>" . get_orthoeman_frame($authoring_tool_url, "none");
-
-        $mform->addElement('html', $authoring_tool_html);
+        $mform->addElement('html', get_orthoeman_frame($authoring_tool_url, "none", true));
 
         //-------------------------------------------------------------------------------
         // Adding the "general" fieldset, where all the common settings are showed

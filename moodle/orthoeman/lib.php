@@ -416,18 +416,23 @@ function get_current_url() {
     return $pageURL;
 }
 
-function get_orthoeman_frame($url, $display = "block") {
+function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     // Request the launch content with an object tag
     $frame_id = md5($url);
     $parent_id = "parent_$frame_id";
+    $toggle_link_id = "toggle_link_$frame_id";
+    $show_text = "Edit OrthoEMan activity...";
+    $hide_text = "Hide OrthoEMan activity";
 
     //Output script to make the object tag be as large as possible
     $orthoeman_html = '<div id="'.$parent_id.'"><script type="text/javascript">
             //<![CDATA[
                 var orthoeman_initialized = false;
                 var orthoeman_display = "'.$display .'";
-                var orthoeman_frame = "<object id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" type=\"text/html\" data=\"' . $url . '\"></object>";
                 var orthoeman_frame_id = "'.$frame_id.'";
+                var orthoeman_toggle_link = '.($toggle_link ? "true" : "false").';
+                var orthoeman_toggle_link_html = orthoeman_toggle_link ? "<a id=\"'.$toggle_link_id.'\" href=\"#\" onclick=\"toggle_orthoeman();\"></a>" : "";
+                var orthoeman_frame = orthoeman_toggle_link_html + "<object id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" type=\"text/html\" data=\"' . $url . '\"></object>";
 
                 function init_orthoeman() {
                         if (orthoeman_initialized) {
@@ -436,6 +441,10 @@ function get_orthoeman_frame($url, $display = "block") {
 
                         var parent = document.getElementById("'.$parent_id.'");
                         parent.innerHTML = orthoeman_frame;
+                        if (orthoeman_toggle_link) {
+                            var toggle_link = document.getElementById("'.$toggle_link_id.'");
+                            toggle_link.innerHTML = "'.$hide_text.'";
+                        }
 
                         //Take scrollbars off the outer document to prevent double scroll bar effect
                         document.body.style.overflow = "hidden";
@@ -464,21 +473,33 @@ function get_orthoeman_frame($url, $display = "block") {
                         orthoeman_display = "block";
                         element.style.display = orthoeman_display;
                         document.body.style.overflow = "hidden";
+                        if (orthoeman_toggle_link) {
+                            var toggle_link = document.getElementById("'.$toggle_link_id.'");
+                            toggle_link.innerHTML = "'.$hide_text.'";
+                        }
                     } else {
                         orthoeman_display = "none";
                         element.style.display = orthoeman_display;
                         document.body.style.overflow = "auto";
-                    };
+                        if (orthoeman_toggle_link) {
+                            var toggle_link = document.getElementById("'.$toggle_link_id.'");
+                            toggle_link.innerHTML = "'.$show_text.'";
+                        }
+                    }
                 }
 
                 (function() {
+                    if (orthoeman_toggle_link) {
+                        var parent = document.getElementById("'.$parent_id.'");
+                        parent.innerHTML = orthoeman_toggle_link_html;
+                        var toggle_link = document.getElementById("'.$toggle_link_id.'");
+                        toggle_link.innerHTML = "'.$show_text.'";
+                    }
                     // do we have to initialize now?
                     if (orthoeman_display == "block") {
                         init_orthoeman();
                     }
-
                 })();
-
             //]]
         </script></div>';
     return $orthoeman_html;
