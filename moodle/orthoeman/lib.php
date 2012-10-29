@@ -504,3 +504,14 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
         </script></div>';
     return $orthoeman_html;
 }
+
+function get_database_data($orthoeman_id, $resource_id) {
+    global $DB, $RESOURCE_TABLE, $TYPE_XML_VALUE;
+
+    if ($resource_id == -1) {
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman_id, 'type' => $TYPE_XML_VALUE));
+    } else {
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('id' => $resource_id, 'orthoeman_id' => $orthoeman_id));
+    }
+    return $resource_rec;
+}
