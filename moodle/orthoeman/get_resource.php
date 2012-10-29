@@ -61,5 +61,9 @@ add_to_log($course->id, 'orthoeman', 'get_resource', "get_resource.php?id={$cm->
 
 $resource_rec = get_database_data($orthoeman->id, $resource_id);
 
+if ($resource_rec->type == $TYPE_XML_VALUE) {
+  require_capability("mod/orthoeman:read", $context);
+}
+
 header('Content-type: ' . $resource_rec->content_type);
 echo $resource_rec->data;
