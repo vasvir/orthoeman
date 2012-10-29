@@ -142,6 +142,8 @@ public class AuthoringTool implements EntryPoint {
 
 	private OnLoadPreloadedImageHandler showImageHandler;
 
+	private String moodle_id = "-1";
+
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
 	 * <code>log_level</code> higher than <code>DEBUG</code>.
@@ -394,6 +396,9 @@ public class AuthoringTool implements EntryPoint {
 			startTimeMillis = System.currentTimeMillis();
 		}
 		final Widget divLogger = Log.getLogger(DivLogger.class).getWidget();
+
+		moodle_id = Window.Location.getParameter("id");
+		Log.info("Starting Authoring Tool with moodle_id " + moodle_id);
 
 		final Label splashScreenLabel = getLabel("splashScreenLabel");
 
@@ -1816,7 +1821,8 @@ public class AuthoringTool implements EntryPoint {
 			final String data, final Page.ResourceItem item,
 			final ProgressDialogBox pd) {
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
-				"../put_resource.php?id=16&type=" + resource_type);
+				"../put_resource.php?id=" + moodle_id + "&type="
+						+ resource_type);
 		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		try {
 			rb.sendRequest(URL.encodeQueryString(data), new RequestCallback() {
