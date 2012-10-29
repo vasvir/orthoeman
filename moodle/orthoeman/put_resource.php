@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
             $resource_rec->id = $resource_id;
         }
-        echo "$resource_rec->id";
+        echo "$resource_rec->id:$resource_rec->content_type";
     } else if ($type == $TYPE_IMAGE) {
         $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
         //echo "url $url<BR>";
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
             $resource_rec->id = $resource_id;
         }
-        echo "$resource_rec->id";
+        echo "$resource_rec->id:$resource_rec->content_type";
     } else if ($type == $TYPE_VIDEO) {
         $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
         //echo "url $url<BR>";
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
 
-            $ids[] = $resource_id;
+            $ids[] = "$resource_id:$resource_rec->content_type";
 
             $formats = array('h264', 'ogg', 'webm');
             $format_to_content_type = array(
@@ -179,12 +179,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $resource_rec->content_type = $format_to_content_type[$format];
                 $resource_rec->parent_id = $ids[0];
                 $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
-                $ids[] = $resource_id;
+                $ids[] = "$resource_id:$resource_rec->content_type";
             }
         } else {
-            $ids[] = $resource_rec->id;
+            $ids[] = "$resource_rec->id:$resource_rec->content_type";
+            $resource_recs = $DB->get_records($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'parent_id' => $resource_rec->id));
+            foreach ($resource_recs as $resource_rec) {
+                $ids[] = "$resource_rec->id:$resource_rec->content_type";
+            }
         }
-        print_r($ids);
+        echo implode("|", $ids);
     } else {
         echo "Undefined resource type $type";
         http_response_code(403);

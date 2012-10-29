@@ -49,6 +49,8 @@ Moodle Integration:
 		share orthoeman activities
 		show documents inline (may require a plugin)
 
+	Use moodle file facilities for storing and retrieving files
+
 Task list:
 	Moodle integration
 	XML schema discussions
@@ -63,3 +65,5 @@ Immediate:
 	Blocking /Informational -> mark as hotspot
 
 	on save delete non used resources
+
+
