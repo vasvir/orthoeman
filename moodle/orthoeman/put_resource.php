@@ -52,27 +52,9 @@ $type = required_param('type', PARAM_ALPHA);
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-//require_capability("mod/orthoeman:read", $context);
-
-add_to_log($course->id, 'orthoeman', 'put_resource', "view.php?id={$cm->id}", $orthoeman->name, $cm->id);
-
-/// Print the page header
-
-$PAGE->set_url('/mod/orthoeman/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($orthoeman->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
-
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('orthoeman-'.$somevar);
-
 require_capability('mod/orthoeman:write', $context);
 
-// Output starts here
-//echo $OUTPUT->header();
-
+add_to_log($course->id, 'orthoeman', 'put_resource', "put_resource.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
 /* gets the data from a URL */
 function get_url_data($url) {

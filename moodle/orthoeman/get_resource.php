@@ -34,6 +34,7 @@ require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
+$resource_id = optional_param('resource_id', -1, PARAM_INT); // resource_id -1 gets the XML
 
 if ($id) {
     $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
@@ -50,41 +51,15 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-//require_capability("mod/orthoeman:read", $context);
+require_capability("mod/orthoeman:view", $context);
 
-add_to_log($course->id, 'orthoeman', 'view', "view.php?id={$cm->id}", $orthoeman->name, $cm->id);
-
-/// Print the page header
-
-$PAGE->set_url('/mod/orthoeman/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($orthoeman->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
-
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('orthoeman-'.$somevar);
-
-// Output starts here
-echo $OUTPUT->header();
-
-
-// Replace the following lines with you own code
-echo"get_resource.php: Hello world<BR>\n";
-print_r($cm);
-echo "<BR>\n";
-print_r($USER);
-echo "<BR>\n";
-if (has_capability('mod/orthoeman:submit', $context)) {
-  echo "you can submit<BR>\n";
-} else {
-    if (has_capability('mod/orthoeman:read', $context)) {
-        echo "You cannot submit: but you can read<BR>\n";
-    } else {
-        echo "You cannot submit<BR>\n";
-    }
+if ($resource_id == -1) {
+  require_capability("mod/orthoeman:read", $context);
 }
 
-// Finish the page
-echo $OUTPUT->footer();
+add_to_log($course->id, 'orthoeman', 'get_resource', "get_resource.php?id={$cm->id}", $orthoeman->name, $cm->id);
+
+$resource_rec = get_database_data($orthoeman->id, $resource_id);
+
+header('Content-type: ' . $resource_rec->content_type);
+echo $resource_rec->data;
