@@ -43,11 +43,9 @@ Authoring Tool:
 Moodle Integration:
 	Authentication - Authorization (moodle should provide us with some id)
 	Use data backend for storing resources (xml & images & videos)
-	Tracking - Display tool should be able to inform moodle about the progress /grade of the student
-	Authoring Tool should be able to launch the Display Tool
+	Tracking - Display tool should be able to inform moodle about the progress / grades of the student
 
 	Moodle:
-		allow everybody to see all lessons
 		share orthoeman activities
 		show documents inline (may require a plugin)
 
@@ -64,7 +62,4 @@ Immediate:
 
 	Blocking /Informational -> mark as hotspot
 
-
-	add content type column
-	add depends on column
-	on save delete 
+	on save delete non used resources

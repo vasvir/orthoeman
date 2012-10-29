@@ -69,10 +69,6 @@ require_capability('mod/orthoeman:view', $context);
 // Output starts here
 echo $OUTPUT->header();
 
-if ($orthoeman->intro) { // Conditions to show the intro can change to look for own settings or whatever
-    echo $OUTPUT->box(format_module_intro('orthoeman', $orthoeman, $cm->id), 'generalbox mod_introbox', 'orthoemanintro');
-}
-
 echo get_orthoeman_frame("Display/index.html?id=$cm->id");
 
 // Finish the page
