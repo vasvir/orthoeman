@@ -58,7 +58,7 @@ $TYPE_VIDEO_VALUE = 2;
  */
 function orthoeman_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_INTRO:         return true;
+        case FEATURE_MOD_INTRO:         return false;
         default:                        return null;
     }
 }

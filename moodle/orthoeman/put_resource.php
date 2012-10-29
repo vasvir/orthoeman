@@ -74,6 +74,23 @@ require_capability('mod/orthoeman:write', $context);
 //echo $OUTPUT->header();
 
 
+/* gets the data from a URL */
+function get_url_data($url) {
+    $ch = curl_init();
+    //$timeout = 5;
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    //curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    $result = new Object();
+    
+    $result->data = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    $result->content_type = $info['content_type'];
+    
+    curl_close($ch);
+    return $result;
+}
+
 // Finish the page
 //echo $OUTPUT->footer();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -91,6 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->type = $TYPE_XML_VALUE;
             $resource_rec->data = $xml;
             $resource_rec->md5 = md5($xml);
+            $resource_rec->content_type = 'text/xml; charset="utf-8"';
+            $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
             $resource_rec->id = $resource_id;
         }
@@ -102,7 +121,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //echo "current_url $current_url<BR>";
         $img_url = preg_replace('/\/put_resource.php.*$/', '', $current_url) . $url;
         //echo "img_url $img_url<BR>";
-        $img = file_get_contents($img_url);
+        $result = get_url_data($img_url);
+        $img = $result->data;
         //echo "img XXX $img XXX<BR>";
         $md5 = md5($img);
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('type' => $TYPE_IMAGE_VALUE, 'md5' => $md5));
@@ -112,6 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->type = $TYPE_IMAGE_VALUE;
             $resource_rec->data = $img;
             $resource_rec->md5 = $md5;
+            $resource_rec->content_type = $result->content_type;
+            $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
             $resource_rec->id = $resource_id;
         }
@@ -123,7 +145,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //echo "current_url $current_url<BR>";
         $video_url = preg_replace('/\/put_resource.php.*$/', '', $current_url) . $url;
         //echo "img_url $img_url<BR>";
-        $video = file_get_contents($video_url);
+        $result = get_url_data($video_url);
+        $video = $result->data;
         //echo "img XXX $img XXX<BR>";
         $md5 = md5($video);
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'md5' => $md5));
@@ -134,11 +157,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->type = $TYPE_VIDEO_VALUE;
             $resource_rec->data = $video;
             $resource_rec->md5 = $md5;
+            $resource_rec->content_type = $result->content_type;
+            $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
 
             $ids[] = $resource_id;
 
             $formats = array('h264', 'ogg', 'webm');
+            $format_to_content_type = array(
+                "h264" => 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"',
+                "ogg" => 'video/ogg; codecs="theora, vorbis"',
+                "webm" => 'video/webm; codecs="vp8.0, vorbis"'
+            );
             foreach ($formats as $format) {
                 $resource_rec = new Object();
                 $resource_rec->orthoeman_id = $orthoeman->id;
@@ -146,6 +176,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $ffmpeg = preg_replace('/&/', '\\&', "ffmpeg -i $video_url -f $format -");
                 $resource_rec->data = `$ffmpeg`;
                 $resource_rec->md5 = md5($resource_rec->data);
+                $resource_rec->content_type = $format_to_content_type[$format];
+                $resource_rec->parent_id = $ids[0];
                 $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
                 $ids[] = $resource_id;
             }
