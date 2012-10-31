@@ -140,9 +140,7 @@ public class AuthoringTool implements EntryPoint {
 	private Slider contrast_sl;
 	private SimpleCheckBox invert_cb;
 
-	private OnLoadPreloadedImageHandler showImageHandler;
-
-	private String moodle_id = "-1";
+	private String orthoeman_id = "-1";
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -159,6 +157,41 @@ public class AuthoringTool implements EntryPoint {
 	public enum ResourceType {
 		XML, IMAGE, VIDEO;
 	}
+
+	public class ImageItemOnLoadPreloadedImageHandler implements
+			OnLoadPreloadedImageHandler {
+		private final Lesson.Page.ImageItem image_item;
+		private final boolean clear_drawings;
+
+		public ImageItemOnLoadPreloadedImageHandler(
+				Lesson.Page.ImageItem image_item, boolean clear_drawings) {
+			this.image_item = image_item;
+			this.clear_drawings = clear_drawings;
+		}
+
+		@Override
+		public void onLoad(PreloadedImage img) {
+			img.setVisible(false);
+			final Zoom zoom = image_item.getZoom();
+			Log.debug("Got image " + img.getRealWidth() + " x "
+					+ img.getRealHeight());
+			zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
+			zoom.setLevel(((double) canvas.getOffsetWidth())
+					/ ((double) img.getRealWidth()));
+			zoom.getTarget().set(0, 0, img.getRealWidth(), img.getRealHeight());
+			if (clear_drawings)
+				image_item.getDrawings().clear();
+			final Page current_page = getCurrentPage();
+			if (current_page != null
+					&& current_page.getImageItem() == image_item) {
+				Log.debug("CurrentPage: " + current_page
+						+ " with imageItem(): " + current_page.getImageItem()
+						+ " image_item: " + image_item);
+				redrawCanvas();
+			}
+			setButtonsEnabled(image_edit_buttons, true);
+		}
+	};
 
 	/**
 	 * Note, we defer all application initialization code to
@@ -397,8 +430,8 @@ public class AuthoringTool implements EntryPoint {
 		}
 		final Widget divLogger = Log.getLogger(DivLogger.class).getWidget();
 
-		moodle_id = Window.Location.getParameter("id");
-		Log.info("Starting Authoring Tool with moodle_id " + moodle_id);
+		orthoeman_id = Window.Location.getParameter("id");
+		Log.info("Starting Authoring Tool with orthoeman_id " + orthoeman_id);
 
 		final Label splashScreenLabel = getLabel("splashScreenLabel");
 
@@ -802,23 +835,6 @@ public class AuthoringTool implements EntryPoint {
 				old_point.valid = true;
 			}
 		});
-
-		showImageHandler = new OnLoadPreloadedImageHandler() {
-			@Override
-			public void onLoad(PreloadedImage img) {
-				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
-				Log.trace("Got image " + img.getRealWidth() + " x "
-						+ img.getRealHeight());
-				zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
-				zoom.setLevel(((double) canvas.getOffsetWidth())
-						/ ((double) img.getRealWidth()));
-				zoom.getTarget().set(0, 0, img.getRealWidth(),
-						img.getRealHeight());
-				getCurrentPage().getImageItem().getDrawings().clear();
-				redrawCanvas();
-				setButtonsEnabled(image_edit_buttons, true);
-			}
-		};
 
 		final String php_session_id = "PHPSESSID";
 
@@ -1269,7 +1285,7 @@ public class AuthoringTool implements EntryPoint {
 
 		splashScreenLabel.setText("Reading Lesson...");
 
-		final String url = "test.xml";
+		final String url = Lesson.getResourceURL(orthoeman_id, null);
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url);
 		try {
 			rb.sendRequest(null, new RequestCallback() {
@@ -1281,18 +1297,8 @@ public class AuthoringTool implements EntryPoint {
 				@Override
 				public void onResponseReceived(final Request request,
 						final Response response) {
-					lesson = Lesson.readXML(response.getText(),
-							new PreloadedImage.OnLoadPreloadedImageHandler() {
-								@Override
-								public void onLoad(PreloadedImage img) {
-									final Page page = getCurrentPage();
-									if (page == null)
-										return;
-									if (page.getImageItem().getImage() != img)
-										return;
-									redrawCanvas();
-								}
-							});
+					lesson = Lesson.readXML(response.getText(), orthoeman_id,
+							AuthoringTool.this);
 
 					lesson.addPageListener(new Lesson.PageListener() {
 						@Override
@@ -1319,7 +1325,7 @@ public class AuthoringTool implements EntryPoint {
 					if (Log.isDebugEnabled()) {
 						long endTimeMillis = System.currentTimeMillis();
 						float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
-						Log.debug("Lesson loading finsihed in: "
+						Log.debug("Lesson loading finished in: "
 								+ durationSeconds + " seconds");
 					}
 				}
@@ -1821,7 +1827,7 @@ public class AuthoringTool implements EntryPoint {
 			final String data, final Page.ResourceItem item,
 			final ProgressDialogBox pd) {
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
-				"../put_resource.php?id=" + moodle_id + "&type="
+				"../put_resource.php?id=" + orthoeman_id + "&type="
 						+ resource_type);
 		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		try {
@@ -1838,12 +1844,17 @@ public class AuthoringTool implements EntryPoint {
 						Window.alert(error_msg);
 						return;
 					}
+					final String response_text = response.getText();
 					Log.debug("Successfull request: " + request + " response: "
-							+ response.getText());
+							+ response_text);
 					if (resource_type == ResourceType.IMAGE) {
 						final Page.ImageItem image_item = (Page.ImageItem) item;
-						image_item.setImage(new PreloadedImage(data,
-								showImageHandler));
+						final String id = getImageId(response_text);
+						image_item.setId(id);
+						image_item.setImage(new PreloadedImage(Lesson
+								.getResourceURL(orthoeman_id, id),
+								new ImageItemOnLoadPreloadedImageHandler(
+										image_item, true)));
 						setButtonsEnabled(image_edit_buttons, true);
 					} else if (resource_type == ResourceType.VIDEO) {
 						final Page.VideoItem video_item = (Page.VideoItem) item;
@@ -1867,5 +1878,9 @@ public class AuthoringTool implements EntryPoint {
 			Log.error(error_msg, e);
 			Window.alert(error_msg);
 		}
+	}
+
+	public static String getImageId(String response_text) {
+		return response_text.split(":")[0];
 	}
 }

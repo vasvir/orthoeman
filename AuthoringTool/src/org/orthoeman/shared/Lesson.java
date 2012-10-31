@@ -11,8 +11,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.orthoeman.client.AuthoringTool;
 import org.orthoeman.client.NodeListWrapperList;
 import org.orthoeman.shared.Drawing.Kind;
+import org.orthoeman.shared.Lesson.Page.ImageItem;
 import org.orthoeman.shared.Lesson.Page.Item.Type;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
 import org.orthoeman.shared.Lesson.Page.QuizItem.Answer;
@@ -272,12 +274,21 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				}
 			}
 
+			private String id;
 			private PreloadedImage image;
 			private Zoom zoom = new Zoom();
 			private DrawingList drawings = new DrawingList();
 
 			public ImageItem() {
 				super(Type.IMAGE);
+			}
+
+			public String getId() {
+				return id;
+			}
+
+			public void setId(String id) {
+				this.id = id;
 			}
 
 			public PreloadedImage getImage() {
@@ -543,44 +554,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 	private Collection<PageListener> pageListeners = new ArrayList<PageListener>();
 
-	/** TODO Lesson must be initialized with id, author, title, abstract */
-	private String id = "lesson_id";
-	private String author = "A. Authoropoulos";
-	private String title = "Nice title";
-	private String abstrakt = "A very nice lesson. Really...";
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-
-	public String getAbstract() {
-		return abstrakt;
-	}
-
-	public void setAbstract(String abstrakt) {
-		this.abstrakt = abstrakt;
-	}
-
 	public void addPageListener(PageListener li) {
 		pageListeners.add(li);
 	}
@@ -604,19 +577,17 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				.getFirstChild());
 	}
 
-	public static Lesson readXML(String contents,
-			PreloadedImage.OnLoadPreloadedImageHandler onload_handler) {
+	public static Lesson readXML(String contents, String orthoeman_id,
+			AuthoringTool authoring_tool) {
 		// Log.trace("Parsing: " + contents);
 		final Lesson lesson = new Lesson();
 
 		final Document doc = XMLParser.parse(contents);
-		final Element lesson_e = (Element) doc.getElementsByTagName("Lesson")
-				.item(0);
-
-		lesson.setId(lesson_e.getAttribute("Id"));
-		lesson.setAuthor(lesson_e.getAttribute("Author"));
-		lesson.setTitle(lesson_e.getAttribute("Title"));
-		lesson.setAbstract(getTextValue(lesson_e, "Abstract"));
+		final NodeListWrapperList lessons = new NodeListWrapperList(
+				doc.getElementsByTagName("Lesson"));
+		if (lessons.isEmpty())
+			return lesson;
+		final Element lesson_e = (Element) lessons.get(0);
 
 		final NodeListWrapperList pages_nl = new NodeListWrapperList(
 				lesson_e.getElementsByTagName("Page"));
@@ -643,10 +614,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					final Element image_e = (Element) widget_e
 							.getElementsByTagName(item_type.getTypeName())
 							.item(0);
-					final String url = image_e.getAttribute("uri");
-					if (url != null) {
-						final PreloadedImage img = new PreloadedImage(url,
-								onload_handler);
+					final String id = image_e.getAttribute("id");
+					if (id != null) {
+						final ImageItem image_item = page.getImageItem();
+						image_item.setId(id);
+						final String url = getResourceURL(orthoeman_id, id);
 						/*
 						 * Here is the trick. Either the loading finishes real
 						 * fast or not
@@ -662,7 +634,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						 * the image. When the image is loaded a redraw is
 						 * executed.
 						 */
-						page.getImageItem().setImage(img);
+						image_item
+								.setImage(new PreloadedImage(
+										url,
+										authoring_tool.new ImageItemOnLoadPreloadedImageHandler(
+												image_item, false)));
 					}
 
 					// now let's get all drawings
@@ -772,13 +748,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				"http://www.w3.org/2001/XMLSchema-instance");
 		root_e.setAttribute("xsi:schemaLocation",
 				"http://orthoeman.iit.demokritos.gr/orthoeman.xsd");
-		root_e.setAttribute("Id", lesson.getId());
-		root_e.setAttribute("Author", lesson.getAuthor());
-		root_e.setAttribute("Title", lesson.getTitle());
-
-		final Element abstrakt_e = doc.createElement("Abstract");
-		abstrakt_e.appendChild(doc.createTextNode(lesson.getAbstract()));
-		root_e.appendChild(abstrakt_e);
 
 		for (final Page page : lesson) {
 			final Element page_e = doc.createElement("Page");
@@ -796,12 +765,12 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					final Element image_e = doc.createElement(item_type
 							.getTypeName());
 					// image.setAttribute("ShowRegions", "yes");
-					final PreloadedImage img = page.getImageItem().getImage();
-					if (img != null) {
-						image_e.setAttribute("uri", img.getUrl());
+					final ImageItem image_item = page.getImageItem();
+					final String id = image_item.getId();
+					if (id != null) {
+						image_e.setAttribute("id", id);
 
-						for (final Drawing drawing : page.getImageItem()
-								.getDrawings()) {
+						for (final Drawing drawing : image_item.getDrawings()) {
 							switch (drawing.getType()) {
 							case ELLIPSE:
 								final Element ellipse_e = doc
@@ -967,5 +936,13 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		if (status)
 			notifyPageListeners((Page) o, false);
 		return status;
+	}
+
+	public static String getResourceURL(String orthoeman_id, String resource_id) {
+		final String get_resource_php = "../get_resource.php?id="
+				+ orthoeman_id;
+		if (resource_id == null)
+			return get_resource_php;
+		return get_resource_php + "&resource_id=" + resource_id;
 	}
 }
