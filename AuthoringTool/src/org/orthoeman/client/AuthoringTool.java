@@ -1316,7 +1316,9 @@ public class AuthoringTool implements EntryPoint {
 					updatePages();
 
 					if (lesson.isEmpty()) {
-						lesson.add(new Lesson.Page());
+						final Lesson.Page page = new Lesson.Page();
+						lesson.add(page);
+						addPageButton(page);
 					}
 					setCurrentPage(lesson.get(0));
 
