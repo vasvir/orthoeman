@@ -582,6 +582,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		// Log.trace("Parsing: " + contents);
 		final Lesson lesson = new Lesson();
 
+		if (contents == null || contents.trim().isEmpty())
+			return lesson;
+
 		final Document doc = XMLParser.parse(contents);
 		final NodeListWrapperList lessons = new NodeListWrapperList(
 				doc.getElementsByTagName("Lesson"));
