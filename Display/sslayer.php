@@ -361,7 +361,7 @@ function getXMLData(){
 	if (isset($_GET['old'])) return oldGetXMLData();
 	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
 	$resource = get_database_data($orthoeman_id,-1);
-	print_r($resource->data);
+	echo ($resource->data);
 	//return simplexml_load_file(filename);
 	return $resource->data;
 }
