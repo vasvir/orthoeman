@@ -358,7 +358,7 @@ function getXMLData(){
 	//$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
 	//echo $orthoeman_id;
 	$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
-	$resource = get_database_data($orthoeman_id,-1);
+	$resource = get_database_data($id,-1);
 	echo ($resource->data);
 	//return simplexml_load_file(filename);
 	return $resource->data;
