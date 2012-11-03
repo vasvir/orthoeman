@@ -212,7 +212,7 @@ function GetHotSpotImage($PageID,$xml){
 function GetShapesFromImage($PageID, $xml) {
 	$quizimage = null;
 	foreach ($xml->page[intval($PageID)]->widget as $key => $value) {
-		if (strval($value["type"]) == "image") {
+		if (strval($value["type"]) === "image") {
 			$quizimage = $value;
 		}
 	}

@@ -2,13 +2,21 @@
  The script logic for ORTHO e-Man
 
 
- TODO οι διαστάσεις του tooltip, infotip και point circles δεν είναι το ίδιο. Αυτό συμβαίνει γιατί εξαρτούνται από το zoomPage και scalePage, διόρθωσέ το ώστε να εξαρτάται από το ένα. Ίσως τότε να διορθωθεί.
-  TODO αλλαγή όλου του notification system. -- ίσως να μην χρειάζεται πλέον
-  TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
-   TODO *Bug IE only, fullscreen video not working
+TODO οι διαστάσεις του tooltip, infotip και point circles δεν είναι το ίδιο. Αυτό συμβαίνει γιατί εξαρτούνται από το zoomPage και scalePage, διόρθωσέ το ώστε να εξαρτάται από το ένα. Ίσως τότε να διορθωθεί.
+TODO αλλαγή όλου του notification system. -- ίσως να μην χρειάζεται πλέον
+TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
+TODO *Bug IE only, fullscreen video not working
+TODO βγάζω την απόσταση
+TODO δεν επιτρέπουμε πολλαπλές προσπάθειες
+TODO δύο αριθμοί negative, positive
+TODO cruise mode
+TODO see what's happen in text-image, text-video (theory case)
+TODO πολλαπλές γωνίες 
+TODO timeout time
+TODO tracking implementation 
 
  */
-"use strict";
+
 
 var OrthoVariables = {
     maxPages:5,
@@ -45,7 +53,8 @@ var OrthoVariables = {
     ColorWrong:"#9C2100",
     ColorWrongEdge:"#592835",
     zoomMouse: { isdown : false , x: -1, y:-1},
-    disableturn:true
+    disableturn:true,
+    isOverAngleCircle:false
 };
 
 
@@ -93,7 +102,7 @@ $(document).ready(function () {
         //DisableButtonLink("SubmitAnswer");
 
         EnableButtonLink("NextTest");
-    })
+    });
 });
 
 
@@ -182,11 +191,11 @@ function LoadImages(Page) {
             show: "fold",
             hide: "fold"
         });*/
-        var c = $('#canvasid_' + imagesToLoad[i].id).get(0)
+        var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
 
         c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
         var orig = document.createElement('canvas');
-        orig.width = c.width
+        orig.width = c.width;
         orig.height = c.height;
         orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
 
@@ -274,7 +283,7 @@ function LoadImages(Page) {
             }
         });
 
-        $("#pointer_" + imagesToLoad[i].id).mousemove(function(e) {
+        $("#pointer_" + imagesToLoad[i].id).mousemove({id: imagesToLoad[i].id},function(e) {
            if (OrthoVariables.zoomMouse.isdown) {
                var nx = e.pageX - OrthoVariables.zoomMouse.x;
                var ny =  e.pageY - OrthoVariables.zoomMouse.y;
@@ -282,7 +291,7 @@ function LoadImages(Page) {
                OrthoVariables.zoomMouse.y = e.pageY;
                var top = parseFloat($(this).css("top")) + ny;
                var left = parseFloat($(this).css("left")) + nx;
-
+               //console.log($(this).parent().height(),  $(this).height());
                var mintop = $(this).parent().height() - $(this).height();
                var minleft = $(this).parent().width() - $(this).width();
                if ( top < mintop) {
@@ -300,6 +309,8 @@ function LoadImages(Page) {
                    top = 0;
                }
                $(this).css("left", left).css("top",top);
+               //console.log($(this).attr('id'), e.data.id);
+               //OrthoVariables.origCanvas[e.data.id][2].draw();
 
            }
         });
@@ -332,15 +343,15 @@ function LoadImages(Page) {
                         ShowMsg("You already answer it!", "highlight");
                         return true;
                     }
-                    if (OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "wrong" && OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"] === "no") {
+                    if (OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "wrong" && OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes.Blocked === "no") {
                         ShowMsg("You already answer it!", "highlight");
                         return true;
                     }
                     var shapes = mystage.getIntersections({
                         x:mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
                         y:mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage])
-                    })
-                    if (shapes.length == 0) {
+                    });
+                    if (shapes.length === 0) {
                         var circle = new Kinetic.Circle({
                             x:mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
                             y:mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
@@ -370,6 +381,8 @@ function LoadImages(Page) {
                         circle.on("mouseout", function () {
                             SetCursor(id);
                             mytooltip.hide();
+                            //$.each( mytooltip.getChildren(), function() { this.remove();});
+                            //mytooltip.remove();
                             mytooltip.getLayer().draw();
                             this.transitionTo({
                                 scale:{
@@ -387,7 +400,8 @@ function LoadImages(Page) {
                                 return true;
                             }
                             OrthoVariables.clickcatch = true;
-                            myshapelayer.remove(this);
+                            //myshapelayer.remove(this);
+                            this.remove();
                             OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].hotspots[circle._id] = undefined;
                             var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
                             mytooltip.hide();
@@ -407,10 +421,7 @@ function LoadImages(Page) {
                             ShowMsg("Reach maximum points. Please remove the previous to add new ones.", "highlight");
                         }
                         OrthoVariables.clickcatch = false;
-                    } else {
-
                     }
-
                 }
 
             }
@@ -440,7 +451,7 @@ function LoadImages(Page) {
         });
 
         $("#container_" + imagesToLoad[i].id).mouseup(function () {
-            if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"] && OrthoVariables.line.pressed) {
+            if (OrthoVariables.buttonState[OrthoVariables.lessonPage].l && OrthoVariables.line.pressed) {
                 DrawShape(this.id);
                 SetonLine(this.id);
                 CheckShape(this.id);
@@ -473,33 +484,203 @@ function LoadImages(Page) {
 
     }
     OrthoVariables.lessonLoaded[parseInt(Page)] = true;
-    if (counter > 0) CheckResizeLimits(Page);
+    if (counter > 0) { CheckResizeLimits(Page); }
 }
 
 function drawTooltip(tooltip, x, y, text) {
+    "use strict";
     tooltip.setText(text);
     tooltip.setPosition(x, y + 10);
     tooltip.show();
     tooltip.setScale(1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]), 1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
     tooltip.getLayer().draw();
+
+}
+
+function drawTriangle(triangle,points) {
+    "use strict";
+    triangle.setPoints(points);
+    triangle.show();
+    triangle.setScale(1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]), 1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
+    triangle.getLayer().draw();
 }
 
 function CheckShape(strID) {
+    "use strict";
     var id = getID(strID);
     var mystage = OrthoVariables.origCanvas[id][2];
     var mousepos = mystage.getMousePosition();
     if (mousepos !== undefined) {
         var distance = Distance(OrthoVariables.line.startx, OrthoVariables.line.starty, mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]), mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
-        if (OrthoVariables.line.prevline != null && distance < OrthoVariables.linemindistance) {
+        if (OrthoVariables.line.prevline !== null && distance < OrthoVariables.linemindistance) {
             var myshapelayer = mystage.get("#shapelayer")[0];
-            myshapelayer.remove(OrthoVariables.line.prevline);
-            myshapelayer.remove(OrthoVariables.line.previnfotip);
+            OrthoVariables.line.prevline.remove();
+            OrthoVariables.line.prevline = null;
             myshapelayer.draw();
         }
+        if (OrthoVariables.line.prevline!== null) {
+            checkIntersections(id);
+        }
     }
+
 }
 
+function checkIntersections(id) {
+    "use strict";
+    var mystage = OrthoVariables.origCanvas[id][2];
+    //var mousepos = mystage.getMousePosition();
+    var groupline = OrthoVariables.line.prevline;
+    var line = groupline.get("#"+groupline.getId())[0];
+    var points = line.getPoints();
+    var prevlines = line.getLayer().getChildren();
+    for(var l in prevlines) {
+        if (prevlines[l] instanceof Kinetic.Group)
+        {
+            if (prevlines[l].getId() !== line.getId() ){
+                var t_points = prevlines[l].get("#" + prevlines[l].getId())[0].getPoints();
+                var intersectPoint = lineToLineIntersect(points[0].x, points[0].y, points[1].x, points[1].y,t_points[0].x, t_points[0].y, t_points[1].x, t_points[1].y);
+                if (intersectPoint.x !== 0 || intersectPoint.y !==0) {
+                    var p1 = minPointY(points[0],points[1], intersectPoint);
+                    var p2 = minPointY(t_points[0], t_points[1],intersectPoint);
+                    var angle = calcAngles(p1.x, p1.y, intersectPoint.x, intersectPoint.y,p2.x, p2.y, intersectPoint.x, intersectPoint.y);
+                    addAngleCircle(intersectPoint.x,intersectPoint.y, groupline,angle,mystage, p1, p2);
+
+                }
+            }
+        }
+    }
+    mystage.draw();
+}
+
+function calcAngles(x1, y1,x2, y2, x3, y3, x4, y4) {
+    "use strict";
+    var dx1 = x2-x1;
+    var dy1 = y2-y1;
+    var dx2 = x4-x3;
+    var dy2 = y4-y3;
+    var d = dx1*dx2 + dy1*dy2;   // dot product of the 2 vectors
+    var l2 = (dx1*dx1+dy1*dy1)*(dx2*dx2+dy2*dy2); // product of the squared lengths
+    var angle = Math.round(Math.acos(d/Math.sqrt(l2))*(180/Math.PI));
+    //console.log(angle);
+    return angle;
+}
+
+function minPointY(pointA, pointB, pointX) {
+    "use strict";
+    return (pointA.y < pointX.y ) ? pointA : pointB;
+}
+
+function addAngleCircle(x,y, group, angle, mystage, point1, point2) {
+    "use strict";
+    var circle = new Kinetic.Circle({
+        x:x, // / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
+        y:y, // / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
+        radius:10,
+        fill:"#FF550C",
+        stroke:"#ff0000",
+        strokeWidth:1,
+        opacity:0.7
+        //id:"circle_" + id
+    });
+
+    var leftAngleTip = new Kinetic.Text({
+        text:"",
+        textFill: "#DDDDDD",
+        fontFamily:"MerriweatherRegular,Georgia",
+        fontSize:11,
+        fontStyle: "normal",
+        verticalAlign:"left",
+        fill: "black",
+        lineHeight: 1,
+        padding:13,
+        //fill:"black",
+        visible:false,
+        opacity:1
+        //id:"leftAngleTip"
+    });
+
+    var triangle = new Kinetic.Polygon({
+       points: [x,y, point1.x,point1.y,point2.x, point2.y],
+        fill:"#FF550C",
+        stroke:"#ff0000",
+        strokeWidth:1,
+        opacity:0.4,
+        visible:false
+    });
+
+
+    circle.on("mouseover", function() {
+        OrthoVariables.isOverAngleCircle = true;
+        var langlex = 0;
+        var langley = -10;
+        drawTooltip(leftAngleTip,langlex , langley, "Angle is: " + angle + "⁰");
+        //console.log(x,y,point1, point2);
+        //console.log(moveAngleTip(point1.x,point2.x,x),moveAngleTipX(point1.y,point2.y,y));
+        //drawTooltip(rightAngleTip,x + (x-langlex),langley, 180 - angle);
+        triangle.show();
+        leftAngleTip.getLayer().draw();
+    });
+
+    circle.on("mouseout",function() {
+       OrthoVariables.isOverAngleCircle = false;
+        leftAngleTip.hide();
+         triangle.hide();
+        leftAngleTip.getLayer().draw();
+    });
+    group.add(leftAngleTip);
+    group.add(triangle);
+    group.add(circle);
+
+}
+
+function moveAngleTip (x1, x2, x) {
+    "use strict";
+    var variable = 0;
+    var k1 = x1 -x;
+    var k2 = x2 - x;
+    if (k1 >= 0 && k2 >=0) {
+        variable = Math.max((Math.min(x1,x2) - x)/2, 90);
+    } else if (k1<=0 && k2<=0) {
+        variable = Math.min(- x/2 + Math.max(x1,x2)/2, -4);
+    }
+    else {
+        variable = 0;
+    }
+    return variable;
+}
+
+function moveAngleTipY (y1,y2,y) {
+    "use strict";
+    var variable = 0;
+
+}
+
+
+
+function lineToLineIntersect(x1, y1,x2, y2, x3, y3, x4, y4){
+    "use strict";
+    var UBottom,Ua,Ub, interceptX, interceptY;
+    var i = {b:false, x:0, y:0};
+    UBottom = ((y4-y3)*(x2-x1))-((x4-x3)*(y2-y1));
+    if (UBottom !== 0) {
+        Ua = (((x4-x3)*(y1-y3))-((y4-y3)*(x1-x3)))/UBottom;
+        Ub = (((x2-x1)*(y1-y3))-((y2-y1)*(x1-x3)))/UBottom;
+        if ((Ua>=0) && (Ua<=1) && (Ub>=0) && (Ub<=1)) {
+            interceptX = x1+(Ua*(x2-x1));
+            interceptY = y1+(Ua*(y2-y1));
+            i.b = true;
+            i.x = interceptX;
+            i.y = interceptY;
+            return i;
+        }
+    }
+    return i;
+}
+
+
+
 function clearTrackingLines(canvasID) {
+    "use strict";
     var mystage = OrthoVariables.origCanvas[canvasID][2];
     var mytracking = mystage.get("#trackinglayer")[0];
     mytracking.removeChildren();
@@ -507,7 +688,8 @@ function clearTrackingLines(canvasID) {
 }
 
 function DrawTrackingLines(canvasID) {
-     var mystage = OrthoVariables.origCanvas[canvasID][2];
+    "use strict";
+    var mystage = OrthoVariables.origCanvas[canvasID][2];
     var mousepos = mystage.getMousePosition();
     var width =  mystage.getWidth()/ (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
     var height = mystage.getHeight()/ (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
@@ -542,50 +724,33 @@ function DrawTrackingLines(canvasID) {
 }
 
 function DrawShape(strid) {
+    "use strict";
     var id = getID(strid);
     var shapeid = OrthoVariables.line.id;
     var mystage = OrthoVariables.origCanvas[id][2];
     var mousepos = mystage.getMousePosition();
     if (mousepos !== undefined) {
         var myshapelayer = mystage.get("#shapelayer")[0];
-        if (OrthoVariables.line.prevline != null) {
-            myshapelayer.remove(OrthoVariables.line.prevline);
-            myshapelayer.remove(OrthoVariables.line.previnfotip);
+
+        if (OrthoVariables.line.prevline !== null) {
+            //myshapelayer.remove(OrthoVariables.line.prevline);
+            //myshapelayer.remove(OrthoVariables.line.previnfotip);
+            OrthoVariables.line.prevline.remove();
+            //OrthoVariables.line.previnfotip.remove();
         }
-//        var line = new Kinetic.Line({
-//            points:[
-//                {
-//                    x:OrthoVariables.line.startx,
-//                    y:OrthoVariables.line.starty
-//                },
-//                {
-//                    x:mousepos.x/OrthoVariables.scale,
-//                    y:mousepos.y/OrthoVariables.scale
-//                }
-//            ],
-//            stroke:"orange",
-//            strokeWidth:2,
-//            lineCap:'round',
-//            lineJoin:'round',
-//            detectionType:"pixel"
-//        });
-        var x1 = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
+       var x1 = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
         var y1 = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
-        var linepoints = [];
-        linepoints[0] = {x:OrthoVariables.line.startx, y:OrthoVariables.line.starty };
-        linepoints[1] = {x:x1, y:y1};
-        linepoints[2] = {x:x1 + 1, y:y1 + 1};
-        linepoints[3] = {x:OrthoVariables.line.startx + 1, y:OrthoVariables.line.starty + 1};
-        var line = new Kinetic.Polygon({
-            points:linepoints,
+       var line = new Kinetic.Line({
+           points: [{x:OrthoVariables.line.startx, y:OrthoVariables.line.starty },{x:x1, y:y1} ],
             fill:"orange",
             stroke:"orange",
-            strokeWidth:3,
+            strokeWidth:5,
             id:"line_"+shapeid
         });
 
-
-        var distance =  Math.round(10*EuclideanDistance(OrthoVariables.line.startx ,OrthoVariables.line.starty,x1, y1))/100;
+        var linegroup = new Kinetic.Group({id:"line_"+shapeid});
+        linegroup.add(line);
+        /*var distance =  Math.round(10*EuclideanDistance(OrthoVariables.line.startx ,OrthoVariables.line.starty,x1, y1))/100;
         var text = "Distance :\t " + distance + "cm \nHorizontal Angle:\t " + horizAngle(OrthoVariables.line.startx ,OrthoVariables.line.starty,x1, y1) + "°";
         var infotip = new Kinetic.Text({
             x: OrthoVariables.line.startx + Math.round((x1 - OrthoVariables.line.startx )/2) ,
@@ -604,19 +769,17 @@ function DrawShape(strid) {
             id:"infotip_"+shapeid,
             cornerRadius: 5
             //scale: [OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage],OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]]
-        });
+        });   */
 
 
         //var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
 
-        myshapelayer.add(line);
-        myshapelayer.add(infotip)
-        OrthoVariables.line.prevline = line;
-        OrthoVariables.line.previnfotip = infotip;
+        myshapelayer.add(linegroup);
+        //myshapelayer.add(infotip)
+        OrthoVariables.line.prevline = linegroup;
+        //OrthoVariables.line.previnfotip = infotip;
         //line.saveData();
-
         myshapelayer.draw();
-
     }
 }
 
@@ -630,12 +793,12 @@ function EuclideanDistance(x1,y1,x2,y2) {
 
 function horizAngle(x1,y1,x2,y2) {
     return Math.round(-Math.atan2(y2 - y1, x2-x1)*180/Math.PI);
-};
+}
 
 function SetonLine(strID) {
     var id = getID(strID);
     var line = OrthoVariables.line.prevline;
-    var infotip = OrthoVariables.line.previnfotip;
+    //var infotip = OrthoVariables.line.previnfotip;
 
     var mouseover_func = function(obj) {
         $("#pointer_" + id).removeClass().addClass("erasercursor");
@@ -654,22 +817,30 @@ function SetonLine(strID) {
         mytooltip.hide();
         mytooltip.getLayer().draw();
     };
+    line.on("mouseover", function () {
+        if (!OrthoVariables.isOverAngleCircle) {
+            mouseover_func(this);
+        }
+    });
+
+    //infotip.on("mouseover", function() { mouseover_func(this);});
 
 
-    line.on("mouseover", function () { mouseover_func(this); });
-    infotip.on("mouseover", function() { mouseover_func(this);});
+    line.on("mouseout", function () { mouseout_func(this,id); });
 
-
-    line.on("mouseout", function () { mouseout_func(this,id) });
-    infotip.on("mouseout", function() {mouseout_func(this,id)});
+    //infotip.on("mouseout", function() {mouseout_func(this,id)});
 
     line.on("click", function () {
         OrthoVariables.clickcatch = true;
         SetCursor(id);
         var mylayer = this.getLayer();
         var shapeid = this.getId().split('_')[1];
-        mylayer.remove(mylayer.get("#infotip_"+shapeid)[0]);
-        mylayer.remove(this);
+        //mylayer.remove();
+        //mylayer.get("#infotip_"+shapeid)[0].remove();
+        this.remove();
+        //console.log(mylayer.get("#line_"+shapeid)[0]);
+        //mylayer.get("#line_"+shapeid)[0].remove();
+        //mylayer.remove(this);
         mylayer.draw();
         var mystage = this.getStage();
         var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
@@ -677,7 +848,7 @@ function SetonLine(strID) {
         mytooltip.getLayer().draw();
     });
 
-    infotip.on ("click", function() {
+   /* infotip.on ("click", function() {
        OrthoVariables.clickcatch = true;
         SetCursor(id);
         var mylayer = this.getLayer();
@@ -690,7 +861,7 @@ function SetonLine(strID) {
         mytooltip.hide();
         mytooltip.getLayer().draw();
 
-    });
+    });*/
 }
 
 function SetCursor(id) {
@@ -716,6 +887,7 @@ function getBrOrCo(strID) {
 function displayFunctions() {
     $('#lesson').turn({duration:600});
     $('#lesson').turn('size', $('#content_wrap').width(), $(window).height() - OrthoVariables.HeightFromBottom);
+    //console.log("turn size:",$('#content_wrap').width());
     $('#lesson').turn('disable', OrthoVariables.disableturn);
     //for debuging
     //CurPage = 3; ShowPage();
@@ -730,13 +902,14 @@ function displayFunctions() {
         }).resize(function () {
             //$('body').prepend('<div>' + $('#content_wrap').width() + '</div>');
             var h = $(window).height() - OrthoVariables.HeightFromBottom;
-            h = (h< 400) ? 400 : h;
+            h = (h< 460) ? 460 : h;
 
             var w = $('#content_wrap').width();
             w = (w< 760) ? 760 : w;
-            console.log(w);
-             CheckResizeLimits();
+            CheckResizeLimits();
             $('#lesson').turn('size', w, h);
+            //console.log("after resize limits",w,h);
+            
         });
 
     $('#lesson').bind('turning', function (e, page, pageObj) {
@@ -747,15 +920,14 @@ function displayFunctions() {
         $("#NextTest").data("fire", true);
         $("#PreviousTest").data("fire", true);
 
-        OrthoVariables.CurPage = page % 2 == 0 && page != 1 ? page + 1 : page;
+        OrthoVariables.CurPage = page % 2 === 0 && page !== 1 ? page + 1 : page;
         var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages) ? -1 : ( Math.floor(OrthoVariables.CurPage / 2)) - 1;
         if (OrthoVariables.lessonAnswers[lessonpage] === undefined) {
             OrthoVariables.lessonAnswers[lessonpage] = {
                 quiz:[],
                 hotspots:[]
-            }
+            };
         }
-        ;
         OrthoVariables.lessonPage = lessonpage;
         ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
         LoadImages((OrthoVariables.lessonPage + 1).toString());
@@ -813,7 +985,10 @@ function CheckResizeLimits(page) {
     if (page > -1) {
         var h = $(window).height() - OrthoVariables.HeightFromBottom;
         var w = Math.round($('#content_wrap').width()/2);
-        w = (w< 250) ? 250 : w;
+        //from the padding
+        w -= 60;
+        w = (w< 310) ? 310 : w;
+        //console.log("w,h",w,h);
         var mypage = OrthoVariables.LessonData.Page[page];
         var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
 
@@ -825,9 +1000,9 @@ function CheckResizeLimits(page) {
             var ratio = cW / cH;
             var nH = cH;
             var nW = cW;
-            if (cH > (h - 80)) {
-                nH = h - 80;
-                nH = (nH <300 ) ? 300 : nH;
+            if (cH > (h - 80-30)) {
+                nH = h - 80-30;
+                nH = (nH <330 ) ? 330 : nH;
                 nW = ratio * nH;
                 if (nW> w -20) {
                     nW = w - 20;
@@ -843,15 +1018,16 @@ function CheckResizeLimits(page) {
                 nH = nW /ratio;
             }*/
             resize(id, nH, nW);
+            //console.log(nW,nH);
         }
         else {
             for (var wid in OrthoVariables.LessonData.Page[page].Widget) {
                 if (OrthoVariables.LessonData.Page[page].Widget[wid].type === "video") {
-                    var w = Math.round($('#content_wrap').width()/2)-20;
+                    w = Math.round($('#content_wrap').width()/2)-20;
                     var maxh = $(window).height() - OrthoVariables.HeightFromBottom;
                     var n_w = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).width();
                     var n_h = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).height();
-                    var h = Math.round(w*(n_h/n_w));
+                    h = Math.round(w*(n_h/n_w));
                     if (h > maxh - 5 ) {
                         h = maxh - 5;
                         w = Math.round(h*(n_w/n_h));
@@ -882,10 +1058,10 @@ function resize(id, newHeight, newWidth) {
     OrthoVariables.origCanvas[id][2].draw();
     $("#pointer_" + id).css("height", newHeight).css("width", newWidth);
     $("#container_" + id).css("top", -newHeight);
-    $("#1_" + id).css("width", newWidth).css("top",newHeight);
-    $("#2_" + id).css("width", newWidth).css("top",newHeight);
-    $("#slider_b_" + id).css("left", Math.max(newWidth,380) - 165);
-    $("#slider_c_" + id).css("left", Math.max(newWidth,380) - 115);
+    $("#1_" + id).css("width", newWidth).css("top",newHeight + 30);
+    $("#2_" + id).css("width", newWidth).css("top",newHeight + 30);
+    $("#slider_b_" + id).css("left", Math.max(newWidth,380) - 215);
+    $("#slider_c_" + id).css("left", Math.max(newWidth,380) - 170);
     $("#pointer_" + id).parent().css("height", newHeight);
     if (OrthoVariables.zoomPage[OrthoVariables.lessonPage] !== 1) {
         $("#pointer_"+id).css("top","0px").css("left","0px");
@@ -1470,13 +1646,11 @@ function ApplyQuizResult(data) {
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
-        ShowMsg("Your Answer is Correct!", "highlight");
         myanswer = "correct";
-        $("#Page" + (OrthoVariables.CurPage - 1)).css("background", "url('img/bg_correct.png')");
+        applyCorrectCue(OrthoVariables.CurPage - 1);
     } else {
-        ShowMsg("Your Answer is Wrong!", "alert");
-        $("#Page" + (OrthoVariables.CurPage - 1)).css("background", "url('img/bg_wrong.png')");
         myanswer = "wrong";
+        applyWrongCue(OrthoVariables.CurPage - 1);
     }
     var length = data.PaintShapes.length;
     if (length > 0) {
@@ -1578,15 +1752,12 @@ function applyInputResult(data) {
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"];
     if (data.Answer === "correct") {
-        ShowMsg("Your Answer is Correct!", "highlight");
         myanswer = "correct";
-        $("#Page" + (OrthoVariables.CurPage - 1)).css("background", "url('img/bg_correct.png')")
-
+        applyCorrectCue(OrthoVariables.CurPage - 1);
     }
     else {
-        ShowMsg("Your Answer is Wrong!", "alert");
         myanswer = "wrong";
-        $("#Page" + (OrthoVariables.CurPage - 1)).css("background", "url('img/bg_wrong.png')");
+        applyWrongCue(OrthoVariables.CurPage - 1);
     }
     PageTracking(myanswer, blocked);
     CheckReadyNextText(myanswer, blocked);
@@ -1596,20 +1767,31 @@ function applyInputResult(data) {
     }
 }
 
+function applyCorrectCue(id, msg) {
+    msg = msg || "Your Answer is Correct!";
+    ShowMsg(msg, "highlight");
+    $("#Page" + id).css("background", "url('img/bg_correct.png')").css('text-shadow','none');
+}
+
+function applyWrongCue(id,msg) {
+    msg = msg || "Your Answer is Wrong!";
+    ShowMsg(msg, "alert");
+    $("#Page" + id).css("background", "url('img/bg_wrong.png')").css('text-shadow','none');
+
+
+}
+
 
 function ApplyHotspotResult(data) {
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
-        ShowMsg("Your Answer is Correct!", "highlight");
         myanswer = "correct";
-        $("#Page" + (OrthoVariables.CurPage - 1)).css("background", "url('img/bg_correct.png')")
-
+        applyCorrectCue(OrthoVariables.CurPage - 1);
     }
     else {
-        ShowMsg("Your Answer is Wrong!", "alert");
         myanswer = "wrong";
-        $("#Page" + (OrthoVariables.CurPage - 1)).css("background", "url('img/bg_wrong.png')");
+        applyWrongCue(OrthoVariables.CurPage - 1);
     }
     var length = data.PaintShapes.length;
     //var fillcolor = (myanswer==="correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
