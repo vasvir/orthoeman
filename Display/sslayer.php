@@ -2,8 +2,8 @@
  ob_start();
 session_start();
 require_once('fb.php');
-echo dirname('../').'/lib.php';
-require_once(dirname('../').'/lib.php');
+echo dirname('../lib.php').'/lib.php';
+require_once(dirname('../lib.php').'/lib.php');
 
 
 echo "0";
