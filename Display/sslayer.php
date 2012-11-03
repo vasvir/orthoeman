@@ -1,7 +1,8 @@
 <?php
  ob_start();
 require_once('fb.php');
-require_once('../lib.php');
+//require_once('../lib.php');
+require_once(dirname(__FILE__).'/lib.php');
 session_start();
 
 
