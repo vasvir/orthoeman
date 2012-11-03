@@ -2,11 +2,8 @@
  ob_start();
 //session_start();
 require_once('Display/fb.php');
-//echo dirname(dirname(dirname('../lib.php'))).'/config.php';
-//require_once(dirname(dirname(dirname('../lib.php'))).'/config.php');
-require_once('../../config.php');
-//echo dirname('../lib.php').'/lib.php';
-require_once('lib.php');
+require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(__FILE__).'/lib.php');
 
 
 $action = $_GET["action"];
@@ -358,8 +355,9 @@ function oldGetXMLData() {
 
 function getXMLData(){
 	if (isset($_GET['old'])) return oldGetXMLData();
-	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
-	echo $orthoeman_id;
+	//$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
+	//echo $orthoeman_id;
+	$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
 	$resource = get_database_data($orthoeman_id,-1);
 	echo ($resource->data);
 	//return simplexml_load_file(filename);
