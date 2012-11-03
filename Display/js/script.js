@@ -78,7 +78,7 @@ $(document).ready(function () {
     OrthoVariables.disableturn = OrthoVariables.InitialQueryString["DisablePaging"] || OrthoVariables.disableturn;
     console.log("id:" + OrthoVariables.InitialQueryString["id"]);
     $.getJSON(OrthoVariables.JsonUrl, {
-        "action":1, "id":OrthoVariables.InitialQueryString["id"]
+        "action":1, "orthoeman_id":OrthoVariables.InitialQueryString["id"]
 
     }, function (data) {
         OrthoVariables.LessonData = data;
