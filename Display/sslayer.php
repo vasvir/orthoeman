@@ -10,7 +10,6 @@ $action = $_GET["action"];
 switch ($action) {
 	case "1" :
 		//$lessonid = $_GET["lessonid"];
-		echo "Here after swith";
 		$xml = getXMLData();
 		$displaydata = GetTemplateData($xml);
 		//print_r($displaydata);
@@ -353,12 +352,14 @@ function oldGetXMLData() {
 }
 
 function getXMLData(){
-	echo "here in getXMLData";
 	if (isset($_GET['old'])) return oldGetXMLData();
+	echo "1";
 	require_once('../lib.php');
+	echo "2";
 	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
-	$resource = get_database_data($orthoeman_id,-1);
+	echo "3";
 	echo $orthoeman_id;
+	$resource = get_database_data($orthoeman_id,-1);
 	echo $resource;
 	//return simplexml_load_file(filename);
 	return $resource->data;
