@@ -76,6 +76,7 @@ $(document).ready(function () {
     };
     OrthoVariables.InitialQueryString = getUrlVars();
     OrthoVariables.disableturn = OrthoVariables.InitialQueryString["DisablePaging"] || OrthoVariables.disableturn;
+    console.log("id:" + OrthoVariables.InitialQueryString["id"]);
     $.getJSON(OrthoVariables.JsonUrl, {
         "action":1, "id":OrthoVariables.InitialQueryString["id"]
 
@@ -111,7 +112,7 @@ function getUrlVars() {
     var hashes = window.location.href.replace("#", "").slice(window.location.href.indexOf('?') + 1).split('&');
     for (var i = 0; i < hashes.length; i++) {
         hash = hashes[i].split('=');
-        if (hash[0] === "name" || hash[0] === "DisablePaging") {
+        if (hash[0] === "name" || hash[0] ==="id" || hash[0] === "DisablePaging") {
             vars.push(hash[0]);
             vars[hash[0]] = hash[1];
         }
