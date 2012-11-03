@@ -10,7 +10,7 @@ $action = $_GET["action"];
 switch ($action) {
 	case "1" :
 		//$lessonid = $_GET["lessonid"];
-		$xml = GetXMLData();
+		$xml = getXMLData();
 		$displaydata = GetTemplateData($xml);
 		//print_r($displaydata);
 		echo json_encode($displaydata);
@@ -43,7 +43,7 @@ function GetAnswer() {
 
 function GetQuizAnswer() {
     $return = array();
-	$xml = GetXMLData();
+	$xml = getXMLData();
 	$useranswer = $_GET["answer"];
 	$Page = $_GET["Page"];
 	$xmlquizanswer = GetQuizXMLData($Page, $xml);
@@ -66,7 +66,7 @@ function GetQuizAnswer() {
 
 function getInputAnswer() {
     $return = array();
-    $xml = GetXMLData();
+    $xml = getXMLData();
     $myvalue = intval((int)$_GET["value"]);
     $Page = $_GET["Page"];
     foreach ($xml->page[intval($Page)]->widget as $key=> $value) {
@@ -85,7 +85,7 @@ function GetHotspotsAnswer() {
 	$useranswer = isset($_GET["answer"]) ? $_GET["answer"] : array();
 	$return = array();
 	$Page = $_GET["Page"];
-    $xml = GetXMLData();
+    $xml = getXMLData();
     $myimg = GetHotSpotImage($Page,$xml);
     $result = true;
     $burnded = array();
@@ -345,10 +345,18 @@ function GetQuizXMLData($PageID, $xml) {
     return $answer;
 }
 
-function GetXMLData() {
+function oldGetXMLData() {
 	$filename = $_GET["name"];
-    $xml = simplexml_load_file("../Content/XML/".$filename.".xml");
+    //$xml = simplexml_load_file("../Content/XML/".$filename.".xml");
 	return $xml;
+}
+
+function getXMLData(){
+	if (isset($_GET['old'])) return oldGetXMLData();
+	require_once('../lib.php');
+	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
+	$resource = get_database_data($orthoeman_id,-1);
+	return simplexml_load_file(filename)
 }
 
 function GetTemplateData($data) {
