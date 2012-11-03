@@ -59,10 +59,10 @@ Task list:
 Immediate:
 	Image:
 		enable tracking checkbox
-		mmPerPixel textfield
 		showRegions checbox
 
-	Blocking /Informational -> mark as hotspot
+	Blocking /Informational -> mark as hotspot 
+		enable draw hotspot - force user to detect
 
 	on save delete non used resources
 
