@@ -356,7 +356,8 @@ function getXMLData(){
 	require_once('../lib.php');
 	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
 	$resource = get_database_data($orthoeman_id,-1);
-	return simplexml_load_file(filename);
+	//return simplexml_load_file(filename);
+	return $resource->data;
 }
 
 function GetTemplateData($data) {
