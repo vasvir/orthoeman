@@ -4,7 +4,7 @@ session_start();
 require_once('fb.php');
 //echo dirname(dirname(dirname('../lib.php'))).'/config.php';
 //require_once(dirname(dirname(dirname('../lib.php'))).'/config.php');
-require_once('../../../../config.php');
+require_once('../../../config.php');
 echo dirname('../lib.php').'/lib.php';
 require_once(dirname('../lib.php').'/lib.php');
 
