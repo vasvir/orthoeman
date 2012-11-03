@@ -1,7 +1,7 @@
 <?php
  ob_start();
 //session_start();
-require_once('fb.php');
+require_once('Display/fb.php');
 //echo dirname(dirname(dirname('../lib.php'))).'/config.php';
 //require_once(dirname(dirname(dirname('../lib.php'))).'/config.php');
 require_once('../../config.php');
