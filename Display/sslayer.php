@@ -1,6 +1,7 @@
 <?php
  ob_start();
 require_once('fb.php');
+require_once('../lib.php');
 session_start();
 
 
@@ -354,7 +355,7 @@ function oldGetXMLData() {
 function getXMLData(){
 	if (isset($_GET['old'])) return oldGetXMLData();
 	echo "1";
-	require_once('../lib.php');
+	
 	echo "2";
 	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
 	echo "3";
