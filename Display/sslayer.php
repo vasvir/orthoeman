@@ -9,7 +9,6 @@ require_once('../../../config.php');
 require_once(dirname('../lib.php').'/lib.php');
 
 
-echo "0";
 $action = $_GET["action"];
 // 1- transform xml to json
 
@@ -360,6 +359,7 @@ function oldGetXMLData() {
 function getXMLData(){
 	if (isset($_GET['old'])) return oldGetXMLData();
 	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
+	echo $orthoeman_id;
 	$resource = get_database_data($orthoeman_id,-1);
 	echo ($resource->data);
 	//return simplexml_load_file(filename);
