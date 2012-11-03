@@ -367,7 +367,7 @@ function getXMLData(){
     $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
 	$resource = get_database_data($orthoeman->id,-1);
 
-	echo ($resource->data);
+	print_r($resource->data);
 	//return simplexml_load_file(filename);
 	return $resource->data;
 }
