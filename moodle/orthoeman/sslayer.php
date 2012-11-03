@@ -1,12 +1,9 @@
 <?php
  ob_start();
 //session_start();
-require_once('fb.php');
-//echo dirname(dirname(dirname('../lib.php'))).'/config.php';
-//require_once(dirname(dirname(dirname('../lib.php'))).'/config.php');
-require_once('../../config.php');
-//echo dirname('../lib.php').'/lib.php';
-require_once('lib.php');
+require_once('Display/fb.php');
+require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(__FILE__).'/lib.php');
 
 
 $action = $_GET["action"];
@@ -358,9 +355,15 @@ function oldGetXMLData() {
 
 function getXMLData(){
 	if (isset($_GET['old'])) return oldGetXMLData();
-	$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
-	echo $orthoeman_id;
-	$resource = get_database_data($orthoeman_id,-1);
+	//$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
+	//echo $orthoeman_id;
+	global $DB;
+	$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
+	$cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
+    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
+	$resource = get_database_data($orthoeman->id,-1);
+
 	echo ($resource->data);
 	//return simplexml_load_file(filename);
 	return $resource->data;
