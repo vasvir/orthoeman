@@ -357,6 +357,7 @@ function getXMLData(){
 	if (isset($_GET['old'])) return oldGetXMLData();
 	//$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
 	//echo $orthoeman_id;
+	global $DB;
 	$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
 	$cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
