@@ -319,11 +319,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			}
 
 			public static String getIdMapString(Map<String, String> id_map) {
+				if (id_map.isEmpty()) {
+					return "";
+				}
 				final StringBuilder sb = new StringBuilder();
 				for (final Map.Entry<String, String> entry : id_map.entrySet()) {
 					sb.append(entry.getKey() + ":" + entry.getValue() + "|");
 				}
-				return sb.toString();
+				return sb.substring(0, sb.length() - 1);
 			}
 
 			public static Map<String, String> getVideoIdMap(String response_text) {
