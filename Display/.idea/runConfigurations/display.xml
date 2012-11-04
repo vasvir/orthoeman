@@ -1,9 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="display" type="PhpWebAppRunConfigurationType" factoryName="PHP Web Application" browser="FIREFOX" server_name="local web server iis" start_url="/display/sslayer.php?action=1">
-    <RunnerSettings RunnerId="PhpRunner" />
-    <RunnerSettings RunnerId="PhpWebAppDebugRunner" />
-    <ConfigurationWrapper RunnerId="PhpRunner" />
-    <ConfigurationWrapper RunnerId="PhpWebAppDebugRunner" />
-    <method />
-  </configuration>
-</component>
