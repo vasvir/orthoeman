@@ -14,14 +14,12 @@ import org.orthoeman.shared.Cross;
 import org.orthoeman.shared.Drawing;
 import org.orthoeman.shared.Ellipse;
 import org.orthoeman.shared.Lesson;
-import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
 import org.orthoeman.shared.Line;
 import org.orthoeman.shared.Point;
 import org.orthoeman.shared.Polygon;
 import org.orthoeman.shared.Rectangle;
 import org.orthoeman.shared.Drawing.Type;
 import org.orthoeman.shared.Lesson.Page;
-import org.orthoeman.shared.Lesson.Page.QuizItem;
 import org.orthoeman.shared.Zoom;
 
 import gwtupload.client.IUploadStatus.Status;
@@ -90,9 +88,9 @@ public class AuthoringTool implements EntryPoint {
 	private static final double eraseDistanceThreshold = 5;
 
 	private Lesson lesson = null;
-	private Lesson.Page currentPage = null;
+	private Page currentPage = null;
 
-	private Map<Lesson.Page, Button> page_button_map = new HashMap<Lesson.Page, Button>();
+	private Map<Page, Button> page_button_map = new HashMap<Page, Button>();
 	private Button up_b;
 	private Button down_b;
 
@@ -160,11 +158,11 @@ public class AuthoringTool implements EntryPoint {
 
 	public class ImageItemOnLoadPreloadedImageHandler implements
 			OnLoadPreloadedImageHandler {
-		private final Lesson.Page.ImageItem image_item;
+		private final Page.ImageItem image_item;
 		private final boolean clear_drawings;
 
-		public ImageItemOnLoadPreloadedImageHandler(
-				Lesson.Page.ImageItem image_item, boolean clear_drawings) {
+		public ImageItemOnLoadPreloadedImageHandler(Page.ImageItem image_item,
+				boolean clear_drawings) {
 			this.image_item = image_item;
 			this.clear_drawings = clear_drawings;
 		}
@@ -190,6 +188,33 @@ public class AuthoringTool implements EntryPoint {
 				redrawCanvas();
 			}
 			setButtonsEnabled(image_edit_buttons, true);
+		}
+	};
+
+	public class SetupVideoPlayerHandler {
+		public void setupVideoPlayer(Page.VideoItem video_item,
+				Map<String, String> id_map) {
+			final Page current_page = getCurrentPage();
+			if (current_page != null
+					&& current_page.getVideoItem() == video_item) {
+				Log.debug("CurrentPage: " + current_page
+						+ " with videoItem(): " + current_page.getVideoItem()
+						+ " video_item: " + video_item);
+				final RootPanel videoPlayerContainer = RootPanel
+						.get("videoPlayerContainer");
+				final StringBuilder sb = new StringBuilder();
+				sb.append("<video controls>"); // poster="image_url
+				for (final Map.Entry<String, String> entry : id_map.entrySet()) {
+					final String url = Lesson.getResourceURL(orthoeman_id,
+							entry.getKey());
+					final String content_type = entry.getValue();
+					sb.append("<source src='" + url + "' type='" + content_type
+							+ "'/>");
+				}
+				sb.append("<p class='serverResponseLabelError'>Cannot find valid content / codec combination.</p>");
+				sb.append("</video>");
+				videoPlayerContainer.getElement().setInnerHTML(sb.toString());
+			}
 		}
 	};
 
@@ -295,7 +320,7 @@ public class AuthoringTool implements EntryPoint {
 		final Page page = getCurrentPage();
 		if (page == null
 				|| !Arrays.asList(page.getItemTypeCombination()).contains(
-						Lesson.Page.Item.Type.IMAGE)) {
+						Page.Item.Type.IMAGE)) {
 			Log.trace("Image does not exist. Nothing to redraw. Exiting...");
 			return;
 		}
@@ -439,12 +464,12 @@ public class AuthoringTool implements EntryPoint {
 		combobox.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				final Lesson.Page page = getCurrentPage();
+				final Page page = getCurrentPage();
 				page.setItemTypeCombination(getCurrentItemTypeCombination());
 				setCurrentPage(page);
 			}
 		});
-		for (final Lesson.Page.Item.Type[] item_type_combination : Lesson.Page.validItemTypeCombinations) {
+		for (final Page.Item.Type[] item_type_combination : Page.validItemTypeCombinations) {
 			combobox.addItem(getComboboxOptionText(item_type_combination));
 		}
 
@@ -496,7 +521,7 @@ public class AuthoringTool implements EntryPoint {
 		add_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				final Lesson.Page page = new Lesson.Page("New Page");
+				final Page page = new Page("New Page");
 				lesson.add(page);
 				addPageButton(page);
 				setCurrentPage(page);
@@ -507,10 +532,9 @@ public class AuthoringTool implements EntryPoint {
 		remove_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				final Lesson.Page page = getCurrentPage();
+				final Page page = getCurrentPage();
 
-				final Lesson.Page new_page = findCurrentItemAfterRemove(lesson,
-						page);
+				final Page new_page = findCurrentItemAfterRemove(lesson, page);
 
 				lesson.remove(page);
 				removePageButton(page);
@@ -1230,7 +1254,7 @@ public class AuthoringTool implements EntryPoint {
 				.addValueChangeHandler(new ValueChangeHandler<String>() {
 					@Override
 					public void onValueChange(ValueChangeEvent<String> event) {
-						final RangeQuizItem range_quiz_item = getCurrentPage()
+						final Page.RangeQuizItem range_quiz_item = getCurrentPage()
 								.getRangeQuizItem();
 						double min = range_quiz_item.getMin();
 						try {
@@ -1248,7 +1272,7 @@ public class AuthoringTool implements EntryPoint {
 				.addValueChangeHandler(new ValueChangeHandler<String>() {
 					@Override
 					public void onValueChange(ValueChangeEvent<String> event) {
-						final RangeQuizItem range_quiz_item = getCurrentPage()
+						final Page.RangeQuizItem range_quiz_item = getCurrentPage()
 								.getRangeQuizItem();
 						double max = range_quiz_item.getMax();
 						try {
@@ -1316,7 +1340,9 @@ public class AuthoringTool implements EntryPoint {
 					updatePages();
 
 					if (lesson.isEmpty()) {
-						lesson.add(new Lesson.Page());
+						final Page page = new Page();
+						lesson.add(page);
+						addPageButton(page);
 					}
 					setCurrentPage(lesson.get(0));
 
@@ -1449,7 +1475,7 @@ public class AuthoringTool implements EntryPoint {
 		return RootPanel.get("pageContainer");
 	}
 
-	private void addPageButton(final Lesson.Page page) {
+	private void addPageButton(final Page page) {
 		final FlowPanel p = new FlowPanel();
 		p.getElement().getStyle().setBorderWidth(12, Unit.PX);
 		p.getElement().getStyle().setBorderColor("transparent");
@@ -1458,7 +1484,7 @@ public class AuthoringTool implements EntryPoint {
 		final Button button = new Button(page.getTitle());
 		button.setWidth("100%");
 
-		page.addTitleChangedListener(new Lesson.Page.TitleChangedListener() {
+		page.addTitleChangedListener(new Page.TitleChangedListener() {
 			@Override
 			public void titleChanged(String title) {
 				button.setText(title);
@@ -1478,7 +1504,7 @@ public class AuthoringTool implements EntryPoint {
 		page_button_map.put(page, button);
 	}
 
-	private void removePageButton(Lesson.Page page) {
+	private void removePageButton(Page page) {
 		final Button button = page_button_map.get(page);
 		getPageButtonContainer().remove(button.getParent());
 		page_button_map.remove(page);
@@ -1487,12 +1513,12 @@ public class AuthoringTool implements EntryPoint {
 	private void updatePages() {
 		getPageButtonContainer().clear();
 		page_button_map.clear();
-		for (final Lesson.Page page : lesson) {
+		for (final Page page : lesson) {
 			addPageButton(page);
 		}
 	}
 
-	private Lesson.Page getCurrentPage() {
+	private Page getCurrentPage() {
 		return currentPage;
 	}
 
@@ -1502,7 +1528,7 @@ public class AuthoringTool implements EntryPoint {
 		down_b.setEnabled(index != count - 1);
 	}
 
-	private void updateUpDownButtons(Lesson.Page page) {
+	private void updateUpDownButtons(Page page) {
 		if (page == null) {
 			up_b.setEnabled(false);
 			down_b.setEnabled(false);
@@ -1514,7 +1540,7 @@ public class AuthoringTool implements EntryPoint {
 						.getParent()), page_button_container.getWidgetCount());
 	}
 
-	private void setCurrentPage(Lesson.Page page) {
+	private void setCurrentPage(Page page) {
 		this.currentPage = page;
 
 		// resets user drawing requests
@@ -1541,7 +1567,7 @@ public class AuthoringTool implements EntryPoint {
 
 		// Log.trace("Where am I: ", new Exception("Stacktrace"));
 		title_tb.setText(page.getTitle());
-		for (final Lesson.Page.Item.Type type : itemTypeCombination) {
+		for (final Page.Item.Type type : itemTypeCombination) {
 			switch (type) {
 			case TEXT:
 				getTextContainer().setVisible(true);
@@ -1558,7 +1584,7 @@ public class AuthoringTool implements EntryPoint {
 				quizContainer.setVisible(true);
 				final RootPanel quizAnswerContainer = getQuizAnswerContainer();
 				quizAnswerContainer.clear();
-				final QuizItem quiz_item = page.getQuizItem();
+				final Page.QuizItem quiz_item = page.getQuizItem();
 				quiz_text_area.setText(quiz_item.getText());
 				for (final Integer id : quiz_item.getAnswerMap().keySet()) {
 					quizAnswerContainer.add(new QuizAnswer(quiz_item, id));
@@ -1566,7 +1592,8 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			case RANGE_QUIZ:
 				rangeQuizContainer.setVisible(true);
-				final RangeQuizItem range_quiz_item = page.getRangeQuizItem();
+				final Page.RangeQuizItem range_quiz_item = page
+						.getRangeQuizItem();
 				range_quiz_text_area.setText(range_quiz_item.getText());
 				range_quiz_min_tb.setText(range_quiz_item.getMin() + "");
 				range_quiz_max_tb.setText(range_quiz_item.getMax() + "");
@@ -1603,13 +1630,12 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static String getComboboxOptionText(
-			Lesson.Page.Item.Type[] itemTypeCombination) {
+			Page.Item.Type[] itemTypeCombination) {
 		return itemTypeCombination[0].getName() + itemTypeSeparator
 				+ itemTypeCombination[1].getName();
 	}
 
-	private int getComboboxOptionIndex(
-			Lesson.Page.Item.Type[] itemTypeCombination) {
+	private int getComboboxOptionIndex(Page.Item.Type[] itemTypeCombination) {
 		final String option = getComboboxOptionText(itemTypeCombination);
 		final int total = combobox.getItemCount();
 		for (int i = 0; i < total; i++)
@@ -1618,12 +1644,12 @@ public class AuthoringTool implements EntryPoint {
 		return -1;
 	}
 
-	private Lesson.Page.Item.Type[] getCurrentItemTypeCombination() {
+	private Page.Item.Type[] getCurrentItemTypeCombination() {
 		final String value = combobox.getItemText(combobox.getSelectedIndex());
 		final String[] type_names_a = value.split(itemTypeSeparator);
-		final Lesson.Page.Item.Type item1_type = Lesson.Page.Item.Type
+		final Page.Item.Type item1_type = Page.Item.Type
 				.getTypeByName(type_names_a[0]);
-		final Lesson.Page.Item.Type item2_type = Lesson.Page.Item.Type
+		final Page.Item.Type item2_type = Page.Item.Type
 				.getTypeByName(type_names_a[1]);
 		return new Page.Item.Type[] { item1_type, item2_type };
 	}
@@ -1824,8 +1850,7 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private void putResource(final ResourceType resource_type,
-			final String data, final Page.ResourceItem item,
-			final ProgressDialogBox pd) {
+			final String data, final Page.Item item, final ProgressDialogBox pd) {
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
 				"../put_resource.php?id=" + orthoeman_id + "&type="
 						+ resource_type);
@@ -1849,7 +1874,8 @@ public class AuthoringTool implements EntryPoint {
 							+ response_text);
 					if (resource_type == ResourceType.IMAGE) {
 						final Page.ImageItem image_item = (Page.ImageItem) item;
-						final String id = getImageId(response_text);
+						final String id = Page.ImageItem
+								.getImageIdString(response_text);
 						image_item.setId(id);
 						image_item.setImage(new PreloadedImage(Lesson
 								.getResourceURL(orthoeman_id, id),
@@ -1858,7 +1884,10 @@ public class AuthoringTool implements EntryPoint {
 						setButtonsEnabled(image_edit_buttons, true);
 					} else if (resource_type == ResourceType.VIDEO) {
 						final Page.VideoItem video_item = (Page.VideoItem) item;
-						video_item.setURL(data);
+						final Map<String, String> id2ContentTypeMap = Page.VideoItem
+								.getVideoIdMap(response_text);
+						video_item.setIdMap(id2ContentTypeMap,
+								new SetupVideoPlayerHandler());
 					}
 					pd.hide();
 				}
@@ -1878,9 +1907,5 @@ public class AuthoringTool implements EntryPoint {
 			Log.error(error_msg, e);
 			Window.alert(error_msg);
 		}
-	}
-
-	public static String getImageId(String response_text) {
-		return response_text.split(":")[0];
 	}
 }

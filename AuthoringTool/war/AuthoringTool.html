@@ -111,15 +111,12 @@
 	
 				<div class="cell fill_x">
 					<div id="pageContainer" class="scroll">
-						<div class="noborder fill_x">
-							<div style="float: left;" class="gwt-Label"><h2 style="padding: 0; margin: 0;">Title: </h2></div>
-							<div style="overflow: auto;">
-								<input id="titleTextBox" type="text" class="gwt-TextBox noborder fill_x"
-									title="Leave it blank if there is no need for a title in this page"/>
-							</div>
+						<div>
+							<big><big>Title: </big></big>
+							<input id="titleTextBox" type="text" size="25" class="gwt-TextBox"
+								title="Leave it blank if there is no need for a title in this page"/>
+							<big><big>Type:</big></big><select id="itemCombobox" class="gwt-ListBox"></select>
 						</div>
-
-						<h2 class="inline">Page Type:</h2><select id="itemCombobox" class="gwt-ListBox"></select>
 
 						<div id="textContainer" class="noborder fill_x">
 							<div style="float: left;"><h3>Text: </h3></div>
@@ -198,6 +195,7 @@
 
 						<div id="videoContainer">
 							<h3 class="inline">Video: </h3><div id="videoUploaderContainer"></div>
+							<div id="videoPlayerContainer"></div>
 						</div>
 						
 						<div id="quizContainer" class="noborder center fill_x">
