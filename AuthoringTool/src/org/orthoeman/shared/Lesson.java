@@ -295,6 +295,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			public DrawingList getDrawings() {
 				return drawings;
 			}
+
+			public static String getImageIdString(String response_text) {
+				return response_text.split(":")[0];
+			}
 		}
 
 		public static class VideoItem extends Item {

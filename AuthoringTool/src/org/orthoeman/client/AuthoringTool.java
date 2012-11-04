@@ -1874,7 +1874,8 @@ public class AuthoringTool implements EntryPoint {
 							+ response_text);
 					if (resource_type == ResourceType.IMAGE) {
 						final Page.ImageItem image_item = (Page.ImageItem) item;
-						final String id = getImageId(response_text);
+						final String id = Page.ImageItem
+								.getImageIdString(response_text);
 						image_item.setId(id);
 						image_item.setImage(new PreloadedImage(Lesson
 								.getResourceURL(orthoeman_id, id),
@@ -1906,9 +1907,5 @@ public class AuthoringTool implements EntryPoint {
 			Log.error(error_msg, e);
 			Window.alert(error_msg);
 		}
-	}
-
-	public static String getImageId(String response_text) {
-		return response_text.split(":")[0];
 	}
 }
