@@ -59,11 +59,12 @@ Task list:
 Immediate:
 	Image:
 		enable tracking checkbox
-		mmPerPixel textfield
 		showRegions checbox
 
-	Blocking /Informational -> mark as hotspot
+	Blocking /Informational -> mark as hotspot 
+		enable draw hotspot - force user to detect
 
 	on save delete non used resources
 
 
+	PHP: On duplication I get Fatal error: Class 'backup_orthoeman_activity_task' not found in /usr/share/moodle/backup/util/factories/backup_factory.class.php on line 107

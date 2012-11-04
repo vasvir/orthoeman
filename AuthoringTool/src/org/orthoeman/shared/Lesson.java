@@ -19,6 +19,7 @@ import org.orthoeman.shared.Lesson.Page.Item.Type;
 import org.orthoeman.shared.Lesson.Page.QuizItem;
 import org.orthoeman.shared.Lesson.Page.QuizItem.Answer;
 import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
+import org.orthoeman.shared.Lesson.Page.VideoItem;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.xml.client.Document;
@@ -126,23 +127,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			}
 		}
 
-		public static class ResourceItem extends Item {
-			private String url;
-
-			public ResourceItem(Type type) {
-				super(type);
-			}
-
-			public String getURL() {
-				return url;
-			}
-
-			public void setURL(String url) {
-				this.url = url;
-			}
-		}
-
-		public static class ImageItem extends ResourceItem {
+		public static class ImageItem extends Item {
 			public static class DrawingList extends ArrayList<Drawing> {
 				private final List<List<Point>> intersection_point_lists = new ArrayList<List<Point>>();
 				private final Map<Point, Line[]> intersection_point_lines_map = new HashMap<Point, Line[]>();
@@ -310,11 +295,45 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			public DrawingList getDrawings() {
 				return drawings;
 			}
+
+			public static String getImageIdString(String response_text) {
+				return response_text.split(":")[0];
+			}
 		}
 
-		public static class VideoItem extends ResourceItem {
+		public static class VideoItem extends Item {
+			private Map<String, String> id_map;
+
 			public VideoItem() {
 				super(Type.VIDEO);
+			}
+
+			public Map<String, String> getIdMap() {
+				return id_map;
+			}
+
+			public void setIdMap(Map<String, String> id_map,
+					AuthoringTool.SetupVideoPlayerHandler video_player_handler) {
+				this.id_map = id_map;
+				video_player_handler.setupVideoPlayer(this, id_map);
+			}
+
+			public static String getIdMapString(Map<String, String> id_map) {
+				final StringBuilder sb = new StringBuilder();
+				for (final Map.Entry<String, String> entry : id_map.entrySet()) {
+					sb.append(entry.getKey() + ":" + entry.getValue() + "|");
+				}
+				return sb.toString();
+			}
+
+			public static Map<String, String> getVideoIdMap(String response_text) {
+				final Map<String, String> result = new HashMap<String, String>();
+				final String[] response_text_a = response_text.split("\\|");
+				for (final String val : response_text_a) {
+					final String[] val_a = val.split(":");
+					result.put(val_a[0], val_a[1]);
+				}
+				return result;
 			}
 		}
 
@@ -582,6 +601,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		// Log.trace("Parsing: " + contents);
 		final Lesson lesson = new Lesson();
 
+		if (contents == null || contents.trim().isEmpty())
+			return lesson;
+
 		final Document doc = XMLParser.parse(contents);
 		final NodeListWrapperList lessons = new NodeListWrapperList(
 				doc.getElementsByTagName("Lesson"));
@@ -720,7 +742,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					final Element video_e = (Element) widget_e
 							.getElementsByTagName(item_type.getTypeName())
 							.item(0);
-					page.getVideoItem().setURL(video_e.getAttribute("uri"));
+					page.getVideoItem().setIdMap(
+							VideoItem.getVideoIdMap(video_e
+									.getAttribute("idMap")),
+							authoring_tool.new SetupVideoPlayerHandler());
 					break;
 				}
 
@@ -882,7 +907,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				case VIDEO:
 					final Element video_e = doc.createElement(item_type
 							.getTypeName());
-					video_e.setAttribute("uri", page.getVideoItem().getURL());
+					video_e.setAttribute("idMap", VideoItem.getIdMapString(page
+							.getVideoItem().getIdMap()));
 					widget_e.appendChild(video_e);
 					break;
 				}
