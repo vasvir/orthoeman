@@ -358,27 +358,25 @@ function oldGetXMLData() {
 
 function getXMLData(){
 	if (isset($_GET['old'])) return oldGetXMLData();
-	//$orthoeman_id = isset($_GET['orthoeman_id'])? (int)$_GET['orthoeman_id'] : -1;
-	//echo $orthoeman_id;
 	global $DB;
 	$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
 	$cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
 	$resource = get_database_data($orthoeman->id,-1);
-
-	print_r($resource->data);
 	//return simplexml_load_file(filename);
-	return $resource->data;
+	//print_r(simplexml_load_string($resource->data));
+	//echo($resource->data);
+	return simplexml_load_string($resource->data);
 }
 
 function GetTemplateData($data) {
 	$a = array();
-	$a["attributes"]["id"] = strval($data["id"]);
+	//$a["attributes"]["id"] = strval($data["id"]);
 	$a["attributes"]["Title"] = strval($data["title"]);
 	$a["attributes"]["abstract"] = strval($data ->abstract);
 	$index = 0;
-	foreach ($data->page as $key => $value) {
+	foreach ($data->Page as $key => $value) {
 		$a["Page"][$index]["attributes"]["Grade"] = strval($value["grade"]);
 		$a["Page"][$index]["attributes"]["Title"] = strval($value["title"]);
         $a["Page"][$index]["attributes"]["Blocked"] = strval($value["blocked"]);
