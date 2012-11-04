@@ -6,12 +6,10 @@ TODO οι διαστάσεις του tooltip, infotip και point circles δε
 TODO αλλαγή όλου του notification system. -- ίσως να μην χρειάζεται πλέον
 TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
 TODO *Bug IE only, fullscreen video not working
-TODO βγάζω την απόσταση
 TODO δεν επιτρέπουμε πολλαπλές προσπάθειες
 TODO δύο αριθμοί negative, positive
 TODO cruise mode
 TODO see what's happen in text-image, text-video (theory case)
-TODO πολλαπλές γωνίες 
 TODO timeout time
 TODO tracking implementation 
 
