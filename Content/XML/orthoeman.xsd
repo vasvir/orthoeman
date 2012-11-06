@@ -71,12 +71,12 @@
 
 
     <xs:complexType name="ComplexImageType">
-        <xs:sequence>
-            <xs:element name="Circle" type="CircleType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Eclipse" type="EclipseType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Rect" type="RectType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Polygon" type="PolygonType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Circle" type="CircleType"/>
+            <xs:element name="Eclipse" type="EclipseType"/>
+            <xs:element name="Rect" type="RectType"/>
+            <xs:element name="Polygon" type="PolygonType"/>
+        </xs:choice>
         <xs:attribute name="showRegions" type="YesNoValues" use="required"/>
         <xs:attribute name="hotspots" type="YesNoValues" use="optional"/>
         <xs:attribute name="width" type="xs:integer" use="required"/>
@@ -110,32 +110,32 @@
             <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="radius" type="xs:integer" use="required"/>
-        <xs:attribute name="ishotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="EclipseType">
         <xs:sequence>
             <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="ishotspot" type="YesNoValues" use="required"/>
-        <xs:attribute name="radiusx" type="xs:integer" use="required"/>
-        <xs:attribute name="radiusy" type="xs:integer" use="required"/>
+        <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="radiusX" type="xs:integer" use="required"/>
+        <xs:attribute name="radiusY" type="xs:integer" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="RectType">
         <xs:all>
-            <xs:element name="point" type="PointType"/>
-            <xs:element name="width" type="xs:integer"/>
-            <xs:element name="height" type="xs:integer"/>
+            <xs:element name="Point" type="PointType"/>
         </xs:all>
         <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="width" type="xs:integer" use="required" />
+        <xs:attribute name="height" type="xs:integer" use="required" />
     </xs:complexType>
 
     <xs:complexType name="PolygonType">
         <xs:sequence>
             <xs:element name="Point" type="PointType" minOccurs="3" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="ishotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="PointType">
