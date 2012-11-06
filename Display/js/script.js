@@ -76,8 +76,7 @@ $(document).ready(function () {
     OrthoVariables.disableturn = OrthoVariables.InitialQueryString["DisablePaging"] || OrthoVariables.disableturn;
     console.log("id:" + OrthoVariables.InitialQueryString["id"]);
     $.getJSON(OrthoVariables.JsonUrl, {
-        "action":1, "orthoeman_id":OrthoVariables.InitialQueryString["id"]
-
+        "action":1, "orthoeman_id":OrthoVariables.InitialQueryString.id, "name": OrthoVariables.InitialQueryString.name
     }, function (data) {
         OrthoVariables.LessonData = data;
         OrthoVariables.maxPages = 2 * (OrthoVariables.LessonData.Page.length + 1);
@@ -119,7 +118,6 @@ function getUrlVars() {
 }
 
 function LoadVideo(Page) {
-
     for (var wid in OrthoVariables.LessonData.Page[Page].Widget) {
         if (OrthoVariables.LessonData.Page[Page].Widget[wid].type === "video") {
            $("#video_" + OrthoVariables.LessonData.Page[Page].Widget[wid].Video.id).mediaelementplayer({
