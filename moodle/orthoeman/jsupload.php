@@ -94,7 +94,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
     header('Expires: Tue, 08 Oct 1991 00:00:00 GMT');
     header('Cache-Control: no-cache, must-revalidate');
 
-    if($_SESSION['canceled'] == true) {
+    if(array_key_exists('canceled', $_SESSION) && $_SESSION['canceled'] == true) {
         $_SESSION['canceled'] = false;
         writeResponse("<canceled>true</canceled><finished>canceled</finished>", 0);
     }
