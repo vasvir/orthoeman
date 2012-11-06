@@ -4,7 +4,7 @@
     <Page grade="10" blocked="no">
         <Widget type="image">
             <Image id="3" enableTracking="no" showRegions="yes" width="480" height="640">
-                <Polygon ishotspot="yes">
+                <Polygon isHotspot="yes">
                     <Point x="235" y="131"/>
                     <Point x="192" y="221"/>
                     <Point x="122" y="302"/>
@@ -33,7 +33,7 @@
         <Widget type="video">
             <Video>
                 <Source id="2" type="video/mp4" />
-                <Source id="3" type="video/ogg" />
+                <Source id="3" type="video/webm" />
             </Video>
         </Widget>
         <Widget type="quiz">
@@ -59,10 +59,13 @@
   <Page grade="10" blocked="no">
     <Widget type="image">
       <Image id="9" showRegions="yes" enableTracking="no" width="480" height="640">
-        <Circle ishotspot="yes" radius="35">
+        <Circle isHotspot="yes" radius="35">
           <Center x="189" y="152"/>
         </Circle>
-        <Eclipse ishotspot="yes" radiusx="40" radiusy="60">
+          <Rect isHotspot="yes" width="60" height="80">
+              <Point x="5" y="5"/>
+          </Rect>
+        <Eclipse isHotspot="yes" radiusX="40" radiusY="60">
           <Center x="416" y="498"/>
         </Eclipse>
       </Image>
@@ -74,7 +77,7 @@
   <Page grade="10" blocked="yes">
     <Widget type="image">
       <Image id="11" enableTracking="no" showRegions="yes" width="480" height="640">
-        <Circle ishotspot="yes" radius="50">
+        <Circle isHotspot="yes" radius="50">
           <Center x="133" y="173"/>
         </Circle>
       </Image>
@@ -86,10 +89,10 @@
   <Page grade="10" blocked="yes">
     <Widget type="image">
       <Image id="2" enableTracking="no" showRegions="yes" width="480" height="640">
-        <Circle ishotspot="no" radius="35">
+        <Circle isHotspot="no" radius="35">
           <Center x="189" y="152"/>
         </Circle>
-        <Eclipse ishotspot="no" radiusx="40" radiusy="60">
+        <Eclipse isHotspot="no" radiusX="40" radiusY="60">
           <Center x="416" y="498"/>
         </Eclipse>
       </Image>
@@ -105,7 +108,7 @@
   <Page grade="10" blocked="no">
     <Widget type="image">
       <Image id="2" enableTracking="no" showRegions="yes" width="1023" height="732">
-        <Eclipse ishotspot="yes" radiusx="70" radiusy="40">
+        <Eclipse isHotspot="yes" radiusX="70" radiusY="40">
           <Center x="446" y="407"/>
         </Eclipse>
       </Image>
