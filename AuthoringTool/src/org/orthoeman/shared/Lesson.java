@@ -302,7 +302,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		public static class VideoItem extends Item {
-			private Map<String, String> id_map;
+			private Map<String, String> id_map = new HashMap<String, String>();
 
 			public VideoItem() {
 				super(Type.VIDEO);
@@ -315,7 +315,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			public void setIdMap(Map<String, String> id_map,
 					AuthoringTool.SetupVideoPlayerHandler video_player_handler) {
 				this.id_map = id_map;
-				video_player_handler.setupVideoPlayer(this, id_map);
+				Log.debug("Setting " + this + " idMap: " + id_map);
+				video_player_handler.setupVideoPlayer(this);
 			}
 
 			public static String getIdMapString(Map<String, String> id_map) {
