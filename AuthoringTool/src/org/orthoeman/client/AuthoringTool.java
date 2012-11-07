@@ -192,29 +192,8 @@ public class AuthoringTool implements EntryPoint {
 	};
 
 	public class SetupVideoPlayerHandler {
-		public void setupVideoPlayer(Page.VideoItem video_item,
-				Map<String, String> id_map) {
-			final Page current_page = getCurrentPage();
-			if (current_page != null
-					&& current_page.getVideoItem() == video_item) {
-				Log.debug("CurrentPage: " + current_page
-						+ " with videoItem(): " + current_page.getVideoItem()
-						+ " video_item: " + video_item);
-				final RootPanel videoPlayerContainer = RootPanel
-						.get("videoPlayerContainer");
-				final StringBuilder sb = new StringBuilder();
-				sb.append("<video controls>"); // poster="image_url
-				for (final Map.Entry<String, String> entry : id_map.entrySet()) {
-					final String url = Lesson.getResourceURL(orthoeman_id,
-							entry.getKey());
-					final String content_type = entry.getValue();
-					sb.append("<source src='" + url + "' type='" + content_type
-							+ "'/>");
-				}
-				sb.append("<p class='serverResponseLabelError'>Cannot find valid content / codec combination.</p>");
-				sb.append("</video>");
-				videoPlayerContainer.getElement().setInnerHTML(sb.toString());
-			}
+		public void setupVideoPlayer(Page.VideoItem video_item) {
+			updateVideoPlayerContainer(video_item);
 		}
 	};
 
@@ -1579,6 +1558,7 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			case VIDEO:
 				getVideoContainer().setVisible(true);
+				updateVideoPlayerContainer(page.getVideoItem());
 				break;
 			case QUIZ:
 				quizContainer.setVisible(true);
@@ -1864,8 +1844,8 @@ public class AuthoringTool implements EntryPoint {
 						final String error_msg = "HTTP Error for request: "
 								+ request + " Response: " + response
 								+ " status code: " + response.getStatusCode();
-						Log.error(error_msg);
 						pd.hide();
+						Log.error(error_msg);
 						Window.alert(error_msg);
 						return;
 					}
@@ -1896,16 +1876,42 @@ public class AuthoringTool implements EntryPoint {
 				public void onError(Request request, Throwable exception) {
 					final String error_msg = "RequestError for request: "
 							+ request;
-					Log.error(error_msg, exception);
 					pd.hide();
+					Log.error(error_msg, exception);
 					Window.alert(error_msg);
 				}
 			});
 		} catch (RequestException e) {
 			final String error_msg = "Cannot save lesson. Please wait for server "
-					+ "communication to be restored " + "and retry later.";
+					+ "communication to be restored and retry later.";
 			Log.error(error_msg, e);
+			pd.hide();
 			Window.alert(error_msg);
 		}
+	}
+
+	private void updateVideoPlayerContainer(Page.VideoItem video_item) {
+		final Page current_page = getCurrentPage();
+		Log.debug("CurrentPage: " + current_page);
+		if (current_page == null)
+			return;
+		Log.debug("Current videoItem(): " + current_page.getVideoItem()
+				+ " video_item: " + video_item);
+		if (current_page.getVideoItem() != video_item)
+			return;
+		final RootPanel videoPlayerContainer = RootPanel
+				.get("videoPlayerContainer");
+		final StringBuilder sb = new StringBuilder();
+		sb.append("<video controls>"); // poster="image_url
+		for (final Map.Entry<String, String> entry : video_item.getIdMap()
+				.entrySet()) {
+			final String url = Lesson.getResourceURL(orthoeman_id,
+					entry.getKey());
+			final String content_type = entry.getValue();
+			sb.append("<source src='" + url + "' type='" + content_type + "'/>");
+		}
+		sb.append("<p class='serverResponseLabelError'>Cannot find valid content / codec combination.</p>");
+		sb.append("</video>");
+		videoPlayerContainer.getElement().setInnerHTML(sb.toString());
 	}
 }
