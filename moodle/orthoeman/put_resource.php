@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //echo "img XXX $img XXX<BR>";
         $md5 = md5($video);
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'md5' => $md5));
-        $ids = array();
+        $id_map = array();
         if (!$resource_rec) {
             $resource_rec = new Object();
             $resource_rec->orthoeman_id = $orthoeman->id;
@@ -143,7 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
 
-            $ids[] = "$resource_id:$resource_rec->content_type";
+            $id_map[] = "$resource_id:$resource_rec->content_type";
+            $parent_id = $resource_id;
 
             $formats = array('h264', 'ogg', 'webm');
             $format_to_content_type = array(
@@ -159,18 +160,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $resource_rec->data = `$ffmpeg`;
                 $resource_rec->md5 = md5($resource_rec->data);
                 $resource_rec->content_type = $format_to_content_type[$format];
-                $resource_rec->parent_id = $ids[0];
+                $resource_rec->parent_id = $parent_id;
                 $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
-                $ids[] = "$resource_id:$resource_rec->content_type";
+                $id_map[] = "$resource_id:$resource_rec->content_type";
             }
         } else {
-            $ids[] = "$resource_rec->id:$resource_rec->content_type";
+            $id_map[] = "$resource_rec->id:$resource_rec->content_type";
             $resource_recs = $DB->get_records($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'parent_id' => $resource_rec->id));
             foreach ($resource_recs as $resource_rec) {
-                $ids[] = "$resource_rec->id:$resource_rec->content_type";
+                $id_map[] = "$resource_rec->id:$resource_rec->content_type";
             }
         }
-        echo implode("|", $ids);
+        echo implode("|", $id_map);
     } else {
         echo "Undefined resource type $type";
         http_response_code(403);
