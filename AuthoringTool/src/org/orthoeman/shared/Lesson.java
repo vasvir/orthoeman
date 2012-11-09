@@ -849,7 +849,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								break;
 							case RECTANGLE:
 								final Element rectangle_e = doc
-										.createElement("Ellipse");
+										.createElement("Rectangle");
 								final Rectangle rectangle = (Rectangle) drawing;
 								rectangle_e
 										.setAttribute(
