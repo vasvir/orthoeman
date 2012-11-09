@@ -813,6 +813,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					final String id = image_item.getId();
 					if (id != null) {
 						image_e.setAttribute("id", id);
+						image_e.setAttribute("width", ""
+								+ image_item.getImage().getRealWidth());
+						image_e.setAttribute("height", ""
+								+ image_item.getImage().getRealHeight());
 
 						for (final Drawing drawing : image_item.getDrawings()) {
 							switch (drawing.getType()) {
@@ -931,7 +935,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						final Element source_e = doc.createElement("Source");
 						source_e.setAttribute("id", source.id);
 						source_e.setAttribute("type", source.content_type);
-						//source_e.setAttribute("codecs", source.codecs);
+						// source_e.setAttribute("codecs", source.codecs);
 						video_e.appendChild(source_e);
 					}
 					widget_e.appendChild(video_e);
