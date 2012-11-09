@@ -627,9 +627,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			final Page page = new Page();
 			final Element page_e = (Element) page_n;
 
-			page.setTitle(page_e.getAttribute("Title"));
-			page.setWeight(Double.valueOf(page_e.getAttribute("Grade")));
-			page.setBlock(Boolean.valueOf(page_e.getAttribute("Blocked")));
+			page.setTitle(page_e.getAttribute("title"));
+			page.setWeight(Double.valueOf(page_e.getAttribute("grade")));
+			page.setBlock(Boolean.valueOf(page_e.getAttribute("block")));
 
 			final Type[] itemTypeCombinationsFound = { null, null };
 			int itemTypeCombinationsFoundCount = 0;
@@ -639,7 +639,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			for (final Node widget_n : widget_nl) {
 				final Element widget_e = (Element) widget_n;
 				final Type item_type = Type.getTypeByTypeName(widget_e
-						.getAttribute("Type"));
+						.getAttribute("type"));
 				itemTypeCombinationsFound[itemTypeCombinationsFoundCount++] = item_type;
 				switch (item_type) {
 				case IMAGE:
@@ -680,7 +680,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						final Element drawing_e = (Element) drawing_n;
 						final String tagname = drawing_e.getTagName();
 						final Kind kind = Boolean.valueOf(drawing_e
-								.getAttribute("IsHotSpot")) ? Kind.BLOCKING
+								.getAttribute("isHotSpot")) ? Kind.BLOCKING
 								: Kind.INFORMATIONAL;
 						Drawing drawing = null;
 						if (tagname.equals("Polygon")) {
@@ -690,9 +690,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							for (final Node point_n : points_nl) {
 								final Element point_e = (Element) point_n;
 								final int x = Integer.valueOf(point_e
-										.getAttribute("X"));
+										.getAttribute("x"));
 								final int y = Integer.valueOf(point_e
-										.getAttribute("Y"));
+										.getAttribute("y"));
 								final Point point = new Point(x, y);
 								points.add(point);
 							}
@@ -700,13 +700,13 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						} else if (tagname.equals("Ellipse")
 								|| tagname.equals("Rectangle")) {
 							final int x = Integer.valueOf(drawing_e
-									.getAttribute("X"));
+									.getAttribute("x"));
 							final int y = Integer.valueOf(drawing_e
-									.getAttribute("Y"));
+									.getAttribute("y"));
 							final int width = Integer.valueOf(drawing_e
-									.getAttribute("Width"));
+									.getAttribute("width"));
 							final int height = Integer.valueOf(drawing_e
-									.getAttribute("Height"));
+									.getAttribute("height"));
 							drawing = tagname.equals("Ellipse") ? new Ellipse(
 									kind, x, y, width, height) : new Rectangle(
 									kind, x, y, width, height);
@@ -730,7 +730,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						page.getQuizItem().createAnswer(
 								getTextValue(answer_e),
 								Boolean.valueOf(answer_e
-										.getAttribute("IsCorrect")));
+										.getAttribute("isCorrect")));
 					}
 					break;
 				case RANGE_QUIZ:
@@ -740,9 +740,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					page.getRangeQuizItem().setText(
 							getTextValue(range_quiz_e, "Question"));
 					page.getRangeQuizItem().setMin(
-							Double.valueOf(getTextValue(range_quiz_e, "min")));
+							Double.valueOf(getTextValue(range_quiz_e, "Min")));
 					page.getRangeQuizItem().setMax(
-							Double.valueOf(getTextValue(range_quiz_e, "max")));
+							Double.valueOf(getTextValue(range_quiz_e, "Max")));
 					break;
 				case TEXT:
 					page.getTextItem().setText(
@@ -795,20 +795,20 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		for (final Page page : lesson) {
 			final Element page_e = doc.createElement("Page");
-			page_e.setAttribute("Title", "" + page.getTitle());
-			page_e.setAttribute("Grade", "" + page.getWeight());
-			page_e.setAttribute("Blocked", "" + page.isBlock());
+			page_e.setAttribute("title", "" + page.getTitle());
+			page_e.setAttribute("grade", "" + page.getWeight());
+			page_e.setAttribute("block", "" + page.isBlock());
 
 			final Type[] item_types = page.getItemTypeCombination();
 			for (Type item_type : item_types) {
 				final Element widget_e = doc.createElement("Widget");
-				widget_e.setAttribute("Type", item_type.getTypeName());
+				widget_e.setAttribute("type", item_type.getTypeName());
 
 				switch (item_type) {
 				case IMAGE:
 					final Element image_e = doc.createElement(item_type
 							.getTypeName());
-					// image.setAttribute("ShowRegions", "yes");
+					// image.setAttribute("showRegions", "yes");
 					final ImageItem image_item = page.getImageItem();
 					final String id = image_item.getId();
 					if (id != null) {
@@ -820,15 +820,15 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								final Element ellipse_e = doc
 										.createElement("Ellipse");
 								final Ellipse ellipse = (Ellipse) drawing;
-								ellipse_e.setAttribute("IsHotSpot", ""
+								ellipse_e.setAttribute("isHotSpot", ""
 										+ (ellipse.getKind() == Kind.BLOCKING));
 								ellipse_e
-										.setAttribute("X", "" + ellipse.getX());
+										.setAttribute("x", "" + ellipse.getX());
 								ellipse_e
-										.setAttribute("Y", "" + ellipse.getY());
-								ellipse_e.setAttribute("Width",
+										.setAttribute("y", "" + ellipse.getY());
+								ellipse_e.setAttribute("width",
 										"" + ellipse.getWidth());
-								ellipse_e.setAttribute("Height",
+								ellipse_e.setAttribute("height",
 										"" + ellipse.getHeight());
 								image_e.appendChild(ellipse_e);
 								break;
@@ -836,13 +836,13 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								final Element polygon_e = doc
 										.createElement("Polygon");
 								final Polygon polygon = (Polygon) drawing;
-								polygon_e.setAttribute("IsHotSpot", ""
+								polygon_e.setAttribute("isHotSpot", ""
 										+ (polygon.getKind() == Kind.BLOCKING));
 								for (final Point point : polygon.getPoints()) {
 									final Element point_e = doc
 											.createElement("Point");
-									point_e.setAttribute("X", "" + point.x);
-									point_e.setAttribute("Y", "" + point.y);
+									point_e.setAttribute("x", "" + point.x);
+									point_e.setAttribute("y", "" + point.y);
 									polygon_e.appendChild(point_e);
 								}
 								image_e.appendChild(polygon_e);
@@ -853,16 +853,16 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								final Rectangle rectangle = (Rectangle) drawing;
 								rectangle_e
 										.setAttribute(
-												"IsHotSpot",
+												"isHotSpot",
 												""
 														+ (rectangle.getKind() == Kind.BLOCKING));
-								rectangle_e.setAttribute("X",
+								rectangle_e.setAttribute("x",
 										"" + rectangle.getX());
-								rectangle_e.setAttribute("Y",
+								rectangle_e.setAttribute("y",
 										"" + rectangle.getY());
-								rectangle_e.setAttribute("Width", ""
+								rectangle_e.setAttribute("width", ""
 										+ rectangle.getWidth());
-								rectangle_e.setAttribute("Height", ""
+								rectangle_e.setAttribute("height", ""
 										+ rectangle.getHeight());
 								image_e.appendChild(rectangle_e);
 								break;
@@ -887,7 +887,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					for (final Answer answer : quiz_item.getAnswerMap()
 							.values()) {
 						final Element answer_e = doc.createElement("Answer");
-						answer_e.setAttribute("IsCorrect",
+						answer_e.setAttribute("isCorrect",
 								"" + answer.isCorrect());
 						;
 						answer_e.appendChild(doc.createTextNode(answer
@@ -906,11 +906,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					range_question_e.appendChild(doc
 							.createTextNode(range_quiz_item.getText()));
 					range_quiz_e.appendChild(range_question_e);
-					final Element min_e = doc.createElement("min");
+					final Element min_e = doc.createElement("Min");
 					min_e.appendChild(doc.createTextNode(""
 							+ range_quiz_item.getMin()));
 					range_quiz_e.appendChild(min_e);
-					final Element max_e = doc.createElement("max");
+					final Element max_e = doc.createElement("Max");
 					max_e.appendChild(doc.createTextNode(""
 							+ range_quiz_item.getMax()));
 					range_quiz_e.appendChild(max_e);
