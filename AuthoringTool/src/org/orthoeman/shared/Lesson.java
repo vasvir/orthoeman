@@ -302,42 +302,48 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		}
 
 		public static class VideoItem extends Item {
-			private Map<String, String> id_map = new HashMap<String, String>();
+			public static class Source {
+				public final String id;
+				public final String content_type;
+				public final String codecs;
+
+				public Source(String id, String content_type, String codecs) {
+					this.id = id;
+					this.content_type = content_type;
+					this.codecs = codecs;
+				}
+
+				@Override
+				public String toString() {
+					return id + ":" + content_type + ":" + codecs;
+				}
+			};
+
+			private Collection<Source> sources = new ArrayList<Source>();
 
 			public VideoItem() {
 				super(Type.VIDEO);
 			}
 
-			public Map<String, String> getIdMap() {
-				return id_map;
+			public Collection<Source> getSources() {
+				return sources;
 			}
 
-			public void setIdMap(Map<String, String> id_map,
+			public void setSources(Collection<Source> sources,
 					AuthoringTool.SetupVideoPlayerHandler video_player_handler) {
-				this.id_map = id_map;
-				Log.debug("Setting " + this + " idMap: " + id_map);
+				this.sources = sources;
+				Log.debug("Setting " + this + " sources: " + sources);
 				video_player_handler.setupVideoPlayer(this);
 			}
 
-			public static String getIdMapString(Map<String, String> id_map) {
-				if (id_map.isEmpty()) {
-					return "";
-				}
-				final StringBuilder sb = new StringBuilder();
-				for (final Map.Entry<String, String> entry : id_map.entrySet()) {
-					sb.append(entry.getKey() + ":" + entry.getValue() + "|");
-				}
-				return sb.substring(0, sb.length() - 1);
-			}
-
-			public static Map<String, String> getVideoIdMap(String response_text) {
-				final Map<String, String> result = new HashMap<String, String>();
+			public static Collection<Source> parseSources(String response_text) {
+				final Collection<Source> sources = new ArrayList<Source>();
 				final String[] response_text_a = response_text.split("\\|");
 				for (final String val : response_text_a) {
 					final String[] val_a = val.split(":");
-					result.put(val_a[0], val_a[1]);
+					sources.add(new Source(val_a[0], val_a[1], val_a[2]));
 				}
-				return result;
+				return sources;
 			}
 		}
 
@@ -746,9 +752,18 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					final Element video_e = (Element) widget_e
 							.getElementsByTagName(item_type.getTypeName())
 							.item(0);
-					page.getVideoItem().setIdMap(
-							VideoItem.getVideoIdMap(video_e
-									.getAttribute("idMap")),
+					final NodeListWrapperList source_nl = new NodeListWrapperList(
+							video_e.getElementsByTagName("Source"));
+					final Collection<VideoItem.Source> sources = new ArrayList<VideoItem.Source>();
+					for (final Node source_n : source_nl) {
+						final Element source_e = (Element) source_n;
+						final VideoItem.Source source = new VideoItem.Source(
+								source_e.getAttribute("id"),
+								source_e.getAttribute("type"),
+								source_e.getAttribute("codecs"));
+						sources.add(source);
+					}
+					page.getVideoItem().setSources(sources,
 							authoring_tool.new SetupVideoPlayerHandler());
 					break;
 				}
@@ -911,8 +926,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				case VIDEO:
 					final Element video_e = doc.createElement(item_type
 							.getTypeName());
-					video_e.setAttribute("idMap", VideoItem.getIdMapString(page
-							.getVideoItem().getIdMap()));
+					for (final VideoItem.Source source : page.getVideoItem()
+							.getSources()) {
+						final Element source_e = doc.createElement("Source");
+						source_e.setAttribute("id", source.id);
+						source_e.setAttribute("type", source.content_type);
+						//source_e.setAttribute("codecs", source.codecs);
+						video_e.appendChild(source_e);
+					}
 					widget_e.appendChild(video_e);
 					break;
 				}

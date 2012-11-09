@@ -140,17 +140,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->data = $video;
             $resource_rec->md5 = $md5;
             $resource_rec->content_type = $result->content_type;
+            $resource_rec->codecs = "";
             $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
 
-            $id_map[] = "$resource_id:$resource_rec->content_type";
+            $id_map[] = "$resource_id:$resource_rec->content_type:$resource_rec->codecs";
             $parent_id = $resource_id;
 
             $formats = array('h264', 'ogg', 'webm');
             $format_to_content_type = array(
-                "h264" => 'video/mp4; codecs="avc1.4D401E, mp4a.40.2"',
-                "ogg" => 'video/ogg; codecs="theora, vorbis"',
-                "webm" => 'video/webm; codecs="vp8.0, vorbis"'
+                "h264" => 'video/mp4',
+                "ogg" => 'video/ogg',
+                "webm" => 'video/webm'
+            );
+            $format_to_codecs = array(
+                "h264" => 'avc1.4D401E, mp4a.40.2',
+                "ogg" => 'theora, vorbis',
+                "webm" => 'vp8.0, vorbis'
             );
             foreach ($formats as $format) {
                 $resource_rec = new Object();
@@ -160,15 +166,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $resource_rec->data = `$ffmpeg`;
                 $resource_rec->md5 = md5($resource_rec->data);
                 $resource_rec->content_type = $format_to_content_type[$format];
+                $resource_rec->codecs = $format_to_codecs[$format];
                 $resource_rec->parent_id = $parent_id;
                 $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
-                $id_map[] = "$resource_id:$resource_rec->content_type";
+                $id_map[] = "$resource_id:$resource_rec->content_type:$resource_rec->codecs";
             }
         } else {
-            $id_map[] = "$resource_rec->id:$resource_rec->content_type";
+            $id_map[] = "$resource_rec->id:$resource_rec->content_type:$resource_rec->codecs";
             $resource_recs = $DB->get_records($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'parent_id' => $resource_rec->id));
             foreach ($resource_recs as $resource_rec) {
-                $id_map[] = "$resource_rec->id:$resource_rec->content_type";
+                $id_map[] = "$resource_rec->id:$resource_rec->content_type:$resource_rec->codecs";
             }
         }
         echo implode("|", $id_map);

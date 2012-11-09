@@ -1864,9 +1864,8 @@ public class AuthoringTool implements EntryPoint {
 						setButtonsEnabled(image_edit_buttons, true);
 					} else if (resource_type == ResourceType.VIDEO) {
 						final Page.VideoItem video_item = (Page.VideoItem) item;
-						final Map<String, String> id2ContentTypeMap = Page.VideoItem
-								.getVideoIdMap(response_text);
-						video_item.setIdMap(id2ContentTypeMap,
+						video_item.setSources(
+								Page.VideoItem.parseSources(response_text),
 								new SetupVideoPlayerHandler());
 					}
 					pd.hide();
@@ -1903,12 +1902,13 @@ public class AuthoringTool implements EntryPoint {
 				.get("videoPlayerContainer");
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<video controls>"); // poster="image_url
-		for (final Map.Entry<String, String> entry : video_item.getIdMap()
-				.entrySet()) {
-			final String url = Lesson.getResourceURL(orthoeman_id,
-					entry.getKey());
-			final String content_type = entry.getValue();
-			sb.append("<source src='" + url + "' type='" + content_type + "'/>");
+		for (final Page.VideoItem.Source source : video_item.getSources()) {
+			final String url = Lesson.getResourceURL(orthoeman_id, source.id);
+			sb.append("<source src='" + url + "' type='" + source.content_type
+					+ "'/>");
+			// sb.append("<source src='" + url + "' type='" +
+			// source.content_type
+			// + "; codecs=\"" + source.codecs + "\"'/>");
 		}
 		sb.append("<p class='serverResponseLabelError'>Cannot find valid content / codec combination.</p>");
 		sb.append("</video>");
