@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
 
-            $id_map[] = "$resource_id:$resource_rec->content_type:$resource_rec->codecs";
+            #$id_map[] = "$resource_id:$resource_rec->content_type:$resource_rec->codecs";
             $parent_id = $resource_id;
 
             $formats = array('h264', 'ogg', 'webm');
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $id_map[] = "$resource_id:$resource_rec->content_type:$resource_rec->codecs";
             }
         } else {
-            $id_map[] = "$resource_rec->id:$resource_rec->content_type:$resource_rec->codecs";
+            #$id_map[] = "$resource_rec->id:$resource_rec->content_type:$resource_rec->codecs";
             $resource_recs = $DB->get_records($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'parent_id' => $resource_rec->id));
             foreach ($resource_recs as $resource_rec) {
                 $id_map[] = "$resource_rec->id:$resource_rec->content_type:$resource_rec->codecs";
