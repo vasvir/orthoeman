@@ -962,7 +962,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		doc.appendChild(root_e);
 
-		return doc.toString();
+		return doc.toString().replaceAll("<Lesson",
+				"<Lesson xmlns=\"http://orthoeman.iit.demokritos.gr/\"");
 	}
 
 	private void notifyPageListeners(Page page, boolean added) {
