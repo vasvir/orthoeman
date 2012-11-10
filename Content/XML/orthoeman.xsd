@@ -73,7 +73,7 @@
     <xs:complexType name="ComplexImageType">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element name="Circle" type="CircleType"/>
-            <xs:element name="Eclipse" type="EclipseType"/>
+            <xs:element name="Ellipse" type="EllipseType"/>
             <xs:element name="Rect" type="RectType"/>
             <xs:element name="Polygon" type="PolygonType"/>
         </xs:choice>
@@ -113,7 +113,7 @@
         <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="EclipseType">
+    <xs:complexType name="EllipseType">
         <xs:sequence>
             <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>

@@ -65,9 +65,9 @@
           <Rect isHotspot="yes" width="60" height="80">
               <Point x="5" y="5"/>
           </Rect>
-        <Eclipse isHotspot="yes" radiusX="40" radiusY="60">
+        <Ellipse isHotspot="yes" radiusX="40" radiusY="60">
           <Center x="416" y="498"/>
-        </Eclipse>
+        </Ellipse>
       </Image>
     </Widget>
     <Widget type="text">
@@ -92,9 +92,9 @@
         <Circle isHotspot="no" radius="35">
           <Center x="189" y="152"/>
         </Circle>
-        <Eclipse isHotspot="no" radiusX="40" radiusY="60">
+        <Ellipse isHotspot="no" radiusX="40" radiusY="60">
           <Center x="416" y="498"/>
-        </Eclipse>
+        </Ellipse>
       </Image>
     </Widget>
     <Widget type="quiz">
@@ -108,9 +108,9 @@
   <Page grade="10" blocked="no">
     <Widget type="image">
       <Image id="2" enableTracking="no" showRegions="yes" width="1023" height="732">
-        <Eclipse isHotspot="yes" radiusX="70" radiusY="40">
+        <Ellipse isHotspot="yes" radiusX="70" radiusY="40">
           <Center x="446" y="407"/>
-        </Eclipse>
+        </Ellipse>
       </Image>
     </Widget>
     <Widget type="text">
