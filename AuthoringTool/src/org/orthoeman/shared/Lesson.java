@@ -61,7 +61,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					for (final Type type : values()) {
 						name2TypeMap.put(type.getName(), type);
 						typeName2TypeMap.put(type.getTypeName(), type);
-						attributeValue2TypeMap.put(type.getAttributeValue(), type);
+						attributeValue2TypeMap.put(type.getAttributeValue(),
+								type);
 					}
 				}
 
@@ -910,7 +911,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						final Element answer_e = doc.createElement("Answer");
 						answer_e.setAttribute("isCorrect",
 								booleanToString(answer.isCorrect()));
-						;
 						answer_e.appendChild(doc.createTextNode(answer
 								.getText()));
 						quiz_e.appendChild(answer_e);
