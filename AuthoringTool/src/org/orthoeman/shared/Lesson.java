@@ -642,7 +642,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 			page.setTitle(page_e.getAttribute("title"));
 			page.setWeight(Double.valueOf(page_e.getAttribute("grade")));
-			page.setBlock(Boolean.valueOf(page_e.getAttribute("block")));
+			page.setBlock(parseBoolean(page_e.getAttribute("block")));
 
 			final Type[] itemTypeCombinationsFound = { null, null };
 			int itemTypeCombinationsFoundCount = 0;
@@ -692,7 +692,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					for (final Node drawing_n : drawing_nl) {
 						final Element drawing_e = (Element) drawing_n;
 						final String tagname = drawing_e.getTagName();
-						final Kind kind = Boolean.valueOf(drawing_e
+						final Kind kind = parseBoolean(drawing_e
 								.getAttribute("isHotSpot")) ? Kind.BLOCKING
 								: Kind.INFORMATIONAL;
 						Drawing drawing = null;
@@ -740,10 +740,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							quiz_e.getElementsByTagName("Answer"));
 					for (final Node answer_n : answer_nl) {
 						final Element answer_e = (Element) answer_n;
-						page.getQuizItem().createAnswer(
-								getTextValue(answer_e),
-								Boolean.valueOf(answer_e
-										.getAttribute("isCorrect")));
+						page.getQuizItem()
+								.createAnswer(
+										getTextValue(answer_e),
+										parseBoolean(answer_e
+												.getAttribute("isCorrect")));
 					}
 					break;
 				case RANGE_QUIZ:
@@ -808,9 +809,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		for (final Page page : lesson) {
 			final Element page_e = doc.createElement("Page");
-			page_e.setAttribute("title", "" + page.getTitle());
+			page_e.setAttribute("title", page.getTitle());
 			page_e.setAttribute("grade", "" + page.getWeight());
-			page_e.setAttribute("block", "" + page.isBlock());
+			page_e.setAttribute("block", booleanToString(page.isBlock()));
 
 			final Type[] item_types = page.getItemTypeCombination();
 			for (Type item_type : item_types) {
@@ -837,8 +838,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								final Element ellipse_e = doc
 										.createElement("Ellipse");
 								final Ellipse ellipse = (Ellipse) drawing;
-								ellipse_e.setAttribute("isHotSpot", ""
-										+ (ellipse.getKind() == Kind.BLOCKING));
+								ellipse_e
+										.setAttribute(
+												"isHotSpot",
+												booleanToString(ellipse
+														.getKind() == Kind.BLOCKING));
 								ellipse_e
 										.setAttribute("x", "" + ellipse.getX());
 								ellipse_e
@@ -853,8 +857,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								final Element polygon_e = doc
 										.createElement("Polygon");
 								final Polygon polygon = (Polygon) drawing;
-								polygon_e.setAttribute("isHotSpot", ""
-										+ (polygon.getKind() == Kind.BLOCKING));
+								polygon_e
+										.setAttribute(
+												"isHotSpot",
+												booleanToString(polygon
+														.getKind() == Kind.BLOCKING));
 								for (final Point point : polygon.getPoints()) {
 									final Element point_e = doc
 											.createElement("Point");
@@ -871,8 +878,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								rectangle_e
 										.setAttribute(
 												"isHotSpot",
-												""
-														+ (rectangle.getKind() == Kind.BLOCKING));
+												booleanToString(rectangle
+														.getKind() == Kind.BLOCKING));
 								rectangle_e.setAttribute("x",
 										"" + rectangle.getX());
 								rectangle_e.setAttribute("y",
@@ -905,7 +912,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							.values()) {
 						final Element answer_e = doc.createElement("Answer");
 						answer_e.setAttribute("isCorrect",
-								"" + answer.isCorrect());
+								booleanToString(answer.isCorrect()));
 						;
 						answer_e.appendChild(doc.createTextNode(answer
 								.getText()));
@@ -1013,5 +1020,15 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		if (resource_id == null)
 			return get_resource_php;
 		return get_resource_php + "&resource_id=" + resource_id;
+	}
+
+	public static boolean parseBoolean(String text) {
+		if (text != null && text.toLowerCase().equals("yes"))
+			return true;
+		return false;
+	}
+
+	public static String booleanToString(boolean b) {
+		return b ? "yes" : "no";
 	}
 }
