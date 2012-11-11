@@ -56,12 +56,12 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				// enums are initialized before any static initializers are run
 				private static Map<String, Type> name2TypeMap = new HashMap<String, Type>();
 				private static Map<String, Type> typeName2TypeMap = new HashMap<String, Type>();
-				private static Map<String, Type> attribute2TypeMap = new HashMap<String, Type>();
+				private static Map<String, Type> attributeValue2TypeMap = new HashMap<String, Type>();
 				static {
 					for (final Type type : values()) {
 						name2TypeMap.put(type.getName(), type);
 						typeName2TypeMap.put(type.getTypeName(), type);
-						attribute2TypeMap.put(type.getAttribute(), type);
+						attributeValue2TypeMap.put(type.getAttributeValue(), type);
 					}
 				}
 
@@ -79,11 +79,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					return name.replaceAll(" ", "");
 				}
 
-				public String getAttribute() {
-					final String type_name = getTypeName();
-					final String first = type_name.substring(0, 1);
-					final String rest = type_name.substring(1);
-					return first.toLowerCase() + rest;
+				public String getAttributeValue() {
+					return getTypeName().toLowerCase();
 				}
 
 				public static Type getTypeByName(String name) {
@@ -94,8 +91,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					return typeName2TypeMap.get(name);
 				}
 
-				public static Type getTypeByAttribute(String name) {
-					return attribute2TypeMap.get(name);
+				public static Type getTypeByAttributeValue(String name) {
+					return attributeValue2TypeMap.get(name);
 				}
 			}
 
@@ -651,7 +648,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					page_e.getElementsByTagName("Widget"));
 			for (final Node widget_n : widget_nl) {
 				final Element widget_e = (Element) widget_n;
-				final Type item_type = Type.getTypeByAttribute(widget_e
+				final Type item_type = Type.getTypeByAttributeValue(widget_e
 						.getAttribute("type"));
 				itemTypeCombinationsFound[itemTypeCombinationsFoundCount++] = item_type;
 				switch (item_type) {
@@ -816,7 +813,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			final Type[] item_types = page.getItemTypeCombination();
 			for (Type item_type : item_types) {
 				final Element widget_e = doc.createElement("Widget");
-				widget_e.setAttribute("type", item_type.getAttribute());
+				widget_e.setAttribute("type", item_type.getAttributeValue());
 
 				switch (item_type) {
 				case IMAGE:
