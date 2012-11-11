@@ -752,9 +752,11 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					page.getRangeQuizItem().setText(
 							getTextValue(range_quiz_e, "Question"));
 					page.getRangeQuizItem().setMin(
-							Double.valueOf(getTextValue(range_quiz_e, "Min")));
+							Double.valueOf(range_quiz_e
+									.getAttribute("minValue")));
 					page.getRangeQuizItem().setMax(
-							Double.valueOf(getTextValue(range_quiz_e, "Max")));
+							Double.valueOf(range_quiz_e
+									.getAttribute("maxValue")));
 					break;
 				case TEXT:
 					page.getTextItem().setText(
@@ -922,19 +924,15 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							.getTypeName());
 					final RangeQuizItem range_quiz_item = page
 							.getRangeQuizItem();
+					range_quiz_e.setAttribute("minValue",
+							"" + range_quiz_item.getMin());
+					range_quiz_e.setAttribute("maxValue",
+							"" + range_quiz_item.getMax());
 					final Element range_question_e = doc
 							.createElement("Question");
 					range_question_e.appendChild(doc
 							.createTextNode(range_quiz_item.getText()));
 					range_quiz_e.appendChild(range_question_e);
-					final Element min_e = doc.createElement("Min");
-					min_e.appendChild(doc.createTextNode(""
-							+ range_quiz_item.getMin()));
-					range_quiz_e.appendChild(min_e);
-					final Element max_e = doc.createElement("Max");
-					max_e.appendChild(doc.createTextNode(""
-							+ range_quiz_item.getMax()));
-					range_quiz_e.appendChild(max_e);
 					widget_e.appendChild(range_quiz_e);
 					break;
 				case TEXT:
