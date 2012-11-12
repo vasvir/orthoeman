@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema targetNamespace="http://orthoeman.lan/"
+<xs:schema targetNamespace="http://orthoeman.org/"
            elementFormDefault="qualified"
-           xmlns="http://orthoeman.lan/"
+           xmlns="http://orthoeman.org/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
         >
 
@@ -50,15 +50,22 @@
 
     <!-- definition of complex types-->
     <xs:complexType name="PageType">
-        <xs:sequence>
+        <!-- <xs:sequence>
             <xs:element name="Widget" type="WidgetComplexType" minOccurs="2" maxOccurs="2"/>
-        </xs:sequence>
+        </xs:sequence> -->
+        <xs:choice minOccurs="2" maxOccurs="2">
+            <xs:element name="Text" type="UnconstrainedText"/>
+            <xs:element name="Quiz" type="QuizType"/>
+            <xs:element name="Image" type="ComplexImageType"/>
+            <xs:element name="Video" type="VideoType"/>
+            <xs:element name="RangeQuiz" type="InputValueType"/>
+        </xs:choice>
         <xs:attribute name="title" type="xs:string" use="optional"/>
         <xs:attribute name="grade" type="GradeType" use="required"/>
-        <xs:attribute name="blocked" type="YesNoValues" use="required"/>
+        <xs:attribute name="block" type="YesNoValues" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="WidgetComplexType">
+   <!-- <xs:complexType name="WidgetComplexType">
         <xs:choice>
             <xs:element name="Text" type="UnconstrainedText"/>
             <xs:group ref="QuizGroupElements"/>
@@ -67,23 +74,38 @@
             <xs:element name="Input" type="InputValueType"/>
         </xs:choice>
         <xs:attribute name="type" type="WidgetTypeValues" use="required"/>
-    </xs:complexType>
+    </xs:complexType>   -->
 
 
     <xs:complexType name="ComplexImageType">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element name="Circle" type="CircleType"/>
             <xs:element name="Ellipse" type="EllipseType"/>
-            <xs:element name="Rect" type="RectType"/>
+            <xs:element name="Rectangle" type="RectType"/>
             <xs:element name="Polygon" type="PolygonType"/>
         </xs:choice>
         <xs:attribute name="showRegions" type="YesNoValues" use="required"/>
-        <xs:attribute name="hotspots" type="YesNoValues" use="optional"/>
+        <!-- <xs:attribute name="hotspots" type="YesNoValues" use="optional"/> -->
         <xs:attribute name="width" type="xs:integer" use="required"/>
         <xs:attribute name="height" type="xs:integer" use="required"/>
         <xs:attribute name="id" type="xs:integer" use="required"/>
-        <xs:attribute name="maxSpots" type="xs:integer" use="optional"/>
+        <!-- <xs:attribute name="maxSpots" type="xs:integer" use="optional"/> -->
         <xs:attribute name="enableTracking" type="YesNoValues" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="QuizType">
+        <xs:sequence>
+            <xs:element name="Question" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Answer" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="isCorrect" type="YesNoValues" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="VideoType">
@@ -99,7 +121,7 @@
 
     <xs:complexType name="InputValueType">
         <xs:all>
-            <xs:element name="Question" type="UnconstrainedText" minOccurs="1"/>
+            <xs:element name="Question" type="UnconstrainedText" minOccurs="1" maxOccurs="1"/>
         </xs:all>
         <xs:attribute name="minValue" type="xs:float" use="required"/>
         <xs:attribute name="maxValue" type="xs:float" use="required"/>
@@ -110,14 +132,14 @@
             <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="radius" type="xs:integer" use="required"/>
-        <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="isHotSpot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="EllipseType">
         <xs:sequence>
             <xs:element name="Center" type="PointType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="isHotSpot" type="YesNoValues" use="required"/>
         <xs:attribute name="radiusX" type="xs:integer" use="required"/>
         <xs:attribute name="radiusY" type="xs:integer" use="required"/>
     </xs:complexType>
@@ -126,7 +148,7 @@
         <xs:all>
             <xs:element name="Point" type="PointType"/>
         </xs:all>
-        <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="isHotSpot" type="YesNoValues" use="required"/>
         <xs:attribute name="width" type="xs:integer" use="required" />
         <xs:attribute name="height" type="xs:integer" use="required" />
     </xs:complexType>
@@ -135,7 +157,7 @@
         <xs:sequence>
             <xs:element name="Point" type="PointType" minOccurs="3" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="isHotspot" type="YesNoValues" use="required"/>
+        <xs:attribute name="isHotSpot" type="YesNoValues" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="PointType">
@@ -151,20 +173,7 @@
         </xs:choice>
     </xs:group>
 
-    <xs:group name="QuizGroupElements">
-        <xs:sequence>
-            <xs:element name="Question" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Answer" minOccurs="1" maxOccurs="unbounded">
-                <xs:complexType>
-                    <xs:simpleContent>
-                        <xs:extension base="xs:string">
-                            <xs:attribute name="isCorrect" type="YesNoValues" use="required"/>
-                        </xs:extension>
-                    </xs:simpleContent>
-                </xs:complexType>
-            </xs:element>
-        </xs:sequence>
-    </xs:group>
+
 
     <!--definition of elements-->
 
