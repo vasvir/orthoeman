@@ -59,13 +59,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				// enums are initialized before any static initializers are run
 				private static Map<String, Type> name2TypeMap = new HashMap<String, Type>();
 				private static Map<String, Type> typeName2TypeMap = new HashMap<String, Type>();
-				private static Map<String, Type> attributeValue2TypeMap = new HashMap<String, Type>();
 				static {
 					for (final Type type : values()) {
 						name2TypeMap.put(type.getName(), type);
 						typeName2TypeMap.put(type.getTypeName(), type);
-						attributeValue2TypeMap.put(type.getAttributeValue(),
-								type);
 					}
 				}
 
@@ -93,10 +90,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 				public static Type getTypeByTypeName(String name) {
 					return typeName2TypeMap.get(name);
-				}
-
-				public static Type getTypeByAttributeValue(String name) {
-					return attributeValue2TypeMap.get(name);
 				}
 			}
 
@@ -653,7 +646,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			for (final Node widget_n : widget_nl) {
 				final Element widget_e = (Element) widget_n;
 				final Type item_type = Type.getTypeByTypeName(widget_e
-						.getNodeName());
+						.getTagName());
 				itemTypeCombinationsFound[itemTypeCombinationsFoundCount++] = item_type;
 				switch (item_type) {
 				case IMAGE:
