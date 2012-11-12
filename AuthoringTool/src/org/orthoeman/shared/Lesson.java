@@ -709,19 +709,30 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								points.add(point);
 							}
 							drawing = new Polygon(kind, points);
-						} else if (tagname.equals("Ellipse")
-								|| tagname.equals("Rectangle")) {
-							final int x = Integer.valueOf(drawing_e
+						} else if (tagname.equals("Ellipse")) {
+							final int width = Integer.valueOf(drawing_e
+									.getAttribute("radiusX")) * 2;
+							final int height = Integer.valueOf(drawing_e
+									.getAttribute("radiusY")) * 2;
+							final Element center_e = (Element) drawing_e
+									.getElementsByTagName("Center").item(0);
+							final int x = Integer.valueOf(center_e
 									.getAttribute("x"));
-							final int y = Integer.valueOf(drawing_e
+							final int y = Integer.valueOf(center_e
 									.getAttribute("y"));
+							drawing = new Ellipse(kind, x, y, width, height);
+						} else if (tagname.equals("Rectangle")) {
 							final int width = Integer.valueOf(drawing_e
 									.getAttribute("width"));
 							final int height = Integer.valueOf(drawing_e
 									.getAttribute("height"));
-							drawing = tagname.equals("Ellipse") ? new Ellipse(
-									kind, x, y, width, height) : new Rectangle(
-									kind, x, y, width, height);
+							final Element top_left_point_e = (Element) drawing_e
+									.getElementsByTagName("Point").item(0);
+							final int x = Integer.valueOf(top_left_point_e
+									.getAttribute("x"));
+							final int y = Integer.valueOf(top_left_point_e
+									.getAttribute("y"));
+							drawing = new Rectangle(kind, x, y, width, height);
 						} else {
 							Log.error("Unknown drawing type " + tagname);
 							continue;
@@ -833,14 +844,15 @@ public class Lesson extends ArrayList<Lesson.Page> {
 												"isHotSpot",
 												booleanToString(ellipse
 														.getKind() == Kind.BLOCKING));
-								ellipse_e
-										.setAttribute("x", "" + ellipse.getX());
-								ellipse_e
-										.setAttribute("y", "" + ellipse.getY());
-								ellipse_e.setAttribute("width",
-										"" + ellipse.getWidth());
-								ellipse_e.setAttribute("height",
-										"" + ellipse.getHeight());
+								ellipse_e.setAttribute("radiusX",
+										"" + ellipse.getWidth() / 2);
+								ellipse_e.setAttribute("radiusY",
+										"" + ellipse.getHeight() / 2);
+								final Element center_e = doc
+										.createElement("Center");
+								center_e.setAttribute("x", "" + ellipse.getX());
+								center_e.setAttribute("y", "" + ellipse.getY());
+								ellipse_e.appendChild(center_e);
 								image_e.appendChild(ellipse_e);
 								break;
 							case POLYGON:
@@ -870,14 +882,17 @@ public class Lesson extends ArrayList<Lesson.Page> {
 												"isHotSpot",
 												booleanToString(rectangle
 														.getKind() == Kind.BLOCKING));
-								rectangle_e.setAttribute("x",
-										"" + rectangle.getX());
-								rectangle_e.setAttribute("y",
-										"" + rectangle.getY());
 								rectangle_e.setAttribute("width", ""
 										+ rectangle.getWidth());
 								rectangle_e.setAttribute("height", ""
 										+ rectangle.getHeight());
+								final Element top_left_point_e = doc
+										.createElement("Point");
+								top_left_point_e.setAttribute("x", ""
+										+ rectangle.getX());
+								top_left_point_e.setAttribute("y", ""
+										+ rectangle.getY());
+								rectangle_e.appendChild(top_left_point_e);
 								image_e.appendChild(rectangle_e);
 								break;
 							case CROSS:
