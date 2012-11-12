@@ -29,6 +29,9 @@ import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
 public class Lesson extends ArrayList<Lesson.Page> {
+	private static final String namespace = "http://orthoeman.gr/";
+	private static final String schemaLocation = namespace + "orthoeman.xsd";
+
 	public interface PageListener {
 		public void pageAdded(Page page);
 
@@ -801,11 +804,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		final Document doc = XMLParser.createDocument();
 
 		final Element root_e = doc.createElement("Lesson");
-		root_e.setAttribute("xmlns", "http://orthoeman.iit.demokritos.gr/");
+		root_e.setAttribute("xmlns", namespace);
 		root_e.setAttribute("xmlns:xsi",
 				"http://www.w3.org/2001/XMLSchema-instance");
-		root_e.setAttribute("xsi:schemaLocation",
-				"http://orthoeman.iit.demokritos.gr/orthoeman.xsd");
+		root_e.setAttribute("xsi:schemaLocation", schemaLocation);
 
 		for (final Page page : lesson) {
 			final Element page_e = doc.createElement("Page");
@@ -965,7 +967,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		doc.appendChild(root_e);
 
 		return doc.toString().replaceAll("<Lesson",
-				"<Lesson xmlns=\"http://orthoeman.iit.demokritos.gr/\"");
+				"<Lesson xmlns=\"" + namespace + "\"");
 	}
 
 	private void notifyPageListeners(Page page, boolean added) {
