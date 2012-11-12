@@ -29,7 +29,7 @@ import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
 public class Lesson extends ArrayList<Lesson.Page> {
-	private static final String namespace = "http://orthoeman.gr/";
+	private static final String namespace = "http://orthoeman.org/";
 	private static final String schemaLocation = namespace + "orthoeman.xsd";
 
 	public interface PageListener {
@@ -649,17 +649,15 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			int itemTypeCombinationsFoundCount = 0;
 
 			final NodeListWrapperList widget_nl = new NodeListWrapperList(
-					page_e.getElementsByTagName("Widget"));
+					page_e.getChildNodes());
 			for (final Node widget_n : widget_nl) {
 				final Element widget_e = (Element) widget_n;
-				final Type item_type = Type.getTypeByAttributeValue(widget_e
-						.getAttribute("type"));
+				final Type item_type = Type.getTypeByTypeName(widget_e
+						.getNodeName());
 				itemTypeCombinationsFound[itemTypeCombinationsFoundCount++] = item_type;
 				switch (item_type) {
 				case IMAGE:
-					final Element image_e = (Element) widget_e
-							.getElementsByTagName(item_type.getTypeName())
-							.item(0);
+					final Element image_e = widget_e;
 					final String id = image_e.getAttribute("id");
 					if (id != null) {
 						final ImageItem image_item = page.getImageItem();
@@ -732,9 +730,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					}
 					break;
 				case QUIZ:
-					final Element quiz_e = (Element) widget_e
-							.getElementsByTagName(item_type.getTypeName())
-							.item(0);
+					final Element quiz_e = widget_e;
 					page.getQuizItem()
 							.setText(getTextValue(quiz_e, "Question"));
 					final NodeListWrapperList answer_nl = new NodeListWrapperList(
@@ -749,9 +745,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					}
 					break;
 				case RANGE_QUIZ:
-					final Element range_quiz_e = (Element) widget_e
-							.getElementsByTagName(item_type.getTypeName())
-							.item(0);
+					final Element range_quiz_e = widget_e;
 					page.getRangeQuizItem().setText(
 							getTextValue(range_quiz_e, "Question"));
 					page.getRangeQuizItem().setMin(
@@ -762,13 +756,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 									.getAttribute("maxValue")));
 					break;
 				case TEXT:
-					page.getTextItem().setText(
-							getTextValue(widget_e, item_type.getTypeName()));
+					page.getTextItem().setText(getTextValue(widget_e));
 					break;
 				case VIDEO:
-					final Element video_e = (Element) widget_e
-							.getElementsByTagName(item_type.getTypeName())
-							.item(0);
+					final Element video_e = widget_e;
 					final NodeListWrapperList source_nl = new NodeListWrapperList(
 							video_e.getElementsByTagName("Source"));
 					final Collection<VideoItem.Source> sources = new ArrayList<VideoItem.Source>();
@@ -817,9 +808,6 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 			final Type[] item_types = page.getItemTypeCombination();
 			for (Type item_type : item_types) {
-				final Element widget_e = doc.createElement("Widget");
-				widget_e.setAttribute("type", item_type.getAttributeValue());
-
 				switch (item_type) {
 				case IMAGE:
 					final Element image_e = doc.createElement(item_type
@@ -900,7 +888,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							}
 						}
 					}
-					widget_e.appendChild(image_e);
+					page_e.appendChild(image_e);
 					break;
 				case QUIZ:
 					final Element quiz_e = doc.createElement(item_type
@@ -919,7 +907,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 								.getText()));
 						quiz_e.appendChild(answer_e);
 					}
-					widget_e.appendChild(quiz_e);
+					page_e.appendChild(quiz_e);
 					break;
 				case RANGE_QUIZ:
 					final Element range_quiz_e = doc.createElement(item_type
@@ -935,14 +923,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 					range_question_e.appendChild(doc
 							.createTextNode(range_quiz_item.getText()));
 					range_quiz_e.appendChild(range_question_e);
-					widget_e.appendChild(range_quiz_e);
+					page_e.appendChild(range_quiz_e);
 					break;
 				case TEXT:
 					final Element text_e = doc.createElement(item_type
 							.getTypeName());
 					text_e.appendChild(doc.createTextNode(page.getTextItem()
 							.getText()));
-					widget_e.appendChild(text_e);
+					page_e.appendChild(text_e);
 					break;
 				case VIDEO:
 					final Element video_e = doc.createElement(item_type
@@ -955,10 +943,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						// source_e.setAttribute("codecs", source.codecs);
 						video_e.appendChild(source_e);
 					}
-					widget_e.appendChild(video_e);
+					page_e.appendChild(video_e);
 					break;
 				}
-				page_e.appendChild(widget_e);
 			}
 
 			root_e.appendChild(page_e);
