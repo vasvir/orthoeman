@@ -3,68 +3,53 @@ Display:
 	timeout option
 	Add the capability to run the course 3 times - Tracking
 
-Authoring Tool:
-	Code:
-		-CheckBox vs SimpleCheckBox: SimpleCheckBox does not
-		have valueChangeHandler althouch ClickHandler works ok. CheckBox
-		does not have static .wrap method
+Later:
+	Authoring Tool:
+		Code:
+			-CheckBox vs SimpleCheckBox: SimpleCheckBox does not
+			have valueChangeHandler althouch ClickHandler works ok. CheckBox
+			does not have static .wrap method
 
-		use private variables to store containers and DOM stuff
+			use private variables to store containers and DOM stuff
 
-		have a common way to represent
-			-document loading
-			-document changes via widgets
-			-document changes via program logic (undo / redo)
-				The way to do this is the following
-				Implement Lesson listener that spawns events
-				on document change. All widget should listen
-				for document changes and update their selves
+			have a common way to represent
+				-document loading
+				-document changes via widgets
+				-document changes via program logic (undo / redo)
+					The way to do this is the following
+					Implement Lesson listener that spawns events
+					on document change. All widget should listen
+					for document changes and update their selves
 
-	Build:
-		fix gwt compilation. With this we could automate the deploy
-
-	Later:
-		up down via drag & drop. Note that buttons don't seem to be
-		able to listen to drag events
-
-	HTML:
-		IE:
-			eraser svg icon
-			scrollbars are counted in the box model. Find the fix
-
-		Firefox:
-			also gets wrong the horizontall scrollbar
-
-	Requirements:
-		Positive, Negative points
-		Timeout option
-
-
-Moodle Integration:
-	Authentication - Authorization (moodle should provide us with some id)
-	Use data backend for storing resources (xml & images & videos)
-	Tracking - Display tool should be able to inform moodle about the progress / grades of the student
+			up down via drag & drop. Note that buttons don't seem to be
+			able to listen to drag events
 
 	Moodle:
-		share orthoeman activities
 		show documents inline (may require a plugin)
-
-	Use moodle file facilities for storing and retrieving files
-
-Task list:
-	Moodle integration
-	XML schema discussions
-
+		Use moodle file facilities for storing and retrieving files
 
 Immediate:
 	Image:
 		enable tracking checkbox
 		showRegions checbox
+		isHotSpot checkbox
 
-	Blocking /Informational -> mark as hotspot 
-		enable draw hotspot - force user to detect
+	PHP:
+		Title, Abstract/Introduction, Timeout get_details.php?
+		on save delete non used resources
+		On duplication I get Fatal error: Class 'backup_orthoeman_activity_task' not found in /usr/share/moodle/backup/util/factories/backup_factory.class.php on line 107
 
-	on save delete non used resources
+	HTML:
+		IE:
+			eraser svg icon
+			self created do not have proper width and height svg buttons
+			scrollbars are counted in the box model. Find the fix
 
+		Firefox:
+			also gets wrong the horizontall scrollbar
 
-	PHP: On duplication I get Fatal error: Class 'backup_orthoeman_activity_task' not found in /usr/share/moodle/backup/util/factories/backup_factory.class.php on line 107
+	Discussion:
+		Positive, Negative points
+		Timeout option
+		Tracking - Display tool should be able to inform moodle about the progress / grades of the
+			student, submit.php get_submission.php
