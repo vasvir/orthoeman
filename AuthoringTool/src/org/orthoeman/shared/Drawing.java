@@ -15,8 +15,7 @@ public abstract class Drawing {
 	}
 
 	public enum Kind {
-		BLOCKING("Blocking"), INFORMATIONAL("Informational"), HELPER("Helper"), ZOOM(
-				"Zoom");
+		HOTSPOT("HotSpot"), INFO("Info"), HELPER("Helper"), ZOOM("Zoom");
 
 		private final String displayName;
 		private static final Map<String, Kind> display_name_map = new HashMap<String, Kind>();
@@ -63,9 +62,9 @@ public abstract class Drawing {
 	public abstract double distance(Point point);
 
 	public String getColor() {
-		if (getKind() == Kind.BLOCKING)
+		if (getKind() == Kind.HOTSPOT)
 			return drawingBlockingColor;
-		if (getKind() == Kind.INFORMATIONAL)
+		if (getKind() == Kind.INFO)
 			return drawingInformationalColor;
 		if (getKind() == Kind.HELPER) {
 			if (getType() == Type.ERASER)

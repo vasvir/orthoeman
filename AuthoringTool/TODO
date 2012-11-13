@@ -1,6 +1,4 @@
 Display:
-	on reload user spots should be visible
-	timeout option
 	Add the capability to run the course 3 times - Tracking
 
 Later:
@@ -29,11 +27,6 @@ Later:
 		Use moodle file facilities for storing and retrieving files
 
 Immediate:
-	Image:
-		enable tracking checkbox
-		showRegions checbox
-		isHotSpot checkbox
-
 	PHP:
 		Title, Abstract/Introduction, Timeout get_details.php?
 		on save delete non used resources
@@ -50,6 +43,5 @@ Immediate:
 
 	Discussion:
 		Positive, Negative points
-		Timeout option
 		Tracking - Display tool should be able to inform moodle about the progress / grades of the
 			student, submit.php get_submission.php
