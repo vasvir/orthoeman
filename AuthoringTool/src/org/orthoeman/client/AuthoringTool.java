@@ -62,6 +62,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Label;
@@ -112,6 +113,8 @@ public class AuthoringTool implements EntryPoint {
 	private Canvas canvas;
 	private Canvas back_canvas;
 	private ListBox areaTypeCombobox;
+	private SimpleCheckBox enableTracking_cb;
+	private SimpleCheckBox showRegions_cb;
 
 	private TextBox weight_tb;
 	private SimpleCheckBox block_cb;
@@ -123,7 +126,7 @@ public class AuthoringTool implements EntryPoint {
 
 	private final Queue<UserDrawingRequest> udr_queue = new LinkedList<UserDrawingRequest>();
 
-	private Collection<Button> image_edit_buttons;
+	private Collection<FocusWidget> image_edit_buttons;
 
 	private UserDrawingRequest udr;
 	private Ellipse ellipse;
@@ -564,14 +567,17 @@ public class AuthoringTool implements EntryPoint {
 		final Button cross_b = getButton("crossButton");
 		final Button erase_b = getButton("eraseButton");
 		final Button edit_image_b = getButton("editImageButton");
-
-		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
-				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
-				polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b);
+		enableTracking_cb = getSimpleCheckBox("enableTrackingCheckBox");
+		showRegions_cb = getSimpleCheckBox("showRegionsCheckBox");
 
 		areaTypeCombobox = getListBox("areaTypeCombobox");
 		areaTypeCombobox.addItem(Drawing.Kind.BLOCKING.getDisplayName());
 		areaTypeCombobox.addItem(Drawing.Kind.INFORMATIONAL.getDisplayName());
+
+		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
+				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
+				polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b,
+				areaTypeCombobox, enableTracking_cb, showRegions_cb);
 
 		if (work_around_bug) {
 			getTextContainer();
@@ -1190,6 +1196,22 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		enableTracking_cb.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				getCurrentPage().getImageItem().setEnableTracking(
+						enableTracking_cb.getValue());
+			}
+		});
+
+		showRegions_cb.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				getCurrentPage().getImageItem().setShowRegions(
+						showRegions_cb.getValue());
+			}
+		});
+
 		// video
 		final SingleUploader video_uploader = new SingleUploaderModal();
 		video_uploader
@@ -1553,6 +1575,9 @@ public class AuthoringTool implements EntryPoint {
 				text_text_area.setText(page.getTextItem().getText());
 				break;
 			case IMAGE:
+				enableTracking_cb.setValue(page.getImageItem()
+						.isEnableTracking());
+				showRegions_cb.setValue(page.getImageItem().isShowRegions());
 				imageContainer.setVisible(true);
 				redrawCanvas();
 				break;
@@ -1730,10 +1755,10 @@ public class AuthoringTool implements EntryPoint {
 		context.stroke();
 	}
 
-	private void setButtonsEnabled(Collection<Button> buttons, boolean enabled) {
-		for (final Button button : buttons)
+	private static void setButtonsEnabled(Collection<FocusWidget> buttons,
+			boolean enabled) {
+		for (final FocusWidget button : buttons)
 			button.setEnabled(enabled);
-		areaTypeCombobox.setEnabled(enabled);
 	}
 
 	private void startDrawingOperation(UserDrawingRequest udr, int x, int y) {

@@ -270,6 +270,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			private PreloadedImage image;
 			private Zoom zoom = new Zoom();
 			private DrawingList drawings = new DrawingList();
+			private boolean enableTracking;
+			private boolean showRegions = true;
 
 			public ImageItem() {
 				super(Type.IMAGE);
@@ -303,8 +305,24 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				return drawings;
 			}
 
+			public boolean isShowRegions() {
+				return showRegions;
+			}
+
+			public void setEnableTracking(boolean enableTracking) {
+				this.enableTracking = enableTracking;
+			}
+
 			public static String getImageIdString(String response_text) {
 				return response_text.split(":")[0];
+			}
+
+			public void setShowRegions(boolean showRegions) {
+				this.showRegions = showRegions;
+			}
+
+			public boolean isEnableTracking() {
+				return enableTracking;
 			}
 		}
 
@@ -652,8 +670,13 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				case IMAGE:
 					final Element image_e = widget_e;
 					final String id = image_e.getAttribute("id");
+
+					final ImageItem image_item = page.getImageItem();
+					image_item.setShowRegions(parseBoolean(image_e
+							.getAttribute("showRegions")));
+					image_item.setEnableTracking(parseBoolean(image_e
+							.getAttribute("enableTracking")));
 					if (id != null) {
-						final ImageItem image_item = page.getImageItem();
 						image_item.setId(id);
 						final String url = getResourceURL(orthoeman_id, id);
 						/*
@@ -818,6 +841,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 							.getTypeName());
 					// image.setAttribute("showRegions", "yes");
 					final ImageItem image_item = page.getImageItem();
+					image_e.setAttribute("showRegions",
+							booleanToString(image_item.isShowRegions()));
+					image_e.setAttribute("enableTracking",
+							booleanToString(image_item.isEnableTracking()));
 					final String id = image_item.getId();
 					if (id != null) {
 						image_e.setAttribute("id", id);
