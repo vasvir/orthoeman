@@ -708,8 +708,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						final Element drawing_e = (Element) drawing_n;
 						final String tagname = drawing_e.getTagName();
 						final Kind kind = parseBoolean(drawing_e
-								.getAttribute("isHotSpot")) ? Kind.BLOCKING
-								: Kind.INFORMATIONAL;
+								.getAttribute("isHotSpot")) ? Kind.HOTSPOT
+								: Kind.INFO;
 						Drawing drawing = null;
 						if (tagname.equals("Polygon")) {
 							final NodeListWrapperList points_nl = new NodeListWrapperList(
@@ -863,7 +863,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 										.setAttribute(
 												"isHotSpot",
 												booleanToString(ellipse
-														.getKind() == Kind.BLOCKING));
+														.getKind() == Kind.HOTSPOT));
 								ellipse_e.setAttribute("radiusX",
 										"" + ellipse.getWidth() / 2);
 								ellipse_e.setAttribute("radiusY",
@@ -883,7 +883,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 										.setAttribute(
 												"isHotSpot",
 												booleanToString(polygon
-														.getKind() == Kind.BLOCKING));
+														.getKind() == Kind.HOTSPOT));
 								for (final Point point : polygon.getPoints()) {
 									final Element point_e = doc
 											.createElement("Point");
@@ -901,7 +901,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 										.setAttribute(
 												"isHotSpot",
 												booleanToString(rectangle
-														.getKind() == Kind.BLOCKING));
+														.getKind() == Kind.HOTSPOT));
 								rectangle_e.setAttribute("width", ""
 										+ rectangle.getWidth());
 								rectangle_e.setAttribute("height", ""

@@ -571,8 +571,8 @@ public class AuthoringTool implements EntryPoint {
 		showRegions_cb = getSimpleCheckBox("showRegionsCheckBox");
 
 		areaTypeCombobox = getListBox("areaTypeCombobox");
-		areaTypeCombobox.addItem(Drawing.Kind.BLOCKING.getDisplayName());
-		areaTypeCombobox.addItem(Drawing.Kind.INFORMATIONAL.getDisplayName());
+		areaTypeCombobox.addItem(Drawing.Kind.HOTSPOT.getDisplayName());
+		areaTypeCombobox.addItem(Drawing.Kind.INFO.getDisplayName());
 
 		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
 				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
