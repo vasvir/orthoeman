@@ -61,9 +61,16 @@ class mod_orthoeman_mod_form extends moodleform_mod {
         } else {
             $mform->setType('name', PARAM_CLEAN);
         }
+
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'orthoemanname', 'orthoeman');
+
+        // Adding the standard "intro" and "introformat" fields
+        $this->add_intro_editor();
+
+        $mform->addElement('duration', 'timeout', get_string('timeout', 'orthoeman'));
+        $mform->addHelpButton('timeout', 'timeout', 'orthoeman');
 
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
