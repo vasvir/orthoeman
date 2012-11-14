@@ -27,11 +27,6 @@ Later:
 		Use moodle file facilities for storing and retrieving files
 
 Immediate:
-	PHP:
-		Title, Abstract/Introduction, Timeout get_details.php?
-		on save delete non used resources
-		On duplication I get Fatal error: Class 'backup_orthoeman_activity_task' not found in /usr/share/moodle/backup/util/factories/backup_factory.class.php on line 107
-
 	HTML:
 		IE:
 			eraser svg icon
@@ -40,6 +35,9 @@ Immediate:
 
 		Firefox:
 			also gets wrong the horizontall scrollbar
+	PHP:
+		on save delete non used resources
+		On duplication I get Fatal error: Class 'backup_orthoeman_activity_task' not found in /usr/share/moodle/backup/util/factories/backup_factory.class.php on line 107
 
 	Discussion:
 		Positive, Negative points
