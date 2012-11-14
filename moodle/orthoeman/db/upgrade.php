@@ -151,6 +151,46 @@ function xmldb_orthoeman_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2007040200, 'orthoeman');
     }
 
+
+    // try to get a hook on the update procedure
+    if ($oldversion < 2012111402) {
+
+        // Define field intro to be added to orthoeman
+        $table = new xmldb_table('orthoeman');
+        $field = new xmldb_field('intro', XMLDB_TYPE_TEXT, 'big', null, null, null, null,'name');
+
+        // Add field intro
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field introformat to be added to orthoeman
+        $table = new xmldb_table('orthoeman');
+        $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0',
+            'intro');
+
+        // Add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+
+        // Define field timeout to be added to orthoeman
+        $table = new xmldb_table('orthoeman');
+        $field = new xmldb_field('timeout', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '7200',
+            'introformat');
+
+        // Add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+
+        // insert here code to perform some actions (same as in install.php)
+
+        upgrade_mod_savepoint(true, 2012111402, 'orthoeman');
+    }
+
     // And that's all. Please, examine and understand the 3 example blocks above. Also
     // it's interesting to look how other modules are using this script. Remember that
     // the basic idea is to have "blocks" of code (each one being executed only once,

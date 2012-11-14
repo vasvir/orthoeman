@@ -30,16 +30,18 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'Orthoeman';
+$string['modulename'] = 'OrthoEMan';
 $string['modulenameplural'] = 'orthoemans';
-$string['modulename_help'] = 'Use the orthoeman module for... | The orthoeman module allows...';
+$string['modulename_help'] = 'Use the OrthoEMan module for... | The OrthoEMan module allows...';
 $string['orthoemanfieldset'] = 'Custom example fieldset';
-$string['orthoemanname'] = 'orthoeman name';
+$string['orthoemanname'] = 'OrthoEMan activity title';
 $string['orthoemanname_help'] = 'This is the content of the help tooltip associated with the orthoemanname field. Markdown syntax is supported.';
-$string['orthoeman'] = 'orthoeman';
-$string['pluginadministration'] = 'Orthoeman Administration';
-$string['pluginname'] = 'Orthoeman';
-$string['orthoeman:view'] = 'Display an Orthoman lesson';
+$string['orthoeman'] = 'OrthoEMan';
+$string['pluginadministration'] = 'OrthoEMan Administration';
+$string['pluginname'] = 'OrthoEman';
+$string['orthoeman:view'] = 'Display an OrthoEMan lesson';
 $string['orthoeman:submit'] = 'Take the course and submit answers';
-$string['orthoeman:read'] = 'Read an Orthoman course';
-$string['orthoeman:write'] = 'Edit an Orthoman course';
+$string['orthoeman:read'] = 'Read an OrthoEMan course';
+$string['orthoeman:write'] = 'Edit an OrthoEMan course';
+$string['timeout'] = 'TimeOut';
+$string['timeout_help'] = 'Define the duration that is allowed for a lesson to be completed';
