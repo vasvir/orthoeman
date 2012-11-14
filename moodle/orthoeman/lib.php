@@ -33,6 +33,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 
+$ORTHOEMAN_TABLE = 'orthoeman';
 $RESOURCE_TABLE = 'orthoeman_resource';
 $TYPE_XML = 'XML';
 $TYPE_XML_VALUE = 0;
