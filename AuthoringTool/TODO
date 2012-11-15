@@ -29,8 +29,9 @@ Later:
 Immediate:
 	HTML:
 		IE:
-			eraser svg icon
-			self created do not have proper width and height svg buttons
+			Inside iframe/object
+				eraser svg icon
+				self created do not have proper width and height svg buttons
 			scrollbars are counted in the box model. Find the fix
 
 		Firefox:
