@@ -419,6 +419,7 @@ function get_current_url() {
 
 function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     // Request the launch content with an object tag
+    $url = $url . "&random=" . mt_rand();
     $frame_id = md5($url);
     $parent_id = "parent_$frame_id";
     $toggle_link_id = "toggle_link_$frame_id";
@@ -433,7 +434,8 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                 var orthoeman_frame_id = "'.$frame_id.'";
                 var orthoeman_toggle_link = '.($toggle_link ? "true" : "false").';
                 var orthoeman_toggle_link_html = orthoeman_toggle_link ? "<a id=\"'.$toggle_link_id.'\" href=\"#\" onclick=\"toggle_orthoeman();\"></a>" : "";
-                var orthoeman_frame = orthoeman_toggle_link_html + "<object id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" type=\"text/html\" data=\"' . $url . '\"></object>";
+                //var orthoeman_frame = orthoeman_toggle_link_html + "<object id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" type=\"text/html\" data=\"' . $url . '\"></object>";
+                var orthoeman_frame = orthoeman_toggle_link_html + "<iframe id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" src=\"' . $url . '\" frameborder=\"0\"></iframe>";
 
                 function init_orthoeman() {
                         if (orthoeman_initialized) {
