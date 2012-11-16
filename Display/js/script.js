@@ -74,7 +74,7 @@ $(document).ready(function () {
     };
     OrthoVariables.InitialQueryString = getUrlVars();
     OrthoVariables.disableturn = OrthoVariables.InitialQueryString["DisablePaging"] || OrthoVariables.disableturn;
-    console.log("id:" + OrthoVariables.InitialQueryString["id"]);
+    //console.log("id:" + OrthoVariables.InitialQueryString["id"]);
     $.getJSON(OrthoVariables.JsonUrl, {
         "action":1, "orthoeman_id":OrthoVariables.InitialQueryString.id, "name": OrthoVariables.InitialQueryString.name
     }, function (data) {
@@ -90,11 +90,21 @@ $(document).ready(function () {
             };
             OrthoVariables.scalePage[i] = 1;
             OrthoVariables.zoomPage[i] = 1;
+            OrthoVariables.PageTracking[i] = {
+                status:"pending",
+                grade:OrthoVariables.LessonData.Page[i].attributes.Grade,
+                nextpass:false,
+                submitbutton:false
+            };
+            OrthoVariables.lessonAnswers[i] = {
+                quiz:[],
+                hotspots:[]
+            };
         }
         displayFunctions();
         LoadImages("0");
         loadSpinControl("0");
-
+        //setTracking("0");
 
         ApplyRoundtoPages(1, 3);
         //DisableButtonLink("SubmitAnswer");
@@ -105,6 +115,7 @@ $(document).ready(function () {
 
 
 function getUrlVars() {
+    "use strict";
     var vars = [], hash;
     var hashes = window.location.href.replace("#", "").slice(window.location.href.indexOf('?') + 1).split('&');
     for (var i = 0; i < hashes.length; i++) {
@@ -166,8 +177,29 @@ function changedSpinControl(sender, newVal) {
 
 }
 
+function setTracking(Page) {
+   "use strict";
+    //console.log(Page,OrthoVariables.LessonData.Tracking[Page]);
+    var tracking = OrthoVariables.LessonData.Tracking[Page];
+    if (tracking !== undefined) {
+        switch (tracking.Type){
+            case 0:
+                break;
+            case 1:
+                $.each(tracking.Hotspots, function() {
+                    drawCircleHotSpot(Page,this.x, this.y, "yes", Page, true);
+                });
+                break;
+            case 2:
+                break;
+        }
+    }
+
+}
+
 function LoadImages(Page) {
     // Loading the Image to Canvas
+    "use strict";
     var imagesToLoad = [];
     var counter = 0;
     for (var i in OrthoVariables.LessonData.Images) {
@@ -323,104 +355,15 @@ function LoadImages(Page) {
             OrthoVariables.zoomMouse.isdown = false;
             OrthoVariables.zoomMouse.x = OrthoVariables.zoomMouse.y = - 1;
         });
-
         $("#container_" + imagesToLoad[i].id).dblclick({
             "pos":imagesToLoad[i].HotSpots
         }, function (event) {
             var id = getID(this.id);
+            var ishotspots = event.data.pos;
             var mystage = OrthoVariables.origCanvas[id][2];
             var mousepos = mystage.getMousePosition();
             if (mousepos !== undefined) {
-
-                var myshapelayer = mystage.get("#shapelayer")[0];
-                var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
-                var ishotspots = event.data.pos;
-                if (!OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"] && ishotspots === "yes") {
-                    if (OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "correct") {
-                        ShowMsg("You already answer it!", "highlight");
-                        return true;
-                    }
-                    if (OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "wrong" && OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes.Blocked === "no") {
-                        ShowMsg("You already answer it!", "highlight");
-                        return true;
-                    }
-                    var shapes = mystage.getIntersections({
-                        x:mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
-                        y:mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage])
-                    });
-                    if (shapes.length === 0) {
-                        var circle = new Kinetic.Circle({
-                            x:mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
-                            y:mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
-                            radius:10,
-                            fill:"#cb842e",
-                            stroke:"#cbb48f",
-                            strokeWidth:1,
-                            opacity:0.5,
-                            id:"circle_" + id
-                        });
-
-                        circle.on("mouseover", function () {
-                            $("#pointer_" + id).removeClass().addClass("erasercursor");
-                            var mousePos = mystage.getMousePosition();
-                            var x = (mousePos.x + 5) / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
-                            var y = (mousePos.y + 10) / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
-                            drawTooltip(mytooltip, x, y, "double click to remove");
-                            this.transitionTo({
-                                scale:{
-                                    x:1.7,
-                                    y:1.7
-                                },
-                                duration:0.3,
-                                easing:'ease-out'
-                            });
-                        });
-                        circle.on("mouseout", function () {
-                            SetCursor(id);
-                            mytooltip.hide();
-                            //$.each( mytooltip.getChildren(), function() { this.remove();});
-                            //mytooltip.remove();
-                            mytooltip.getLayer().draw();
-                            this.transitionTo({
-                                scale:{
-                                    x:1,
-                                    y:1
-                                },
-
-                                duration:0.3,
-                                easing:'ease-in'
-                            });
-                        });
-                        circle.on("dblclick", function () {
-                            if (OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "correct" ||
-                                (OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "wrong" && OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"] === "no" )) {
-                                return true;
-                            }
-                            OrthoVariables.clickcatch = true;
-                            //myshapelayer.remove(this);
-                            this.remove();
-                            OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].hotspots[circle._id] = undefined;
-                            var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
-                            mytooltip.hide();
-                            mystage.draw();
-                            SetCursor(id);
-                            DisableButtonLink("SubmitAnswer");
-                        });
-                        if (!OrthoVariables.clickcatch && !ReachMaxNumberHotSpots(OrthoVariables.lessonPage)) {
-                            myshapelayer.add(circle);
-                            OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].hotspots[circle._id] = [Math.round(mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage])), Math.round(mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]))];
-                            myshapelayer.draw();
-                            $("#pointer_" + id).removeClass().addClass("erasercursor");
-                            if (ReachMaxNumberHotSpots(OrthoVariables.lessonPage)) {
-                                EnableButtonLink("SubmitAnswer");
-                            }
-                        } else if (ReachMaxNumberHotSpots(OrthoVariables.lessonPage)) {
-                            ShowMsg("Reach maximum points. Please remove the previous to add new ones.", "highlight");
-                        }
-                        OrthoVariables.clickcatch = false;
-                    }
-                }
-
+                 drawCircleHotSpot(id, mousepos.x, mousepos.y, ishotspots, OrthoVariables.lessonPage,false);
             }
 
         });
@@ -482,6 +425,106 @@ function LoadImages(Page) {
     }
     OrthoVariables.lessonLoaded[parseInt(Page)] = true;
     if (counter > 0) { CheckResizeLimits(Page); }
+
+}
+
+function drawCircleHotSpot(id, x,y, ishotspots, lessonPage , isDraw) {
+    "use strict";
+       // var id = getID(this.id);
+        var mystage = OrthoVariables.origCanvas[id][2];
+        //console.log(id);
+        var mousepos = {"x" :x , "y" : y};
+        if (mousepos !== undefined) {
+
+            var myshapelayer = mystage.get("#shapelayer")[0];
+            var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
+            if (!OrthoVariables.buttonState[lessonPage].l && ishotspots === "yes") {
+                if (OrthoVariables.PageTracking[lessonPage].status === "correct") {
+                    ShowMsg("You already answer it!", "highlight");
+                    return true;
+                }
+                if (OrthoVariables.PageTracking[lessonPage].status === "wrong" && OrthoVariables.LessonData.Page[lessonPage].attributes.Blocked === "no") {
+                    ShowMsg("You already answer it!", "highlight");
+                    return true;
+                }
+                var shapes = mystage.getIntersections({
+                    x:mousepos.x / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage]),
+                    y:mousepos.y / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage])
+                });
+                if (shapes.length === 0) {
+                    var circle = new Kinetic.Circle({
+                        x:mousepos.x / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage]),
+                        y:mousepos.y / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage]),
+                        radius:10,
+                        fill:"#cb842e",
+                        stroke:"#cbb48f",
+                        strokeWidth:1,
+                        opacity:0.5,
+                        id:"circle_" + id
+                    });
+
+                    circle.on("mouseover", function () {
+                        $("#pointer_" + id).removeClass().addClass("erasercursor");
+                        var mousePos = mystage.getMousePosition();
+                        var x = (mousePos.x + 5) / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage]);
+                        var y = (mousePos.y + 10) / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage]);
+                        drawTooltip(mytooltip, x, y, "double click to remove");
+                        this.transitionTo({
+                            scale:{
+                                x:1.7,
+                                y:1.7
+                            },
+                            duration:0.3,
+                            easing:'ease-out'
+                        });
+                    });
+                    circle.on("mouseout", function () {
+                        SetCursor(id);
+                        mytooltip.hide();
+                        //$.each( mytooltip.getChildren(), function() { this.remove();});
+                        //mytooltip.remove();
+                        mytooltip.getLayer().draw();
+                        this.transitionTo({
+                            scale:{
+                                x:1,
+                                y:1
+                            },
+
+                            duration:0.3,
+                            easing:'ease-in'
+                        });
+                    });
+                    circle.on("dblclick", function () {
+                        if (OrthoVariables.PageTracking[lessonPage].status === "correct" ||
+                            (OrthoVariables.PageTracking[lessonPage].status === "wrong" && OrthoVariables.LessonData.Page[lessonPage].attributes.Blocked === "no" )) {
+                            return true;
+                        }
+                        OrthoVariables.clickcatch = true;
+                        //myshapelayer.remove(this);
+                        this.remove();
+                        OrthoVariables.lessonAnswers[lessonPage].hotspots[circle._id] = undefined;
+                        var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
+                        mytooltip.hide();
+                        mystage.draw();
+                        SetCursor(id);
+                        if (!isDraw) {DisableButtonLink("SubmitAnswer");}
+                    });
+                    if (!OrthoVariables.clickcatch && !ReachMaxNumberHotSpots(lessonPage)) {
+                        myshapelayer.add(circle);
+                        OrthoVariables.lessonAnswers[lessonPage].hotspots[circle._id] = [Math.round(mousepos.x / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage])), Math.round(mousepos.y / (OrthoVariables.scalePage[lessonPage]*OrthoVariables.zoomPage[lessonPage]))];
+                        myshapelayer.draw();
+                        $("#pointer_" + id).removeClass().addClass("erasercursor");
+                        if (ReachMaxNumberHotSpots(lessonPage) && !isDraw) {
+                            EnableButtonLink("SubmitAnswer");
+                        }
+                    } else if (ReachMaxNumberHotSpots(lessonPage)) {
+                        ShowMsg("Reach maximum points. Please remove the previous to add new ones.", "highlight");
+                    }
+                    OrthoVariables.clickcatch = false;
+                }
+            }
+
+        }
 }
 
 function drawTooltip(tooltip, x, y, text) {
@@ -539,8 +582,10 @@ function checkIntersections(id) {
                 if (intersectPoint.x !== 0 || intersectPoint.y !==0) {
                     var p1 = minPointY(points[0],points[1], intersectPoint);
                     var p2 = minPointY(t_points[0], t_points[1],intersectPoint);
+                    var p1A = maxPointY(points[0],points[1], intersectPoint);
+                    var p2A = maxPointY(t_points[0], t_points[1],intersectPoint);
                     var angle = calcAngles(p1.x, p1.y, intersectPoint.x, intersectPoint.y,p2.x, p2.y, intersectPoint.x, intersectPoint.y);
-                    addAngleCircle(intersectPoint.x,intersectPoint.y, groupline,angle,mystage, p1, p2);
+                    addAngleCircle(intersectPoint.x,intersectPoint.y, groupline,angle,mystage, p1, p2, p1A, p2A);
 
                 }
             }
@@ -567,7 +612,12 @@ function minPointY(pointA, pointB, pointX) {
     return (pointA.y < pointX.y ) ? pointA : pointB;
 }
 
-function addAngleCircle(x,y, group, angle, mystage, point1, point2) {
+function maxPointY(pointA,pointB, pointX) {
+    "use strict";
+    return (pointA.y< pointX.y) ? pointB : pointA;
+}
+
+function addAngleCircle(x,y, group, angle, mystage, point1, point2 ,point1A, point2A) {
     "use strict";
     var circle = new Kinetic.Circle({
         x:x, // / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
@@ -596,36 +646,85 @@ function addAngleCircle(x,y, group, angle, mystage, point1, point2) {
         //id:"leftAngleTip"
     });
 
-    var triangle = new Kinetic.Polygon({
+    var triangle1 = new Kinetic.Polygon({
        points: [x,y, point1.x,point1.y,point2.x, point2.y],
-        fill:"#FF550C",
+        fill:"#F74E0C",
         stroke:"#ff0000",
         strokeWidth:1,
         opacity:0.4,
         visible:false
     });
 
+    var triangle1A = triangle1.clone({
+        points: [x, y,point1A.x, point1A.y, point2A.x, point2A.y]
+    });
+
+
+    var triangle2 = triangle1.clone({
+       points:[x,y,point1.x,point1.y, point2A.x, point2A.y],
+        fill:"#38A008", stroke:"#00ff00"
+    });
+
+    var triangle2A = triangle2.clone({
+        points: [x,y,point1A.x, point1A.y,point2.x, point2.y]
+    });
+
+    var rect1 = new Kinetic.Rect({
+        fill:"#F74E0C",
+        stroke:"#ff0000",
+        strokeWidth:1,
+        opacity:0.7,
+        visible:false,
+        x: 72,
+        y: 8,
+        width : 20,
+        height: 20
+    });
+
+    var rect2 = rect1.clone({
+        x: 130,
+        y :8,
+        fill :"#38A008",
+        stroke: "#00ff00"
+    });
+     //group.setVisible(false);
 
     circle.on("mouseover", function() {
         OrthoVariables.isOverAngleCircle = true;
         var langlex = 0;
         var langley = -10;
-        drawTooltip(leftAngleTip,langlex , langley, "Angle is: " + angle + "⁰");
+        var r_angle = 180 - parseInt(angle,10);
+        drawTooltip(leftAngleTip,langlex , langley, "Angles:       " + angle + "⁰,        " + r_angle+   "⁰");
         //console.log(x,y,point1, point2);
         //console.log(moveAngleTip(point1.x,point2.x,x),moveAngleTipX(point1.y,point2.y,y));
         //drawTooltip(rightAngleTip,x + (x-langlex),langley, 180 - angle);
-        triangle.show();
+        triangle1.show();
+        triangle1A.show();
+        triangle2.show();
+        triangle2A.show();
+        rect1.show();
+        rect2.show();
         leftAngleTip.getLayer().draw();
     });
 
     circle.on("mouseout",function() {
        OrthoVariables.isOverAngleCircle = false;
         leftAngleTip.hide();
-         triangle.hide();
+        triangle1.hide();
+        triangle1A.hide();
+        triangle2.hide();
+        triangle2A.hide();
+        rect1.hide();
+        rect2.hide();
         leftAngleTip.getLayer().draw();
     });
     group.add(leftAngleTip);
-    group.add(triangle);
+    group.add(triangle1);
+    group.add(triangle1A);
+    group.add(triangle2);
+    group.add(triangle2A);
+    group.add(rect1);
+    group.add(rect2);
     group.add(circle);
 
 }
@@ -919,26 +1018,11 @@ function displayFunctions() {
 
         OrthoVariables.CurPage = page % 2 === 0 && page !== 1 ? page + 1 : page;
         var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages) ? -1 : ( Math.floor(OrthoVariables.CurPage / 2)) - 1;
-        if (OrthoVariables.lessonAnswers[lessonpage] === undefined) {
-            OrthoVariables.lessonAnswers[lessonpage] = {
-                quiz:[],
-                hotspots:[]
-            };
-        }
         OrthoVariables.lessonPage = lessonpage;
         ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
         LoadImages((OrthoVariables.lessonPage + 1).toString());
         loadSpinControl((OrthoVariables.lessonPage + 1).toString());
-        if (lessonpage >= 0) {
-            if (OrthoVariables.PageTracking[lessonpage] === undefined) {
-                OrthoVariables.PageTracking[lessonpage] = {
-                    status:"pending",
-                    grade:OrthoVariables.LessonData.Page[lessonpage].attributes.Grade,
-                    nextpass:false,
-                    submitbutton:false
-                };
-            }
-        }
+        setTracking((OrthoVariables.lessonPage + 1).toString());
         if (OrthoVariables.CurPage <= 1) {
             DisableButtonLink("PreviousTest");
             EnableButtonLink("NextTest");

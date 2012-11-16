@@ -227,10 +227,11 @@ section {
 
 #lesson .turn-page {
     /*background: url(../img/form-bg.png);*/
-    background: url(../img/notebook.png);
-    background-color: #FFFFFF;
+    background: url(../img/plainpaper1.png);
+    /*background-color: #FFFFFF;*/
     text-align: justify;
     overflow: auto;
+
    
 
 }
