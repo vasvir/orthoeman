@@ -419,7 +419,6 @@ function get_current_url() {
 
 function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     // Request the launch content with an object tag
-    $url = $url . "&random=" . mt_rand();
     $frame_id = md5($url);
     $parent_id = "parent_$frame_id";
     $toggle_link_id = "toggle_link_$frame_id";
