@@ -822,7 +822,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		final Document doc = XMLParser.createDocument();
 
 		final Element root_e = doc.createElement("Lesson");
-		root_e.setAttribute("xmlns", namespace);
+		// root_e.setAttribute("xmlns", namespace);
 		root_e.setAttribute("xmlns:xsi",
 				"http://www.w3.org/2001/XMLSchema-instance");
 		root_e.setAttribute("xsi:schemaLocation", schemaLocation);
@@ -988,8 +988,12 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		doc.appendChild(root_e);
 
-		return doc.toString().replaceAll("<Lesson",
-				"<Lesson xmlns=\"" + namespace + "\"");
+		final String xmlns_namespace = "xmlns=\"" + namespace + "\"";
+		return doc
+				.toString()
+				.replaceAll("<Lesson", "<Lesson " + xmlns_namespace)
+				.replaceAll(xmlns_namespace + " " + xmlns_namespace,
+						xmlns_namespace);
 	}
 
 	private void notifyPageListeners(Page page, boolean added) {
