@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $resource_rec = new Object();
                 $resource_rec->orthoeman_id = $orthoeman->id;
                 $resource_rec->type = $TYPE_VIDEO_VALUE;
-                $ffmpeg = preg_replace('/&/', '\\&', "ffmpeg -i $video_url -f $format -");
+                $ffmpeg = preg_replace('/&/', '\\&', "./video_convert.sh $video_url $format");
                 $resource_rec->data = `$ffmpeg`;
                 $resource_rec->md5 = md5($resource_rec->data);
                 $resource_rec->content_type = $format_to_content_type[$format];
