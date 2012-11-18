@@ -74,26 +74,9 @@ function set_range($range, $filesize, &$first, &$last){
   }
 }
 
-function buffered_read($file, $bytes, $buffer_size=1024){
+function byteserve($resource_rec){
   /*
-  Outputs up to $bytes from the file $file to standard output, $buffer_size bytes at a time.
-  */
-  $bytes_left=$bytes;
-  while($bytes_left>0 && !feof($file)){
-    if($bytes_left>$buffer_size)
-      $bytes_to_read=$buffer_size;
-    else
-      $bytes_to_read=$bytes_left;
-    $bytes_left-=$bytes_to_read;
-    $contents=fread($file, $bytes_to_read);
-    echo $contents;
-    flush();
-  }
-}
-
-function byteserve($filename){
-  /*
-  Byteserves the file $filename.  
+  Byteserves the resource_rec  $resource_rec.
 
   When there is a request for a single range, the content is transmitted 
   with a Content-Range header, and a Content-Length header showing the number 
@@ -104,8 +87,7 @@ function byteserve($filename){
   "multipart/byteranges".
   */
 
-  $filesize=filesize($filename);
-  $file=fopen($filename,"rb");
+  $filesize=strlen($resource_rec->data);
 
   $ranges=NULL;
   if ($_SERVER['REQUEST_METHOD']=='GET' && isset($_SERVER['HTTP_RANGE']) && $range=stristr(trim($_SERVER['HTTP_RANGE']),'bytes=')){
@@ -127,7 +109,7 @@ function byteserve($filename){
       foreach ($ranges as $range){
         set_range($range, $filesize, $first, $last);
         $content_length+=strlen("\r\n--$boundary\r\n");
-        $content_length+=strlen("Content-type: application/pdf\r\n");
+        $content_length+=strlen("Content-type: $resource_rec->content_type\r\n");
         $content_length+=strlen("Content-range: bytes $first-$last/$filesize\r\n\r\n");
         $content_length+=$last-$first+1;          
       }
@@ -142,10 +124,9 @@ function byteserve($filename){
       foreach ($ranges as $range){
         set_range($range, $filesize, $first, $last);
         echo "\r\n--$boundary\r\n";
-        echo "Content-type: application/pdf\r\n";
+        echo "Content-type: $resource_rec->content_type\r\n";
         echo "Content-range: bytes $first-$last/$filesize\r\n\r\n";
-        fseek($file,$first);
-        buffered_read ($file, $last-$first+1);          
+        echo substr($resource_rec->data, $first, $last-$first+1);
       }
       echo "\r\n--$boundary--\r\n";
     } else {
@@ -156,39 +137,27 @@ function byteserve($filename){
       set_range($range, $filesize, $first, $last);  
       header("Content-Length: ".($last-$first+1) );
       header("Content-Range: bytes $first-$last/$filesize");
-      header("Content-Type: application/pdf");  
-      fseek($file,$first);
-      buffered_read($file, $last-$first+1);
+      header("Content-Type: $resource_rec->content_type");  
+      echo substr($resource_rec->data, $first, $last-$first+1);
     }
   } else{
     //no byteserving
     header("Accept-Ranges: bytes");
     header("Content-Length: $filesize");
-    header("Content-Type: application/pdf");
-    readfile($filename);
+    header("Content-Type: $resource_rec->content_type");
+    echo $resource_rec->data;
   }
-  fclose($file);
 }
 
-function serve($filename, $download=0){
+function serve($resource_rec, $download=0){
   //Just serves the file without byteserving
   //if $download=true, then the save file dialog appears
-  $filesize=filesize($filename);
+  $filesize=strlen($resource_rec->data);
   header("Content-Length: $filesize");
-  header("Content-Type: application/pdf");
+  header("Content-Type: resource_rec->content_type");
   $filename_parts=pathinfo($filename);
-  if($download) header('Content-disposition: attachment; filename='.$filename_parts['basename']);
-  readfile($filename);
+  if($download) header('Content-disposition: attachment; filename=resource_'."$resource_rec->id");
+  echo $resource_rec->data;
 }
-
-//unset magic quotes; otherwise, file contents will be modified
-set_magic_quotes_runtime(0);
-
-//do not send cache limiter header
-ini_set('session.cache_limiter','none');
-
-
-$filename='myfile.pdf'; //this is the PDF file that will be byteserved
-byteserve($filename); //byteserve it!
 
 ?>

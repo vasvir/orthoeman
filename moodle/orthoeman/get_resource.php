@@ -31,6 +31,7 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+require_once(dirname(__FILE__).'/byte_serve.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
@@ -68,6 +69,11 @@ if (!$resource_rec) {
     require_capability("mod/orthoeman:read", $context);
   }
 
-  header('Content-type: ' . $resource_rec->content_type);
-  echo $resource_rec->data;
+  //unset magic quotes; otherwise, file contents will be modified
+  set_magic_quotes_runtime(0);
+ 
+  //do not send cache limiter header
+  ini_set('session.cache_limiter','none');
+ 
+  byteserve($resource_rec);
 }
