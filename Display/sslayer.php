@@ -2,8 +2,8 @@
 ob_start();
 //session_start();
 require_once('fb.php');
-//require_once('../../../config.php');
-//require_once('../lib.php');
+require_once('../../../config.php');
+require_once('../lib.php');
 
 $old = 0;
 $action = $_GET["action"];

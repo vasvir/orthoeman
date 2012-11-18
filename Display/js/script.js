@@ -94,7 +94,8 @@ $(document).ready(function () {
                 status:"pending",
                 grade:OrthoVariables.LessonData.Page[i].attributes.Grade,
                 nextpass:false,
-                submitbutton:false
+                submitbutton:false,
+                theory:false
             };
             OrthoVariables.lessonAnswers[i] = {
                 quiz:[],
@@ -110,6 +111,31 @@ $(document).ready(function () {
         //DisableButtonLink("SubmitAnswer");
 
         EnableButtonLink("NextTest");
+        // Check for theory  video/text or image/text and text/text
+        for (var i=0;i<OrthoVariables.LessonData.Page.length; i++) {
+            console.log("here");
+            if (OrthoVariables.LessonData.Page[i].Widget[0].type === "video" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="video" ) {
+                if (OrthoVariables.LessonData.Page[i].Widget[0].type === "text" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="text" ) {
+                    OrthoVariables.PageTracking[i].nextpass = true;
+                    OrthoVariables.PageTracking[i].theory = true;
+                }
+
+            } 
+            else if (OrthoVariables.LessonData.Page[i].Widget[0].type === "image" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="image" ) {
+                if (OrthoVariables.LessonData.Page[i].Widget[0].type === "text" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="text" ) {
+                    if (OrthoVariables.MaxHotSpots[i] === 0) {
+                        OrthoVariables.PageTracking[i].nextpass = true;
+                        OrthoVariables.PageTracking[i].theory = true;
+                    }
+                }
+            } 
+            else if (OrthoVariables.LessonData.Page[i].Widget[0].type === "text" && OrthoVariables.LessonData.Page[i].Widget[1].type ==="text" ) {
+                OrthoVariables.PageTracking[i].nextpass = true;
+                OrthoVariables.PageTracking[i].theory = true;
+            }
+        }
+
+
     });
 });
 
@@ -1683,6 +1709,7 @@ function ReachMaxNumberHotSpots(pageid) {
 
     var counter = 0;
     var hotspots = OrthoVariables.lessonAnswers[pageid].hotspots;
+    if (hotspots == 0) { return false; }
     for (var i = 0; i < hotspots.length; i++) {
         if (hotspots[i] !== undefined) {
             counter++;
