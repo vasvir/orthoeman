@@ -116,8 +116,8 @@ public class AuthoringTool implements EntryPoint {
 	private SimpleCheckBox enableTracking_cb;
 	private SimpleCheckBox showRegions_cb;
 
-	private TextBox weight_tb;
-	private SimpleCheckBox block_cb;
+	private TextBox grade_tb;
+	private TextBox negative_grade_tb;
 
 	private final Point start_point = new Point();
 	private final Point old_point = new Point();
@@ -552,8 +552,8 @@ public class AuthoringTool implements EntryPoint {
 		range_quiz_text_area = getRangeQuizTextArea();
 		range_quiz_min_tb = getTextBox("rangeQuizMinTextBox");
 		range_quiz_max_tb = getTextBox("rangeQuizMaxTextBox");
-		weight_tb = getTextBox("weightTextBox");
-		block_cb = getSimpleCheckBox("blockCheckBox");
+		grade_tb = getTextBox("gradeTextBox");
+		negative_grade_tb = getTextBox("negativeGradeTextBox");
 		final Button add_answer_b = getButton("quizAddAnswerButton");
 		final Button zoom_121_b = getButton("zoomOne2OneButton");
 		final Button zoom_in_b = getButton("zoomInButton");
@@ -1287,26 +1287,35 @@ public class AuthoringTool implements EntryPoint {
 					}
 				});
 
-		weight_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+		grade_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				double weight = getCurrentPage().getWeight();
+				double grade = getCurrentPage().getGrade();
 				try {
-					weight = Double.valueOf(event.getValue());
+					grade = Double.valueOf(event.getValue());
 				} catch (Exception e) {
 					Log.warn("Invalid weight " + event.getValue());
-					weight_tb.setText(weight + "");
+					grade_tb.setText(grade + "");
 				}
-				getCurrentPage().setWeight(weight);
+				getCurrentPage().setGrade(grade);
 			}
 		});
 
-		block_cb.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				getCurrentPage().setBlock(block_cb.getValue());
-			}
-		});
+		negative_grade_tb
+				.addValueChangeHandler(new ValueChangeHandler<String>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<String> event) {
+						double negative_grade = getCurrentPage()
+								.getNegativeGrade();
+						try {
+							negative_grade = Double.valueOf(event.getValue());
+						} catch (Exception e) {
+							Log.warn("Invalid weight " + event.getValue());
+							negative_grade_tb.setText(negative_grade + "");
+						}
+						getCurrentPage().setNegativeGrade(negative_grade);
+					}
+				});
 
 		splashScreenLabel.setText("Reading Lesson...");
 
@@ -1605,8 +1614,8 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			}
 		}
-		weight_tb.setText(page.getWeight() + "");
-		block_cb.setValue(page.isBlock());
+		grade_tb.setText(page.getGrade() + "");
+		negative_grade_tb.setText(page.getNegativeGrade() + "");
 		setButtonsEnabled(image_edit_buttons,
 				page.getImageItem().getImage() != null);
 	}

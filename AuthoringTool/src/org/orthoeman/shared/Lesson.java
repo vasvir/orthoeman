@@ -486,8 +486,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		private QuizItem quizItem;
 		private VideoItem videoItem;
 		private RangeQuizItem rangeQuizItem;
-		private double weight;
-		private boolean block;
+		private double grade = 1;
+		private double negativeGrade = 0.5;
 
 		private Collection<TitleChangedListener> titleChangedListeners = new ArrayList<TitleChangedListener>();
 
@@ -572,20 +572,20 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			this.rangeQuizItem = rangeQuizItem;
 		}
 
-		public double getWeight() {
-			return weight;
+		public double getGrade() {
+			return grade;
 		}
 
-		public void setWeight(double weight) {
-			this.weight = weight;
+		public void setGrade(double grade) {
+			this.grade = grade;
 		}
 
-		public boolean isBlock() {
-			return block;
+		public double getNegativeGrade() {
+			return negativeGrade;
 		}
 
-		public void setBlock(boolean block) {
-			this.block = block;
+		public void setNegativeGrade(double negative_grade) {
+			this.negativeGrade = negative_grade;
 		}
 
 		@Override
@@ -653,8 +653,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			final Element page_e = (Element) page_n;
 
 			page.setTitle(page_e.getAttribute("title"));
-			page.setWeight(Double.valueOf(page_e.getAttribute("grade")));
-			page.setBlock(parseBoolean(page_e.getAttribute("block")));
+			page.setGrade(Double.valueOf(page_e.getAttribute("grade")));
+			page.setNegativeGrade(Double.valueOf(page_e
+					.getAttribute("negativeGrade")));
 
 			final Type[] itemTypeCombinationsFound = { null, null };
 			int itemTypeCombinationsFoundCount = 0;
@@ -830,8 +831,9 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		for (final Page page : lesson) {
 			final Element page_e = doc.createElement("Page");
 			page_e.setAttribute("title", page.getTitle());
-			page_e.setAttribute("grade", "" + page.getWeight());
-			page_e.setAttribute("block", booleanToString(page.isBlock()));
+			page_e.setAttribute("grade", "" + page.getGrade());
+			page_e.setAttribute("negativeGrade",
+					"" + Math.abs(page.getNegativeGrade()));
 
 			final Type[] item_types = page.getItemTypeCombination();
 			for (Type item_type : item_types) {
