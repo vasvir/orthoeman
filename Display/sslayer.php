@@ -422,6 +422,7 @@ function getWidgetType($key)
 
 function GetTemplateData($data)
 {
+    $orthoeman_id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
     $a = array();
     //$a["attributes"]["id"] = strval($data["id"]);
     $a["attributes"]["Title"] = strval($data["title"]);
@@ -439,7 +440,8 @@ function GetTemplateData($data)
                 case 'image' :
                     $a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue, $index, $windex);
                     $a["Images"][] = array('id' => $index, 'subid' => $windex,
-                        'url' => $a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
+                        //'url' => $a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
+                        'url' => 'img.php?id='.$orthoeman_id.'&resource_id='.$a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
                         'HotSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["HotSpots"],
                         'MaxSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["MaxSpots"],
                         'ShowRegions' => $a["Page"][$index]["Widget"][$windex]["Image"]["ShowRegions"],
