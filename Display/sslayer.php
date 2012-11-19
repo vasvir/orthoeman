@@ -435,7 +435,7 @@ function GetTemplateData($data)
         $a["Page"][$index]["attributes"]["Grade"] = strval($value["positiveGrade"]);
         $a["Page"][$index]["attributes"]["negativeGrade"] = strval($value["negativeGrade"]);
         $a["Page"][$index]["attributes"]["Title"] = strval($value["title"]);
-        $a["Page"][$index]["attributes"]["Blocked"] = strval($value["block"]);
+        $a["Page"][$index]["attributes"]["Blocked"] = "no";// strval($value["block"]);
         $windex = 0;
         foreach ($value as $wkey => $wvalue) {
             $widgetype = getWidgetType($wkey);
