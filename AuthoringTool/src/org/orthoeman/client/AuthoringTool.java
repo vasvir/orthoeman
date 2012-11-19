@@ -398,7 +398,8 @@ public class AuthoringTool implements EntryPoint {
 				context.putImageData(imgData, 0, 0);
 			}
 			for (final Drawing drawing : page.getImageItem().getDrawings()) {
-				draw(context, drawing.toCanvas(page.getImageItem().getZoom()));
+				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
+						false);
 			}
 			if (angleBulletRadius > 0) {
 				for (final Point point : page.getImageItem().getDrawings()
@@ -788,15 +789,15 @@ public class AuthoringTool implements EntryPoint {
 						final int h = 2 * (y > start_point.y ? y
 								- start_point.y : start_point.y - y);
 						ellipse.set(start_point.x, start_point.y, w, h);
-						draw(context, ellipse);
+						draw(context, ellipse, false);
 						break;
 					case LINE:
 						line.set(start_point.x, start_point.y, x, y);
-						draw(context, line);
+						draw(context, line, false);
 						break;
 					case POLYGON:
 						polygon.getPoints().add(new Point(x, y));
-						draw(context, polygon);
+						draw(context, polygon, false);
 						polygon.getPoints().remove(
 								polygon.getPoints().size() - 1);
 
@@ -821,11 +822,11 @@ public class AuthoringTool implements EntryPoint {
 						final int ytr = y > start_point.y ? start_point.y : y;
 
 						rect.set(xlr, ytr, wr, hr);
-						draw(context, rect);
+						draw(context, rect, false);
 						break;
 					case CROSS:
 						cross.set(x, y);
-						draw(context, cross);
+						draw(context, cross, false);
 						break;
 					case ERASER:
 						final Zoom zoom = getCurrentPage().getImageItem()
@@ -835,7 +836,7 @@ public class AuthoringTool implements EntryPoint {
 								.getImageItem().getDrawings(), erase_point
 								.toImage(zoom));
 						if (erase_drawing != null)
-							draw(context, erase_drawing.toCanvas(zoom));
+							draw(context, erase_drawing.toCanvas(zoom), true);
 						break;
 					}
 				}
@@ -1698,9 +1699,12 @@ public class AuthoringTool implements EntryPoint {
 				* (start_point.y - y)) : -1;
 	}
 
-	private static void draw(Context2d context, Drawing drawing) {
+	private static void draw(Context2d context, Drawing drawing,
+			boolean erase_color) {
 		context.beginPath();
-		context.setStrokeStyle(drawing.getColor());
+		context.setStrokeStyle(erase_color ? Drawing.getEraserColor() : drawing
+				.getColor());
+		context.setLineWidth(3);
 
 		switch (drawing.getType()) {
 		case ELLIPSE:
