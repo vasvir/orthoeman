@@ -73,4 +73,8 @@ public abstract class Drawing {
 		}
 		return drawingDefaultColor;
 	}
+	
+	public static String getEraserColor() {
+		return drawingEraseColor;
+	}
 }
