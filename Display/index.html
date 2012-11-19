@@ -91,19 +91,20 @@
   </script>
 <!-- Video Template -->
   <script id="VideoTemplate" type="text/x-jsrender">
+      <!--{{:Video.webm}}  {{:Video.ogg}} {{:Video.mp4}}-->
       <div id="dvideo_{{:Video.id}}">
-          <video id="video_{{:Video.id}}" poster="{{:Video.VideoURI}}.jpg" class="video-js vjs-default-skin" controls preload="auto" data-setup='{"poster": "{{:Video.VideoURI}}.jpg"}'>
+          <video id="video_{{:Video.id}}" class="video-js vjs-default-skin" controls preload="auto">
               {{if Video.video_mp4 == "yes"}}
               <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
-              <source type="video/mp4" src="{{:Video.VideoURI}}.mp4" />
+              <source type="video/mp4" src="{{:Video.mp4}}" />
               {{/if}}
               {{if Video.video_webm == "yes"}}
               <!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
-              <source type="video/webm" src="{{:Video.VideoURI}}.webm" />
+              <source type="video/webm" src="{{:Video.webm}}" />
               {{/if}}
               {{if Video.video_ogg == "yes" }}
               <!-- Ogg/Vorbis for older Firefox and Opera versions -->
-              <source type="video/ogg" src="{{:Video.VideoURI}}.ogv" />
+              <source type="video/ogg" src="{{:Video.ogg}}" />
               {{/if}}
           </video>
       </div>

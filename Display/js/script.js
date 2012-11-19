@@ -206,7 +206,9 @@ function changedSpinControl(sender, newVal) {
 function setTracking(Page) {
    "use strict";
     //console.log(Page,OrthoVariables.LessonData.Tracking[Page]);
-    var tracking = OrthoVariables.LessonData.Tracking[Page];
+    if (OrthoVariables.LessonData.Tracking!== undefined) {
+        if (OrthoVariables.LessonData.Tracking[Page] !== undefined){
+      var tracking = OrthoVariables.LessonData.Tracking[Page];
     if (tracking !== undefined) {
         switch (tracking.Type){
             case 0:
@@ -219,8 +221,10 @@ function setTracking(Page) {
             case 2:
                 break;
         }
+    }  
+    }    
     }
-
+    
 }
 
 function LoadImages(Page) {
@@ -1045,10 +1049,13 @@ function displayFunctions() {
         OrthoVariables.CurPage = page % 2 === 0 && page !== 1 ? page + 1 : page;
         var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages) ? -1 : ( Math.floor(OrthoVariables.CurPage / 2)) - 1;
         OrthoVariables.lessonPage = lessonpage;
-        ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
-        LoadImages((OrthoVariables.lessonPage + 1).toString());
-        loadSpinControl((OrthoVariables.lessonPage + 1).toString());
-        setTracking((OrthoVariables.lessonPage + 1).toString());
+        if (OrthoVariables.maxPages >= OrthoVariables.CurPage) {
+            ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
+            LoadImages((OrthoVariables.lessonPage + 1).toString());
+            loadSpinControl((OrthoVariables.lessonPage + 1).toString());
+            setTracking((OrthoVariables.lessonPage + 1).toString());
+        }
+        
         if (OrthoVariables.CurPage <= 1) {
             DisableButtonLink("PreviousTest");
             EnableButtonLink("NextTest");
@@ -1658,6 +1665,7 @@ function SubmitAnswer() {
 function GetQuizQuestion() {
     var Question = new Object();
     Question.action = 2;
+    Question.orthoeman_id = OrthoVariables.InitialQueryString.id;
     Question.Page = OrthoVariables.lessonPage;
     Question.name = OrthoVariables.InitialQueryString["name"];
     Question.type = "quiz";
@@ -1678,6 +1686,7 @@ function valid_num(evt) {
 function GetInputQuestion() {
     var Question = new Object();
     Question.name = OrthoVariables.InitialQueryString["name"];
+    Question.orthoeman_id = OrthoVariables.InitialQueryString.id;
     Question.action = 2;
     Question.Page = OrthoVariables.lessonPage;
     Question.type = "input";
@@ -1688,6 +1697,7 @@ function GetInputQuestion() {
 function GetHotspotQuestion() {
     var Question = new Object();
     Question.name = OrthoVariables.InitialQueryString["name"];
+    Question.orthoeman_id = OrthoVariables.InitialQueryString.id;
     Question.action = 2;
     Question.Page = OrthoVariables.lessonPage;
     Question.type = "hotspots";
