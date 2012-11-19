@@ -5,7 +5,9 @@ require_once('fb.php');
 require_once('../../../config.php');
 require_once('../lib.php');
 
+$orthoeman_id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
 $old = 0;
+
 $action = $_GET["action"];
 // 1- transform xml to json
 
@@ -15,7 +17,8 @@ switch ($action) {
         $xml = getXMLData();
         $displaydata = GetTemplateData($xml);
         //print_r($displaydata);
-        $displaydata["Tracking"] = getTracking();
+        //Here is definding a dummy tracking 
+        //$displaydata["Tracking"] = getTracking();
         echo json_encode($displaydata);
         break;
     case "2" :
@@ -422,14 +425,15 @@ function getWidgetType($key)
 
 function GetTemplateData($data)
 {
-    $orthoeman_id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
+    global $orthoeman_id;
     $a = array();
     //$a["attributes"]["id"] = strval($data["id"]);
     $a["attributes"]["Title"] = strval($data["title"]);
     $a["attributes"]["abstract"] = strval($data->Abstract);
     $index = 0;
     foreach ($data->Page as $key => $value) {
-        $a["Page"][$index]["attributes"]["Grade"] = strval($value["grade"]);
+        $a["Page"][$index]["attributes"]["Grade"] = strval($value["positiveGrade"]);
+        $a["Page"][$index]["attributes"]["negativeGrade"] = strval($value["negativeGrade"]);
         $a["Page"][$index]["attributes"]["Title"] = strval($value["title"]);
         $a["Page"][$index]["attributes"]["Blocked"] = strval($value["block"]);
         $windex = 0;
@@ -441,7 +445,7 @@ function GetTemplateData($data)
                     $a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue, $index, $windex);
                     $a["Images"][] = array('id' => $index, 'subid' => $windex,
                         //'url' => $a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
-                        'url' => 'img.php?id='.$orthoeman_id.'&resource_id='.$a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
+                        'url' => '../get_resource.php?id='.$orthoeman_id.'&resource_id='.$a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
                         'HotSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["HotSpots"],
                         'MaxSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["MaxSpots"],
                         'ShowRegions' => $a["Page"][$index]["Widget"][$windex]["Image"]["ShowRegions"],
@@ -484,13 +488,30 @@ function GetDisplayInput($data, $id, $subid)
 
 function GetDisplayVideo($data, $id, $subid)
 {
+    global $orthoeman_id;
     $r = array();
     $r["id"] = $id;
     $r["subid"] = $subid;
-
+    $r["video_mp4"] = "no";
+    $r["video_ogg"] = "no";
+    $r["video_webm"] = "no";
     foreach ($data->Source as $value) {
         //print_r($value);
-        $r[strval($value["type"])] = strval($value["id"]);
+        
+        switch (strval($value["type"])) {
+            case 'video/mp4':
+                $r["mp4"] = '../get_resource.php?id='.$orthoeman_id.'&resource_id='.strval($value["id"]);
+                $r["video_mp4"] = "yes";
+                break;
+            case 'video/ogg':
+                $r["ogg"] = '../get_resource.php?id='.$orthoeman_id.'&resource_id='.strval($value["id"]);
+                $r["video_ogg"] = "yes";
+                break;
+            case 'video/webm':
+                $r["webm"] = '../get_resource.php?id='.$orthoeman_id.'&resource_id='.strval($value["id"]);
+                $r["video_webm"] = "yes";
+                break;
+        }
     }
     return $r;
 }

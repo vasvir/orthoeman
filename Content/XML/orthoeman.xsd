@@ -61,8 +61,9 @@
             <xs:element name="RangeQuiz" type="InputValueType"/>
         </xs:choice>
         <xs:attribute name="title" type="xs:string" use="optional"/>
-        <xs:attribute name="grade" type="GradeType" use="required"/>
-        <xs:attribute name="block" type="YesNoValues" use="required"/>
+        <xs:attribute name="negativeGrade" type="GradeType" use="required"/>
+        <xs:attribute name="positiveGrade" type="GradeType" use="required"/>
+        <!-- <xs:attribute name="block" type="YesNoValues" use="required"/> -->
     </xs:complexType>
 
    <!-- <xs:complexType name="WidgetComplexType">
