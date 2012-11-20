@@ -37,8 +37,14 @@ import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.ParagraphElement;
+import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -142,6 +148,8 @@ public class AuthoringTool implements EntryPoint {
 	private SimpleCheckBox invert_cb;
 
 	private String orthoeman_id = "-1";
+
+	private int scrollbar_width;
 
 	/**
 	 * This field gets compiled out when <code>log_level=OFF</code>, or any
@@ -266,6 +274,10 @@ public class AuthoringTool implements EntryPoint {
 				.get("addRemoveButtonContainer");
 
 		final RootPanel pageContainer = getPageContainer();
+		if (scrollbar_width == 0) {
+			scrollbar_width = getScrollBarWidth();
+			Log.debug("Setting scrollbar width to " + scrollbar_width);
+		}
 		final int page_width = window_width
 				- getLeftPanelContainer().getOffsetWidth();
 		final int page_height = window_height - menubar_height;
@@ -313,7 +325,7 @@ public class AuthoringTool implements EntryPoint {
 		start_point.valid = false;
 		old_point.valid = false;
 
-		final int canvas_100 = page_width - 2;
+		final int canvas_100 = page_width - 2 - scrollbar_width;
 		int canvas_width = 0;
 		int canvas_height = 0;
 
@@ -1951,5 +1963,33 @@ public class AuthoringTool implements EntryPoint {
 		sb.append("<p class='serverResponseLabelError'>Cannot find valid content / codec combination.</p>");
 		sb.append("</video>");
 		videoPlayerContainer.getElement().setInnerHTML(sb.toString());
+	}
+
+	public static int getScrollBarWidth() {
+		final Document document = Document.get();
+		final ParagraphElement p = document.createPElement();
+		p.getStyle().setWidth(100, Unit.PCT);
+		p.getStyle().setHeight(200, Unit.PX);
+
+		final DivElement div = document.createDivElement();
+		div.getStyle().setPosition(Position.ABSOLUTE);
+		div.getStyle().setTop(0, Unit.PX);
+		div.getStyle().setLeft(0, Unit.PX);
+		div.getStyle().setVisibility(Visibility.HIDDEN);
+		div.getStyle().setWidth(200, Unit.PX);
+		div.getStyle().setHeight(150, Unit.PX);
+		div.getStyle().setOverflow(Overflow.HIDDEN);
+		div.appendChild(p);
+
+		document.getBody().appendChild(div);
+		final int w1 = p.getOffsetWidth();
+		div.getStyle().setOverflow(Overflow.SCROLL);
+		int w2 = p.getOffsetWidth();
+
+		if (w1 == w2)
+			w2 = div.getClientWidth();
+
+		document.getBody().removeChild(div);
+		return w1 - w2;
 	}
 }
