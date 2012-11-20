@@ -517,3 +517,9 @@ function get_database_data($orthoeman_id, $resource_id) {
     }
     return $resource_rec;
 }
+
+function get_lesson_details($id) {
+    $cm = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
+    $orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
+    return $DB->get_record($ORTHOEMAN_TABLE, array('id' => $orthoeman->id));
+}
