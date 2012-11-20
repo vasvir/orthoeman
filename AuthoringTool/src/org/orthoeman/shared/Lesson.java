@@ -486,8 +486,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		private QuizItem quizItem;
 		private VideoItem videoItem;
 		private RangeQuizItem rangeQuizItem;
-		private double grade = 1;
-		private double negativeGrade = 0.5;
+		private static final int positiveGradeDefault = 10;
+		private static final int negativeGradeDefault = 5;
+		private int positiveGrade = positiveGradeDefault;
+		private int negativeGrade = negativeGradeDefault;
 
 		private Collection<TitleChangedListener> titleChangedListeners = new ArrayList<TitleChangedListener>();
 
@@ -572,19 +574,19 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			this.rangeQuizItem = rangeQuizItem;
 		}
 
-		public double getGrade() {
-			return grade;
+		public int getPositiveGrade() {
+			return positiveGrade;
 		}
 
-		public void setGrade(double grade) {
-			this.grade = grade;
+		public void setPositiveGrade(int positive_grade) {
+			this.positiveGrade = positive_grade;
 		}
 
-		public double getNegativeGrade() {
+		public int getNegativeGrade() {
 			return negativeGrade;
 		}
 
-		public void setNegativeGrade(double negative_grade) {
+		public void setNegativeGrade(int negative_grade) {
 			this.negativeGrade = negative_grade;
 		}
 
@@ -603,6 +605,22 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			if (o == this)
 				return true;
 			return false;
+		}
+
+		public static int parseGrade(String grade_str, int grade_default) {
+			int grade = grade_default;
+			try {
+				final double value = Math.abs(Double.valueOf(grade_str));
+				if (value > 100)
+					grade = 100;
+				else if (value < 1)
+					grade = 1;
+				else
+					grade = (int) Math.rint(value);
+			} catch (Exception e) {
+				Log.warn("Invalid grade " + grade_str);
+			}
+			return grade;
 		}
 	}
 
@@ -653,9 +671,12 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			final Element page_e = (Element) page_n;
 
 			page.setTitle(page_e.getAttribute("title"));
-			page.setGrade(Double.valueOf(page_e.getAttribute("grade")));
-			page.setNegativeGrade(Double.valueOf(page_e
-					.getAttribute("negativeGrade")));
+			page.setPositiveGrade(Page.parseGrade(
+					page_e.getAttribute("positiveGrade"),
+					Page.positiveGradeDefault));
+			page.setNegativeGrade(Page.parseGrade(
+					page_e.getAttribute("negativeGrade"),
+					Page.negativeGradeDefault));
 
 			final Type[] itemTypeCombinationsFound = { null, null };
 			int itemTypeCombinationsFoundCount = 0;
@@ -831,7 +852,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		for (final Page page : lesson) {
 			final Element page_e = doc.createElement("Page");
 			page_e.setAttribute("title", page.getTitle());
-			page_e.setAttribute("grade", "" + page.getGrade());
+			page_e.setAttribute("positiveGrade",
+					"" + Math.abs(page.getPositiveGrade()));
 			page_e.setAttribute("negativeGrade",
 					"" + Math.abs(page.getNegativeGrade()));
 

@@ -116,7 +116,7 @@ public class AuthoringTool implements EntryPoint {
 	private SimpleCheckBox enableTracking_cb;
 	private SimpleCheckBox showRegions_cb;
 
-	private TextBox grade_tb;
+	private TextBox positive_grade_tb;
 	private TextBox negative_grade_tb;
 
 	private final Point start_point = new Point();
@@ -553,7 +553,7 @@ public class AuthoringTool implements EntryPoint {
 		range_quiz_text_area = getRangeQuizTextArea();
 		range_quiz_min_tb = getTextBox("rangeQuizMinTextBox");
 		range_quiz_max_tb = getTextBox("rangeQuizMaxTextBox");
-		grade_tb = getTextBox("gradeTextBox");
+		positive_grade_tb = getTextBox("positiveGradeTextBox");
 		negative_grade_tb = getTextBox("negativeGradeTextBox");
 		final Button add_answer_b = getButton("quizAddAnswerButton");
 		final Button zoom_121_b = getButton("zoomOne2OneButton");
@@ -1288,33 +1288,19 @@ public class AuthoringTool implements EntryPoint {
 					}
 				});
 
-		grade_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				double grade = getCurrentPage().getGrade();
-				try {
-					grade = Double.valueOf(event.getValue());
-				} catch (Exception e) {
-					Log.warn("Invalid weight " + event.getValue());
-					grade_tb.setText(grade + "");
-				}
-				getCurrentPage().setGrade(grade);
-			}
-		});
+		positive_grade_tb
+				.addValueChangeHandler(new ValueChangeHandler<String>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<String> event) {
+						setGrade(event, true);
+					}
+				});
 
 		negative_grade_tb
 				.addValueChangeHandler(new ValueChangeHandler<String>() {
 					@Override
 					public void onValueChange(ValueChangeEvent<String> event) {
-						double negative_grade = getCurrentPage()
-								.getNegativeGrade();
-						try {
-							negative_grade = Double.valueOf(event.getValue());
-						} catch (Exception e) {
-							Log.warn("Invalid weight " + event.getValue());
-							negative_grade_tb.setText(negative_grade + "");
-						}
-						getCurrentPage().setNegativeGrade(negative_grade);
+						setGrade(event, false);
 					}
 				});
 
@@ -1384,6 +1370,20 @@ public class AuthoringTool implements EntryPoint {
 			Log.debug("Duration: " + durationSeconds + " seconds");
 		}
 		divLogger.setVisible(false);
+	}
+
+	public void setGrade(ValueChangeEvent<String> event, boolean positive) {
+		final Page page = getCurrentPage();
+		final TextBox grade_tb = positive ? positive_grade_tb
+				: negative_grade_tb;
+		final int grade_default = positive ? page.getPositiveGrade() : page
+				.getNegativeGrade();
+		final int grade = Page.parseGrade(event.getValue(), grade_default);
+		grade_tb.setText(grade + "");
+		if (positive)
+			page.setPositiveGrade(grade);
+		else
+			page.setNegativeGrade(grade);
 	}
 
 	private static ListBox getListBox(String id) {
@@ -1615,7 +1615,7 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			}
 		}
-		grade_tb.setText(page.getGrade() + "");
+		positive_grade_tb.setText(page.getPositiveGrade() + "");
 		negative_grade_tb.setText(page.getNegativeGrade() + "");
 		setButtonsEnabled(image_edit_buttons,
 				page.getImageItem().getImage() != null);
