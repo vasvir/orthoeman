@@ -72,6 +72,9 @@ class mod_orthoeman_mod_form extends moodleform_mod {
         $mform->addElement('duration', 'timeout', get_string('timeout', 'orthoeman'));
         $mform->addHelpButton('timeout', 'timeout', 'orthoeman');
 
+        $mform->addElement('checkbox', 'cruise', get_string('cruise', 'orthoeman'));
+        $mform->addHelpButton('cruise', 'cruise', 'orthoeman');
+
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
         $this->standard_coursemodule_elements();
