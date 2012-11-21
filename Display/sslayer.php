@@ -397,7 +397,10 @@ function getXMLData()
     //return simplexml_load_file(filename);
     //print_r(simplexml_load_string($resource->data));
     //echo($resource->data);
-    return simplexml_load_string($resource->data);
+    $xmldata =  simplexml_load_string($resource->data);
+    $lessonDetails = get_lesson_details($id);
+    //print_r($lessonDetails);
+    return $xmldata;
 }
 
 function getWidgetType($key)
