@@ -45,3 +45,5 @@ $string['orthoeman:read'] = 'Read an OrthoEMan course';
 $string['orthoeman:write'] = 'Edit an OrthoEMan course';
 $string['timeout'] = 'TimeOut';
 $string['timeout_help'] = 'Define the duration that is allowed for a lesson to be completed';
+$string['cruise'] = 'Display correct answers';
+$string['cruise_help'] = 'Allow all users / students to see the correct answers';
