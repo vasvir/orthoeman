@@ -394,11 +394,12 @@ function getXMLData()
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
     $resource = get_database_data($orthoeman->id, -1);
-    //return simplexml_load_file(filename);
-    //print_r(simplexml_load_string($resource->data));
-    //echo($resource->data);
+    // Inject into xml the course details from the moodle database
     $xmldata =  simplexml_load_string($resource->data);
     $lessonDetails = get_lesson_details($id);
+    $xmldata["title"] = $lessonDetails->name;
+    $xmldata["id"] = $lessonDetails->course;
+    $xmldata->Abstract = $lessonDetails->intro;
     //print_r($lessonDetails);
     return $xmldata;
 }
@@ -433,6 +434,7 @@ function GetTemplateData($data)
     //$a["attributes"]["id"] = strval($data["id"]);
     $a["attributes"]["Title"] = strval($data["title"]);
     $a["attributes"]["abstract"] = strval($data->Abstract);
+    $a["attributes"]["id"] = strval($data["id"]);
     $index = 0;
     foreach ($data->Page as $key => $value) {
         $a["Page"][$index]["attributes"]["Grade"] = strval($value["positiveGrade"]);
