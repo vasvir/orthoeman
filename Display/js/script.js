@@ -2,14 +2,14 @@
  The script logic for ORTHO e-Man
 
 
-TODO οι διαστάσεις του tooltip, infotip και point circles δεν είναι το ίδιο. Αυτό συμβαίνει γιατί εξαρτούνται από το zoomPage και scalePage, διόρθωσέ το ώστε να εξαρτάται από το ένα. Ίσως τότε να διορθωθεί.
+TODO οι διαστάσεις του tooltip, infotip και point circles δεν είναι το ίδιο. Αυτό συμβαίνει γιατί εξαρτούνται από το zoomPage και scalePage, διόρθωσέ το ώστε να εξαρτάται από το ένα. Ίσως τότε να διορθωθεί. DONE
 TODO αλλαγή όλου του notification system. -- ίσως να μην χρειάζεται πλέον
 TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
 TODO *Bug IE only, fullscreen video not working
-TODO δεν επιτρέπουμε πολλαπλές προσπάθειες
-TODO δύο αριθμοί negative, positive
+TODO δεν επιτρέπουμε πολλαπλές προσπάθειες DONE
+TODO δύο αριθμοί negative, positive DONE
 TODO cruise mode
-TODO see what's happen in text-image, text-video (theory case)
+TODO see what's happen in text-image, text-video (theory case) DONE
 TODO timeout time
 TODO tracking implementation 
 
@@ -92,7 +92,7 @@ $(document).ready(function () {
             OrthoVariables.zoomPage[i] = 1;
             OrthoVariables.PageTracking[i] = {
                 status:"pending",
-                grade:OrthoVariables.LessonData.Page[i].attributes.Grade,
+                grade: parseInt(OrthoVariables.LessonData.Page[i].attributes.Grade),
                 nextpass:false,
                 submitbutton:false,
                 theory:false
@@ -1350,6 +1350,12 @@ function ReloadImage(id) {
         var mystage = OrthoVariables.origCanvas[id][2];
         var myshapelayer = mystage.get("#shapelayer")[0];
         myshapelayer.removeChildren();
+        if (OrthoVariables.lessonAnswers[id].hotspots.length > 0) {
+            OrthoVariables.lessonAnswers[id].hotspots = [];
+            DisableButtonLink("SubmitAnswer");
+        }
+
+        
         mystage.draw();
     }
 }
@@ -1958,7 +1964,7 @@ function PageTracking(answer, blocked) {
         OrthoVariables.PageTracking[OrthoVariables.lessonPage].nextpass = true;
     } else {
         OrthoVariables.PageTracking[OrthoVariables.lessonPage].status = "wrong";
-        OrthoVariables.PageTracking[OrthoVariables.lessonPage].grade = 0;
+        OrthoVariables.PageTracking[OrthoVariables.lessonPage].grade = - parseInt(OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes.negativeGrade);
         OrthoVariables.PageTracking[OrthoVariables.lessonPage].nextpass = (blocked === "yes") ? false : true;
     }
 }
