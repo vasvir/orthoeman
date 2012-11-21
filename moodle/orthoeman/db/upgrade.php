@@ -191,6 +191,17 @@ function xmldb_orthoeman_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2012111402, 'orthoeman');
     }
 
+    if ($oldversion < 2012112100) {
+        // define field timeout to be added to orthoeman
+        $table = new xmldb_table('orthoeman');
+        $field = new xmldb_field('cruise', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'timeout');
+
+        // Add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
+
     // And that's all. Please, examine and understand the 3 example blocks above. Also
     // it's interesting to look how other modules are using this script. Remember that
     // the basic idea is to have "blocks" of code (each one being executed only once,
