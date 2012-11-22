@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             #$id_map[] = "$resource_id:$resource_rec->content_type:$resource_rec->codecs";
             $parent_id = $resource_id;
 
-            $formats = array('h264', 'ogg', 'webm');
+            $formats = array('h264', 'webm');
             $format_to_content_type = array(
                 "h264" => 'video/mp4',
                 "ogg" => 'video/ogg',
