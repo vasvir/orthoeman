@@ -1692,6 +1692,8 @@ public class AuthoringTool implements EntryPoint {
 		Log.debug("Up " + up + " next_index " + next_index + " check_index "
 				+ check_index);
 		page_button_container.insert(current_button.getParent(), next_index);
+		lesson.remove(current_index);
+		lesson.add(check_index, current_page);
 		updateUpDownButtons(check_index, page_button_container.getWidgetCount());
 	}
 
