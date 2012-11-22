@@ -1053,7 +1053,7 @@ function displayFunctions() {
             ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
             LoadImages((OrthoVariables.lessonPage + 1).toString());
             loadSpinControl((OrthoVariables.lessonPage + 1).toString());
-            setTracking((OrthoVariables.lessonPage + 1).toString());
+            //setTracking((OrthoVariables.lessonPage + 1).toString());
         }
         
         if (OrthoVariables.CurPage <= 1) {
@@ -1174,8 +1174,8 @@ function resize(id, newHeight, newWidth) {
     $("#container_" + id).css("top", -newHeight);
     $("#1_" + id).css("width", newWidth).css("top",newHeight + 30);
     $("#2_" + id).css("width", newWidth).css("top",newHeight + 30);
-    $("#slider_b_" + id).css("left", Math.max(newWidth,380) - 215);
-    $("#slider_c_" + id).css("left", Math.max(newWidth,380) - 170);
+    $("#slider_b_" + id).css("left", 165);
+    $("#slider_c_" + id).css("left", 210);
     $("#pointer_" + id).parent().css("height", newHeight);
     if (OrthoVariables.zoomPage[OrthoVariables.lessonPage] !== 1) {
         $("#pointer_"+id).css("top","0px").css("left","0px");
