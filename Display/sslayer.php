@@ -32,13 +32,21 @@ switch ($action) {
         $displaydata = GetTemplateData($xml);
         //print_r($displaydata);
         //Here is definding a dummy tracking 
-        //$displaydata["Tracking"] = getTracking();
+        $displaydata["Tracking"] = getTracking();
+        $displaydata["Timeout"] = getTimeout();
         echo json_encode($displaydata);
         break;
     case "2" :
         echo json_encode(GetAnswer());
         break;
 }
+
+function getTimeout() {
+    global $orthoeman_id;
+    $lessonDetails = get_lesson_details($orthoeman_id);
+    return $lessonDetails->timeout;
+}
+
 
 function GetAnswer()
 {
@@ -64,10 +72,11 @@ function GetAnswer()
 
 function getTracking()
 {
-    $r[0]["Type"] = 1;
-    $r[0]["Hotspots"][0]["x"] = 70;
-    $r[0]["Hotspots"][0]["y"] = 40;
-    $r[0]["Result"] = false;
+     $r = array();
+    //$r[0]["Type"] = 1;
+    //$r[0]["Hotspots"][0]["x"] = 70;
+    //$r[0]["Hotspots"][0]["y"] = 40;
+    //$r[0]["Result"] = false;
     return $r;
 }
 
@@ -400,17 +409,20 @@ function oldGetXMLData()
 
 function getXMLData()
 {
-    global $old;
+    global $old, $my_orthoeman, $orthoeman_id;
     if ($old != 0) return oldGetXMLData();
-    global $DB;
-    $id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
-    $cm = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
-    $resource = get_database_data($orthoeman->id, -1);
+    //global $DB;
+    //$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
+    //$cm = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
+    //$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    //$orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
+
+    $resource = get_database_data($my_orthoeman->id, -1);
     // Inject into xml the course details from the moodle database
+
     $xmldata =  simplexml_load_string($resource->data);
-    $lessonDetails = get_lesson_details($id);
+    $lessonDetails = get_lesson_details($orthoeman_id);
+    $xmldata["cruiseMode"] = $lessonDetails->cruise;
     $xmldata["title"] = $lessonDetails->name;
     $xmldata["id"] = $lessonDetails->course;
     $xmldata->Abstract = $lessonDetails->intro;
@@ -449,6 +461,7 @@ function GetTemplateData($data)
     $a["attributes"]["Title"] = strval($data["title"]);
     $a["attributes"]["abstract"] = strval($data->Abstract);
     $a["attributes"]["id"] = strval($data["id"]);
+    $a["attributes"]["cruiseMode"] = strval($data["cruiseMode"]);
     $index = 0;
     foreach ($data->Page as $key => $value) {
         $a["Page"][$index]["attributes"]["Grade"] = strval($value["positiveGrade"]);
