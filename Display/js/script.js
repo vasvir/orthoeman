@@ -51,7 +51,7 @@ var OrthoVariables = {
     ColorWrong:"#9C2100",
     ColorWrongEdge:"#592835",
     zoomMouse: { isdown : false , x: -1, y:-1},
-    disableturn:true,
+    disableturn:false,
     isOverAngleCircle:false
 };
 
@@ -113,7 +113,6 @@ $(document).ready(function () {
         EnableButtonLink("NextTest");
         // Check for theory  video/text or image/text and text/text
         for (var i=0;i<OrthoVariables.LessonData.Page.length; i++) {
-            console.log("here");
             if (OrthoVariables.LessonData.Page[i].Widget[0].type === "video" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="video" ) {
                 if (OrthoVariables.LessonData.Page[i].Widget[0].type === "text" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="text" ) {
                     OrthoVariables.PageTracking[i].nextpass = true;
@@ -123,7 +122,17 @@ $(document).ready(function () {
             } 
             else if (OrthoVariables.LessonData.Page[i].Widget[0].type === "image" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="image" ) {
                 if (OrthoVariables.LessonData.Page[i].Widget[0].type === "text" || OrthoVariables.LessonData.Page[i].Widget[1].type ==="text" ) {
-                    if (OrthoVariables.MaxHotSpots[i] === 0) {
+                    var hasHotSpots = true;
+                    $.each(OrthoVariables.LessonData.Images, function() {
+                        if (this.id === i) {
+                            if (this.MaxSpots === 0) {
+                                hasHotSpots = false;
+                            }
+                        }
+
+                    });
+
+                    if (!hasHotSpots) {
                         OrthoVariables.PageTracking[i].nextpass = true;
                         OrthoVariables.PageTracking[i].theory = true;
                     }
@@ -732,6 +741,8 @@ function addAngleCircle(x,y, group, angle, mystage, point1, point2 ,point1A, poi
         triangle1A.show();
         triangle2.show();
         triangle2A.show();
+        resetRectDims(rect1, 72);
+        resetRectDims(rect2, 130);
         rect1.show();
         rect2.show();
         leftAngleTip.getLayer().draw();
@@ -756,6 +767,18 @@ function addAngleCircle(x,y, group, angle, mystage, point1, point2 ,point1A, poi
     group.add(rect1);
     group.add(rect2);
     group.add(circle);
+
+}
+
+function resetRectDims(rect,x) {
+    var size = rect.getSize();
+    var pos = rect.getPosition();
+    size.width = 20 / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
+    size.height = 20 / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
+    pos.x = x / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
+    pos.y = 8 / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
+    rect.setPosition(pos.x, pos.y);
+    rect.setSize(size.width,size.height);
 
 }
 
@@ -1137,13 +1160,13 @@ function CheckResizeLimits(page) {
         else {
             for (var wid in OrthoVariables.LessonData.Page[page].Widget) {
                 if (OrthoVariables.LessonData.Page[page].Widget[wid].type === "video") {
-                    w = Math.round($('#content_wrap').width()/2)-20;
+                    w = Math.round($('#content_wrap').width()/2)-80;
                     var maxh = $(window).height() - OrthoVariables.HeightFromBottom;
                     var n_w = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).width();
                     var n_h = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).height();
                     h = Math.round(w*(n_h/n_w));
-                    if (h > maxh - 5 ) {
-                        h = maxh - 5;
+                    if (h > maxh - 35 ) {
+                        h = maxh - 35;
                         w = Math.round(h*(n_w/n_h));
                     }
                     var vid = OrthoVariables.LessonData.Page[page].Widget[wid].Video.id;
