@@ -87,11 +87,11 @@ var has3d,
 		// forward: Activates both tr and br corners
 		// all: Activates all the corners
 
-		corners: 'forward',
+		corners: 'backward',
 		
 		// Size of the active zone of each corner
 
-		cornerSize: 100,
+		cornerSize: 50,
 
 		// Enables gradients
 
@@ -108,7 +108,7 @@ var has3d,
 
 	// Number of pages in the DOM, minimum value: 6
 
-	pagesInDOM = 6,
+	pagesInDOM = 100006,
 	
 	pagePosition = {0: {top: 0, left: 0, right: 'auto', bottom: 'auto'},
 					1: {top: 0, right: 0, left: 'auto', bottom: 'auto'}},
