@@ -5,7 +5,21 @@ require_once('fb.php');
 require_once('../../../config.php');
 require_once('../lib.php');
 
+// check credentials
 $orthoeman_id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
+$my_cm         = get_coursemodule_from_id('orthoeman', $orthoeman_id, 0, false, MUST_EXIST);
+$my_course     = $DB->get_record('course', array('id' => $my_cm->course), '*', MUST_EXIST);
+$my_orthoeman  = $DB->get_record('orthoeman', array('id' => $my_cm->instance), '*', MUST_EXIST);
+
+require_login($my_course, true, $my_cm);
+$my_context = get_context_instance(CONTEXT_MODULE, $my_cm->id);
+
+require_capability("mod/orthoeman:view", $my_context);
+
+add_to_log($my_course->id, 'orthoeman', 'launch display', "display.html?id={$my_cm->id}", $my_orthoeman->name, $my_cm->id);
+
+
+
 $old = 0;
 
 $action = $_GET["action"];
