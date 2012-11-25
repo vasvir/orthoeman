@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $img = $result->data;
         //echo "img XXX $img XXX<BR>";
         $md5 = md5($img);
-        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('type' => $TYPE_IMAGE_VALUE, 'md5' => $md5));
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_IMAGE_VALUE, 'md5' => $md5));
         if (!$resource_rec) {
             $resource_rec = new Object();
             $resource_rec->orthoeman_id = $orthoeman->id;
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $video = $result->data;
         //echo "img XXX $img XXX<BR>";
         $md5 = md5($video);
-        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('type' => $TYPE_VIDEO_VALUE, 'md5' => $md5));
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_VIDEO_VALUE, 'md5' => $md5));
         $id_map = array();
         if (!$resource_rec) {
             $resource_rec = new Object();
