@@ -616,21 +616,22 @@ div#div_input>div {
     right: 10px;
 }
 #counter {
-    width: 700px;
-    height: 145px;
-    margin: 55px auto 0 auto;
     font-family: 'LeagueGothicRegular', Arial, Helvetica, sans-serif;
-    font-size: 92px;
+    font-size: 36px;
     color: #272727;
     text-shadow: 0 1px 0 #fff;
     overflow: hidden;
+    line-height: normal;
+    padding: 0 0 20px 0;
+    cursor: default;
 }
 
 #counter .countDays, .countHours, .countMinutes, .countSeconds {
+    font-weight: bold;
     float: left;
-    width: 102px;
-    height: 138px;
-    padding-left: 36px;
+    width: 55px;
+    height: 64px;
+    padding-left: 16px;
     background: #e7e7e7;
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,.1)), to(rgba(0,0,0,.07)));
     background-image: -webkit-linear-gradient(top, rgba(255,255,255,.1), rgba(0,0,0,.07));
@@ -651,43 +652,71 @@ div#div_input>div {
     box-shadow:
         0 2px 3px 0 rgba(255,255,255,.2) inset,
         0 2px 2px 0 rgba(0,0,0,.1);
+    cursor: default;
 }
 
 #counter .points {
     float: left;
-    width: 40px;
+    width: 18px;
     margin: 0;
     font-family: Georgia, serif;
-    font-size: 44px;
+    font-size: 38px;
     font-weight: bold;
     text-align: center;
-    line-height: 138px;
+    line-height: 66px;
     text-shadow: none;
+    cursor: default;
 }
 
 #counter .position {
     position: relative;
     float: left;
-    width: 35px;
-    height: 92px;
-    margin: 8px 0 0 0;
+    width: 19px;
+    height: 46px;
+    margin: 2px 0 0 0;
+    cursor: default;
 }
 
 #counter .digit {
     position: absolute;
     top: 0;
     left: 0;
+    cursor: default;
 }
 
 #counter .boxName {
     float: left;
-    width: 80px;
-    margin: -5px 0 0 7px;
-    font-size: 36px;
+    width: 50px;
+    margin: -5px 0 0 -2px;
+    font-size: 16px;
     color: #a6a6a6;
     text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    cursor: default;
 }
 
-#counter .Hours { margin-left: 5px; }
-#counter .Seconds { margin-left: 2px; }
+#counter_small {
+    position: absolute;
+    bottom: 11px;
+    right: -9px;
+    text-align: center;
+    width: 116px;
+    font-size: 13px;
+    background: #3B3B3B;
+    text-shadow: 1px 1px 0 rgba(0,0,0,1);
+    color: #FFFFFF;
+    padding: 3px 1px 1px 1px;
+    border-radius: 2px;
+    line-height: normal;
+    cursor: default;
+}
+#counter_small:hover, #counter:hover {
+    cursor: default;
+}
+
+#counter_small>span {
+    font-weight: bold;
+}
+
+#counter .Hours { margin-left: 3px; }
+#counter .Seconds { margin-left: 1px; }
 
