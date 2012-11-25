@@ -7,6 +7,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ProgressDialogBox extends DialogBox {
     public ProgressDialogBox(String text) {
         setText(text != null ? text : "Retrieving Data...");
+        setGlassEnabled(true);
+        setAnimationEnabled(true);
         center();
     }
 
