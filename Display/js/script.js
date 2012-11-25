@@ -148,7 +148,7 @@ $(document).ready(function () {
             timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1001
         }).hide();
         $('#counter_small').mouseenter(function () {
-            if ($(this).css("opacity") === "1") {
+            if ( parseFloat($(this).css("opacity")) >= 0.89 ) {
                 $(this).hide();
                 $('#counter').fadeIn("slow").delay(3000).fadeOut("slow", function () {
                     $("#counter_small").show();
@@ -1731,18 +1731,22 @@ function ToggleText(element) {
 
 function SubmitAnswer() {
     var type = GetTypeofPage(OrthoVariables.lessonPage);
+    var mypage = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage];
+    var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
+    var id = OrthoVariables.lessonPage.toString();
+    $("#pointer_" + id).removeClass();
+
     if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"]) {
-        OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"] = false;
-        var mypage = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage];
-        var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
-        var id = OrthoVariables.lessonPage.toString();
-        $("#pointer_" + id).removeClass();
+        TogglePaint("line", id);
         ShowOffImage(id, "line");
+    }
+    if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["h"]) {
+        TogglePaint("hotspot", id);
         ShowOffImage(id, "hotspot");
+    }
+    if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["t"]) {
+        TogglePaint("target", id);
         ShowOffImage(id, "target");
-        OrthoVariables.buttonState[i]["l"] = false;
-        OrthoVariables.buttonState[i]["h"] = false;
-        OrthoVariables.buttonState[i]["t"] = false;
     }
 
     switch (type) {
