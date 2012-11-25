@@ -699,15 +699,16 @@ div#div_input>div {
     bottom: 11px;
     right: -9px;
     text-align: center;
-    width: 116px;
+    white-space: nowrap;
     font-size: 13px;
     background: #3B3B3B;
     text-shadow: 1px 1px 0 rgba(0,0,0,1);
     color: #FFFFFF;
-    padding: 3px 1px 1px 1px;
+    padding: 3px 4px 1px 4px;
     border-radius: 2px;
     line-height: normal;
     cursor: default;
+    opacity: 0.9;
 }
 #counter_small:hover, #counter:hover {
     cursor: default;
