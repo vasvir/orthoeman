@@ -40,7 +40,7 @@ public abstract class Drawing {
 	}
 
 	private final Type type;
-	private final Kind kind;
+	private Kind kind;
 
 	public Drawing(Type type, Kind kind) {
 		this.type = type;
@@ -53,6 +53,10 @@ public abstract class Drawing {
 
 	public Kind getKind() {
 		return kind;
+	}
+
+	public void setKind(Kind kind) {
+		this.kind = kind;
 	}
 
 	public abstract Drawing toImage(Zoom zoom);
@@ -73,7 +77,7 @@ public abstract class Drawing {
 		}
 		return drawingDefaultColor;
 	}
-	
+
 	public static String getEraserColor() {
 		return drawingEraseColor;
 	}

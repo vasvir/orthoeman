@@ -460,7 +460,34 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onChange(ChangeEvent event) {
 				final Page page = getCurrentPage();
-				page.setItemTypeCombination(getCurrentItemTypeCombination());
+				final Page.Item.Type[] current_item_combination = getCurrentItemTypeCombination();
+				final int old_item_combination_index = getComboboxOptionIndex(page
+						.getItemTypeCombination());
+
+				final boolean contains_image_quiz = containsImageQuiz(current_item_combination);
+				if (contains_image_quiz) {
+					final Page current_page = getCurrentPage();
+					final Page.ImageItem.DrawingList drawings = current_page
+							.getImageItem().getDrawings();
+					final int hotspots = drawings.getHotSpotCount();
+					if (hotspots > 0) {
+						final boolean convert_hotspots = Window
+								.confirm("You are trying to introduce a quiz in a "
+										+ "page with hotspots. Convert "
+										+ hotspots
+										+ " hotspots of this page to plain "
+										+ "informational areas.");
+						if (convert_hotspots) {
+							for (final Drawing drawing : drawings) {
+								drawing.setKind(Drawing.Kind.INFO);
+							}
+						} else {
+							combobox.setSelectedIndex(old_item_combination_index);
+							return;
+						}
+					}
+				}
+				page.setItemTypeCombination(current_item_combination);
 				setCurrentPage(page);
 			}
 		});
@@ -1631,6 +1658,7 @@ public class AuthoringTool implements EntryPoint {
 		negative_grade_tb.setText(page.getNegativeGrade() + "");
 		setButtonsEnabled(image_edit_buttons,
 				page.getImageItem().getImage() != null);
+		setAreaTypeCombobox();
 	}
 
 	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
@@ -1965,6 +1993,52 @@ public class AuthoringTool implements EntryPoint {
 		sb.append("<p class='serverResponseLabelError'>Cannot find valid content / codec combination.</p>");
 		sb.append("</video>");
 		videoPlayerContainer.getElement().setInnerHTML(sb.toString());
+	}
+
+	private static boolean containsType(
+			Page.Item.Type[] current_item_combination, Page.Item.Type type) {
+		return current_item_combination[0] == type
+				|| current_item_combination[1] == type;
+	}
+
+	private static boolean containsQuiz(
+			Page.Item.Type[] current_item_combination) {
+		return containsType(current_item_combination, Page.Item.Type.QUIZ)
+				|| containsType(current_item_combination,
+						Page.Item.Type.RANGE_QUIZ);
+	}
+
+	private static boolean containsImage(
+			Page.Item.Type[] current_item_combination) {
+		return containsType(current_item_combination, Page.Item.Type.IMAGE);
+	}
+
+	private static boolean containsImageQuiz(
+			Page.Item.Type[] current_item_combination) {
+		return containsImage(current_item_combination)
+				&& containsQuiz(current_item_combination);
+	}
+
+	private int getAreaTypeComboboxKindValueIndex(Drawing.Kind kind) {
+		final int total = areaTypeCombobox.getItemCount();
+		for (int i = 0; i < total; i++)
+			if (kind.equals(Drawing.Kind.getByDisplayName(areaTypeCombobox
+					.getItemText(i))))
+				return i;
+		return -1;
+	}
+
+	private void setAreaTypeCombobox(boolean contains_image_quiz) {
+		if (contains_image_quiz)
+			areaTypeCombobox
+					.setSelectedIndex(getAreaTypeComboboxKindValueIndex(Drawing.Kind.INFO));
+		areaTypeCombobox.setEnabled(!contains_image_quiz);
+	}
+
+	private void setAreaTypeCombobox() {
+		final Page.Item.Type[] current_item_combination = getCurrentItemTypeCombination();
+		final boolean contains_image_quiz = containsImageQuiz(current_item_combination);
+		setAreaTypeCombobox(contains_image_quiz);
 	}
 
 	public static int getScrollBarWidth() {

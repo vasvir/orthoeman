@@ -42,7 +42,3 @@ Immediate:
 	Discussion:
 		Tracking - Display tool should be able to inform moodle about the progress / grades of the
 			student, submit.php get_submission.php
-
-After meeting:
-		don't do ogg transcoding
-		disable hotspots when quiz or range quiz
