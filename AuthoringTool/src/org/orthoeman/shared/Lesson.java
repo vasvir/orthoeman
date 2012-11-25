@@ -264,6 +264,15 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				public Line[] getInterSectionLines(Point intersection_point) {
 					return intersection_point_lines_map.get(intersection_point);
 				}
+				
+				public int getHotSpotCount() {
+					int count = 0;
+					for (final Drawing drawing : this) {
+						if (drawing.getKind() == Kind.HOTSPOT)
+							count++;
+					}
+					return count;
+				}
 			}
 
 			private String id;
