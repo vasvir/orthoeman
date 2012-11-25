@@ -1229,8 +1229,8 @@ function resize(id, newHeight, newWidth) {
     $("#container_" + id).css("top", -newHeight);
     $("#1_" + id).css("width", newWidth).css("top", newHeight + 30);
     $("#2_" + id).css("width", newWidth).css("top", newHeight + 30);
-    $("#slider_b_" + id).css("left", 165);
-    $("#slider_c_" + id).css("left", 210);
+    $("#slider_b_" + id).css("left", 272);
+    $("#slider_c_" + id).css("left", 317);
     $("#pointer_" + id).parent().css("height", newHeight);
     if (OrthoVariables.zoomPage[OrthoVariables.lessonPage] !== 1) {
         $("#pointer_" + id).css("top", "0px").css("left", "0px");

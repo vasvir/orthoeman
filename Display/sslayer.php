@@ -481,7 +481,6 @@ function GetTemplateData($data)
                         'HotSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["HotSpots"],
                         'MaxSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["MaxSpots"],
                         'ShowRegions' => $a["Page"][$index]["Widget"][$windex]["Image"]["ShowRegions"],
-                        'EnableTracking' => $a["Page"][$index]["Widget"][$windex]["Image"]["EnableTracking"]
                     );
                     break;
                 case 'quiz' :
@@ -556,7 +555,6 @@ function GetDisplayComplexImg($data, $id, $subid)
     $r["ShowRegions"] = strval($data["showRegions"]);
     $r["MaxSpots"] = getHotSpotsNumber($data);
     $r["HotSpots"] = ($r["MaxSpots"] == 0) ? "no" : "yes";
-    $r["EnableTracking"] = strval($data["enableTracking"]);
     $r["id"] = $id;
     $r["subid"] = $subid;
     $r["width"] = strval($data["width"]);
