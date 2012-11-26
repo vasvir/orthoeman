@@ -119,7 +119,6 @@ public class AuthoringTool implements EntryPoint {
 	private Canvas canvas;
 	private Canvas back_canvas;
 	private ListBox areaTypeCombobox;
-	private SimpleCheckBox enableTracking_cb;
 	private SimpleCheckBox showRegions_cb;
 
 	private TextBox positive_grade_tb;
@@ -607,7 +606,6 @@ public class AuthoringTool implements EntryPoint {
 		final Button cross_b = getButton("crossButton");
 		final Button erase_b = getButton("eraseButton");
 		final Button edit_image_b = getButton("editImageButton");
-		enableTracking_cb = getSimpleCheckBox("enableTrackingCheckBox");
 		showRegions_cb = getSimpleCheckBox("showRegionsCheckBox");
 
 		areaTypeCombobox = getListBox("areaTypeCombobox");
@@ -617,7 +615,7 @@ public class AuthoringTool implements EntryPoint {
 		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
 				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
 				polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b,
-				areaTypeCombobox, enableTracking_cb, showRegions_cb);
+				areaTypeCombobox, showRegions_cb);
 
 		if (work_around_bug) {
 			getTextContainer();
@@ -1236,14 +1234,6 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		enableTracking_cb.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				getCurrentPage().getImageItem().setEnableTracking(
-						enableTracking_cb.getValue());
-			}
-		});
-
 		showRegions_cb.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1624,8 +1614,6 @@ public class AuthoringTool implements EntryPoint {
 				text_text_area.setText(page.getTextItem().getText());
 				break;
 			case IMAGE:
-				enableTracking_cb.setValue(page.getImageItem()
-						.isEnableTracking());
 				showRegions_cb.setValue(page.getImageItem().isShowRegions());
 				imageContainer.setVisible(true);
 				redrawCanvas();
