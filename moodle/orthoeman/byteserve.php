@@ -154,7 +154,7 @@ function serve($resource_rec, $download=0){
   //if $download=true, then the save file dialog appears
   $filesize=strlen($resource_rec->data);
   header("Content-Length: $filesize");
-  header("Content-Type: resource_rec->content_type");
+  header("Content-Type: $resource_rec->content_type");
   $filename_parts=pathinfo($filename);
   if($download) header('Content-disposition: attachment; filename=resource_'."$resource_rec->id");
   echo $resource_rec->data;
