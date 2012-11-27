@@ -48,6 +48,7 @@ if ($id) {
 }
 
 $type = required_param('type', PARAM_ALPHA);
+$valid_resource_ids = optional_param('resource_ids', '', PARAM_TEXT);
 
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -96,7 +97,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->id = $resource_id;
         }
         echo "$resource_rec->id:$resource_rec->content_type";
-    } else if ($type == $TYPE_IMAGE) {
+
+        // now let's delete non used resources
+        if ($valid_resource_ids) {
+            // first find valid parents
+            $resource_array = $DB->get_records_select($RESOURCE_TABLE, "orthoeman_id = $orthoeman->id AND type <> 0 AND id IN ($valid_resource_ids)");
+            $parent_ids = array();
+            //print_r($resource_array);
+            foreach ($resource_array as $resource_rec) {
+                if ($resource_rec->parent_id) {
+                    $parent_ids[$resource_rec->parent_id] = 1;
+                }
+            }
+            foreach (array_keys($parent_ids) as $parent_id) {
+                $valid_resource_ids .= "," . $parent_id;
+            }
+            $valid_resource_ids = implode(',', (array_unique(explode(',', $valid_resource_ids))));
+
+            $DB->delete_records_select($RESOURCE_TABLE, "orthoeman_id = $orthoeman->id AND type <> 0 AND id NOT IN ($valid_resource_ids)");
+        }
+   } else if ($type == $TYPE_IMAGE) {
         $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
         //echo "url $url<BR>";
         $current_url = get_current_url();
