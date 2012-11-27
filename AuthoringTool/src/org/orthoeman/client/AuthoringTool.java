@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Cross;
@@ -509,7 +510,8 @@ public class AuthoringTool implements EntryPoint {
 				final ProgressDialogBox pd = new ProgressDialogBox(
 						"Saving Lesson...");
 				pd.show();
-				putResource(ResourceType.XML, Lesson.writeXML(lesson), null, pd);
+				putResource(ResourceType.XML, Lesson.writeXML(lesson),
+						lesson.getResourceIds(), pd);
 			}
 		}));
 		file_menu.addItem(new MenuItem("Preview", command));
@@ -1897,11 +1899,26 @@ public class AuthoringTool implements EntryPoint {
 		return true;
 	}
 
+	private static String getResourceIdsArgument(
+			final ResourceType resource_type, final Object extra_info) {
+		if (resource_type != ResourceType.XML)
+			return "";
+		@SuppressWarnings("unchecked")
+		final Set<String> resource_ids = (Set<String>) extra_info;
+		final StringBuilder sb = new StringBuilder("&resource_ids=");
+		for (final String id : resource_ids) {
+			sb.append(id + ",");
+		}
+		return sb.substring(0, sb.length() - 1);
+	}
+
 	private void putResource(final ResourceType resource_type,
-			final String data, final Page.Item item, final ProgressDialogBox pd) {
+			final String data, final Object extra_info,
+			final ProgressDialogBox pd) {
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
 				"../put_resource.php?id=" + orthoeman_id + "&type="
-						+ resource_type);
+						+ resource_type
+						+ getResourceIdsArgument(resource_type, extra_info));
 		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		try {
 			rb.sendRequest(URL.encodeQueryString(data), new RequestCallback() {
@@ -1921,7 +1938,7 @@ public class AuthoringTool implements EntryPoint {
 					Log.debug("Successfull request: " + request + " response: "
 							+ response_text);
 					if (resource_type == ResourceType.IMAGE) {
-						final Page.ImageItem image_item = (Page.ImageItem) item;
+						final Page.ImageItem image_item = (Page.ImageItem) extra_info;
 						final String id = Page.ImageItem
 								.getImageIdString(response_text);
 						image_item.setId(id);
@@ -1931,7 +1948,7 @@ public class AuthoringTool implements EntryPoint {
 										image_item, true)));
 						setButtonsEnabled(image_edit_buttons, true);
 					} else if (resource_type == ResourceType.VIDEO) {
-						final Page.VideoItem video_item = (Page.VideoItem) item;
+						final Page.VideoItem video_item = (Page.VideoItem) extra_info;
 						video_item.setSources(
 								Page.VideoItem.parseSources(response_text),
 								new SetupVideoPlayerHandler());
