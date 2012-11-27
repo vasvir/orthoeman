@@ -7,7 +7,11 @@
  TODO tracking implementation
  TODO bug* - όταν έχεις απαντήση την ερώτηση, να μην μπορείς να σβήσεις το hotspot.
  TODO bug* - όταν έχεις ενεργοποιημένο το hotspot, να μην εμφανίζεται ο cursor της μετακίνηησης της εικόνας και γενικά αυτή η λειτουργία να μην ενεργοποιείται
- TODO ΙΕ10* - υπάρχει πρόβλημα με το z-index του msg και το remaining time.  - DONE
+ TODO ΙΕ10* bug - υπάρχει πρόβλημα με το z-index του msg και το remaining time.  - DONE
+ TODO bug* η θέση των rect χρωμάτων στο text tooltip δεν εξαρτάται από το δεύτερο zoom (ορίζεται στην scalepage μεταβλητή)
+ TODO bug* τα handles των brigness anc contrast βγαίνουν έγω από την σελίδα, άλλαξέ τα θέση
+ TODO bug* άλλαξε τις τιμές των min width λόγω των πολλάκλών εικονιδίων
+ TODO bug* κατά την μετακίνηση των σελιδών να μην εμφανίζονται οι μπάρες
 
  */
 
