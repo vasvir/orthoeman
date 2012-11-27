@@ -113,9 +113,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $valid_resource_ids .= "," . $parent_id;
             }
             $valid_resource_ids = implode(',', (array_unique(explode(',', $valid_resource_ids))));
-
-            $DB->delete_records_select($RESOURCE_TABLE, "orthoeman_id = $orthoeman->id AND type <> 0 AND id NOT IN ($valid_resource_ids)");
         }
+
+        $valid_resource_ids_sql = $valid_resource_ids ? "AND id NOT IN ($valid_resource_ids)" : "";
+        $DB->delete_records_select($RESOURCE_TABLE, "orthoeman_id = $orthoeman->id AND type <> 0 $valid_resource_ids_sql");
    } else if ($type == $TYPE_IMAGE) {
         $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
         //echo "url $url<BR>";
