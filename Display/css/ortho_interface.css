@@ -614,6 +614,7 @@ div#div_input>div {
     position: fixed;
     bottom: -10px;
     right: 10px;
+    z-index: 22;
 }
 #counter {
     font-family: 'LeagueGothicRegular', Arial, Helvetica, sans-serif;
