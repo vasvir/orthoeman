@@ -2,16 +2,12 @@
  The script logic for ORTHO e-Man
 
 
- TODO οι διαστάσεις του tooltip, infotip και point circles δεν είναι το ίδιο. Αυτό συμβαίνει γιατί εξαρτούνται από το zoomPage και scalePage, διόρθωσέ το ώστε να εξαρτάται από το ένα. Ίσως τότε να διορθωθεί. DONE
- TODO αλλαγή όλου του notification system. -- ίσως να μην χρειάζεται πλέον
  TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
- TODO *Bug IE only, fullscreen video not working
- TODO δεν επιτρέπουμε πολλαπλές προσπάθειες DONE
- TODO δύο αριθμοί negative, positive DONE
  TODO cruise mode
- TODO see what's happen in text-image, text-video (theory case) DONE
- TODO timeout time
  TODO tracking implementation
+ TODO bug* - όταν έχεις απαντήση την ερώτηση, να μην μπορείς να σβήσεις το hotspot.
+ TODO bug* - όταν έχεις ενεργοποιημένο το hotspot, να μην εμφανίζεται ο cursor της μετακίνηησης της εικόνας και γενικά αυτή η λειτουργία να μην ενεργοποιείται
+ TODO ΙΕ10* - υπάρχει πρόβλημα με το z-index του msg και το remaining time.
 
  */
 
