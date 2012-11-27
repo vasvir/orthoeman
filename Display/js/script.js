@@ -7,7 +7,7 @@
  TODO tracking implementation
  TODO bug* - όταν έχεις απαντήση την ερώτηση, να μην μπορείς να σβήσεις το hotspot.
  TODO bug* - όταν έχεις ενεργοποιημένο το hotspot, να μην εμφανίζεται ο cursor της μετακίνηησης της εικόνας και γενικά αυτή η λειτουργία να μην ενεργοποιείται
- TODO ΙΕ10* - υπάρχει πρόβλημα με το z-index του msg και το remaining time.
+ TODO ΙΕ10* - υπάρχει πρόβλημα με το z-index του msg και το remaining time.  - DONE
 
  */
 
