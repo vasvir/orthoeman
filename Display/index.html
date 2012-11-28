@@ -117,21 +117,21 @@
     </div>
      	  <div id="1_{{:Image.id}}" style="width:{{:Image.width}}px;min-width:320px;text-align: left;position:absolute;top:{{:Image.height}}px;">
           <span class="ColorFunctions">
-          	  <img id="zoomreset_{{:Image.id}}" src="img/zoomrs.png" title="Zoom Reset" onclick="zoomRsImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomreset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomreset' )"/>
-              <img id="zoomout_{{:Image.id}}" src="img/zoomout.png" title="Zoom Out" onclick="zoomOutImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomout' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomout' )"/>
-              <img id="zoomin_{{:Image.id}}" src="img/zoomin.png" title="Zoom In" onclick="zoomInImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomin' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomin' )"/>
-              <img id="hotspot_{{:Image.id}}" src="img/hotspot.png" title="Draw a Point" onmouseover="ShowOnImage('{{:Image.id}}', 'hotspot' )" onmouseout="ShowOffImage('{{:Image.id}}', 'hotspot' )" onclick="TogglePaint('hotspot','{{:Image.id}}')" />
-              <img height="24" id="target_{{:Image.id}}" src="img/target.png" title="Show XY-Axis" onmouseover="ShowOnImage('{{:Image.id}}', 'target' )" onmouseout="ShowOffImage('{{:Image.id}}', 'target' )" onclick="TogglePaint('target','{{:Image.id}}')" />
-              <img height="24" id="line_{{:Image.id}}" src="img/line.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'line' )" onmouseout="ShowOffImage('{{:Image.id}}', 'line' )" onclick="TogglePaint('line','{{:Image.id}}')" />
-              <img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" />
-              <img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" />
-              <img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" />
-          	  <img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'reset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'reset' )" />
+          	  <div><img id="zoomreset_{{:Image.id}}" src="img/zoomrs.png" title="Zoom Reset" onclick="zoomRsImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomreset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomreset' )"/></div>
+              <div><img id="zoomout_{{:Image.id}}" src="img/zoomout.png" title="Zoom Out" onclick="zoomOutImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomout' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomout' )"/></div>
+              <div><img id="zoomin_{{:Image.id}}" src="img/zoomin.png" title="Zoom In" onclick="zoomInImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'zoomin' )" onmouseout="ShowOffImage('{{:Image.id}}', 'zoomin' )"/></div>
+              <div><img id="invert_{{:Image.id}}" src="img/invert.png" title="Invert the Image" onclick="InvertImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'invert' )" onmouseout="ShowOffImage('{{:Image.id}}', 'invert' )" /></div>
+              <div><img id="brightness_{{:Image.id}}" src="img/brightness.png" title="Manipulate the Brightness of the Image" onclick="ActionSlider('slider_c_{{:Image.id}}','hide');ActionSlider('slider_b_{{:Image.id}}','toggle');" onmouseover="ShowOnImage('{{:Image.id}}', 'brightness' )" onmouseout="ShowOffImage('{{:Image.id}}', 'brightness' )" /></div>
+              <div><img id="contrast_{{:Image.id}}" src="img/contrast.png" title="Manipulate the Contrast of the Image" onclick="ActionSlider('slider_b_{{:Image.id}}','hide');ActionSlider('slider_c_{{:Image.id}}','toggle')" onmouseover="ShowOnImage('{{:Image.id}}', 'contrast' )" onmouseout="ShowOffImage('{{:Image.id}}', 'contrast' )" /></div>
+          	  <div><img id="hotspot_{{:Image.id}}" src="img/hotspot.png" title="Draw a Point" onmouseover="ShowOnImage('{{:Image.id}}', 'hotspot' )" onmouseout="ShowOffImage('{{:Image.id}}', 'hotspot' )" onclick="TogglePaint('hotspot','{{:Image.id}}')" /></div>
+              <div><img height="24" id="target_{{:Image.id}}" src="img/target.png" title="Show XY-Axis" onmouseover="ShowOnImage('{{:Image.id}}', 'target' )" onmouseout="ShowOffImage('{{:Image.id}}', 'target' )" onclick="TogglePaint('target','{{:Image.id}}')" /></div>
+              <div><img height="24" id="line_{{:Image.id}}" src="img/line.png" title="Draw a Line" onmouseover="ShowOnImage('{{:Image.id}}', 'line' )" onmouseout="ShowOffImage('{{:Image.id}}', 'line' )" onclick="TogglePaint('line','{{:Image.id}}')" /></div>
+              <div><img id="reset_{{:Image.id}}" src="img/reset.png" title="Reload the Image" onclick="ReloadImage('{{:Image.id}}')" onmouseover="ShowOnImage('{{:Image.id}}', 'reset' )" onmouseout="ShowOffImage('{{:Image.id}}', 'reset' )" /></div>
           	</span>
            </div>
 
-     <div id="2_{{:Image.id}}" style="width:{{:Image.width}}px;position:absolute;top:{{:Image.height}}px;">  <div id="slider_b_{{:Image.id}}" style="left:{{if (Image.width > 380)}}{{:Image.width - 165)}}{{else}}215{{/if}}px;top:50px;" class="cssSlider"></div>
-     <div id="slider_c_{{:Image.id}}" style="left:{{:Image.width - 115}}px;top:50px;" class="cssSlider"></div></div>
+     <div id="2_{{:Image.id}}" style="width:{{:Image.width}}px;position:absolute;top:{{:Image.height}}px;">  <div id="slider_b_{{:Image.id}}" style="left:36%;top:50px;" class="cssSlider"></div>
+     <div id="slider_c_{{:Image.id}}" style="left:44%;top:50px;" class="cssSlider"></div></div>
       </div>
  </script>
 
