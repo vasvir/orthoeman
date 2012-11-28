@@ -5,9 +5,7 @@
  TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
  TODO cruise mode
  TODO tracking implementation
- TODO bug* - όταν έχεις απαντήση την ερώτηση, να μην μπορείς να σβήσεις το hotspot.
- TODO bug* - όταν έχεις ενεργοποιημένο το hotspot, να μην εμφανίζεται ο cursor της μετακίνηησης της εικόνας και γενικά αυτή η λειτουργία να μην ενεργοποιείται
- TODO ΙΕ10* - υπάρχει πρόβλημα με το z-index του msg και το remaining time.  - DONE
+
 
  */
 
@@ -358,7 +356,7 @@ function LoadImages(Page) {
         OrthoVariables.origCanvas[imagesToLoad[i].id][2] = stage;
 
         $("#pointer_" + imagesToLoad[i].id).mousedown(function (e) {
-            if (!OrthoVariables.line.pressed) {
+            if (!OrthoVariables.line.pressed &&  !OrthoVariables.buttonState[OrthoVariables.lessonPage]['h']) {
                 $(this).addClass("movecursor");
                 OrthoVariables.zoomMouse.isdown = true;
                 OrthoVariables.zoomMouse.x = e.pageX;
@@ -367,7 +365,7 @@ function LoadImages(Page) {
         });
 
         $("#pointer_" + imagesToLoad[i].id).mousemove({id:imagesToLoad[i].id}, function (e) {
-            if (OrthoVariables.zoomMouse.isdown) {
+            if (OrthoVariables.zoomMouse.isdown && OrthoVariables.buttonState[OrthoVariables.lessonPage]['h'] === false) {
                 var nx = e.pageX - OrthoVariables.zoomMouse.x;
                 var ny = e.pageY - OrthoVariables.zoomMouse.y;
                 OrthoVariables.zoomMouse.x = e.pageX;
@@ -521,19 +519,22 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
                 });
 
                 circle.on("mouseover", function () {
-                    $("#pointer_" + id).removeClass().addClass("erasercursor");
-                    var mousePos = mystage.getMousePosition();
-                    var x = (mousePos.x + 5) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
-                    var y = (mousePos.y + 10) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
-                    drawTooltip(mytooltip, x, y, "click to remove");
-                    this.transitionTo({
-                        scale:{
-                            x:1.7,
-                            y:1.7
-                        },
-                        duration:0.3,
-                        easing:'ease-out'
-                    });
+                    if (OrthoVariables.PageTracking[lessonPage].status === "pending") {
+                        $("#pointer_" + id).removeClass().addClass("erasercursor");
+                        var mousePos = mystage.getMousePosition();
+                        var x = (mousePos.x + 5) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
+                        var y = (mousePos.y + 10) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
+                        drawTooltip(mytooltip, x, y, "click to remove");
+                        this.transitionTo({
+                            scale:{
+                                x:1.7,
+                                y:1.7
+                            },
+                            duration:0.3,
+                            easing:'ease-out'
+                        });
+                    }
+
                 });
                 circle.on("mouseout", function () {
                     SetCursor(id);
@@ -552,23 +553,20 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
                     });
                 });
                 circle.on("click", function () {
-                    if (OrthoVariables.PageTracking[lessonPage].status === "correct" ||
-                        (OrthoVariables.PageTracking[lessonPage].status === "wrong" && OrthoVariables.LessonData.Page[lessonPage].attributes.Blocked === "no"
-                            && OrthoVariables.buttonState[lessonPage]['d'] === true
-                            )) {
-                        return true;
+                    if (OrthoVariables.PageTracking[lessonPage].status === "pending") {
+                        OrthoVariables.clickcatch = true;
+                        //myshapelayer.remove(this);
+                        this.remove();
+                        OrthoVariables.lessonAnswers[lessonPage].hotspots[circle._id] = undefined;
+                        var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
+                        mytooltip.hide();
+                        mystage.draw();
+                        SetCursor(id);
+                        if (!isDraw) {
+                            DisableButtonLink("SubmitAnswer");
+                        }
                     }
-                    OrthoVariables.clickcatch = true;
-                    //myshapelayer.remove(this);
-                    this.remove();
-                    OrthoVariables.lessonAnswers[lessonPage].hotspots[circle._id] = undefined;
-                    var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
-                    mytooltip.hide();
-                    mystage.draw();
-                    SetCursor(id);
-                    if (!isDraw) {
-                        DisableButtonLink("SubmitAnswer");
-                    }
+
                 });
                 if (!OrthoVariables.clickcatch && !ReachMaxNumberHotSpots(lessonPage)) {
                     myshapelayer.add(circle);
@@ -794,10 +792,10 @@ function addAngleCircle(x, y, group, angle, mystage, point1, point2, point1A, po
 function resetRectDims(rect, x) {
     var size = rect.getSize();
     var pos = rect.getPosition();
-    size.width = 20 / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
-    size.height = 20 / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
-    pos.x = x / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
-    pos.y = 8 / OrthoVariables.zoomPage[OrthoVariables.lessonPage];
+    size.width = 20 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
+    size.height = 20 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
+    pos.x = x / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
+    pos.y = 8 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
     rect.setPosition(pos.x, pos.y);
     rect.setSize(size.width, size.height);
 
@@ -1082,7 +1080,7 @@ function displayFunctions() {
             h = (h < 460) ? 460 : h;
 
             var w = $('#content_wrap').width();
-            w = (w < 760) ? 760 : w;
+            w = (w < 720) ? 720 : w;
             CheckResizeLimits();
             $('#lesson').turn('size', w, h);
             //console.log("after resize limits",w,h);
@@ -1152,7 +1150,7 @@ function CheckResizeLimits(page) {
         var w = Math.round($('#content_wrap').width() / 2);
         //from the padding
         w -= 60;
-        w = (w < 310) ? 310 : w;
+        w = (w < 300) ? 300 : w;
         //console.log("w,h",w,h);
         var mypage = OrthoVariables.LessonData.Page[page];
         var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
@@ -1182,6 +1180,7 @@ function CheckResizeLimits(page) {
              nW = 380;
              nH = nW /ratio;
              }*/
+            //console.log(nH,nW);
             resize(id, nH, nW);
             //console.log(nW,nH);
         }
@@ -1225,8 +1224,8 @@ function resize(id, newHeight, newWidth) {
     $("#container_" + id).css("top", -newHeight);
     $("#1_" + id).css("width", newWidth).css("top", newHeight + 30);
     $("#2_" + id).css("width", newWidth).css("top", newHeight + 30);
-    $("#slider_b_" + id).css("left", 272);
-    $("#slider_c_" + id).css("left", 317);
+    //$("#slider_b_" + id).css("left", 272);
+    //$("#slider_c_" + id).css("left", 317);
     $("#pointer_" + id).parent().css("height", newHeight);
     if (OrthoVariables.zoomPage[OrthoVariables.lessonPage] !== 1) {
         $("#pointer_" + id).css("top", "0px").css("left", "0px");

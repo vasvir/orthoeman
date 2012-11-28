@@ -283,13 +283,18 @@ section {
     display: none;
 }
 
-span.ColorFunctions img:hover {
+span.ColorFunctions div img:hover {
     cursor: pointer;
 }
 
-span.ColorFunctions img {
-    margin: 10px 0 0 10px;
+span.ColorFunctions div img {
+    margin: 10px 0 0 2px;
 
+}
+
+span.ColorFunctions div {
+    width:8%;
+    display: inline-block;
 }
 
 .ColorFunctions {
