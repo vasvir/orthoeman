@@ -529,7 +529,80 @@ public class AuthoringTool implements EntryPoint {
 			}
 		}));
 
-		help_menu.addItem(new MenuItem("Report a bug...", command));
+		final RootPanel bugReportPopup = getBugReportPopup();
+		final TextBox bugReportSubjectTextBox = getTextBox("bugReportSubjectTextBox");
+		final TextArea bugReportBodyTextArea = getTextArea("bugReportBodyTextArea");
+		final Button bugReportSendButton = getButton("bugReportSendButton");
+		final Button bugReportCancelButton = getButton("bugReportCancelButton");
+
+		help_menu.addItem(new MenuItem("Report a bug...", new Command() {
+			@Override
+			public void execute() {
+				bugReportSubjectTextBox.setText("");
+				bugReportBodyTextArea.setText("");
+				bugReportPopup.setVisible(true);
+			}
+		}));
+
+		bugReportSendButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final RequestBuilder rb = new RequestBuilder(
+						RequestBuilder.POST, "../report_bug.php?id="
+								+ orthoeman_id
+								+ "&subject="
+								+ bugReportSubjectTextBox.getText());
+				rb.setHeader("Content-Type",
+						"application/x-www-form-urlencoded");
+				try {
+					rb.sendRequest(URL.encodeQueryString(bugReportBodyTextArea.getText()),
+							new RequestCallback() {
+								@Override
+								public void onResponseReceived(Request request,
+										Response response) {
+									if (response.getStatusCode() != Response.SC_OK) {
+										final String error_msg = "HTTP Error for request: "
+												+ request
+												+ " Response: "
+												+ response
+												+ " status code: "
+												+ response.getStatusCode();
+										Log.error(error_msg);
+										Window.alert(error_msg);
+										return;
+									}
+									final String response_text = response
+											.getText();
+									Log.debug("Successfull request: " + request
+											+ " response: " + response_text);
+								}
+
+								@Override
+								public void onError(Request request,
+										Throwable exception) {
+									final String error_msg = "RequestError for request: "
+											+ request;
+									Log.error(error_msg, exception);
+									Window.alert(error_msg);
+								}
+							});
+				} catch (RequestException e) {
+					final String error_msg = "Cannot save lesson. Please wait for server "
+							+ "communication to be restored and retry later.";
+					Log.error(error_msg, e);
+					Window.alert(error_msg);
+				}
+				bugReportPopup.setVisible(false);
+			}
+		});
+
+		bugReportCancelButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				bugReportPopup.setVisible(false);
+			}
+		});
+
 		help_menu.addItem(new MenuItem("About", command));
 
 		final MenuBar menu_bar = new MenuBar();
@@ -1515,6 +1588,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getPageContainer() {
 		return RootPanel.get("pageContainer");
+	}
+
+	private static RootPanel getBugReportPopup() {
+		return RootPanel.get("bugReportPopup");
 	}
 
 	private void addPageButton(final Page page) {

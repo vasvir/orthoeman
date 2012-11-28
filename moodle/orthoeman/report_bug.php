@@ -47,6 +47,8 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
+$subject = optional_param('subject', '', PARAM_TEXT);
+
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
@@ -61,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header("Content-type: text/plain");
 
     $text = urldecode(file_get_contents('php://input'));
-    $header = "Username: $USER->username
+    $moodle_info = "Username: $USER->username
 Name: $USER->firstname $USER->lastname
 e-mail: $USER->email
 skype: $USER->skype
@@ -71,12 +73,12 @@ Department: $USER->department
 Address: $USER->address
 City: $USER->city
 Country: $USER->country\ncm: " . print_r($cm, true) . "\ncourse: " . print_r($course, true) . "\northoeman: " . print_r($orthoeman, true) . "\n" . print_r($USER, true);;
-    $body = "$header\nx$text\n";
+    $body = "$text\n\nMoodle Information\n\n$moodle_info\n";
 
     //echo $body;
 
     $to_user = get_admin();
-    $subject = "[BUG: $course->shortname] $USER->firstname $USER->lastname";
+    $subject = "[BUG: $course->shortname] $USER->firstname $USER->lastname: $subject";
     $success = email_to_user($to_user, $USER, $subject, $body);
     if ($success == "1") {  
         echo "E-mail successful sent to $to_user->firstname $to_user->lastname!";
