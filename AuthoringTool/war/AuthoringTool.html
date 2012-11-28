@@ -64,6 +64,50 @@
 		</div>
 	</div>
 
+	<div id="bugReportPopup" style="display: none; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 1;">
+		<div id="bugReportGlassPopup" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; background-color: #F0F0F0; opacity: 0.5; z-index: 1">
+		</div>
+ 		<div class="border" style="display: table; width: 35%; height: 35%; position: absolute; top: 25%; left: 25%; right: 25%; bottom: 25%; background-color: #D5D5D5; opacity: 1; z-index: 2;">
+	 		<div class="noborder" style="display: table-row; border-bottom: 1px solid black; width: 100%; padding: 4px; background-color: #A5A5A5;">
+				<big><big><strong>Report a Bug</strong></big></big>
+ 			</div>
+ 			<div style="display: table-row;">
+ 				<div style="display: table;" class="fill_x">
+					<div style="display: table-cell; padding: 10px;">
+						<big>Subject:</big>
+					</div>
+					<div style="display: table-cell; padding: 10px;" class="fill_x">
+						<input id="bugReportSubjectTextBox" type="text" class="gwt-TextBox border fill_x" style=""
+							title="Enter a short headline description of the situation you encoutered"/>
+					</div>
+				</div>
+			</div>
+			<div style="display: table-row;" class="fill_y">
+				<div style="margin: 5px;" class="fill_y">
+					<textarea id="bugReportBodyTextArea" class="gwt-TextArea fill_x fill_y border"
+						title="Describe the steps you took, the problem you encountered and what the expected result should be.">
+					</textarea>
+				</div>
+			</div>
+			<div class="fill_x" style="display: table-row;">	
+ 				<div style="display: table;" class="fill_x">
+					<div style="display: table-cell; width: 30%; padding: 10px;" class="">
+					</div>
+					<div style="display: table-cell; padding: 10px;" class="">
+						<button id="bugReportSendButton" class="gwt-Button noborder" type="button">Send</button>
+					</div>
+					<div style="display: table-cell; width: 30%; padding: 10px;" class="">
+					</div>
+					<div style="display: table-cell; padding: 10px;" class="">
+						<button id="bugReportCancelButton" class="gwt-Button noborder" type="button">Cancel</button>
+					</div>
+					<div style="display: table-cell; width: 30%; padding: 10px;" class="">
+					</div>
+ 				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="table_abs full_x full_y fill_x fill_y">
 		<div class="row">
 			<div id="menuBarContainer" class="cell fill_x">
