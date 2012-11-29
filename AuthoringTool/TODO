@@ -28,9 +28,7 @@ Later:
 
 Immediate:
 	PHP:
-		on save delete non used resources
 		On duplication I get Fatal error: Class 'backup_orthoeman_activity_task' not found in /usr/share/moodle/backup/util/factories/backup_factory.class.php on line 107
-		reportbug.php
 
 	Layout:
 
