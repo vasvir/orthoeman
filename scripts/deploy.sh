@@ -3,10 +3,15 @@
 RSYNC="rsync -avz --delete --exclude '*~'";
 
 scriptdir=`dirname $0`;
-plugindir="$scriptdir/../moodle/orthoeman";
-authoringtooldir="$scriptdir/../AuthoringTool/war/";
-displaydir="$scriptdir/../Display";
+rootdir="$scriptdir/..";
+plugindir="$rootdir/moodle/orthoeman";
+authoringtooldir="$rootdir/AuthoringTool/war/";
+displaydir="$rootdir/Display";
+contentdir="$rootdir/Content";
+wwwdir="$rootdir/www";
 
-$RSYNC --exclude AuthoringTool --exclude Display "$plugindir" www-data@orthoeman:/usr/share/moodle/mod/;
+$RSYNC --exclude AuthoringTool --exclude Display "$plugindir" www-data@orthoeman:/usr/share/moodle/mod;
 $RSYNC --exclude WEB-INF "$authoringtooldir" www-data@orthoeman:/usr/share/moodle/mod/orthoeman/AuthoringTool;
-$RSYNC "$displaydir" www-data@orthoeman:/usr/share/moodle/mod/orthoeman;
+#$RSYNC "$displaydir" www-data@orthoeman:/usr/share/moodle/mod/orthoeman;
+#$RSYNC "$contentdir/XML/orthoeman.xsd" www-data@orthoeman:/var/www;
+$RSYNC "$wwwdir" www-data@orthoeman:/var/www;

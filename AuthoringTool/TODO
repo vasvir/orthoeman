@@ -25,17 +25,16 @@ Later:
 	Moodle:
 		show documents inline (may require a plugin)
 		Use moodle file facilities for storing and retrieving files
+		backup/restore capability
+		import/export capability
 
 Immediate:
-	PHP:
-		On duplication I get Fatal error: Class 'backup_orthoeman_activity_task' not found in /usr/share/moodle/backup/util/factories/backup_factory.class.php on line 107
-
 	Layout:
-
-		Moodle: group and button. Needs to make everything else invisible
 		AuthoringTool:
 			get rid of menu bar. We only need save, debug, bug report
 			use left and right panel
+
+		Moodle: group and button. Needs to make everything else invisible
 
 	Discussion:
 		Tracking - Display tool should be able to inform moodle about the progress / grades of the
