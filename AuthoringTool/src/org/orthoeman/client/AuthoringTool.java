@@ -40,12 +40,15 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.dom.client.Text;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -549,14 +552,16 @@ public class AuthoringTool implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				final RequestBuilder rb = new RequestBuilder(
 						RequestBuilder.POST, "../report_bug.php?id="
-								+ orthoeman_id
-								+ "&subject="
+								+ orthoeman_id + "&subject="
 								+ bugReportSubjectTextBox.getText());
 				rb.setHeader("Content-Type",
 						"application/x-www-form-urlencoded");
 				try {
-					rb.sendRequest(URL.encodeQueryString(bugReportBodyTextArea.getText()),
-							new RequestCallback() {
+					rb.sendRequest(
+							URL.encodeQueryString(bugReportBodyTextArea
+									.getText())
+									+ "\n\nAuthoring Tool Log\n\n"
+									+ getLoggedText(), new RequestCallback() {
 								@Override
 								public void onResponseReceived(Request request,
 										Response response) {
@@ -1476,7 +1481,7 @@ public class AuthoringTool implements EntryPoint {
 		divLogger.setVisible(false);
 	}
 
-	public void setGrade(ValueChangeEvent<String> event, boolean positive) {
+	private void setGrade(ValueChangeEvent<String> event, boolean positive) {
 		final Page page = getCurrentPage();
 		final TextBox grade_tb = positive ? positive_grade_tb
 				: negative_grade_tb;
@@ -2123,7 +2128,7 @@ public class AuthoringTool implements EntryPoint {
 		setAreaTypeCombobox(contains_image_quiz);
 	}
 
-	public static int getScrollBarWidth() {
+	private static int getScrollBarWidth() {
 		final Document document = Document.get();
 		final ParagraphElement p = document.createPElement();
 		p.getStyle().setWidth(100, Unit.PCT);
@@ -2149,5 +2154,29 @@ public class AuthoringTool implements EntryPoint {
 
 		document.getBody().removeChild(div);
 		return w1 - w2;
+	}
+
+	private static void getNodeTextRecursively(Node n, StringBuilder sb) {
+		if (n.getNodeType() == Node.TEXT_NODE) {
+			final Text text_node = (Text) n;
+			// Log.trace("Got text node: " + text_node + " value: "
+			// + text_node.getNodeValue() + " data: "
+			// + text_node.getData());
+			sb.append(text_node.getData() + "\n");
+			return;
+		}
+
+		for (final Node node : new DOMNodeListWrapperList(n.getChildNodes())) {
+			// Log.trace("Got child node: " + node);
+			getNodeTextRecursively(node, sb);
+		}
+	}
+
+	private static String getLoggedText() {
+		final StringBuilder sb = new StringBuilder();
+		final Element logTextArea = DOM.getElementById("logTextArea");
+		// Log.debug("Got logTextArea " + logTextArea);
+		getNodeTextRecursively(logTextArea, sb);
+		return sb.toString();
 	}
 }
