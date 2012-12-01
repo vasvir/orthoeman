@@ -141,7 +141,7 @@ $(document).ready(function () {
         $('#counter').countdown({
             timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1001
         }).hide();
-        $('#counter_small').mouseenter(function () {
+        $('#counter_small').click(function () {
             if ( parseFloat($(this).css("opacity")) >= 0.89 ) {
                 $(this).hide();
                 $('#counter').fadeIn("slow").delay(3000).fadeOut("slow", function () {
@@ -474,7 +474,7 @@ function LoadImages(Page) {
         var orig = document.createElement('canvas');
         orig.width = c.width;
         orig.height = c.height;
-        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url,function() { addEvents(i,c, orig,imagesToLoad); });
+        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
         
         
         //orig.getContext("2d").drawImage(c, 0 , 0);
