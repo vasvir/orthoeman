@@ -249,44 +249,9 @@ function setTracking(Page) {
 
 }
 
-function LoadImages(Page) {
-    // Loading the Image to Canvas
-    "use strict";
-    OrthoVariables.isImageLoaded1 = new Object();
-    OrthoVariables.isImageLoaded2 = new Object();
-    OrthoVariables.isImageLoaded1.end = false;
-    OrthoVariables.isImageLoaded2.end = false;
-    var imagesToLoad = [];
-    var counter = 0;
-    for (var i in OrthoVariables.LessonData.Images) {
-        if (OrthoVariables.LessonData.Images[i].id === Number(Page) && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) {
-            imagesToLoad[counter] = OrthoVariables.LessonData.Images[i];
-            counter++;
-        }
-    }
 
-    if (counter === 0 && Page < OrthoVariables.LessonData.Page.length) {
-        LoadVideo(Page);
-    }
-    for (var i = 0; i < imagesToLoad.length; i++) {
-        /*$("#modal_" + imagesToLoad[i].id).dialog({
-         modal: false,
-         autoOpen: false,
-         title: "Zoom Functions",
-         show: "fold",
-         hide: "fold"
-         });*/
-        var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
-
-        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url, OrthoVariables.isImageLoaded1);
-        var orig = document.createElement('canvas');
-        orig.width = c.width;
-        orig.height = c.height;
-        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, OrthoVariables.isImageLoaded2);
-        //orig.getContext("2d").drawImage(c, 0 , 0);
-        do {}
-        while (OrthoVariables.isImageLoaded1.end === false || OrthoVariables.isImageLoaded1.end === false)
-        OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url, undefined , 0, 0, false, false ];
+function addEvents(i, c , orig) {
+    OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url, undefined , 0, 0, false, false ];
         //OrthoVariables.origCanvas[imagesToLoad[i].id][6] = (imagesToLoad[i].EnableTracking === "yes");
         OrthoVariables.MaxHotSpots[imagesToLoad[i].id] = imagesToLoad[i].MaxSpots;
         //sliders
@@ -478,6 +443,41 @@ function LoadImages(Page) {
             }
 
         });
+}
+
+function LoadImages(Page) {
+    // Loading the Image to Canvas
+    "use strict";
+    var imagesToLoad = [];
+    var counter = 0;
+    for (var i in OrthoVariables.LessonData.Images) {
+        if (OrthoVariables.LessonData.Images[i].id === Number(Page) && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) {
+            imagesToLoad[counter] = OrthoVariables.LessonData.Images[i];
+            counter++;
+        }
+    }
+
+    if (counter === 0 && Page < OrthoVariables.LessonData.Page.length) {
+        LoadVideo(Page);
+    }
+    for (var i = 0; i < imagesToLoad.length; i++) {
+        /*$("#modal_" + imagesToLoad[i].id).dialog({
+         modal: false,
+         autoOpen: false,
+         title: "Zoom Functions",
+         show: "fold",
+         hide: "fold"
+         });*/
+        var orig = document.createElement('canvas');
+        orig.width = c.width;
+        orig.height = c.height;
+        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
+        var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
+
+        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url, function() { addEvents(i,c, orig); });
+        
+        //orig.getContext("2d").drawImage(c, 0 , 0);
+        
 
     }
     OrthoVariables.lessonLoaded[parseInt(Page)] = true;
