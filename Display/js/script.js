@@ -252,6 +252,8 @@ function setTracking(Page) {
 function LoadImages(Page) {
     // Loading the Image to Canvas
     "use strict";
+    OrthoVariables.isImageLoaded1.end = false;
+    OrthoVariables.isImageLoaded2.end = false;
     var imagesToLoad = [];
     var counter = 0;
     for (var i in OrthoVariables.LessonData.Images) {
@@ -274,16 +276,14 @@ function LoadImages(Page) {
          });*/
         var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
 
-        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
+        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url, OrthoVariables.isImageLoaded1);
         var orig = document.createElement('canvas');
         orig.width = c.width;
         orig.height = c.height;
-        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
-        for (var j=0;j<100000;j++) {
-            console.log(j);
-        }
+        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, OrthoVariables.isImageLoaded2);
         //orig.getContext("2d").drawImage(c, 0 , 0);
-
+        do {}
+        while{OrthoVariables.isImageLoaded1.end && OrthoVariables.isImageLoaded1.end }
         OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url, undefined , 0, 0, false, false ];
         //OrthoVariables.origCanvas[imagesToLoad[i].id][6] = (imagesToLoad[i].EnableTracking === "yes");
         OrthoVariables.MaxHotSpots[imagesToLoad[i].id] = imagesToLoad[i].MaxSpots;

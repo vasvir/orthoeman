@@ -4,13 +4,14 @@
 "use strict";
 
 
-Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_LoadImage = function(imgurl) {
+Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_LoadImage = function(imgurl, loaded) {
     var ImageObj = new Image();
     //alert(this.drawImage);
     
     var context = this;
     ImageObj.onload = function () {
         context.drawImage(this, 0, 0);
+        loaded.end = true;
     };
     ImageObj.src = imgurl;
 }
