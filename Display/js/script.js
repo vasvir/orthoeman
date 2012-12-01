@@ -250,7 +250,7 @@ function setTracking(Page) {
 }
 
 
-function addEvents(i, c , orig) {
+function addEvents(i, c , orig,imagesToLoad) {
     OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url, undefined , 0, 0, false, false ];
         //OrthoVariables.origCanvas[imagesToLoad[i].id][6] = (imagesToLoad[i].EnableTracking === "yes");
         OrthoVariables.MaxHotSpots[imagesToLoad[i].id] = imagesToLoad[i].MaxSpots;
@@ -474,7 +474,7 @@ function LoadImages(Page) {
         var orig = document.createElement('canvas');
         orig.width = c.width;
         orig.height = c.height;
-        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url,function() { addEvents(i,c, orig); });
+        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url,function() { addEvents(i,c, orig,imagesToLoad); });
         
         
         //orig.getContext("2d").drawImage(c, 0 , 0);
