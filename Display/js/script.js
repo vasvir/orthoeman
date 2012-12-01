@@ -283,7 +283,7 @@ function LoadImages(Page) {
         orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, OrthoVariables.isImageLoaded2);
         //orig.getContext("2d").drawImage(c, 0 , 0);
         do {}
-        while{OrthoVariables.isImageLoaded1.end && OrthoVariables.isImageLoaded1.end }
+        while (OrthoVariables.isImageLoaded1.end && OrthoVariables.isImageLoaded1.end)
         OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url, undefined , 0, 0, false, false ];
         //OrthoVariables.origCanvas[imagesToLoad[i].id][6] = (imagesToLoad[i].EnableTracking === "yes");
         OrthoVariables.MaxHotSpots[imagesToLoad[i].id] = imagesToLoad[i].MaxSpots;
