@@ -8,9 +8,12 @@ Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_Loa
     var ImageObj = new Image();
     //alert(this.drawImage);
     ImageObj.src = imgurl;
+    console.log(ImageObj.src, imgurl);
     var context = this;
     ImageObj.onload = function () {
+        console.log("loading image...");
         context.drawImage(this, 0, 0);
+        console.log("image loaded",this);
     };
 }
 
