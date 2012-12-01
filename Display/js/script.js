@@ -468,13 +468,14 @@ function LoadImages(Page) {
          show: "fold",
          hide: "fold"
          });*/
+        var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
+
+        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
         var orig = document.createElement('canvas');
         orig.width = c.width;
         orig.height = c.height;
-        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
-        var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
-
-        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url, function() { addEvents(i,c, orig); });
+        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url,function() { addEvents(i,c, orig); });
+        
         
         //orig.getContext("2d").drawImage(c, 0 , 0);
         
