@@ -252,6 +252,8 @@ function setTracking(Page) {
 function LoadImages(Page) {
     // Loading the Image to Canvas
     "use strict";
+    var OrthoVariables.isImageLoaded1 = new Object();
+    var OrthoVariables.isImageLoaded2 = new Object();
     OrthoVariables.isImageLoaded1.end = false;
     OrthoVariables.isImageLoaded2.end = false;
     var imagesToLoad = [];
