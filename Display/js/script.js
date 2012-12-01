@@ -279,7 +279,9 @@ function LoadImages(Page) {
         orig.width = c.width;
         orig.height = c.height;
         orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
-        for (int j=0;j<100000;j++) {}
+        for (int j=0;j<100000;j++) {
+            console.log(j);
+        }
         //orig.getContext("2d").drawImage(c, 0 , 0);
 
         OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url, undefined , 0, 0, false, false ];
