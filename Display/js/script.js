@@ -183,6 +183,7 @@ function LoadVideo(Page) {
                 enableAutosize:true,
                 pauseOtherPlayers:true
             });
+            OrthoVariables.lessonLoaded[parseInt(Page)];
         }
     }
 }
@@ -457,9 +458,11 @@ function LoadImages(Page) {
         }
     }
 
-    if (counter === 0 && Page < OrthoVariables.LessonData.Page.length) {
-        LoadVideo(Page);
-    }
+    /*if (Page < OrthoVariables.LessonData.Page.length) {
+        if (OrthoVariables.LessonData.Page[Page].Widget[0].type === "video" || OrthoVariables.LessonData.Page[Page].Widget[1].type === "video")
+        { LoadVideo(Page); }
+    } */
+    LoadVideo(Page); LoadVideo(Number(Page) + 1);
     for (var i = 0; i < imagesToLoad.length; i++) {
         /*$("#modal_" + imagesToLoad[i].id).dialog({
          modal: false,
