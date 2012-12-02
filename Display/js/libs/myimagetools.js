@@ -7,6 +7,7 @@
 Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_LoadImage = function(imgurl, data, callback) {
     var ImageObj = new Image();
     //alert(this.drawImage);
+    console.log("Step:",data.i,2);
     var dfd = new $.Deferred();
     var context = this;
     ImageObj.onload = function () {
@@ -15,6 +16,7 @@ Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_Loa
             callback(data);
         }
         dfd.resolve(data);
+        console.log("Step:",data.i,3);
     };
     ImageObj.src = imgurl;
     return dfd.promise();
