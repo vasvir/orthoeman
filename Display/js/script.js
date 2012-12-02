@@ -488,10 +488,16 @@ function LoadImages(Page) {
         //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
         c.getContext("2d").zag_LoadImage(imagesToLoad[i].url,{i : i, c : c, imagesToLoad:imagesToLoad  }).done(function(data) {
             console.log("Step:",data.i,4);
+            if(typeof G_vmlCanvasManager != 'undefined') {
+                data.c = G_vmlCanvasManager.initElement(data.c);
+            }
             var orig = document.createElement('canvas');
             orig.width = data.c.width;
             orig.height = data.c.height;
             orig.getContext("2d").drawImage(data.c, 0 , 0);
+            if(typeof G_vmlCanvasManager != 'undefined') {
+                orig = G_vmlCanvasManager.initElement(orig);
+            }
             addEvents(data.i,data.c, orig, data.imagesToLoad);
             OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
             CheckResizeLimits(data.imagesToLoad[data.i].id);
