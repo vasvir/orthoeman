@@ -15,8 +15,8 @@ Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_Loa
         if (callback !== undefined) {
             callback(data);
         }
-        dfd.resolve(data);
         console.log("Step:",data.i,3);
+        dfd.resolve(data);
     };
     ImageObj.src = imgurl;
     return dfd.promise();
