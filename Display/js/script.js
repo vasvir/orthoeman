@@ -480,6 +480,7 @@ function LoadImages(Page) {
 
         //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
         $.when(c.getContext("2d").zag_LoadImage(imagesToLoad[i].url),{i : i, c : c, imagesToLoad:imagesToLoad  }).done(function(data) {
+            console.log("here");
             var orig = document.createElement('canvas');
             orig.width = data.c.width;
             orig.height = data.c.height;
