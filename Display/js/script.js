@@ -476,6 +476,7 @@ function LoadImages(Page) {
          hide: "fold"
          });*/
         var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
+        $('#canvasid_' + imagesToLoad[i].id).css("background","url("+imagesToLoad[i].url +")");
         console.log("Step:",i,1)
         /*c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
         var orig = document.createElement('canvas');
