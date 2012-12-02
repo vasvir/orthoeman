@@ -463,7 +463,10 @@ function LoadImages(Page) {
         if (OrthoVariables.LessonData.Page[Page].Widget[0].type === "video" || OrthoVariables.LessonData.Page[Page].Widget[1].type === "video")
         { LoadVideo(Page); }
     } */
-    LoadVideo(Page); LoadVideo(Number(Page) + 1);
+    if (Page < OrthoVariables.LessonData.Page.length) { LoadVideo(Page); }
+    if ( (Number(Page) + 1) < OrthoVariables.LessonData.Page.length) { LoadVideo(Page); }
+
+    LoadVideo(Number(Page) + 1);
     for (var i = 0; i < imagesToLoad.length; i++) {
         /*$("#modal_" + imagesToLoad[i].id).dialog({
          modal: false,
