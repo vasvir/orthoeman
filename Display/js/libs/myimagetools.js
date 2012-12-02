@@ -7,15 +7,17 @@
 Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_LoadImage = function(imgurl, data, callback) {
     var ImageObj = new Image();
     //alert(this.drawImage);
-    
+    var dfd = new $.Deferred();
     var context = this;
     ImageObj.onload = function () {
         context.drawImage(this, 0, 0);
         if (callback !== undefined) {
             callback(data);
         }
+        dfd.resolve(data);
     };
     ImageObj.src = imgurl;
+    return dfd.promise();
 }
 
 Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_Invert = function(x,y,width,height) {

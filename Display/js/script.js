@@ -451,7 +451,7 @@ function LoadImages(Page) {
     var imagesToLoad = [];
     var counter = 0;
     for (var i in OrthoVariables.LessonData.Images) {
-        if (OrthoVariables.LessonData.Images[i].id === Number(Page) && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) {
+        if (OrthoVariables.LessonData.Images[i].id === Number(Page) && OrthoVariables.LessonData.Images[i].id === (Number(Page) + 1) && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) {
             imagesToLoad[counter] = OrthoVariables.LessonData.Images[i];
             counter++;
         }
@@ -470,21 +470,34 @@ function LoadImages(Page) {
          });*/
         var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
 
-        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
+        /*c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
         var orig = document.createElement('canvas');
         orig.width = c.width;
         orig.height = c.height;
-        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
+        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });*/
+
+
+
+        //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
+        $.when(c.getContext("2d").zag_LoadImage(imagesToLoad[i].url),{i : i, c : c, imagesToLoad:imagesToLoad  }).done(function(data) {
+            var orig = document.createElement('canvas');
+            orig.width = data.c.width;
+            orig.height = data.c.height;
+            orig.getContext("2d").drawImage(data.c, 0 , 0);
+            addEvents(data.i,data.c, orig, data.imagesToLoad);
+            OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
+            CheckResizeLimits(data.imagesToLoad[data.i].id);
+        });
         
         
-        //orig.getContext("2d").drawImage(c, 0 , 0);
+       //
         
 
     }
-    OrthoVariables.lessonLoaded[parseInt(Page)] = true;
+    /*OrthoVariables.lessonLoaded[parseInt(Page)] = true;
     if (counter > 0) {
         CheckResizeLimits(Page);
-    }
+    }*/
 
 }
 
@@ -1138,6 +1151,7 @@ function displayFunctions() {
 
 
         CheckResizeLimits();
+        CheckResizeLimits(OrthoVariables.lessonPage + 1);
     });
 
     $("#lesson").bind("last", function (e, page, pageObj) {
