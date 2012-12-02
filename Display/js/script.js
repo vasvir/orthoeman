@@ -473,7 +473,7 @@ function LoadImages(Page) {
          hide: "fold"
          });*/
         var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
-
+        console.log("Step:",i,1)
         /*c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
         var orig = document.createElement('canvas');
         orig.width = c.width;
@@ -484,6 +484,7 @@ function LoadImages(Page) {
 
         //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
         $.when(c.getContext("2d").zag_LoadImage(imagesToLoad[i].url,{i : i, c : c, imagesToLoad:imagesToLoad  })).done(function(data) {
+            console.log("Step:",data.i,4);
             var orig = document.createElement('canvas');
             orig.width = data.c.width;
             orig.height = data.c.height;
@@ -491,6 +492,7 @@ function LoadImages(Page) {
             addEvents(data.i,data.c, orig, data.imagesToLoad);
             OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
             CheckResizeLimits(data.imagesToLoad[data.i].id);
+            console.log("Step:",data.i,5);
         });
         
         
