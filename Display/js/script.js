@@ -1160,7 +1160,8 @@ function displayFunctions() {
 
 
         CheckResizeLimits();
-        CheckResizeLimits(OrthoVariables.lessonPage + 1);
+        if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {CheckResizeLimits(OrthoVariables.lessonPage + 1); }
+
     });
 
     $("#lesson").bind("last", function (e, page, pageObj) {
