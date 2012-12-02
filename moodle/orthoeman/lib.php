@@ -119,13 +119,18 @@ function orthoeman_update_instance(stdClass $orthoeman, mod_orthoeman_mod_form $
  * @return boolean Success/Failure
  */
 function orthoeman_delete_instance($id) {
-    global $DB;
+    global $DB, $RESOURCE_TABLE;
 
     if (! $orthoeman = $DB->get_record('orthoeman', array('id' => $id))) {
         return false;
     }
 
     # Delete any dependent records here #
+
+    //this does not work. beats me why?
+    //$DB->delete_records($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id));
+    //error_log("XXX $RESOURCE_TABLE $orthoeman->id");
+    $DB->delete_records('orthoeman_resource', array('orthoeman_id' => $orthoeman->id));
 
     $DB->delete_records('orthoeman', array('id' => $orthoeman->id));
 
