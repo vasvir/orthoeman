@@ -181,7 +181,8 @@ function LoadVideo(Page) {
         if (OrthoVariables.LessonData.Page[Page].Widget[wid].type === "video") {
             $("#video_" + OrthoVariables.LessonData.Page[Page].Widget[wid].Video.id).mediaelementplayer({
                 enableAutosize:true,
-                pauseOtherPlayers:true
+                pauseOtherPlayers:true,
+                features: ['playpause','progress','duration','volume']
             });
             OrthoVariables.lessonLoaded[parseInt(Page)];
         }
