@@ -477,7 +477,7 @@ function LoadImages(Page) {
          });*/
         var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
         $('#canvasid_' + imagesToLoad[i].id).css("background","url("+imagesToLoad[i].url +")");
-        console.log("Step:",i,1)
+        //console.log("Step:",i,1)
         /*c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
         var orig = document.createElement('canvas');
         orig.width = c.width;
@@ -488,7 +488,7 @@ function LoadImages(Page) {
 
         //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
         c.getContext("2d").zag_LoadImage(imagesToLoad[i].url,{i : i, c : c, imagesToLoad:imagesToLoad  }).done(function(data) {
-            console.log("Step:",data.i,4);
+            //console.log("Step:",data.i,4);
             if(typeof G_vmlCanvasManager != 'undefined') {
                 data.c = G_vmlCanvasManager.initElement(data.c);
             }
@@ -502,7 +502,7 @@ function LoadImages(Page) {
             addEvents(data.i,data.c, orig, data.imagesToLoad);
             OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
             CheckResizeLimits(data.imagesToLoad[data.i].id);
-            console.log("Step:",data.i,5);
+            //console.log("Step:",data.i,5);
         });
         
         
