@@ -234,6 +234,7 @@ public class DivLogger implements Logger {
 	public DivLogger() {
 		logDockPanel.addStyleName(LogClientBundle.INSTANCE.css().logPanel());
 		logTextArea.addStyleName(LogClientBundle.INSTANCE.css().logTextArea());
+		logTextArea.getElement().setId("logTextArea");
 		scrollPanel.addStyleName(LogClientBundle.INSTANCE.css()
 				.logScrollPanel());
 

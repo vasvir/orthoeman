@@ -119,13 +119,18 @@ function orthoeman_update_instance(stdClass $orthoeman, mod_orthoeman_mod_form $
  * @return boolean Success/Failure
  */
 function orthoeman_delete_instance($id) {
-    global $DB;
+    global $DB, $RESOURCE_TABLE;
 
     if (! $orthoeman = $DB->get_record('orthoeman', array('id' => $id))) {
         return false;
     }
 
     # Delete any dependent records here #
+
+    //this does not work. beats me why?
+    //$DB->delete_records($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id));
+    //error_log("XXX $RESOURCE_TABLE $orthoeman->id");
+    $DB->delete_records('orthoeman_resource', array('orthoeman_id' => $orthoeman->id));
 
     $DB->delete_records('orthoeman', array('id' => $orthoeman->id));
 
@@ -422,8 +427,8 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     $frame_id = md5($url);
     $parent_id = "parent_$frame_id";
     $toggle_link_id = "toggle_link_$frame_id";
-    $show_text = "Edit OrthoEMan activity...";
-    $hide_text = "Hide OrthoEMan activity";
+    $show_text = "Edit OrthoEMan Case...";
+    $hide_text = "Hide OrthoEMan Case";
 
     //Output script to make the object tag be as large as possible
     $orthoeman_html = '<div id="'.$parent_id.'"><script type="text/javascript">

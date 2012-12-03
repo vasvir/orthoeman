@@ -6,10 +6,12 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.orthoeman.client.AuthoringTool;
 import org.orthoeman.client.NodeListWrapperList;
@@ -1055,6 +1057,21 @@ public class Lesson extends ArrayList<Lesson.Page> {
 		if (status)
 			notifyPageListeners((Page) o, false);
 		return status;
+	}
+
+	public Set<String> getResourceIds() {
+		final Set<String> resource_ids = new HashSet<String>();
+		for (final Page page : this) {
+			final String image_id = page.getImageItem().getId();
+			if (image_id != null) {
+				resource_ids.add(image_id);
+			}
+			for (final Page.VideoItem.Source source : page.getVideoItem()
+					.getSources()) {
+				resource_ids.add(source.id);
+			}
+		}
+		return resource_ids;
 	}
 
 	public static String getResourceURL(String orthoeman_id, String resource_id) {
