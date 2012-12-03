@@ -5,6 +5,7 @@
  TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
  TODO cruise mode
  TODO tracking implementation
+ TODO disable html tag scrollbars, enable it for the minimum resolution
 
 
  */
