@@ -427,8 +427,8 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     $frame_id = md5($url);
     $parent_id = "parent_$frame_id";
     $toggle_link_id = "toggle_link_$frame_id";
-    $show_text = "Edit OrthoEMan activity...";
-    $hide_text = "Hide OrthoEMan activity";
+    $show_text = "Edit OrthoEMan Case...";
+    $hide_text = "Hide OrthoEMan Case";
 
     //Output script to make the object tag be as large as possible
     $orthoeman_html = '<div id="'.$parent_id.'"><script type="text/javascript">
