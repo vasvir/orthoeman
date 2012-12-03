@@ -1178,7 +1178,7 @@ function displayFunctions() {
 
 // Image Functions
 function CheckResizeLimits(page) {
-    page = page || OrthoVariables.lessonPage;
+    page = (typeof page === "undefined") ? OrthoVariables.lessonPage : page;
     if (page > -1) {
         var h = $(window).height() - OrthoVariables.HeightFromBottom;
         var w = Math.round($('#content_wrap').width() / 2);
