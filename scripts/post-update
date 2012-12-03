@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# An example hook script to prepare a packed repository for use over
+# dumb transports.
+#
+# To enable this hook, rename this file to "post-update".
+
+git update-server-info
+git archive master | tar -x -C /var www
+git archive master | tar -x --strip-components=2 -C /var/www Content/XML/orthoeman.xsd
+git archive master | tar --strip-components=1 -x -C /usr/share/moodle/mod moodle/orthoeman
+mkdir -p /usr/share/moodle/mod/orthoeman/AuthoringTool
+git archive master | tar --strip-components=2 -x -C /usr/share/moodle/mod/orthoeman/AuthoringTool AuthoringTool/war
+git archive master | tar -x -C /usr/share/moodle/mod/orthoeman Display

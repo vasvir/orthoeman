@@ -70,6 +70,7 @@ class mod_orthoeman_mod_form extends moodleform_mod {
         $this->add_intro_editor();
 
         $mform->addElement('duration', 'timeout', get_string('timeout', 'orthoeman'));
+        $mform->setDefault('timeout', 7200);
         $mform->addHelpButton('timeout', 'timeout', 'orthoeman');
 
         $mform->addElement('checkbox', 'cruise', get_string('cruise', 'orthoeman'));

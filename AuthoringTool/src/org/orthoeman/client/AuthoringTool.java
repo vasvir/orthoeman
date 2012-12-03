@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import org.orthoeman.client.log.DivLogger;
 import org.orthoeman.shared.Cross;
@@ -39,12 +40,15 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.dom.client.Text;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -509,7 +513,8 @@ public class AuthoringTool implements EntryPoint {
 				final ProgressDialogBox pd = new ProgressDialogBox(
 						"Saving Lesson...");
 				pd.show();
-				putResource(ResourceType.XML, Lesson.writeXML(lesson), null, pd);
+				putResource(ResourceType.XML, Lesson.writeXML(lesson),
+						lesson.getResourceIds(), pd);
 			}
 		}));
 		file_menu.addItem(new MenuItem("Preview", command));
@@ -527,7 +532,82 @@ public class AuthoringTool implements EntryPoint {
 			}
 		}));
 
-		help_menu.addItem(new MenuItem("Report a bug...", command));
+		final RootPanel bugReportPopup = getBugReportPopup();
+		final TextBox bugReportSubjectTextBox = getTextBox("bugReportSubjectTextBox");
+		final TextArea bugReportBodyTextArea = getTextArea("bugReportBodyTextArea");
+		final Button bugReportSendButton = getButton("bugReportSendButton");
+		final Button bugReportCancelButton = getButton("bugReportCancelButton");
+
+		help_menu.addItem(new MenuItem("Report a bug...", new Command() {
+			@Override
+			public void execute() {
+				bugReportSubjectTextBox.setText("");
+				bugReportBodyTextArea.setText("");
+				bugReportPopup.setVisible(true);
+			}
+		}));
+
+		bugReportSendButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final RequestBuilder rb = new RequestBuilder(
+						RequestBuilder.POST, "../report_bug.php?id="
+								+ orthoeman_id + "&subject="
+								+ bugReportSubjectTextBox.getText());
+				rb.setHeader("Content-Type",
+						"application/x-www-form-urlencoded");
+				try {
+					rb.sendRequest(
+							URL.encodeQueryString(bugReportBodyTextArea
+									.getText())
+									+ "\n\nAuthoring Tool Log\n\n"
+									+ getLoggedText(), new RequestCallback() {
+								@Override
+								public void onResponseReceived(Request request,
+										Response response) {
+									if (response.getStatusCode() != Response.SC_OK) {
+										final String error_msg = "HTTP Error for request: "
+												+ request
+												+ " Response: "
+												+ response
+												+ " status code: "
+												+ response.getStatusCode();
+										Log.error(error_msg);
+										Window.alert(error_msg);
+										return;
+									}
+									final String response_text = response
+											.getText();
+									Log.debug("Successfull request: " + request
+											+ " response: " + response_text);
+								}
+
+								@Override
+								public void onError(Request request,
+										Throwable exception) {
+									final String error_msg = "RequestError for request: "
+											+ request;
+									Log.error(error_msg, exception);
+									Window.alert(error_msg);
+								}
+							});
+				} catch (RequestException e) {
+					final String error_msg = "Cannot save lesson. Please wait for server "
+							+ "communication to be restored and retry later.";
+					Log.error(error_msg, e);
+					Window.alert(error_msg);
+				}
+				bugReportPopup.setVisible(false);
+			}
+		});
+
+		bugReportCancelButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				bugReportPopup.setVisible(false);
+			}
+		});
+
 		help_menu.addItem(new MenuItem("About", command));
 
 		final MenuBar menu_bar = new MenuBar();
@@ -1401,7 +1481,7 @@ public class AuthoringTool implements EntryPoint {
 		divLogger.setVisible(false);
 	}
 
-	public void setGrade(ValueChangeEvent<String> event, boolean positive) {
+	private void setGrade(ValueChangeEvent<String> event, boolean positive) {
 		final Page page = getCurrentPage();
 		final TextBox grade_tb = positive ? positive_grade_tb
 				: negative_grade_tb;
@@ -1513,6 +1593,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getPageContainer() {
 		return RootPanel.get("pageContainer");
+	}
+
+	private static RootPanel getBugReportPopup() {
+		return RootPanel.get("bugReportPopup");
 	}
 
 	private void addPageButton(final Page page) {
@@ -1897,11 +1981,26 @@ public class AuthoringTool implements EntryPoint {
 		return true;
 	}
 
+	private static String getResourceIdsArgument(
+			final ResourceType resource_type, final Object extra_info) {
+		if (resource_type != ResourceType.XML)
+			return "";
+		@SuppressWarnings("unchecked")
+		final Set<String> resource_ids = (Set<String>) extra_info;
+		final StringBuilder sb = new StringBuilder("&resource_ids=");
+		for (final String id : resource_ids) {
+			sb.append(id + ",");
+		}
+		return sb.substring(0, sb.length() - 1);
+	}
+
 	private void putResource(final ResourceType resource_type,
-			final String data, final Page.Item item, final ProgressDialogBox pd) {
+			final String data, final Object extra_info,
+			final ProgressDialogBox pd) {
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
 				"../put_resource.php?id=" + orthoeman_id + "&type="
-						+ resource_type);
+						+ resource_type
+						+ getResourceIdsArgument(resource_type, extra_info));
 		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		try {
 			rb.sendRequest(URL.encodeQueryString(data), new RequestCallback() {
@@ -1921,7 +2020,7 @@ public class AuthoringTool implements EntryPoint {
 					Log.debug("Successfull request: " + request + " response: "
 							+ response_text);
 					if (resource_type == ResourceType.IMAGE) {
-						final Page.ImageItem image_item = (Page.ImageItem) item;
+						final Page.ImageItem image_item = (Page.ImageItem) extra_info;
 						final String id = Page.ImageItem
 								.getImageIdString(response_text);
 						image_item.setId(id);
@@ -1931,7 +2030,7 @@ public class AuthoringTool implements EntryPoint {
 										image_item, true)));
 						setButtonsEnabled(image_edit_buttons, true);
 					} else if (resource_type == ResourceType.VIDEO) {
-						final Page.VideoItem video_item = (Page.VideoItem) item;
+						final Page.VideoItem video_item = (Page.VideoItem) extra_info;
 						video_item.setSources(
 								Page.VideoItem.parseSources(response_text),
 								new SetupVideoPlayerHandler());
@@ -2029,7 +2128,7 @@ public class AuthoringTool implements EntryPoint {
 		setAreaTypeCombobox(contains_image_quiz);
 	}
 
-	public static int getScrollBarWidth() {
+	private static int getScrollBarWidth() {
 		final Document document = Document.get();
 		final ParagraphElement p = document.createPElement();
 		p.getStyle().setWidth(100, Unit.PCT);
@@ -2055,5 +2154,29 @@ public class AuthoringTool implements EntryPoint {
 
 		document.getBody().removeChild(div);
 		return w1 - w2;
+	}
+
+	private static void getNodeTextRecursively(Node n, StringBuilder sb) {
+		if (n.getNodeType() == Node.TEXT_NODE) {
+			final Text text_node = (Text) n;
+			// Log.trace("Got text node: " + text_node + " value: "
+			// + text_node.getNodeValue() + " data: "
+			// + text_node.getData());
+			sb.append(text_node.getData() + "\n");
+			return;
+		}
+
+		for (final Node node : new DOMNodeListWrapperList(n.getChildNodes())) {
+			// Log.trace("Got child node: " + node);
+			getNodeTextRecursively(node, sb);
+		}
+	}
+
+	private static String getLoggedText() {
+		final StringBuilder sb = new StringBuilder();
+		final Element logTextArea = DOM.getElementById("logTextArea");
+		// Log.debug("Got logTextArea " + logTextArea);
+		getNodeTextRecursively(logTextArea, sb);
+		return sb.toString();
 	}
 }
