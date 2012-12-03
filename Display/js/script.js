@@ -142,12 +142,10 @@ $(document).ready(function () {
             timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1001
         }).hide();
         $('#counter_small').click(function () {
-            if ( parseFloat($(this).css("opacity")) >= 0.89 ) {
                 $(this).hide();
                 $('#counter').fadeIn("slow").delay(3000).fadeOut("slow", function () {
                     $("#counter_small").show();
                 });
-            }
         })
         /*$("#counter").mouseleave(function () {
             if ($(this).css("opacity") === 1) {
