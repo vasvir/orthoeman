@@ -519,12 +519,7 @@ public class AuthoringTool implements EntryPoint {
 		}));
 		file_menu.addItem(new MenuItem("Preview", command));
 
-		final MenuBar edit_menu = new MenuBar(true);
-		edit_menu.addItem(new MenuItem("Undo", command));
-		edit_menu.addItem(new MenuItem("Redo", command));
-
 		final MenuBar help_menu = new MenuBar(true);
-		help_menu.addItem(new MenuItem("Help Contents", command));
 		help_menu.addItem(new MenuItem("Toggle Console", new Command() {
 			@Override
 			public void execute() {
@@ -608,11 +603,8 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		help_menu.addItem(new MenuItem("About", command));
-
 		final MenuBar menu_bar = new MenuBar();
 		menu_bar.addItem("File", file_menu);
-		menu_bar.addItem("Edit", edit_menu);
 		menu_bar.addItem("Help", help_menu);
 		getHTMLMenuBar().setVisible(false);
 		getHTMLMenuBar().removeFromParent();
@@ -695,7 +687,7 @@ public class AuthoringTool implements EntryPoint {
 		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
 				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
 				polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b,
-				areaTypeCombobox, showRegions_cb);
+				showRegions_cb);
 
 		if (work_around_bug) {
 			getTextContainer();
@@ -1730,7 +1722,6 @@ public class AuthoringTool implements EntryPoint {
 		negative_grade_tb.setText(page.getNegativeGrade() + "");
 		setButtonsEnabled(image_edit_buttons,
 				page.getImageItem().getImage() != null);
-		setAreaTypeCombobox();
 	}
 
 	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
@@ -1882,10 +1873,11 @@ public class AuthoringTool implements EntryPoint {
 		context.stroke();
 	}
 
-	private static void setButtonsEnabled(Collection<FocusWidget> buttons,
-			boolean enabled) {
+	private void setButtonsEnabled(Collection<FocusWidget> buttons,
+			boolean enable) {
 		for (final FocusWidget button : buttons)
-			button.setEnabled(enabled);
+			button.setEnabled(enable);
+		setAreaTypeComboboxEnabled(enable);
 	}
 
 	private void startDrawingOperation(UserDrawingRequest udr, int x, int y) {
@@ -2068,7 +2060,7 @@ public class AuthoringTool implements EntryPoint {
 		final RootPanel videoPlayerContainer = RootPanel
 				.get("videoPlayerContainer");
 		final StringBuilder sb = new StringBuilder();
-		sb.append("<video controls preload=\"none\">"); // poster="image_url
+		sb.append("<video controls preload=\"none\" width=\"100%\">"); // poster="image_url
 		for (final Page.VideoItem.Source source : video_item.getSources()) {
 			final String url = Lesson.getResourceURL(orthoeman_id, source.id);
 			sb.append("<source src='" + url + "' type='" + source.content_type
@@ -2115,17 +2107,18 @@ public class AuthoringTool implements EntryPoint {
 		return -1;
 	}
 
-	private void setAreaTypeCombobox(boolean contains_image_quiz) {
+	private void setAreaTypeComboboxEnabled(boolean enable,
+			boolean contains_image_quiz) {
 		if (contains_image_quiz)
 			areaTypeCombobox
 					.setSelectedIndex(getAreaTypeComboboxKindValueIndex(Drawing.Kind.INFO));
-		areaTypeCombobox.setEnabled(!contains_image_quiz);
+		areaTypeCombobox.setEnabled(enable && !contains_image_quiz);
 	}
 
-	private void setAreaTypeCombobox() {
+	private void setAreaTypeComboboxEnabled(boolean enable) {
 		final Page.Item.Type[] current_item_combination = getCurrentItemTypeCombination();
 		final boolean contains_image_quiz = containsImageQuiz(current_item_combination);
-		setAreaTypeCombobox(contains_image_quiz);
+		setAreaTypeComboboxEnabled(enable, contains_image_quiz);
 	}
 
 	private static int getScrollBarWidth() {
