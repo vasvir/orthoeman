@@ -11,6 +11,8 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="48"
    height="48"
+   preserveAspectRatio="xMinYMin meet"
+   viewBox="0 0 48 48"
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.43+devel"
