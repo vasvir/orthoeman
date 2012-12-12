@@ -151,129 +151,15 @@
 				        </div>
 					</div>
 				</div>
-	
-				<div class="cell fill_x">
-					<div id="pageContainer" class="scroll">
-						<div>
-							<big><big>Title: </big></big>
-							<input id="titleTextBox" type="text" size="25" class="gwt-TextBox"
-								title="Leave it blank if there is no need for a title in this page"/>
-							<big><big>Type:</big></big><select id="itemCombobox" class="gwt-ListBox"></select>
-						</div>
 
-						<div id="imageContainer">
-							<h3 class="inline">Image: </h3><div id="imageUploaderContainer"></div>
-							<div id="canvasContainer" class="border"></div>
-							<div>
-								<div title="Zoom tools" class="inline button_group">
-									<button id="zoomOne2OneButton" class="gwt-Button" type="button" title="1:1">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-											<g transform="translate(10 18)">
-												<text text-anchor="middle">1:1</text>
- 											</g>
-										</svg>
-									</button>
-									<button id="zoomInButton" class="gwt-Button" type="button" title="Zoom in">
-										<img src="icons/File_View-zoom-in.svg" width="24" height="24"/>
-									</button>
-									<button id="zoomOutButton" class="gwt-Button" type="button" title="Zoom out" >
-										<img src="icons/File_View-zoom-out.svg" width="24" height="24"/>
-									</button>
-									<button id="zoomToFitWidthButton" class="gwt-Button" type="button" title="Zoom to Fit width (default)">
-										<img src="icons/File_View-zoom-fit.svg" width="24" height="24"/>
-									</button>
-									<button id="zoomTargetButton" class="gwt-Button" type="button" title="Zoom target">
-										<img src="icons/File_View-zoom-target.svg" width="24" height="24"/>
-									</button>
-								</div>
-								<div title="Area tools" class="inline button_group">
-									<select id="areaTypeCombobox" class="gwt-ListBox" 
-										title="Select the type of the area to draw. If the selection is Blocking the studend will have to find it. If it is Information the student will see the area as part of the lesson."></select>
-									<button id="rectangleHotspotButton" class="gwt-Button" type="button" title="Rectangle hotspot">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-											<rect x="2" y="4" width="20" height="14" stroke="black" fill="none"/>
-										</svg>
-									</button>
-									<button id="ellipseHotspotButton" class="gwt-Button" type="button" title="Ellipse hotspot">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-											<ellipse cx="12" cy="12" rx="10" ry="7" stroke="black" fill="none" />
-										</svg>
-									</button>
-									<button id="polygonHotspotButton" class="gwt-Button" type="button" title="Polygon hotspot">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-											<polygon points="2,21, 4,15, 5,7, 15,6, 20,5, 22,18, 12,12" stroke="black" fill="none" />
-										</svg>
-									</button>
-								</div>
-								<div title="Help tools" class="inline button_group">
-									<button id="lineButton" class="gwt-Button" type="button" title="Line help tool">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-											<line x1="3" y1="18" x2="21" y2="6" style="stroke:black; stroke-width:2"/>
-										</svg>
-									</button>
-									<button id="crossButton" class="gwt-Button" type="button" title="Cross hair help tool">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
-											<line x1="4" y1="12" x2="20" y2="12" style="stroke:black; stroke-width:2"/>
-											<line x1="12" y1="4" x2="12" y2="20" style="stroke:black; stroke-width:2"/>
-										</svg>
-									</button>
-								</div>
-								<div title="Edit tools" class="inline button_group">
-									<button id="eraseButton" class="gwt-Button" type="button" title="Erase hotspot or helper line">
-										<img src="icons/Eraser.svg" width="24" height="24"/>
-									</button>
-									<button id="editImageButton" class="gwt-Button" type="button" title="Edit Image">
-										<img src="icons/Image-x-generic.svg" width="24" height="24"/>
-									</button>
-								</div>
-								<div style="float: right;" class="inline">				
-									<div class="gwt-Label inline margin_left">Show Regions:</div>
-									<input id="showRegionsCheckBox" type="checkbox" class="gwt-TextBox inline"
-									title="Check to show the regions in the student's Display.">
-								</div>
-							</div>
-						</div>
 
-						<div id="videoContainer">
-							<h3 class="inline">Video: </h3><div id="videoUploaderContainer"></div>
-							<div id="videoPlayerContainer"></div>
-						</div>
-						
-						<div id="textContainer" class="noborder fill_x">
-							<div style="float: left;"><h3>Text: </h3></div>
-							<div style="overflow: auto;">
-								<textarea id="textTextArea" class="gwt-TextArea fill_x noborder"></textarea>
-							</div>
-						</div>
-
-						<div id="quizContainer" class="noborder center fill_x">
-							<div style="float: left;"><h3>Quiz: </h3></div>
-							<div class="border" style="overflow: auto;">
-								<textarea id="quizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question in multiple choice form."></textarea>
-								<center>
-									<div id="quizAnswerContainer" style="width: 60%; text-align: left;" class="table">
-									</div>
-									<button id="quizAddAnswerButton" class="gwt-Button" type="button" title="Add one more choice in the multiple choice quiz">Add Answer</button>
-								</center>
-							</div>
-						</div>
-
-						<div id="rangeQuizContainer" class="noborder center fill_x">
-							<div style="float: left;"><h3>Range Quiz: </h3></div>
-							<div class="border" style="overflow: auto;">
-								<textarea id="rangeQuizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units."></textarea>
-								<center>
-									<div class="gwt-Label inline">Min: </div>
-									<input id="rangeQuizMinTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
-										title="Specify the minimum acceptable value"/>
-									<div class="gwt-Label inline">Max: </div>
-									<input id="rangeQuizMaxTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
-										title="Specify the maximum acceptable value"/>
-								</center>
-							</div>
-						</div>
-
-						<div style="text-align: right;">
+				<div id="pageContainer" class="cell fill_x">
+					<div id="pageTitleContainer">
+						<big><big>Title: </big></big>
+						<input id="titleTextBox" type="text" size="25" class="gwt-TextBox"
+							title="Leave it blank if there is no need for a title in this page"/>
+						<big><big>Type:</big></big><select id="itemCombobox" class="gwt-ListBox"></select>
+						<div class="inline">
 							<div class="gwt-Label inline margin_left">Negative Grade:</div>
 							<input id="negativeGradeTextBox" type="text" class="gwt-TextBox inline" style="width: 3em;"
 								title="The grade to be subtracted when a wrong answer is given in this page. The negative grade must be an integer in the [1-100] range.">
@@ -282,11 +168,127 @@
 								title="The grade of this page used for the calculation of the total grade. The grade must be an integer in the [1-100] range.">
 						</div>
 					</div>
+
+					<div class="table fill_x"><div class="row">
+						<div class="cell" style="width: 65%;">
+							<div id="imageContainer">
+								<h3 id="imageTitleContainer">Image</h3>
+								<div id="imageUploaderContainer"></div>
+									<div id="canvasContainer" class="border scroll"></div>
+								<div id="imageButtonContainer">
+									<div title="Zoom tools" class="inline button_group">
+										<button id="zoomOne2OneButton" class="gwt-Button" type="button" title="1:1">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+												<g transform="translate(10 18)">
+													<text text-anchor="middle">1:1</text>
+												</g>
+											</svg>
+										</button>
+										<button id="zoomInButton" class="gwt-Button" type="button" title="Zoom in">
+											<img src="icons/File_View-zoom-in.svg" width="24" height="24"/>
+										</button>
+										<button id="zoomOutButton" class="gwt-Button" type="button" title="Zoom out" >
+											<img src="icons/File_View-zoom-out.svg" width="24" height="24"/>
+										</button>
+										<button id="zoomToFitWidthButton" class="gwt-Button" type="button" title="Zoom to Fit width (default)">
+											<img src="icons/File_View-zoom-fit.svg" width="24" height="24"/>
+										</button>
+										<button id="zoomTargetButton" class="gwt-Button" type="button" title="Zoom target">
+											<img src="icons/File_View-zoom-target.svg" width="24" height="24"/>
+										</button>
+									</div>
+									<div title="Area tools" class="inline button_group">
+										<select id="areaTypeCombobox" class="gwt-ListBox" 
+											title="Select the type of the area to draw. If the selection is Blocking the studend will have to find it. If it is Information the student will see the area as part of the lesson."></select>
+										<button id="rectangleHotspotButton" class="gwt-Button" type="button" title="Rectangle hotspot">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+												<rect x="2" y="4" width="20" height="14" stroke="black" fill="none"/>
+											</svg>
+										</button>
+										<button id="ellipseHotspotButton" class="gwt-Button" type="button" title="Ellipse hotspot">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+												<ellipse cx="12" cy="12" rx="10" ry="7" stroke="black" fill="none" />
+											</svg>
+										</button>
+										<button id="polygonHotspotButton" class="gwt-Button" type="button" title="Polygon hotspot">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+												<polygon points="2,21, 4,15, 5,7, 15,6, 20,5, 22,18, 12,12" stroke="black" fill="none" />
+											</svg>
+										</button>
+									</div>
+									<div title="Help tools" class="inline button_group">
+										<button id="lineButton" class="gwt-Button" type="button" title="Line help tool">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+												<line x1="3" y1="18" x2="21" y2="6" style="stroke:black; stroke-width:2"/>
+											</svg>
+										</button>
+										<button id="crossButton" class="gwt-Button" type="button" title="Cross hair help tool">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
+												<line x1="4" y1="12" x2="20" y2="12" style="stroke:black; stroke-width:2"/>
+												<line x1="12" y1="4" x2="12" y2="20" style="stroke:black; stroke-width:2"/>
+											</svg>
+										</button>
+									</div>
+									<div title="Edit tools" class="inline button_group">
+										<button id="eraseButton" class="gwt-Button" type="button" title="Erase hotspot or helper line">
+											<img src="icons/Eraser.svg" width="24" height="24"/>
+										</button>
+										<button id="editImageButton" class="gwt-Button" type="button" title="Edit Image">
+											<img src="icons/Image-x-generic.svg" width="24" height="24"/>
+										</button>
+									</div>
+									<div class="inline button_group">				
+										<div class="gwt-Label inline margin_left">Show Regions:</div>
+										<input id="showRegionsCheckBox" type="checkbox" class="gwt-TextBox inline"
+											title="Check to show the regions in the student's Display.">
+									</div>
+								</div>
+							</div>
+
+							<div id="videoContainer">
+								<h3>Video</h3>
+								<div id="videoUploaderContainer"></div>
+								<div id="videoPlayerContainer"></div>
+							</div>
+						</div>
+						<div class="cell" style="width: 35%;">
+							<div id="textContainer" class="noborder fill_x">
+								<h3>Text</h3>
+								<div style="overflow: auto;">
+									<textarea id="textTextArea" class="gwt-TextArea fill_x noborder"></textarea>
+								</div>
+							</div>
+							<div id="quizContainer" class="noborder fill_x">
+								<h3>Quiz</h3>
+								<div class="border" style="overflow: auto;">
+									<textarea id="quizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question in multiple choice form."></textarea>
+									<center>
+										<div id="quizAnswerContainer" style="width: 60%; text-align: left;" class="table">
+										</div>
+										<button id="quizAddAnswerButton" class="gwt-Button" type="button" title="Add one more choice in the multiple choice quiz">Add Answer</button>
+									</center>
+								</div>
+							</div>
+
+							<div id="rangeQuizContainer" class="noborder fill_x">
+								<h3>Range Quiz</h3>
+								<div class="border" style="overflow: auto;">
+									<textarea id="rangeQuizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units."></textarea>
+									<center>
+										<div class="gwt-Label inline">Min: </div>
+										<input id="rangeQuizMinTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
+											title="Specify the minimum acceptable value"/>
+										<div class="gwt-Label inline">Max: </div>
+										<input id="rangeQuizMaxTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
+											title="Specify the maximum acceptable value"/>
+									</center>
+								</div>
+							</div>
+						</div>
+					</div></div>
 				</div>
 			</div>
-
 		</div></div></div>
-
 	</div>
   </body>
 </html>

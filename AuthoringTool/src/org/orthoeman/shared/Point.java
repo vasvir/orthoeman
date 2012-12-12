@@ -2,7 +2,7 @@ package org.orthoeman.shared;
 
 import java.util.Collection;
 
-import com.allen_sauer.gwt.log.client.Log;
+//import com.allen_sauer.gwt.log.client.Log;
 
 public class Point extends Drawing {
 	public int x;
@@ -47,8 +47,8 @@ public class Point extends Drawing {
 		final Rectangle rect = zoom.getTarget();
 		final Point point = new Point((int) (x / level) + rect.getX(),
 				(int) (y / level) + rect.getY());
-		Log.trace("toImage: level " + level + " target " + rect + " from "
-				+ this + " to " + point);
+		//Log.trace("toImage: level " + level + " target " + rect + " from "
+		//		+ this + " to " + point);
 		return point;
 	}
 
@@ -58,8 +58,8 @@ public class Point extends Drawing {
 		final Rectangle rect = zoom.getTarget();
 		final Point point = new Point((int) ((x - rect.getX()) * level),
 				(int) ((y - rect.getY()) * level));
-		Log.trace("toCanvas: level " + level + " target " + rect + " from "
-				+ this + " to " + point);
+		//Log.trace("toCanvas: level " + level + " target " + rect + " from "
+		//		+ this + " to " + point);
 		return point;
 	}
 
