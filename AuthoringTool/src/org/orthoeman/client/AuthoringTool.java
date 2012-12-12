@@ -40,7 +40,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.ParagraphElement;
@@ -69,6 +68,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -243,8 +243,8 @@ public class AuthoringTool implements EntryPoint {
 					+ event.getHeight());
 
 			// find the maximum width
-			// assumes sane layout info (width include padding border
-			// margin)
+			// assumes sane layout info
+			// (width include padding border no margin)
 			int max_width = 0;
 			for (final Widget w : equal_width_widget_group) {
 				final int width = w.getOffsetWidth();
@@ -267,7 +267,7 @@ public class AuthoringTool implements EntryPoint {
 	private void redrawCanvas(ResizeEvent event) {
 		final int window_width = event.getWidth();
 		final int window_height = event.getHeight();
-		final int menubar_height = getMenuBarContainer().getOffsetHeight();
+		final int menubar_height = getHeight(getMenuBarContainer());
 
 		final RootPanel pageLabelContainer = RootPanel
 				.get("pageLabelContainer");
@@ -281,8 +281,7 @@ public class AuthoringTool implements EntryPoint {
 			scrollbar_width = getScrollBarWidth();
 			Log.debug("Setting scrollbar width to " + scrollbar_width);
 		}
-		final int page_width = window_width
-				- getLeftPanelContainer().getOffsetWidth();
+		final int page_width = window_width - getWidth(getLeftPanelContainer());
 		final int page_height = window_height - menubar_height;
 		Log.trace("Browser resized page container (offset size) " + page_width
 				+ " x " + page_height + " style "
@@ -298,9 +297,9 @@ public class AuthoringTool implements EntryPoint {
 				+ " add_remove_cnt_heigth: "
 				+ addRemoveButtonContainer.getOffsetHeight());
 		final int page_button_cnt_height = window_height - menubar_height
-				- pageLabelContainer.getOffsetHeight()
-				- upDownButtonlContainer.getOffsetHeight()
-				- addRemoveButtonContainer.getOffsetHeight();
+				- getHeight(pageLabelContainer)
+				- getHeight(upDownButtonlContainer)
+				- getHeight(addRemoveButtonContainer);
 		pageButtonContainer.setHeight(page_button_cnt_height + "px");
 		Log.trace("Browser resized button container (offset size) "
 				+ pageButtonContainer.getOffsetWidth() + " x "
@@ -328,7 +327,37 @@ public class AuthoringTool implements EntryPoint {
 		start_point.valid = false;
 		old_point.valid = false;
 
-		final int canvas_100 = page_width - 2 - scrollbar_width;
+		final Element cnt_e = canvasContainer.getElement();
+		// final int nonclient_width = cnt_e.getOffsetWidth()
+		// - cnt_e.getClientWidth();
+		// Log.trace("Non client width = " + nonclient_width);
+		final int pageTitleContainerHeight = getHeight("pageTitleContainer");
+		final int imageTitleContainerHeight = getHeight("imageTitleContainer");
+		final int imageUploaderContainerHeight = getHeight("imageUploaderContainer");
+		final int imageButtonContainerHeight = getHeight("imageButtonContainer");
+		final int height_left = page_height - pageTitleContainerHeight
+				- imageTitleContainerHeight - imageUploaderContainerHeight
+				- imageButtonContainerHeight;
+		Log.trace("page_height = " + page_height + " pageTitleContainerHeight="
+				+ pageTitleContainerHeight + " imageTitleContainerHeight ="
+				+ imageTitleContainerHeight + " imageUploaderContainerHeight="
+				+ imageUploaderContainerHeight + " imageButtonContainerHeight="
+				+ imageButtonContainerHeight + " height_left=" + height_left);
+		final int border_horizontal = getPixels(ComputedStyle.getStyleProperty(
+				cnt_e, "borderLeftWidth"))
+				+ getPixels(ComputedStyle.getStyleProperty(cnt_e,
+						"borderRightWidth"));
+		final int border_vertical = getPixels(ComputedStyle.getStyleProperty(
+				cnt_e, "borderTopWidth"))
+				+ getPixels(ComputedStyle.getStyleProperty(cnt_e,
+						"borderBottomWidth"));
+		Log.trace("Borders horizontal = " + border_horizontal + " vertical = "
+				+ border_vertical);
+		canvasContainer.setSize("auto", (height_left) + "px");
+		Log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth()
+				+ " getWidth(canvasContainer) = " + getWidth(canvasContainer));
+		final int canvas_100 = cnt_e.getOffsetWidth() - border_horizontal
+				- scrollbar_width;
 		int canvas_width = 0;
 		int canvas_height = 0;
 
@@ -356,9 +385,13 @@ public class AuthoringTool implements EntryPoint {
 			}
 		}
 
+		canvasContainer.setSize(cnt_e.getOffsetWidth() + "px", (height_left)
+				+ "px");
 		canvas.setSize(canvas_width + "px", canvas_height + "px");
 		Log.trace("Zoom resized canvas (offset size) " + canvas_width + " x "
 				+ canvas_height + " style " + canvas.getStyleName());
+		Log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth()
+				+ " getWidth(canvasContainer) = " + getWidth(canvasContainer));
 
 		canvas.setCoordinateSpaceWidth(canvas_width);
 		canvas.setCoordinateSpaceHeight(canvas_height);
@@ -2172,4 +2205,42 @@ public class AuthoringTool implements EntryPoint {
 		getNodeTextRecursively(logTextArea, sb);
 		return sb.toString();
 	}
+
+	private static int getPixels(String str) {
+		if (str == null || str.isEmpty())
+			return 0;
+		return Float.valueOf(str.replaceAll("\\s.*$", "").replaceAll("px", ""))
+				.intValue();
+	}
+
+	private static int getHeight(Element el) {
+		Log.trace("el.getOffsetHeight() = " + el.getOffsetHeight()
+				+ " marginTop: "
+				+ ComputedStyle.getStyleProperty(el, "marginTop"));
+		return el.getOffsetHeight()
+				+ getPixels(ComputedStyle.getStyleProperty(el, "marginTop"))
+				+ getPixels(ComputedStyle.getStyleProperty(el, "marginBottom"));
+	}
+
+	private static int getHeight(RootPanel rp) {
+		return getHeight(rp.getElement());
+	}
+
+	private static int getHeight(String id) {
+		return getHeight(RootPanel.get(id));
+	}
+
+	private static int getWidth(Element el) {
+		return el.getOffsetWidth()
+				+ getPixels(ComputedStyle.getStyleProperty(el, "marginLeft"))
+				+ getPixels(ComputedStyle.getStyleProperty(el, "marginRight"));
+	}
+
+	private static int getWidth(RootPanel rp) {
+		return getWidth(rp.getElement());
+	}
+
+	// private static int getWidth(String id) {
+	// return getWidth(RootPanel.get(id));
+	// }
 }
