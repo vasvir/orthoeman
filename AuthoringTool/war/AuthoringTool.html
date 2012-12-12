@@ -110,16 +110,22 @@
 
 	<div class="table_abs full_x full_y fill_x fill_y">
 		<div class="row">
-			<div id="menuBarContainer" class="cell fill_x">
-				<div id="htmlMenuBar" class="gwt-MenuBar">
-					<table>
-						<tbody>
-							<tr>
-								<td class="gwt-MenuItem">File</td>
-								<td class="gwt-MenuItem">Help</td>
-							</tr>
-						</tbody>
-					</table>
+			<div id="menuBarContainer" class="cell nowrap">
+				<div class="cell fill_x" style="text-align: center;">
+					<button id="saveButton" class="gwt-Button" type="button" title="Save">
+						<img src="icons/File_Media-floppy.svg" width="48" height="48"/>
+					</button>
+					<button id="previewButton" class="gwt-Button" type="button" title="Preview">
+						<img src="icons/Applications-television.svg" width="48" height="48"/>
+					</button>
+				</div>
+				<div class="cell nowrap">
+					<button id="debugButton" class="gwt-Button" style="display: none;" type="button" title="Debug">
+						<img src="icons/Applications-development.svg" width="48" height="48"/>
+					</button>
+					<button id="reportBugButton" class="gwt-Button" type="button" title="Report a bug...">
+						<img src="icons/Mail-message-open-alert.svg" width="48" height="48"/>
+					</button>
 				</div>
 			</div>
 		</div>

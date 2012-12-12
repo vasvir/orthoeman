@@ -65,7 +65,6 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -77,8 +76,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -531,34 +528,35 @@ public class AuthoringTool implements EntryPoint {
 			combobox.addItem(getComboboxOptionText(item_type_combination));
 		}
 
-		final Command command = new Command() {
-			@Override
-			public void execute() {
-				Window.alert("Command Fired");
-			}
-		};
+		splashScreenLabel.setText("Loading...");
 
-		splashScreenLabel.setText("Loading menu...");
-		final MenuBar file_menu = new MenuBar(true);
-		file_menu.addItem(new MenuItem("Save", new Command() {
+		final Button saveButton = getButton("saveButton");
+		saveButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void execute() {
+			public void onClick(ClickEvent event) {
 				final ProgressDialogBox pd = new ProgressDialogBox(
 						"Saving Lesson...");
 				pd.show();
 				putResource(ResourceType.XML, Lesson.writeXML(lesson),
 						lesson.getResourceIds(), pd);
 			}
-		}));
-		file_menu.addItem(new MenuItem("Preview", command));
+		});
 
-		final MenuBar help_menu = new MenuBar(true);
-		help_menu.addItem(new MenuItem("Toggle Console", new Command() {
+		final Button previewButton = getButton("previewButton");
+		previewButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void execute() {
+			public void onClick(ClickEvent event) {
+				Window.open("../Display/index.html?id=" + orthoeman_id, "_blank", "");
+			}
+		});
+
+		final Button debugButton = getButton("debugButton");
+		debugButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
 				divLogger.setVisible(!divLogger.isVisible());
 			}
-		}));
+		});
 
 		final RootPanel bugReportPopup = getBugReportPopup();
 		final TextBox bugReportSubjectTextBox = getTextBox("bugReportSubjectTextBox");
@@ -566,14 +564,15 @@ public class AuthoringTool implements EntryPoint {
 		final Button bugReportSendButton = getButton("bugReportSendButton");
 		final Button bugReportCancelButton = getButton("bugReportCancelButton");
 
-		help_menu.addItem(new MenuItem("Report a bug...", new Command() {
+		final Button reportBugButton = getButton("reportBugButton");
+		reportBugButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void execute() {
+			public void onClick(ClickEvent event) {
 				bugReportSubjectTextBox.setText("");
 				bugReportBodyTextArea.setText("");
 				bugReportPopup.setVisible(true);
 			}
-		}));
+		});
 
 		bugReportSendButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -635,13 +634,6 @@ public class AuthoringTool implements EntryPoint {
 				bugReportPopup.setVisible(false);
 			}
 		});
-
-		final MenuBar menu_bar = new MenuBar();
-		menu_bar.addItem("File", file_menu);
-		menu_bar.addItem("Help", help_menu);
-		getHTMLMenuBar().setVisible(false);
-		getHTMLMenuBar().removeFromParent();
-		getMenuBarContainer().add(menu_bar);
 
 		final Button add_b = getButton("addButton");
 		add_b.addClickHandler(new ClickHandler() {
@@ -1602,10 +1594,6 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getErrorLabelContainer() {
 		return RootPanel.get("errorLabelContainer");
-	}
-
-	private static RootPanel getHTMLMenuBar() {
-		return RootPanel.get("htmlMenuBar");
 	}
 
 	private static RootPanel getMenuBarContainer() {
