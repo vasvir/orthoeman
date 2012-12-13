@@ -6,28 +6,28 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="AuthoringTool">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../../usr/lib/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <import file="dist.xml"/>
-    <path id="GWT SDK [GWT - 2.4.0].libraryclasspath">
-        <pathelement location="../../../.eclipse/org.eclipse.platform_3.8_155965261/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r42/gwt-2.4.0/gwt-user.jar"/>
-        <pathelement location="../../../.eclipse/org.eclipse.platform_3.8_155965261/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r42/gwt-2.4.0/gwt-dev.jar"/>
-        <pathelement location="../../../.eclipse/org.eclipse.platform_3.8_155965261/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r42/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>
-        <pathelement location="../../../.eclipse/org.eclipse.platform_3.8_155965261/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201206290132-rel-r42/gwt-2.4.0/validation-api-1.0.0.GA.jar"/>
+    <path id="GWT SDK [GWT - 2.5.0].libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/gwt-user.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/gwt-dev.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/validation-api-1.0.0.GA-sources.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/validation-api-1.0.0.GA.jar"/>
     </path>
     <path id="Authoring Tool Libraries.userclasspath">
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/log4j-1.2.16.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwtupload-0.6.4.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwt-servlet.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/commons-io-2.2.jar"/>
         <pathelement location="../AuthoringTool/war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
+        <pathelement location="../AuthoringTool/war/WEB-INF/lib/commons-io-2.2.jar"/>
         <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwt-log-3.1.8.jar"/>
+        <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwt-servlet.jar"/>
+        <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwtupload-0.6.4.jar"/>
+        <pathelement location="../AuthoringTool/war/WEB-INF/lib/log4j-1.2.16.jar"/>
     </path>
     <path id="AuthoringTool.classpath">
         <pathelement location="war/WEB-INF/classes"/>
-        <path refid="GWT SDK [GWT - 2.4.0].libraryclasspath"/>
+        <path refid="GWT SDK [GWT - 2.5.0].libraryclasspath"/>
         <path refid="Authoring Tool Libraries.userclasspath"/>
     </path>
     <target name="init">
