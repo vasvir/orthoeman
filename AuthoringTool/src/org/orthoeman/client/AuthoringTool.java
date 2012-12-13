@@ -296,7 +296,8 @@ public class AuthoringTool implements EntryPoint {
 		final int page_button_cnt_height = window_height - menubar_height
 				- getHeight(pageLabelContainer)
 				- getHeight(upDownButtonlContainer)
-				- getHeight(addRemoveButtonContainer);
+				- getHeight(addRemoveButtonContainer)
+				- getDecorationHeight("leftPanelContainerParent");
 		pageButtonContainer.setHeight(page_button_cnt_height + "px");
 		Log.trace("Browser resized button container (offset size) "
 				+ pageButtonContainer.getOffsetWidth() + " x "
@@ -332,9 +333,10 @@ public class AuthoringTool implements EntryPoint {
 		final int imageTitleContainerHeight = getHeight("imageTitleContainer");
 		final int imageUploaderContainerHeight = getHeight("imageUploaderContainer");
 		final int imageButtonContainerHeight = getHeight("imageButtonContainer");
+		final int imageContainerDecorationHeight = getDecorationHeight("imageContainer");
 		final int height_left = page_height - pageTitleContainerHeight
 				- imageTitleContainerHeight - imageUploaderContainerHeight
-				- imageButtonContainerHeight;
+				- imageButtonContainerHeight - imageContainerDecorationHeight;
 		Log.trace("page_height = " + page_height + " pageTitleContainerHeight="
 				+ pageTitleContainerHeight + " imageTitleContainerHeight ="
 				+ imageTitleContainerHeight + " imageUploaderContainerHeight="
@@ -546,7 +548,8 @@ public class AuthoringTool implements EntryPoint {
 		previewButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.open("../Display/index.html?id=" + orthoeman_id, "_blank", "");
+				Window.open("../Display/index.html?id=" + orthoeman_id,
+						"_blank", "");
 			}
 		});
 
@@ -2216,6 +2219,25 @@ public class AuthoringTool implements EntryPoint {
 
 	private static int getHeight(String id) {
 		return getHeight(RootPanel.get(id));
+	}
+
+	private static int getDecorationHeight(Element el) {
+		return getPixels(ComputedStyle.getStyleProperty(el, "marginTop"))
+				+ getPixels(ComputedStyle.getStyleProperty(el, "marginBottom"))
+				+ getPixels(ComputedStyle.getStyleProperty(el, "paddingTop"))
+				+ getPixels(ComputedStyle.getStyleProperty(el, "paddingBottom"))
+				+ getPixels(ComputedStyle
+						.getStyleProperty(el, "borderTopWidth"))
+				+ getPixels(ComputedStyle.getStyleProperty(el,
+						"borderBottomWidth"));
+	}
+
+	private static int getDecorationHeight(RootPanel rp) {
+		return getDecorationHeight(rp.getElement());
+	}
+
+	private static int getDecorationHeight(String id) {
+		return getDecorationHeight(RootPanel.get(id));
 	}
 
 	private static int getWidth(Element el) {
