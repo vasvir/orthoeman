@@ -31,7 +31,7 @@
   <!-- you can leave the body empty if you want  -->
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
-  <body class="fill_x fill_y">
+  <body class="fill_x fill_y nospace" style="background-color: #B0B0B0;">
 
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
@@ -110,7 +110,7 @@
 
 	<div class="table_abs full_x full_y fill_x fill_y">
 		<div class="row">
-			<div id="menuBarContainer" class="cell nowrap">
+			<div id="menuBarContainer" class="cell nowrap space" style="background-color: #A5A5A5;">
 				<div class="cell fill_x" style="text-align: center;">
 					<button id="saveButton" class="gwt-Button" type="button" title="Save">
 						<img src="icons/File_Media-floppy.svg" width="48" height="48"/>
@@ -132,18 +132,20 @@
 	
 		<div class="row fill_y"><div class="cell"><div class="table fill_x fill_y">
 			<div class="row">
-				<div class="cell">
-					<div id="leftPanelContainer" class="table fill_y">
+				<div id="leftPanelContainerParent" class="cell space">
+					<div id="leftPanelContainer" class="table fill_y" style="background-color: #A5A5A5;">
 						<div id="pageLabelContainer" class="row">
-								<div class="cell gwt-Label center">
-				        			Pages
-				        		</div>
+							<div class="cell gwt-Label center">
+				        		<h2>Pages</h2>
+				        	</div>
 				        </div>
 						<div id="upDownButtonlContainer" class="row">
-							<div class="cell nowrap">
-								<button id="upButton" class="gwt-Button noborder" type="button">Up</button><button id="downButton" class="gwt-Button noborder" type="button">Down</button>
+							<div class="cell center">
+								<div class="space nowrap">
+									<button id="upButton" class="gwt-Button noborder" type="button">Up</button><button id="downButton" class="gwt-Button noborder" type="button">Down</button>
+								</div>
 							</div>
-				        </div>
+					   </div>
 						<div class="row fill_y">
 							<div class="cell">
 								<div id="pageButtonContainer" class="scroll">
@@ -151,17 +153,18 @@
 							</div>
 						</div>
 						<div id="addRemoveButtonContainer" class="row">
-							<div class="cell nowrap">
-								<button id="addButton" class="gwt-Button noborder" type="button">Add</button><button id="removeButton" class="gwt-Button noborder" type="button">Remove</button>
+							<div class="cell center">
+								<div class="space nowrap">
+									<button id="addButton" class="gwt-Button noborder" type="button">Add</button><button id="removeButton" class="gwt-Button noborder" type="button">Remove</button>
+								</div>
 							</div>
-				        </div>
+					   </div>
 					</div>
 				</div>
 
-
 				<div id="pageContainer" class="cell fill_x">
-					<div id="pageTitleContainer">
-						<big><big>Title: </big></big>
+					<div id="pageTitleContainer" class="space">
+						<big><big>Page Title: </big></big>
 						<input id="titleTextBox" type="text" size="25" class="gwt-TextBox"
 							title="Leave it blank if there is no need for a title in this page"/>
 						<big><big>Type:</big></big><select id="itemCombobox" class="gwt-ListBox"></select>
@@ -177,7 +180,7 @@
 
 					<div class="table fill_x"><div class="row">
 						<div class="cell" style="width: 65%;">
-							<div id="imageContainer">
+							<div id="imageContainer" class="space">
 								<h3 id="imageTitleContainer">Image</h3>
 								<div id="imageUploaderContainer"></div>
 									<div id="canvasContainer" class="border scroll"></div>
@@ -251,20 +254,20 @@
 								</div>
 							</div>
 
-							<div id="videoContainer">
+							<div id="videoContainer" class="space">
 								<h3>Video</h3>
 								<div id="videoUploaderContainer"></div>
 								<div id="videoPlayerContainer"></div>
 							</div>
 						</div>
 						<div class="cell" style="width: 35%;">
-							<div id="textContainer" class="noborder fill_x">
+							<div id="textContainer" class="space noborder fill_x">
 								<h3>Text</h3>
 								<div style="overflow: auto;">
 									<textarea id="textTextArea" class="gwt-TextArea fill_x noborder"></textarea>
 								</div>
 							</div>
-							<div id="quizContainer" class="noborder fill_x">
+							<div id="quizContainer" class="space noborder fill_x">
 								<h3>Quiz</h3>
 								<div class="border" style="overflow: auto;">
 									<textarea id="quizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question in multiple choice form."></textarea>
@@ -276,7 +279,7 @@
 								</div>
 							</div>
 
-							<div id="rangeQuizContainer" class="noborder fill_x">
+							<div id="rangeQuizContainer" class="space noborder fill_x">
 								<h3>Range Quiz</h3>
 								<div class="border" style="overflow: auto;">
 									<textarea id="rangeQuizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units."></textarea>
