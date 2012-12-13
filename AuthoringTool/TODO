@@ -31,8 +31,7 @@ Later:
 Immediate:
 	Layout:
 		AuthoringTool:
-			get rid of menu bar. We only need save, debug, bug report
-			use left and right panel
+			add scrollbar to quiz
 
 		Moodle: group and button. Needs to make everything else invisible
 
