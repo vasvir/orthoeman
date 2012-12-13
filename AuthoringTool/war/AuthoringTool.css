@@ -170,3 +170,8 @@ html {
 	margin: 10px;
 	padding: 10px;
 }
+
+div, input, button, textarea, select, .gwt-Button {
+	border-radius: 8px !important;
+	-moz-border-radius: 8px !important;
+}
