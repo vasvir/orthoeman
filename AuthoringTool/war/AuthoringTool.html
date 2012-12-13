@@ -263,16 +263,16 @@
 						<div class="cell" style="width: 35%;">
 							<div id="textContainer" class="space noborder fill_x">
 								<h3>Text</h3>
-								<div style="overflow: auto;">
+								<div class="space" style="overflow: auto; margin-left: 0;">
 									<textarea id="textTextArea" class="gwt-TextArea fill_x noborder"></textarea>
 								</div>
 							</div>
-							<div id="quizContainer" class="space noborder fill_x">
+							<div id="quizContainer" class="space noborder fill_x fill_y">
 								<h3>Quiz</h3>
-								<div class="border" style="overflow: auto;">
+								<div class="space border" style="overflow: auto; margin-left: 0;">
 									<textarea id="quizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question in multiple choice form."></textarea>
 									<center>
-										<div id="quizAnswerContainer" style="width: 60%; text-align: left;" class="table">
+										<div id="quizAnswerContainer" style="width: 60%; text-align: left;" class="table scroll">
 										</div>
 										<button id="quizAddAnswerButton" class="gwt-Button" type="button" title="Add one more choice in the multiple choice quiz">Add Answer</button>
 									</center>
@@ -281,7 +281,7 @@
 
 							<div id="rangeQuizContainer" class="space noborder fill_x">
 								<h3>Range Quiz</h3>
-								<div class="border" style="overflow: auto;">
+								<div class="space border" style="overflow: auto; margin-left: 0;">
 									<textarea id="rangeQuizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units."></textarea>
 									<center>
 										<div class="gwt-Label inline">Min: </div>
