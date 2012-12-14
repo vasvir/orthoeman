@@ -172,6 +172,6 @@ html {
 }
 
 div, input, button, textarea, select, .gwt-Button {
-	border-radius: 8px !important;
-	-moz-border-radius: 8px !important;
+	border-radius: 4px !important;
+	-moz-border-radius: 4px !important;
 }
