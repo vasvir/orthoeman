@@ -548,8 +548,12 @@ public class AuthoringTool implements EntryPoint {
 		previewButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.open("../Display/index.html?id=" + orthoeman_id,
-						"_blank", "");
+				Window.open(
+						// weird: IE cannot stand space in context name
+						Window.Location.getPath().replaceAll(
+								"AuthoringTool/AuthoringTool.html.*$",
+								"Display/index.html?id=" + orthoeman_id),
+						"AuthoringTool_Preview_DisplayTool_" + orthoeman_id, "");
 			}
 		});
 
