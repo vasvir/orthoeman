@@ -120,7 +120,7 @@
 					</button>
 				</div>
 				<div class="cell nowrap">
-					<button id="debugButton" class="gwt-Button" style="display: none;" type="button" title="Debug">
+					<button id="debugButton" class="gwt-Button" style="display: inline-block;" type="button" title="Debug">
 						<img src="icons/Applications-development.svg" width="24" height="24"/>
 					</button>
 					<button id="reportBugButton" class="gwt-Button" type="button" title="Report a bug...">
@@ -183,7 +183,7 @@
 							<div id="imageContainer" class="space">
 								<h3 id="imageTitleContainer">Image</h3>
 								<div id="imageUploaderContainer"></div>
-									<div id="canvasContainer" class="border scroll"></div>
+								<div id="canvasContainer" class="border scroll"></div>
 								<div id="imageButtonContainer">
 									<div title="Zoom tools" class="inline button_group">
 										<button id="zoomOne2OneButton" class="gwt-Button" type="button" title="1:1">
@@ -255,42 +255,65 @@
 							</div>
 
 							<div id="videoContainer" class="space">
-								<h3>Video</h3>
+								<h3 id="videoTitleContainer">Video</h3>
 								<div id="videoUploaderContainer"></div>
-								<div id="videoPlayerContainer"></div>
+								<div id="videoPlayerContainer" class="border"></div>
 							</div>
 						</div>
 						<div class="cell" style="width: 35%;">
-							<div id="textContainer" class="space noborder fill_x">
+							<div id="textContainer" class="space noborder">
 								<h3>Text</h3>
-								<div class="space" style="overflow: auto; margin-left: 0;">
-									<textarea id="textTextArea" class="gwt-TextArea fill_x noborder"></textarea>
+								<div id="textUploadAlignmentContainer" class="noborder"></div>
+								<div id="textTextAreaContainer" class="text_table border">
+									<div class="row fill_y">
+										<textarea id="textTextArea" class="gwt-TextArea noborder fill_x fill_y" 
+											style="resize: none; border: 0px !important; margin: 0px !important;"
+											title="The theory associated with the media (image or video) or a description of the hotspots the student is required to find.">
+										</textarea>
+									</div>
 								</div>
 							</div>
-							<div id="quizContainer" class="space noborder fill_x fill_y">
+							<div id="quizContainer" class="space noborder">
 								<h3>Quiz</h3>
-								<div class="space border" style="overflow: auto; margin-left: 0;">
-									<textarea id="quizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question in multiple choice form."></textarea>
-									<center>
-										<div id="quizAnswerContainer" style="width: 60%; text-align: left;" class="table">
+								<div id="quizUploadAlignmentContainer" class="noborder"></div>
+								<div id="quizQuizAreaContainer" class="text_table border">
+									<div class="row fill_y">
+										<textarea id="quizTextArea" class="gwt-TextArea noborder fill_x fill_y"
+											style="resize: none; border: 0px !important; margin: 0px !important;"
+											title="Formulate a question in multiple choice form.">
+										</textarea>
+									</div>
+									<div class="row">
+										<div id="quizAnswerScrollContainer" class="scroll">
+											<div id="quizAnswerContainer" style="width: 70%; border-spacing: 5px;" class="table center_div">
+											</div>
 										</div>
+									</div>
+									<div class="row center">
 										<button id="quizAddAnswerButton" class="gwt-Button" type="button" title="Add one more choice in the multiple choice quiz">Add Answer</button>
-									</center>
+									</div>
 								</div>
 							</div>
-
-							<div id="rangeQuizContainer" class="space noborder fill_x">
+							<div id="rangeQuizContainer" class="space noborder">
 								<h3>Range Quiz</h3>
-								<div class="space border" style="overflow: auto; margin-left: 0;">
-									<textarea id="rangeQuizTextArea" class="gwt-TextArea fill_x noborder" title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units."></textarea>
-									<center>
-										<div class="gwt-Label inline">Min: </div>
-										<input id="rangeQuizMinTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
-											title="Specify the minimum acceptable value"/>
-										<div class="gwt-Label inline">Max: </div>
-										<input id="rangeQuizMaxTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
-											title="Specify the maximum acceptable value"/>
-									</center>
+								<div id="rangeQuizUploadAlignmentContainer" class="noborder"></div>
+								<div id="rangeQuizRangeQuizAreaContainer" class="text_table border">
+									<div class="row fill_y">
+									<textarea id="rangeQuizTextArea" class="gwt-TextArea noborder fill_x fill_y"
+										style="resize: none; border: 0px !important; margin: 0px !important;"
+										title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units.">
+									</textarea>
+									</div>
+									<div class="row center"
+										<div class="inline">
+											<div class="gwt-Label inline">Min: </div>
+											<input id="rangeQuizMinTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
+												title="Specify the minimum acceptable value"/>
+											<div class="gwt-Label inline">Max: </div>
+											<input id="rangeQuizMaxTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
+												title="Specify the maximum acceptable value"/>
+										</div>
+									</div>									
 								</div>
 							</div>
 						</div>

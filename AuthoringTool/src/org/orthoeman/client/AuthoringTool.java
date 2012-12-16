@@ -261,6 +261,74 @@ public class AuthoringTool implements EntryPoint {
 		redrawCanvas(new MyResizeEvent());
 	}
 
+	private int getHeightLeft() {
+		final int window_height = Window.getClientHeight();
+		final int menubar_height = getHeight(getMenuBarContainer());
+		final int page_height = window_height - menubar_height;
+		final int pageTitleContainerHeight = getHeight("pageTitleContainer");
+		final boolean image = Arrays.asList(
+				getCurrentPage().getItemTypeCombination()).contains(
+				Page.Item.Type.IMAGE);
+		final int mediaTitleContainerHeight = image ? getHeight("imageTitleContainer")
+				: getHeight("videoTitleContainer");
+		final int mediaUploaderContainerHeight = image ? getHeight("imageUploaderContainer")
+				: getHeight("videoUploaderContainer");
+		final int mediaButtonContainerHeight = image ? getHeight("imageButtonContainer")
+				: 0;
+		final int mediaContainerDecorationHeight = image ? getDecorationHeight("imageContainer")
+				: getDecorationHeight("videoContainer");
+		final int height_left = page_height - pageTitleContainerHeight
+				- mediaTitleContainerHeight - mediaUploaderContainerHeight
+				- mediaButtonContainerHeight - mediaContainerDecorationHeight;
+		Log.trace("page_height = " + page_height + " pageTitleContainerHeight="
+				+ pageTitleContainerHeight + " mediaTitleContainerHeight ="
+				+ mediaTitleContainerHeight + " mediaUploaderContainerHeight="
+				+ mediaUploaderContainerHeight + " mediaButtonContainerHeight="
+				+ mediaButtonContainerHeight + " height_left=" + height_left);
+		return height_left;
+	}
+
+	private void resizeSecondaryContainers(int height_left) {
+		String uploaderContainerPX = RootPanel.get("imageUploaderContainer")
+				.getOffsetHeight() + "px";
+
+		final Page.Item.Type[] itemTypeCombination = getCurrentPage()
+				.getItemTypeCombination();
+
+		for (final Page.Item.Type type : itemTypeCombination) {
+			switch (type) {
+			case IMAGE:
+				uploaderContainerPX = RootPanel.get("imageUploaderContainer")
+						.getOffsetHeight() + "px";
+				break;
+			case VIDEO:
+				uploaderContainerPX = RootPanel.get("videoUploaderContainer")
+						.getOffsetHeight() + "px";
+				break;
+			case TEXT:
+				RootPanel.get("textUploadAlignmentContainer").setHeight(
+						uploaderContainerPX);
+				RootPanel.get("textTextAreaContainer").setHeight(
+						(height_left) + "px");
+				break;
+			case QUIZ:
+				RootPanel.get("quizUploadAlignmentContainer").setHeight(
+						uploaderContainerPX);
+				RootPanel.get("quizQuizAreaContainer").setHeight(
+						(height_left) + "px");
+				RootPanel.get("quizAnswerScrollContainer").setHeight(
+						(height_left * 5 / 10) + "px");
+				break;
+			case RANGE_QUIZ:
+				RootPanel.get("rangeQuizUploadAlignmentContainer").setHeight(
+						uploaderContainerPX);
+				RootPanel.get("rangeQuizRangeQuizAreaContainer").setHeight(
+						(height_left) + "px");
+				break;
+			}
+		}
+	}
+
 	private void redrawCanvas(ResizeEvent event) {
 		final int window_width = event.getWidth();
 		final int window_height = event.getHeight();
@@ -329,19 +397,8 @@ public class AuthoringTool implements EntryPoint {
 		// final int nonclient_width = cnt_e.getOffsetWidth()
 		// - cnt_e.getClientWidth();
 		// Log.trace("Non client width = " + nonclient_width);
-		final int pageTitleContainerHeight = getHeight("pageTitleContainer");
-		final int imageTitleContainerHeight = getHeight("imageTitleContainer");
-		final int imageUploaderContainerHeight = getHeight("imageUploaderContainer");
-		final int imageButtonContainerHeight = getHeight("imageButtonContainer");
-		final int imageContainerDecorationHeight = getDecorationHeight("imageContainer");
-		final int height_left = page_height - pageTitleContainerHeight
-				- imageTitleContainerHeight - imageUploaderContainerHeight
-				- imageButtonContainerHeight - imageContainerDecorationHeight;
-		Log.trace("page_height = " + page_height + " pageTitleContainerHeight="
-				+ pageTitleContainerHeight + " imageTitleContainerHeight ="
-				+ imageTitleContainerHeight + " imageUploaderContainerHeight="
-				+ imageUploaderContainerHeight + " imageButtonContainerHeight="
-				+ imageButtonContainerHeight + " height_left=" + height_left);
+		final int height_left = getHeightLeft();
+		resizeSecondaryContainers(height_left);
 		final int border_horizontal = getPixels(ComputedStyle.getStyleProperty(
 				cnt_e, "borderLeftWidth"))
 				+ getPixels(ComputedStyle.getStyleProperty(cnt_e,
@@ -1750,6 +1807,7 @@ public class AuthoringTool implements EntryPoint {
 		negative_grade_tb.setText(page.getNegativeGrade() + "");
 		setButtonsEnabled(image_edit_buttons,
 				page.getImageItem().getImage() != null);
+		resizeSecondaryContainers(getHeightLeft());
 	}
 
 	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,

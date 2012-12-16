@@ -69,6 +69,12 @@ h1 {
 	display: table;
 }
 
+.text_table {
+	display: table;
+	border-spacing: 5px;
+	width: 100%;
+}
+
 .row {
 	//position: relative;
 	display: table-row;
@@ -111,7 +117,11 @@ h1 {
 .center {
 	text-align: center;
 }
-	
+
+.center_div {
+	margin: 0px auto;
+}
+
 .scroll {
 	//position: relative;
 	overflow: auto;
