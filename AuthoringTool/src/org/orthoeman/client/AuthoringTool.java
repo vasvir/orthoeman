@@ -261,6 +261,10 @@ public class AuthoringTool implements EntryPoint {
 		redrawCanvas(new MyResizeEvent());
 	}
 
+	private int getWidthLeft() {
+		return Window.getClientWidth() - getWidth(getLeftPanelContainer());
+	}
+
 	private int getHeightLeft() {
 		final int window_height = Window.getClientHeight();
 		final int menubar_height = getHeight(getMenuBarContainer());
@@ -288,7 +292,9 @@ public class AuthoringTool implements EntryPoint {
 		return height_left;
 	}
 
-	private void resizeSecondaryContainers(int height_left) {
+	private void resizeSecondaryContainers(int width_left, int height_left) {
+		RootPanel.get("nonMediaContainer").setWidth(
+				(width_left * 7 / 20) + "px");
 		String uploaderContainerPX = RootPanel.get("imageUploaderContainer")
 				.getOffsetHeight() + "px";
 
@@ -398,7 +404,7 @@ public class AuthoringTool implements EntryPoint {
 		// - cnt_e.getClientWidth();
 		// Log.trace("Non client width = " + nonclient_width);
 		final int height_left = getHeightLeft();
-		resizeSecondaryContainers(height_left);
+		resizeSecondaryContainers(page_width, height_left);
 		final int border_horizontal = getPixels(ComputedStyle.getStyleProperty(
 				cnt_e, "borderLeftWidth"))
 				+ getPixels(ComputedStyle.getStyleProperty(cnt_e,
@@ -1807,7 +1813,7 @@ public class AuthoringTool implements EntryPoint {
 		negative_grade_tb.setText(page.getNegativeGrade() + "");
 		setButtonsEnabled(image_edit_buttons,
 				page.getImageItem().getImage() != null);
-		resizeSecondaryContainers(getHeightLeft());
+		resizeSecondaryContainers(getWidthLeft(), getHeightLeft());
 	}
 
 	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
