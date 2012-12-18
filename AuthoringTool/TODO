@@ -31,7 +31,6 @@ Later:
 Immediate:
 	Layout:
 		AuthoringTool:
-			vertical scrollbar to video
 			IE9: horizontal scrollabar in zoom to fit (wrong scrollbar calculation)
 			IE9: quizContainer textarea cannot be made to push the two other rows (answer's scrollbarContainer, addAnAnswer row )
 
