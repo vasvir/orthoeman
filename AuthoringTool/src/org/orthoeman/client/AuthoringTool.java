@@ -310,6 +310,7 @@ public class AuthoringTool implements EntryPoint {
 			case VIDEO:
 				uploaderContainerPX = RootPanel.get("videoUploaderContainer")
 						.getOffsetHeight() + "px";
+				RootPanel.get("videoPlayerContainer").setHeight(height_left + "px");
 				break;
 			case TEXT:
 				RootPanel.get("textUploadAlignmentContainer").setHeight(
@@ -385,6 +386,9 @@ public class AuthoringTool implements EntryPoint {
 							+ "px");
 		}
 
+		final int height_left = getHeightLeft();
+		resizeSecondaryContainers(page_width, height_left);
+
 		final Page page = getCurrentPage();
 		if (page == null
 				|| !Arrays.asList(page.getItemTypeCombination()).contains(
@@ -400,21 +404,11 @@ public class AuthoringTool implements EntryPoint {
 		old_point.valid = false;
 
 		final Element cnt_e = canvasContainer.getElement();
-		// final int nonclient_width = cnt_e.getOffsetWidth()
-		// - cnt_e.getClientWidth();
-		// Log.trace("Non client width = " + nonclient_width);
-		final int height_left = getHeightLeft();
-		resizeSecondaryContainers(page_width, height_left);
 		final int border_horizontal = getPixels(ComputedStyle.getStyleProperty(
 				cnt_e, "borderLeftWidth"))
 				+ getPixels(ComputedStyle.getStyleProperty(cnt_e,
 						"borderRightWidth"));
-		final int border_vertical = getPixels(ComputedStyle.getStyleProperty(
-				cnt_e, "borderTopWidth"))
-				+ getPixels(ComputedStyle.getStyleProperty(cnt_e,
-						"borderBottomWidth"));
-		Log.trace("Borders horizontal = " + border_horizontal + " vertical = "
-				+ border_vertical);
+		Log.trace("Borders horizontal = " + border_horizontal);
 		canvasContainer.setSize("auto", (height_left) + "px");
 		Log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth()
 				+ " getWidth(canvasContainer) = " + getWidth(canvasContainer));
