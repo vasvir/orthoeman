@@ -23,7 +23,7 @@
     <!-- If you add any GWT meta tags, they must   -->
     <!-- be added before this line.                -->
     <!--                                           -->
-    <script type="text/javascript" language="javascript" src="authoringtool/authoringtool.nocache.js"></script>
+    <script type="text/javascript" src="authoringtool/authoringtool.nocache.js"></script>
   </head>
 
   <!--                                           -->
@@ -56,7 +56,7 @@
 
 	<div id="splashPopup" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 1">
 		<div class="border" style="position: absolute; top: 25%; left: 25%; right: 25%; bottom: 25%; z-index: 2;">
-			<img src="logo.png" width="100%" height="100%"/>
+			<img src="logo.png" class="fill_x fill_y" alt="logo"/>
 			<div class="fill_x" style="position: absolute; bottom: 0px;">	
 				<hr/>
 				<div id="splashScreenLabel" class="gwt-Label">Loading Authoring Tool...</div>
@@ -68,13 +68,13 @@
 		<div id="bugReportGlassPopup" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; background-color: #F0F0F0; opacity: 0.5; z-index: 1">
 		</div>
  		<div class="table border" style="width: 35%; height: 35%; position: absolute; top: 25%; left: 25%; right: 25%; bottom: 25%; background-color: #D5D5D5; opacity: 1; z-index: 2;">
-	 		<div class="row noborder" style="border-bottom: 1px solid black; width: 100%; padding: 4px; background-color: #A5A5A5;">
-				<big><big><strong>Report a Bug</strong></big></big>
+	 		<div class="row noborder fill_x" style="border-bottom: 1px solid black; padding: 4px; background-color: #A5A5A5; font-weight: bold; font-size: large;">
+				Report a Bug
  			</div>
- 			<div class="row;">
+ 			<div class="row">
  				<div class="table fill_x">
-					<div class="cell" style="padding: 10px;">
-						<big>Subject:</big>
+					<div class="cell" style="padding: 10px; font-size: larger">
+						Subject:
 					</div>
 					<div class="cell fill_x" style="padding: 10px;">
 						<input id="bugReportSubjectTextBox" type="text" class="gwt-TextBox border fill_x"
@@ -113,18 +113,18 @@
 			<div id="menuBarContainer" class="cell nowrap space" style="background-color: #A5A5A5;">
 				<div class="cell fill_x">
 					<button id="saveButton" class="gwt-Button" type="button" title="Save">
-						<img src="icons/File_Media-floppy.svg" width="24" height="24"/>
+						<img src="icons/File_Media-floppy.svg" alt="Save" width="24" height="24"/>
 					</button>
 					<button id="previewButton" class="gwt-Button" type="button" title="Preview">
-						<img src="icons/Applications-television.svg" width="24" height="24"/>
+						<img src="icons/Applications-television.svg" alt="Preview" width="24" height="24"/>
 					</button>
 				</div>
 				<div class="cell nowrap">
 					<button id="debugButton" class="gwt-Button" style="display: none;" type="button" title="Debug">
-						<img src="icons/Applications-development.svg" width="24" height="24"/>
+						<img src="icons/Applications-development.svg" alt="Debug" width="24" height="24"/>
 					</button>
 					<button id="reportBugButton" class="gwt-Button" type="button" title="Report a bug...">
-						<img src="icons/Mail-message-open-alert.svg" width="24" height="24"/>
+						<img src="icons/Mail-message-open-alert.svg" alt="Report a bug..." width="24" height="24"/>
 					</button>
 				</div>
 			</div>
@@ -164,10 +164,10 @@
 
 				<div id="pageContainer" class="cell fill_x">
 					<div id="pageTitleContainer" class="space">
-						<big><big>Page Title: </big></big>
+						<span style="font-size: large;">Page Title:</span>
 						<input id="titleTextBox" type="text" size="25" class="gwt-TextBox"
 							title="Leave it blank if there is no need for a title in this page"/>
-						<big><big>Type:</big></big><select id="itemCombobox" class="gwt-ListBox"></select>
+						<span style="font-size: large;">Type:</span><select id="itemCombobox" class="gwt-ListBox"></select>
 						<div class="inline">
 							<div class="gwt-Label inline margin_left">Negative Grade:</div>
 							<input id="negativeGradeTextBox" type="text" class="gwt-TextBox inline" style="width: 3em;"
@@ -194,16 +194,16 @@
 											</svg>
 										</button>
 										<button id="zoomInButton" class="gwt-Button" type="button" title="Zoom in">
-											<img src="icons/File_View-zoom-in.svg" width="24" height="24"/>
+											<img src="icons/File_View-zoom-in.svg" alt="Zoom in" width="24" height="24"/>
 										</button>
 										<button id="zoomOutButton" class="gwt-Button" type="button" title="Zoom out" >
-											<img src="icons/File_View-zoom-out.svg" width="24" height="24"/>
+											<img src="icons/File_View-zoom-out.svg" alt="Zoom out" width="24" height="24"/>
 										</button>
 										<button id="zoomToFitWidthButton" class="gwt-Button" type="button" title="Zoom to Fit width (default)">
-											<img src="icons/File_View-zoom-fit.svg" width="24" height="24"/>
+											<img src="icons/File_View-zoom-fit.svg" alt="Zoom to Fit width (default)" width="24" height="24"/>
 										</button>
 										<button id="zoomTargetButton" class="gwt-Button" type="button" title="Zoom target">
-											<img src="icons/File_View-zoom-target.svg" width="24" height="24"/>
+											<img src="icons/File_View-zoom-target.svg" alt="Zoom target" width="24" height="24"/>
 										</button>
 									</div>
 									<div title="Area tools" class="inline button_group">
@@ -240,10 +240,10 @@
 									</div>
 									<div title="Edit tools" class="inline button_group">
 										<button id="eraseButton" class="gwt-Button" type="button" title="Erase hotspot or helper line">
-											<img src="icons/Eraser.svg" width="24" height="24"/>
+											<img src="icons/Eraser.svg" alt="Erase hotspot or helper line" width="24" height="24"/>
 										</button>
 										<button id="editImageButton" class="gwt-Button" type="button" title="Edit Image">
-											<img src="icons/Image-x-generic.svg" width="24" height="24"/>
+											<img src="icons/Image-x-generic.svg" alt="Edit Image" width="24" height="24"/>
 										</button>
 									</div>
 									<div class="inline button_group">				
