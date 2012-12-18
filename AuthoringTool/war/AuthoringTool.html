@@ -120,7 +120,7 @@
 					</button>
 				</div>
 				<div class="cell nowrap">
-					<button id="debugButton" class="gwt-Button" style="display: inline-block;" type="button" title="Debug">
+					<button id="debugButton" class="gwt-Button" style="display: none;" type="button" title="Debug">
 						<img src="icons/Applications-development.svg" width="24" height="24"/>
 					</button>
 					<button id="reportBugButton" class="gwt-Button" type="button" title="Report a bug...">
@@ -265,46 +265,47 @@
 								<h3>Text</h3>
 								<div id="textUploadAlignmentContainer" class="noborder"></div>
 								<div id="textTextAreaContainer" class="text_table border">
-									<div class="row fill_y">
+									<div class="row"><div class="cell fill_y">
 										<textarea id="textTextArea" class="gwt-TextArea noborder fill_x fill_y" 
 											style="resize: none; border: 0px !important; margin: 0px !important;"
 											title="The theory associated with the media (image or video) or a description of the hotspots the student is required to find.">
 										</textarea>
-									</div>
+									</div></div>
 								</div>
 							</div>
 							<div id="quizContainer" class="space noborder">
 								<h3>Quiz</h3>
 								<div id="quizUploadAlignmentContainer" class="noborder"></div>
 								<div id="quizQuizAreaContainer" class="text_table border">
-									<div class="row fill_y">
+									<div class="row"><div class="cell">
+										<!-- we cannot put fill_y in cell because ie9 fucks it up when the other rows have explicit pixels set -->
 										<textarea id="quizTextArea" class="gwt-TextArea noborder fill_x fill_y"
-											style="resize: none; border: 0px !important; margin: 0px !important;"
+											style="resize: vertical; border: 0px !important; margin: 0px !important;"
 											title="Formulate a question in multiple choice form.">
 										</textarea>
-									</div>
-									<div class="row">
+									</div></div>
+									<div class="row"><div class="cell">
 										<div id="quizAnswerScrollContainer" class="scroll">
 											<div id="quizAnswerContainer" style="width: 70%; border-spacing: 5px;" class="table center_div">
 											</div>
 										</div>
-									</div>
-									<div class="row center">
+									</div></div>
+									<div class="row"><div class="cell center">
 										<button id="quizAddAnswerButton" class="gwt-Button" type="button" title="Add one more choice in the multiple choice quiz">Add Answer</button>
-									</div>
+									</div></div>
 								</div>
 							</div>
 							<div id="rangeQuizContainer" class="space noborder">
 								<h3>Range&nbsp;Quiz</h3>
 								<div id="rangeQuizUploadAlignmentContainer" class="noborder"></div>
 								<div id="rangeQuizRangeQuizAreaContainer" class="text_table border">
-									<div class="row fill_y">
-									<textarea id="rangeQuizTextArea" class="gwt-TextArea noborder fill_x fill_y"
-										style="resize: none; border: 0px !important; margin: 0px !important;"
-										title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units.">
-									</textarea>
-									</div>
-									<div class="row center"
+									<div class="row"><div class="cell fill_y">
+										<textarea id="rangeQuizTextArea" class="gwt-TextArea noborder fill_x fill_y"
+											style="resize: none; border: 0px !important; margin: 0px !important;"
+											title="Formulate a question that requires a value for answer. Don't to forget to explicitely state the expected units.">
+										</textarea>
+									</div></div>
+									<div class="row"><div class="cell center">
 										<div class="inline">
 											<div class="gwt-Label inline">Min: </div>
 											<input id="rangeQuizMinTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
@@ -313,7 +314,7 @@
 											<input id="rangeQuizMaxTextBox" type="text" class="gwt-TextBox noborder" style="width: 3em;"
 												title="Specify the maximum acceptable value"/>
 										</div>
-									</div>									
+									</div></div>									
 								</div>
 							</div>
 						</div>
