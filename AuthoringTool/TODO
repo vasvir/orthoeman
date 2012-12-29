@@ -29,12 +29,20 @@ Later:
 		import/export capability
 
 Immediate:
+	Functionality:
+		AuthoringTool:
+			Text - Quiz case
+		Moodle:
+			backup/restore - import/export capability
+
 	Layout:
 		AuthoringTool:
 			IE9: horizontal scrollabar in zoom to fit (wrong scrollbar calculation)
-			IE9: quizContainer textarea cannot be made to push the two other rows (answer's scrollbarContainer, addAnAnswer row )
+			IE9: quizContainer textarea cannot be made to push the two other rows (answer's scrollbarContainer, addAnAnswer row)
+			Text - Quiz case
 
-		Moodle: group and button. Needs to make everything else invisible
+		Moodle:
+			group and button. Needs to make everything else invisible
 
 	Discussion:
 		Tracking - Display tool should be able to inform moodle about the progress / grades of the
