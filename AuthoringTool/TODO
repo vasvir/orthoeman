@@ -40,7 +40,6 @@ Immediate:
 	Layout:
 		AuthoringTool:
 			IE9: horizontal scrollabar in zoom to fit (wrong scrollbar calculation)
-			Text - Quiz case
 
 		Moodle:
 			group and button. Needs to make everything else
