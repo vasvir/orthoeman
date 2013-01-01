@@ -75,6 +75,7 @@ public class JettyLauncher extends ServletContainerLauncher {
 		/**
 		 * Log an HTTP request/response to TreeLogger.
 		 */
+		@SuppressWarnings("unchecked")
 		@Override
 		public void log(Request request, Response response) {
 			int status = response.getStatus();
@@ -481,6 +482,7 @@ public class JettyLauncher extends ServletContainerLauncher {
 
 		private WebAppClassLoaderExtension classLoader;
 
+		@SuppressWarnings("unchecked")
 		private WebAppContextWithReload(TreeLogger logger, String webApp,
 				String contextPath) {
 			super(webApp, contextPath);

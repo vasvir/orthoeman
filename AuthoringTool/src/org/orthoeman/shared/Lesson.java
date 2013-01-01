@@ -31,6 +31,10 @@ import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
 public class Lesson extends ArrayList<Lesson.Page> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final String namespace = "http://orthoeman.org/";
 	private static final String schemaLocation = namespace + "orthoeman.xsd";
 
@@ -138,6 +142,10 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 		public static class ImageItem extends Item {
 			public static class DrawingList extends ArrayList<Drawing> {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 				private final List<List<Point>> intersection_point_lists = new ArrayList<List<Point>>();
 				private final Map<Point, Line[]> intersection_point_lines_map = new HashMap<Point, Line[]>();
 
