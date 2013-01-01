@@ -22,6 +22,10 @@ Later:
 			up down via drag & drop. Note that buttons don't seem to be
 			able to listen to drag events
 
+
+		Layout
+			IE9: quizContainer textarea cannot be made to push the two other rows (answer's scrollbarContainer, addAnAnswer row)
+
 	Moodle:
 		show documents inline (may require a plugin)
 		Use moodle file facilities for storing and retrieving files
@@ -30,15 +34,14 @@ Later:
 
 Immediate:
 	Functionality:
-		AuthoringTool:
-			Text - Quiz case
 		Moodle:
 			backup/restore - import/export capability
+		AuthoringTool:
+			preview should invoke Display Tool in iframe
 
 	Layout:
 		AuthoringTool:
 			IE9: horizontal scrollabar in zoom to fit (wrong scrollbar calculation)
-			IE9: quizContainer textarea cannot be made to push the two other rows (answer's scrollbarContainer, addAnAnswer row)
 			Text - Quiz case
 
 		Moodle:
