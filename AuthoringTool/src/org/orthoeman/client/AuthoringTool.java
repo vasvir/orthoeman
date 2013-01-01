@@ -270,9 +270,23 @@ public class AuthoringTool implements EntryPoint {
 		final int menubar_height = getHeight(getMenuBarContainer());
 		final int page_height = window_height - menubar_height;
 		final int pageTitleContainerHeight = getHeight("pageTitleContainer");
-		final boolean image = Arrays.asList(
-				getCurrentPage().getItemTypeCombination()).contains(
-				Page.Item.Type.IMAGE);
+		final List<Page.Item.Type> itemTypeCombinationList = Arrays
+				.asList(getCurrentPage().getItemTypeCombination());
+		final boolean image = itemTypeCombinationList
+				.contains(Page.Item.Type.IMAGE);
+		final boolean text_quiz = itemTypeCombinationList
+				.contains(Page.Item.Type.TEXT)
+				&& itemTypeCombinationList.contains(Page.Item.Type.QUIZ);
+		if (text_quiz) {
+			final int textTitleContainerHeight = getHeight("textTitleContainer");
+			final int quizTitleContainerHeight = getHeight("quizTitleContainer");
+			final int height_left = page_height - pageTitleContainerHeight
+					- textTitleContainerHeight - quizTitleContainerHeight
+					- getDecorationHeight("textContainer")
+					- getDecorationHeight("quizContainer");
+			return height_left / 2;
+		}
+
 		final int mediaTitleContainerHeight = image ? getHeight("imageTitleContainer")
 				: getHeight("videoTitleContainer");
 		final int mediaUploaderContainerHeight = image ? getHeight("imageUploaderContainer")
@@ -1431,6 +1445,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		add_answer_b.setEnabled(true);
 		add_answer_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
