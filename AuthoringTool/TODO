@@ -29,8 +29,6 @@ Later:
 	Moodle:
 		show documents inline (may require a plugin)
 		Use moodle file facilities for storing and retrieving files
-		backup/restore capability
-		import/export capability
 
 Immediate:
 	Functionality:
@@ -38,9 +36,6 @@ Immediate:
 			backup/restore - import/export capability
 
 	Layout:
-		AuthoringTool:
-			IE9: horizontal scrollabar in zoom to fit (wrong scrollbar calculation)
-
 		Moodle:
 			group and button. Needs to make everything else
 			invisible.  This is important because chrome may fuck up layout

@@ -2285,8 +2285,8 @@ public class AuthoringTool implements EntryPoint {
 	private static int getPixels(String str) {
 		if (str == null || str.isEmpty())
 			return 0;
-		return Float.valueOf(str.replaceAll("\\s.*$", "").replaceAll("px", ""))
-				.intValue();
+		return Math.round(Float.valueOf(str.replaceAll("\\s.*$", "")
+				.replaceAll("px", "")));
 	}
 
 	private static int getHeight(Element el) {
