@@ -310,7 +310,8 @@ public class AuthoringTool implements EntryPoint {
 			case VIDEO:
 				uploaderContainerPX = RootPanel.get("videoUploaderContainer")
 						.getOffsetHeight() + "px";
-				RootPanel.get("videoPlayerContainer").setHeight(height_left + "px");
+				RootPanel.get("videoPlayerContainer").setHeight(
+						height_left + "px");
 				break;
 			case TEXT:
 				RootPanel.get("textUploadAlignmentContainer").setHeight(
@@ -605,11 +606,18 @@ public class AuthoringTool implements EntryPoint {
 		previewButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				final String iframe_display_tool_url = "view.php?id="
+						+ orthoeman_id;
+				final String full_display_tool_url = "Display/index.html?id="
+						+ orthoeman_id;
+				final boolean fullscreen_display_tool = false;
+				final String display_tool_url = fullscreen_display_tool ? full_display_tool_url
+						: iframe_display_tool_url;
 				Window.open(
 						// weird: IE cannot stand space in context name
 						Window.Location.getPath().replaceAll(
 								"AuthoringTool/AuthoringTool.html.*$",
-								"Display/index.html?id=" + orthoeman_id),
+								display_tool_url),
 						"AuthoringTool_Preview_DisplayTool_" + orthoeman_id, "");
 			}
 		});
