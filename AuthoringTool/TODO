@@ -43,3 +43,7 @@ Immediate:
 	Discussion:
 		Tracking - Display tool should be able to inform moodle about the progress / grades of the
 			student, submit.php get_submission.php
+
+	BUGS:
+		Exception thrown in startup
+		Zoom level changing leads to zoom canvas resizing
