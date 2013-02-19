@@ -12,7 +12,7 @@
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the OrthoEMan activity" PREVIOUS="name" NEXT="introformat"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timeout"/>
         <FIELD NAME="timeout" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="7200" SEQUENCE="false" PREVIOUS="introformat" NEXT="cruise"/>
-        <FIELD NAME="cruise" TYPE="boolean" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timeout" NEXT="timecreated"/>
+        <FIELD NAME="cruise" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timeout" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="cruise" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
@@ -23,7 +23,7 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="orthoeman_resource" COMMENT="Orthoeman resources i.e. images, video, xml files" PREVIOUS="orthoeman">
+    <TABLE NAME="orthoeman_resource" COMMENT="Orthoeman resources i.e. images, video, xml files" PREVIOUS="orthoeman" NEXT="orthoeman_answer">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="orthoeman_id"/>
         <FIELD NAME="orthoeman_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
@@ -41,6 +41,23 @@
         <INDEX NAME="orthoeman_id" UNIQUE="false" FIELDS="orthoeman_id" NEXT="md5"/>
         <INDEX NAME="md5" UNIQUE="false" FIELDS="md5" PREVIOUS="orthoeman_id" NEXT="parent_id"/>
         <INDEX NAME="parent_id" UNIQUE="false" FIELDS="parent_id" PREVIOUS="md5"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="orthoeman_answer" COMMENT="Orthoeman answers per user" PREVIOUS="orthoeman_resource">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="orthoeman_id"/>
+        <FIELD NAME="orthoeman_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="user_id"/>
+        <FIELD NAME="user_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="orthoeman_id" NEXT="page_id"/>
+        <FIELD NAME="page_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="user_id" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="type of the answer" PREVIOUS="page_id" NEXT="answer"/>
+        <FIELD NAME="answer" TYPE="char" LENGTH="512" NOTNULL="false" SEQUENCE="false" COMMENT="the answer data" PREVIOUS="type"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="orthoeman_id" UNIQUE="false" FIELDS="orthoeman_id" NEXT="user_id"/>
+        <INDEX NAME="user_id" UNIQUE="false" FIELDS="user_id" PREVIOUS="orthoeman_id"/>
       </INDEXES>
     </TABLE>
   </TABLES>

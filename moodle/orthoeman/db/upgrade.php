@@ -187,7 +187,6 @@ function xmldb_orthoeman_upgrade($oldversion) {
 
 
         // insert here code to perform some actions (same as in install.php)
-
         upgrade_mod_savepoint(true, 2012111402, 'orthoeman');
     }
 
@@ -200,6 +199,35 @@ function xmldb_orthoeman_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
+    }
+
+
+    if ($oldversion < 2013021903) {
+       // Define table orthoeman_answer to be created
+        $table = new xmldb_table('orthoeman_answer');
+
+        // Adding fields to table orthoeman_answer
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('orthoeman_id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null);
+        $table->add_field('user_id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null);
+        $table->add_field('page_id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null);
+        $table->add_field('type', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, null, null, null);
+        $table->add_field('answer', XMLDB_TYPE_CHAR, '512', null, null, null, null);
+
+        // Adding keys to table orthoeman_answer
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Adding indexes to table orthoeman_answer
+        $table->add_index('orthoeman_id', XMLDB_INDEX_NOTUNIQUE, array('orthoeman_id'));
+        $table->add_index('user_id', XMLDB_INDEX_NOTUNIQUE, array('user_id'));
+
+        // Conditionally launch create table for orthoeman_answer
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // orthoeman savepoint reached
+        upgrade_mod_savepoint(true, 2013021903, 'orthoeman');
     }
 
     // And that's all. Please, examine and understand the 3 example blocks above. Also

@@ -35,13 +35,21 @@ defined('MOODLE_INTERNAL') || die();
 
 $ORTHOEMAN_TABLE = 'orthoeman';
 $RESOURCE_TABLE = 'orthoeman_resource';
+$ANSWER_TABLE = 'orthoeman_answer';
+// this should be RESOURCE_TYPE_* really
 $TYPE_XML = 'XML';
 $TYPE_XML_VALUE = 0;
 $TYPE_IMAGE = 'IMAGE';
 $TYPE_IMAGE_VALUE = 1;
 $TYPE_VIDEO = 'VIDEO';
 $TYPE_VIDEO_VALUE = 2;
-
+// answer_type
+$ANSWER_TYPE_QUIZ = 'Quiz'
+$ANSWER_TYPE_QUIZ_VALUE = 0;
+$ANSWER_TYPE_HOTSPOT = 'Hotspot'
+$ANSWER_TYPE_QUIZ_VALUE = 1;
+$ANSWER_TYPE_INPUT = 'Input'
+$ANSWER_TYPE_INPUT_VALUE = 2;
 
 /** example constant */
 //define('NEWMODULE_ULTIMATE_ANSWER', 42);
