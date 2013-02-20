@@ -72,7 +72,7 @@ Institution: $USER->institution
 Department: $USER->department
 Address: $USER->address
 City: $USER->city
-Country: $USER->country\ncm: " . print_r($cm, true) . "\ncourse: " . print_r($course, true) . "\northoeman: " . print_r($orthoeman, true) . "\n" . print_r($USER, true);;
+Country: $USER->country\ncm: " . print_r($cm, true) . "\ncourse: " . print_r($course, true) . "\northoeman: " . print_r($orthoeman, true) . "\nuser: " . print_r($USER, true);;
     $body = "$text\n\nMoodle Information\n\n$moodle_info\n";
 
     //echo $body;
