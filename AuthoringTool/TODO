@@ -47,3 +47,15 @@ Immediate:
 	BUGS:
 		Exception thrown in startup
 		Zoom level changing leads to zoom canvas resizing
+
+	Kwstas:
+		do we need img.php?
+		move sslayer.php to moodle directory
+		implement get_grade($orthoeman_id, $user_id);
+
+
+
+* Don't allow to save lessons if there are submitted answers
+* gradebook and grades
+
+

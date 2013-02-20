@@ -14,7 +14,7 @@ $my_orthoeman  = $DB->get_record('orthoeman', array('id' => $my_cm->instance), '
 require_login($my_course, true, $my_cm);
 $my_context = get_context_instance(CONTEXT_MODULE, $my_cm->id);
 
-require_capability("mod/orthoeman:view", $my_context);
+require_view_capability($orthoeman_id, $my_context);
 
 add_to_log($my_course->id, 'orthoeman', 'launch display', "display.html?id={$my_cm->id}", $my_orthoeman->name, $my_cm->id);
 

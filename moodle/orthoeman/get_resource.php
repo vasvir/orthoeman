@@ -52,7 +52,7 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-require_capability("mod/orthoeman:view", $context);
+require_view_capability($id, $context);
 
 if ($resource_id == -1) {
   require_capability("mod/orthoeman:read", $context);

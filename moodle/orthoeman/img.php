@@ -22,7 +22,7 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-require_capability("mod/orthoeman:view", $context);
+require_view_capability($id, $context);
 
 if ($resource_id == -1) {
   require_capability("mod/orthoeman:read", $context);
@@ -32,5 +32,3 @@ add_to_log($course->id, 'orthoeman', 'get_resource', "get_resource.php?id={$cm->
 $resource_rec = get_database_data($orthoeman->id, $resource_id);
 header('Content-type: ' . $resource_rec->content_type);
 echo $resource_rec->data;
-
-
