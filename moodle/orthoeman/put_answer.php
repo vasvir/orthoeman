@@ -47,29 +47,36 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
+$page_id = required_param('page_id', PARAM_INT);
+$type = required_param('type', PARAM_INT);
+$answer = required_param('answer', PARAM_TEXT);
+
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'orthoeman', 'view', "view.php?id={$cm->id}", $orthoeman->name, $cm->id);
+$read_access = has_view_capability($id, $context) || has_capability('mod/orthoeman:read', $context);
+$write_access = has_capability('mod/orthoeman:submit', $context);
 
-/// Print the page header
+if (!$write_access && !$read_access) {
+    throw new required_capability_exception($context, $capability, 'nopermissions', '');
+}
 
-$PAGE->set_url('/mod/orthoeman/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($orthoeman->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
+add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('orthoeman-'.$somevar);
 
-require_view_capability($id, $context);
+if (!$write_access) {
+    echo "Read only. Nothing to do. Exiting...";
+    return;
+}
 
-// Output starts here
-echo $OUTPUT->header();
+global $USER;
 
-echo get_orthoeman_frame("Display/index.html?id=$cm->id");
+$resource_rec = new Object();
+$resource_rec->orthoeman_id = $id;
+$resource_rec->user_id = $USER->id;
+$resource_rec->page_id = $page_id;
+$resource_rec->type = $type;
+$resource_rec->answer = $answer;
+$resource_id = $DB->insert_record($ANSWER_TABLE, $resource_rec);
 
-// Finish the page
-echo $OUTPUT->footer();
+echo "resource_rec: " . print_r($resource_rec, true);

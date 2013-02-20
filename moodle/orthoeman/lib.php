@@ -44,11 +44,11 @@ $TYPE_IMAGE_VALUE = 1;
 $TYPE_VIDEO = 'VIDEO';
 $TYPE_VIDEO_VALUE = 2;
 // answer_type
-$ANSWER_TYPE_QUIZ = 'Quiz'
+$ANSWER_TYPE_QUIZ = 'Quiz';
 $ANSWER_TYPE_QUIZ_VALUE = 0;
-$ANSWER_TYPE_HOTSPOT = 'Hotspot'
+$ANSWER_TYPE_HOTSPOT = 'Hotspot';
 $ANSWER_TYPE_QUIZ_VALUE = 1;
-$ANSWER_TYPE_INPUT = 'Input'
+$ANSWER_TYPE_INPUT = 'Input';
 $ANSWER_TYPE_INPUT_VALUE = 2;
 
 /** example constant */
@@ -536,4 +536,19 @@ function get_lesson_details($id) {
     $cm = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
     $orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
     return $DB->get_record($ORTHOEMAN_TABLE, array('id' => $orthoeman->id));
+}
+
+
+function has_view_capability($id, context $context) {
+    $lesson_details = get_lesson_details($id);
+    if ($lesson_details->cruise)
+        return true;
+
+    return has_capability('mod/orthoeman:view', $context);
+}
+
+function require_view_capability($id, context $context) {
+    if (!has_view_capability($id, $context)) {
+        throw new required_capability_exception($context, 'mod/orthoeman:view', 'nopermissions', '');
+    }
 }
