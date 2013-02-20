@@ -76,7 +76,9 @@
  *  put_resource_xml		WRITE		NO		NO
  *  put_resource_other		WRITE		NO		NO
  *  view			VIEW		VIEW		NO
- *  submit			NO*		SUBMIT		NO
+ *  put_answer			NO*		SUBMIT		NO
+ *  get_answers			NO*		SUBMIT		NO
+ *  reset_answers		WRITE		NO		NO
  *
  * NO* means
  *	* no error if role has READ capability. In that case the teacher can
