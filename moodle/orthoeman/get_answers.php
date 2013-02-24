@@ -63,5 +63,5 @@ if ($page_id >= 0) {
     $match_array['page_id'] = $page_id;
 }
 
-$answer_rec = $DB->get_record($ANSWER_TABLE, $match_array);
-echo json_encode($answer_rec);
+$answer_recs = $DB->get_records($ANSWER_TABLE, $match_array);
+echo json_encode($answer_recs);
