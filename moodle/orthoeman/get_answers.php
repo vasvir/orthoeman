@@ -47,36 +47,21 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
-$page_id = required_param('page_id', PARAM_INT);
-$type = required_param('type', PARAM_INT);
-$answer = required_param('answer', PARAM_TEXT);
+$page_id = optional_param('page_id', -1, PARAM_INT);
 
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-$read_access = has_view_capability($id, $context) || has_capability('mod/orthoeman:read', $context);
-$write_access = has_capability('mod/orthoeman:submit', $context);
-
-if (!$write_access && !$read_access) {
-    throw new required_capability_exception($context, $capability, 'nopermissions', '');
-}
+require_view_capability($id, $context);
 
 add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
-
-if (!$write_access) {
-    echo "Read only. Nothing to do. Exiting...";
-    return;
+global $USER;
+    
+$match_array = array('orthoeman_id' => $id, 'user_id' => $USER->id);
+if ($page_id >= 0) {
+    $match_array['page_id'] = $page_id;
 }
 
-global $USER;
-
-$answer_rec = new Object();
-$answer_rec->orthoeman_id = $id;
-$answer_rec->user_id = $USER->id;
-$answer_rec->page_id = $page_id;
-$answer_rec->type = $type;
-$answer_rec->answer = $answer;
-$resource_id = $DB->insert_record($ANSWER_TABLE, $answer_rec);
-
+$answer_rec = $DB->get_record($ANSWER_TABLE, $match_array);
 echo json_encode($answer_rec);
