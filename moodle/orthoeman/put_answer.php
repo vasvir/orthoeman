@@ -54,17 +54,18 @@ $answer = required_param('answer', PARAM_TEXT);
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-$read_access = has_view_capability($id, $context) || has_capability('mod/orthoeman:read', $context);
+$view_access = has_view_capability($id, $context);
+$read_access = has_capability('mod/orthoeman:read', $context);
 $write_access = has_capability('mod/orthoeman:submit', $context);
 
-if (!$write_access && !$read_access) {
+if (!$view_access && !$write_access && !$read_access) {
     throw new required_capability_exception($context, $capability, 'nopermissions', '');
 }
 
 add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
 
-if (!$write_access) {
+if ($read_access) {
     echo "Read only. Nothing to do. Exiting...";
     return;
 }
@@ -72,7 +73,7 @@ if (!$write_access) {
 global $USER;
 
 $answer_rec = new Object();
-$answer_rec->orthoeman_id = $id;
+$answer_rec->orthoeman_id = $orthoeman->id;
 $answer_rec->user_id = $USER->id;
 $answer_rec->page_id = $page_id;
 $answer_rec->type = $type;

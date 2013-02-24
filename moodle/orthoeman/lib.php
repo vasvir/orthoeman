@@ -138,6 +138,7 @@ function orthoeman_delete_instance($id) {
     //this does not work. beats me why?
     //$DB->delete_records($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id));
     //error_log("XXX $RESOURCE_TABLE $orthoeman->id");
+    $DB->delete_records('orthoeman_answer', array('orthoeman_id' => $orthoeman->id));
     $DB->delete_records('orthoeman_resource', array('orthoeman_id' => $orthoeman->id));
 
     $DB->delete_records('orthoeman', array('id' => $orthoeman->id));
