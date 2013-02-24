@@ -58,7 +58,7 @@ add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id
 
 global $USER;
     
-$match_array = array('orthoeman_id' => $id, 'user_id' => $USER->id);
+$match_array = array('orthoeman_id' => $orthoeman->id, 'user_id' => $USER->id);
 if ($page_id >= 0) {
     $match_array['page_id'] = $page_id;
 }
