@@ -1226,17 +1226,21 @@ function CheckResizeLimits(page) {
                     var maxh = $(window).height() - OrthoVariables.HeightFromBottom;
                     var n_w = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).width();
                     var n_h = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).height();
-                    h = Math.round(w * (n_h / n_w));
-                    if (h > maxh - 35) {
-                        h = maxh - 35;
-                        w = Math.round(h * (n_w / n_h));
-                    }
-                    var vid = OrthoVariables.LessonData.Page[page].Widget[wid].Video.id;
-                    for (var e in mejs.players) {
-                        if (mejs.players[e].media.id === "video_" + vid) {
-                            mejs.players[e].setPlayerSize(w, h);
-                            mejs.players[e].media.setVideoSize(w, h);
-                            mejs.players[e].setControlsSize();
+                    if (n_w > 0 && n_h > 0) {
+                        if (n_w == 0) n_w = 150;
+                        if (n_h == 0) n_h = 150;
+                        h = Math.round(w * (n_h / n_w));
+                        if (h > maxh - 35) {
+                            h = maxh - 35;
+                            w = Math.round(h * (n_w / n_h));
+                        }
+                        var vid = OrthoVariables.LessonData.Page[page].Widget[wid].Video.id;
+                        for (var e in mejs.players) {
+                            if (mejs.players[e].media.id === "video_" + vid) {
+                                mejs.players[e].setPlayerSize(w, h);
+                                mejs.players[e].media.setVideoSize(w, h);
+                                mejs.players[e].setControlsSize();
+                            }
                         }
                     }
                 }
