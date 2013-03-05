@@ -7,7 +7,7 @@
 Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_LoadImage = function(imgurl, data, callback) {
     var ImageObj = new Image();
     //alert(this.drawImage);
-    console.log("Step:",data.i,2);
+    //console.log("Step:",data.i,2);
     var dfd = new $.Deferred();
     var context = this;
     ImageObj.onload = function () {
