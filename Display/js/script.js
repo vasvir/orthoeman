@@ -1290,7 +1290,7 @@ function zoomInImage(id) {
      var cH = Math.round(OrthoVariables.origCanvas[id][0].height);
      var ratio = cW / cH;
      div.css("height",OrthoVariables.origCanvas[id][0].height* OrthoVariables.scalePage[OrthoVariables.lessonPage]).css("width", w);*/
-    OrthoVariables.zoomPage[id] *= 1.5;
+    OrthoVariables.zoomPage[id] *= 1.2;
     if (OrthoVariables.zoomPage[id] >= 6) {
         OrthoVariables.zoomPage[id] = 6;
     }
@@ -1301,7 +1301,7 @@ function zoomInImage(id) {
 }
 
 function zoomOutImage(id) {
-    OrthoVariables.zoomPage[id] *= 0.7;
+    OrthoVariables.zoomPage[id] *= 0.8;
     if (OrthoVariables.zoomPage[id] <= 0.25) {
         OrthoVariables.zoomPage[id] = 0.25
     }
