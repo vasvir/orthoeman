@@ -59,7 +59,7 @@ $read_access = has_capability('mod/orthoeman:read', $context);
 $write_access = has_capability('mod/orthoeman:submit', $context);
 
 if (!$view_access && !$write_access && !$read_access) {
-    throw new required_capability_exception($context, $capability, 'nopermissions', '');
+    throw new required_capability_exception($context, 'mod/orthoeman:submit', 'nopermissions', '');
 }
 
 add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
