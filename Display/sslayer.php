@@ -38,7 +38,7 @@ switch ($action) {
         break;
     case "2" :
         $type = $_GET["type"];
-        $Page = $_GET["Page"];
+        $page = $_GET["Page"];
         switch($type) {
             case 'quiz':
                 $typeID = 2;
