@@ -5,7 +5,7 @@
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362768802287" ignored="false" />
-    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362765372513" ignored="false" />
+    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362769628838" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,10 +30,8 @@
           <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="1174" column="25" selection-start="45233" selection-end="45233" vertical-scroll-proportion="-22.24">
-                  <folding>
-                    <element signature="n#!!doc" expanded="true" />
-                  </folding>
+                <state line="1174" column="25" selection-start="45233" selection-end="45233" vertical-scroll-proportion="0.0">
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -41,7 +39,7 @@
           <file leaf-file-name="sslayer.php" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="71" column="34" selection-start="2223" selection-end="2223" vertical-scroll-proportion="0.6303502">
+                <state line="50" column="22" selection-start="1598" selection-end="1598" vertical-scroll-proportion="0.48638132">
                   <folding />
                 </state>
               </provider>
@@ -54,7 +52,7 @@
           <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="1833" column="24" selection-start="70980" selection-end="70980" vertical-scroll-proportion="0.56623375">
+                <state line="1833" column="24" selection-start="70980" selection-end="70980" vertical-scroll-proportion="0.018867925">
                   <folding />
                 </state>
               </provider>
@@ -106,7 +104,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -117,82 +115,14 @@
       <autoscrollFromSource />
       <sortByType />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="css" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PublishConfig">
     <servers>
@@ -266,7 +196,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="53" y="24" width="1867" height="1056" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976446" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -414,9 +344,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/libs/myimagetools.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="1" selection-start="634" selection-end="634" vertical-scroll-proportion="0.018564356">
-          <folding />
-        </state>
+        <state line="22" column="1" selection-start="634" selection-end="634" vertical-scroll-proportion="0.018564356" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
@@ -428,16 +356,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1174" column="25" selection-start="45233" selection-end="45233" vertical-scroll-proportion="-22.24">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state line="1174" column="25" selection-start="45233" selection-end="45233" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="34" selection-start="2223" selection-end="2223" vertical-scroll-proportion="0.6303502">
+        <state line="50" column="22" selection-start="1598" selection-end="1598" vertical-scroll-proportion="0.48638132">
           <folding />
         </state>
       </provider>
