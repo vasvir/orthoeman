@@ -32,12 +32,27 @@ switch ($action) {
         $displaydata = GetTemplateData($xml);
         //print_r($displaydata);
         //Here is definding a dummy tracking 
-        $displaydata["Tracking"] = getTracking();
+        $displaydata["Tracking"] = getAnswersFromMoodle();
         $displaydata["Timeout"] = getTimeout();
         echo json_encode($displaydata);
         break;
     case "2" :
-        echo json_encode(GetAnswer());
+        $type = $_GET["type"];
+        $Page = $_GET["Page"];
+        switch($type) {
+            case 'quiz':
+                $typeID = 2;
+                break;
+            case 'input':
+                $typeID = 0;
+                break;
+            case 'hotspots':
+                $typeID = 1;
+                break;
+        }
+        $answer =json_encode(GetAnswer($type));
+        puAnswerInMoodle($page, $typeID,$answer);
+        echo $answer;
         break;
 }
 
@@ -47,11 +62,36 @@ function getTimeout() {
     return $lessonDetails->timeout;
 }
 
+function puAnswerInMoodle($pageID, $typeID, $answer ) {
+    global $orthoeman_id, $USER, $DB, $ANSWER_TABLE;
+    $answer_rec = new Object();
+    $answer_rec->orthoeman_id = $orthoeman_id;
+    $answer_rec->user_id = $USER->id;
+    $answer_rec->page_id = $pageID;
+    $answer_rec->type = $typeID;
+    $answer_rec->answer = $answer;
+    $DB->insert_record($ANSWER_TABLE, $answer_rec);
+}
 
-function GetAnswer()
+function getAnswersFromMoodle()
+{
+    global $DB, $USER, $ANSWER_TABLE, $orthoeman_id;
+    $match_array = array('orthoeman_id' => $orthoeman_id, 'user_id' => $USER->id);
+    $answer_recs = $DB->get_records($ANSWER_TABLE, $match_array);
+    $r = array();
+    foreach ($answer_recs as $page)
+    {
+        $r[$page->page_id]->type = $page->type;
+        $r[$page->page_id]->answer= $page->answer;
+    }
+    return $r;
+}
+
+
+function GetAnswer($type)
 {
     //sleep(2);
-    $type = $_GET["type"];
+
     $return = null;
     switch ($type) {
         case 'quiz' :
@@ -70,15 +110,7 @@ function GetAnswer()
     return $return;
 }
 
-function getTracking()
-{
-     $r = array();
-    //$r[0]["Type"] = 1;
-    //$r[0]["Hotspots"][0]["x"] = 70;
-    //$r[0]["Hotspots"][0]["y"] = 40;
-    //$r[0]["Result"] = false;
-    return $r;
-}
+
 
 function GetQuizAnswer()
 {
