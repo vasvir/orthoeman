@@ -56,12 +56,4 @@ require_view_capability($id, $context);
 
 add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
-global $USER;
-    
-$match_array = array('orthoeman_id' => $orthoeman->id, 'user_id' => $USER->id);
-if ($page_id >= 0) {
-    $match_array['page_id'] = $page_id;
-}
-
-$answer_recs = $DB->get_records($ANSWER_TABLE, $match_array);
-echo json_encode($answer_recs);
+echo json_encode(get_answers($orthoeman->id, $page_id));
