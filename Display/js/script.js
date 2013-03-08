@@ -101,6 +101,7 @@ $(document).ready(function () {
         LoadImages("0");
         loadSpinControl("0");
         //setTracking("0");
+        loadPreviousAnswers("0");
 
         ApplyRoundtoPages(1, 3);
         //DisableButtonLink("SubmitAnswer");
@@ -226,7 +227,32 @@ function changedSpinControl(sender, newVal) {
 
 }
 
-function setTracking(Page) {
+function loadPreviousAnswers(Page) {
+    "use strict";
+    if (OrthoVariables.LessonData.Tracking !== undefined) {
+        if (OrthoVariables.LessonData.Tracking[Page] !== undefined) {
+            var tracking = OrthoVariables.LessonData.Tracking[Page];
+            if (tracking !== undefined) {
+                var data = JSON.parse(tracking.answer);
+                switch (tracking.type) {
+                    case 0: // Input
+                        applyInputResult(data);
+                        break;
+                    case 1: // Draw Hotspots
+                        ApplyHotspotResult(data);
+                        break;
+                    case 2: //quiz
+                        ApplyQuizResult(data);
+                        break;
+
+                }
+            }
+        }
+    }
+
+}
+
+function loadLessonPage_old(Page) {
     "use strict";
     //console.log(Page,OrthoVariables.LessonData.Tracking[Page]);
     if (OrthoVariables.LessonData.Tracking !== undefined) {
@@ -234,16 +260,34 @@ function setTracking(Page) {
             var tracking = OrthoVariables.LessonData.Tracking[Page];
             if (tracking !== undefined) {
                 switch (tracking.Type) {
-                    case 0:
+                    case 0: // Input
+                        OrthoVariables.spinControls[OrthoVariables.lessonPage].SetCurrentValue(tracking);
+                            OrthoVariables.spinControls[OrthoVariables.lessonPage].SetDisabled(true);
                         break;
-                    case 1:
+                    case 1: // Draw Hotspots
                         $.each(tracking.Hotspots, function () {
                             drawCircleHotSpot(Page, this.x, this.y, "yes", Page, true);
                         });
                         break;
-                    case 2:
+                    case 2: // quiz
+
                         break;
                 }
+                // Set the variables so to be answered
+                var answer = (tracking.Results === true ) ? "correct" : "answer";
+                PageTracking(answer,"no");
+                CheckReadyNextText(answer, "no");
+
+                if (tracking.Results === true )
+                {
+                    $("#Page" + id).css("background", "url('img/bg_correct.png')").css('text-shadow', 'none');
+                }
+                else //wrong answer
+                {
+                    $("#Page" + id).css("background", "url('img/bg_wrong.png')").css('text-shadow', 'none');
+                }
+
+
             }
         }
     }
@@ -1136,6 +1180,7 @@ function displayFunctions() {
             LoadImages((OrthoVariables.lessonPage + 1).toString());
             loadSpinControl((OrthoVariables.lessonPage + 1).toString());
             //setTracking((OrthoVariables.lessonPage + 1).toString());
+            loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
         }
 
         if (OrthoVariables.CurPage <= 1) {
