@@ -553,3 +553,61 @@ function require_view_capability($id, context $context) {
         throw new required_capability_exception($context, 'mod/orthoeman:view', 'nopermissions', '');
     }
 }
+
+function get_answers($orthoeman_id, $page_id) {
+    global $USER, $DB, $ANSWER_TABLE;
+    
+    $match_array = array('orthoeman_id' => $orthoeman_id, 'user_id' => $USER->id);
+    if ($page_id >= 0) {
+        $match_array['page_id'] = $page_id;
+    }
+
+    return $DB->get_records($ANSWER_TABLE, $match_array);
+}
+
+function put_answer($id, $n, $page_id, $type, $answer) {
+    global $DB;
+
+    if ($id) {
+        $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
+        $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+        $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
+    } elseif ($n) {
+        $orthoeman  = $DB->get_record('orthoeman', array('id' => $n), '*', MUST_EXIST);
+        $course     = $DB->get_record('course', array('id' => $orthoeman->course), '*', MUST_EXIST);
+        $cm         = get_coursemodule_from_instance('orthoeman', $orthoeman->id, $course->id, false, MUST_EXIST);
+    } else {
+        error('You must specify a course_module ID or an instance ID');
+    }
+
+    require_login($course, true, $cm);
+    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+
+    $view_access = has_view_capability($id, $context);
+    $read_access = has_capability('mod/orthoeman:read', $context);
+    $write_access = has_capability('mod/orthoeman:submit', $context);
+
+    if (!$view_access && !$write_access && !$read_access) {
+        throw new required_capability_exception($context, 'mod/orthoeman:submit', 'nopermissions', '');
+    }
+
+    add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
+
+
+    if ($read_access) {
+        //echo "Read only. Nothing to do. Exiting...";
+        return;
+    }
+
+    global $USER, $ANSWER_TABLE;
+
+    $answer_rec = new Object();
+    $answer_rec->orthoeman_id = $orthoeman->id;
+    $answer_rec->user_id = $USER->id;
+    $answer_rec->page_id = $page_id;
+    $answer_rec->type = $type;
+    $answer_rec->answer = $answer;
+    $resource_id = $DB->insert_record($ANSWER_TABLE, $answer_rec);
+
+    return $answer_rec;
+}
