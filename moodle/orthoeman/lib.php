@@ -567,7 +567,7 @@ function get_answers($orthoeman_id, $page_id) {
 
 function put_answer($id, $n, $page_id, $type, $answer) {
     global $DB;
-    fb("here1");
+
     if ($id) {
         $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
         $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -579,12 +579,15 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     } else {
         error('You must specify a course_module ID or an instance ID');
     }
-
+    fb("here2");
     require_login($course, true, $cm);
+    fb("here3");
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-
+    fb("here4");
     $view_access = has_view_capability($id, $context);
+    fb("here5");
     $read_access = has_capability('mod/orthoeman:read', $context);
+    fb("here6");
     $write_access = has_capability('mod/orthoeman:submit', $context);
 
     if (!$view_access && !$write_access && !$read_access) {
@@ -600,7 +603,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     }
 
     global $USER, $ANSWER_TABLE;
-
+    fb("orthomanid:".$orthoeman->id);
     $answer_rec = new Object();
     $answer_rec->orthoeman_id = $orthoeman->id;
     $answer_rec->user_id = $USER->id;
