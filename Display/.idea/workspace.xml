@@ -5,7 +5,7 @@
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362847762591" ignored="false" />
-    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362848137090" ignored="false" />
+    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362853295879" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +30,7 @@
           <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="2150" column="8" selection-start="81963" selection-end="81963" vertical-scroll-proportion="-12.24">
+                <state line="230" column="9" selection-start="8599" selection-end="8599" vertical-scroll-proportion="-11.64">
                   <folding />
                 </state>
               </provider>
@@ -39,7 +39,7 @@
           <file leaf-file-name="sslayer.php" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="105" column="38" selection-start="3323" selection-end="3323" vertical-scroll-proportion="0.53881276">
+                <state line="76" column="37" selection-start="2561" selection-end="2561" vertical-scroll-proportion="0.68507636">
                   <folding />
                 </state>
               </provider>
@@ -49,10 +49,10 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/js/script.js">
+          <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="2149" column="33" selection-start="81936" selection-end="81936" vertical-scroll-proportion="0.17828572">
+                <state line="528" column="84" selection-start="16888" selection-end="16920" vertical-scroll-proportion="0.41894978">
                   <folding />
                 </state>
               </provider>
@@ -316,11 +316,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/js/libs/mediaelement/mediaelement.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/libs/mediaelement/mejs-skins.css">
       <provider selected="true" editor-type-id="text-editor">
         <state line="144" column="8" selection-start="3217" selection-end="3217" vertical-scroll-proportion="0.6442731" />
@@ -392,14 +387,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2150" column="8" selection-start="81963" selection-end="81963" vertical-scroll-proportion="-12.24">
+        <state line="230" column="9" selection-start="8599" selection-end="8599" vertical-scroll-proportion="-11.64">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fb.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="24" selection-start="2284" selection-end="2284" vertical-scroll-proportion="0.1856018">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="105" column="38" selection-start="3323" selection-end="3323" vertical-scroll-proportion="0.53881276">
+        <state line="76" column="37" selection-start="2561" selection-end="2561" vertical-scroll-proportion="0.68507636">
           <folding />
         </state>
       </provider>
