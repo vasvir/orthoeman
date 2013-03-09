@@ -70,7 +70,12 @@ function getTimeout() {
     return $lessonDetails->timeout;
 }
 
-function putAnswerInMoodle($pageID, $typeID, $answer ) {
+function putAnswerInMoodle($pageID,$typeID, $answer) {
+    global $orthoeman_id;
+    put_answer($orthoeman_id,0, $pageID, $typeID, $answer);
+}
+
+function putAnswerInMoodle_old($pageID, $typeID, $answer ) {
     global $orthoeman_id, $USER, $DB, $ANSWER_TABLE;
     $answer_rec = new stdClass();
     $answer_rec->orthoeman_id = $orthoeman_id;
@@ -81,7 +86,21 @@ function putAnswerInMoodle($pageID, $typeID, $answer ) {
     $DB->insert_record($ANSWER_TABLE, $answer_rec);
 }
 
-function getAnswersFromMoodle()
+function getAnswersFromMoodle() {
+    global $orthoeman_id;
+    $answer_recs = get_answers($orthoeman_id, -1);
+    fb($answer_recs);
+    $r = array();
+    foreach ($answer_recs as $page)
+    {
+        $r[$page->page_id] = new stdClass();
+        $r[$page->page_id]->type = $page->type;
+        $r[$page->page_id]->answer= $page->answer;
+    }
+    return $r;
+}
+
+function getAnswersFromMoodle_old()
 {
     global $DB, $USER, $ANSWER_TABLE, $orthoeman_id;
     $match_array = array('orthoeman_id' => $orthoeman_id, 'user_id' => $USER->id);
