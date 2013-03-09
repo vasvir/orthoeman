@@ -63,14 +63,14 @@ function getTimeout() {
 }
 
 function puAnswerInMoodle($pageID, $typeID, $answer ) {
-    /*global $orthoeman_id, $USER, $DB, $ANSWER_TABLE;
-    $answer_rec = new Object();
+    global $orthoeman_id, $USER, $DB, $ANSWER_TABLE;
+    $answer_rec = new stdClass();
     $answer_rec->orthoeman_id = $orthoeman_id;
     $answer_rec->user_id = $USER->id;
     $answer_rec->page_id = $pageID;
     $answer_rec->type = $typeID;
     $answer_rec->answer = $answer;
-    $DB->insert_record($ANSWER_TABLE, $answer_rec);*/
+    $DB->insert_record($ANSWER_TABLE, $answer_rec);
 }
 
 function getAnswersFromMoodle()
@@ -81,6 +81,7 @@ function getAnswersFromMoodle()
     $r = array();
     foreach ($answer_recs as $page)
     {
+        $r[$page->page_id] = new stdClass();
         $r[$page->page_id]->type = $page->type;
         $r[$page->page_id]->answer= $page->answer;
     }

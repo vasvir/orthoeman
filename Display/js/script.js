@@ -101,7 +101,7 @@ $(document).ready(function () {
         LoadImages("0");
         loadSpinControl("0");
         //setTracking("0");
-        loadPreviousAnswers("0");
+
 
         ApplyRoundtoPages(1, 3);
         //DisableButtonLink("SubmitAnswer");
@@ -235,14 +235,14 @@ function loadPreviousAnswers(Page) {
             if (tracking !== undefined) {
                 var data = JSON.parse(tracking.answer);
                 switch (tracking.type) {
-                    case 0: // Input
+                    case "0": // Input
                         applyInputResult(data);
                         break;
-                    case 1: // Draw Hotspots
-                        ApplyHotspotResult(data);
+                    case "1": // Draw Hotspots
+                        ApplyHotspotResult(data, Page);
                         break;
-                    case 2: //quiz
-                        ApplyQuizResult(data);
+                    case "2": //quiz
+                        ApplyQuizResult(data, parseInt(Page));
                         break;
 
                 }
@@ -510,7 +510,7 @@ function LoadImages(Page) {
     if ( (Number(Page) + 1) < OrthoVariables.LessonData.Page.length && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) { LoadVideo(Number(Page) + 1); }
 
 
-    for (var i = 0; i < imagesToLoad.length; i++) {
+    for (i = 0; i < imagesToLoad.length; i++) {
         /*$("#modal_" + imagesToLoad[i].id).dialog({
          modal: false,
          autoOpen: false,
@@ -530,7 +530,7 @@ function LoadImages(Page) {
 
 
         //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
-        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url,{i : i, c : c, imagesToLoad:imagesToLoad  }).done(function(data) {
+        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url,{i : i,page:Page, c : c, imagesToLoad:imagesToLoad  }).done(function(data) {
             //console.log("Step:",data.i,4);
             if(typeof G_vmlCanvasManager != 'undefined') {
                 data.c = G_vmlCanvasManager.initElement(data.c);
@@ -545,6 +545,9 @@ function LoadImages(Page) {
             addEvents(data.i,data.c, orig, data.imagesToLoad);
             OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
             CheckResizeLimits(data.imagesToLoad[data.i].id);
+            if (data.i===0 && data.page === "0") {
+                loadPreviousAnswers("0");
+            }
             //console.log("Step:",data.i,5);
         });
         
@@ -1948,21 +1951,23 @@ function GetTypeofPage(PageID) {
     return type;
 }
 
-function ApplyQuizResult(data) {
+function ApplyQuizResult(data,lessonPage) {
+    lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
+    var page = lessonPage % 2 === 0 && lessonPage !== 1 ? lessonPage + 1 : lessonPage;
     var myanswer = "wrong";
-    var blocked = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"]
+    var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(OrthoVariables.CurPage - 1);
+        applyCorrectCue(page - 1);
     } else {
         myanswer = "wrong";
-        applyWrongCue(OrthoVariables.CurPage - 1);
+        applyWrongCue(page - 1);
     }
     var length = data.PaintShapes.length;
     if (length > 0) {
-        var mypage = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage];
+        var mypage = OrthoVariables.LessonData.Page[lessonPage];
         var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
-        var id = OrthoVariables.lessonPage.toString() //+ subid.toString();
+        var id = lessonPage.toString() //+ subid.toString();
         var mystage = OrthoVariables.origCanvas[id][2];
         var myshapelayer = mystage.get("#answerlayer")[0];
         myshapelayer.removeChildren();
@@ -1997,22 +2002,23 @@ function ApplyQuizResult(data) {
         var ca = data.CorrectAnswer.split(";");
 
         if (data.Answer === "wrong") {
-            ApplyQuizColors(ca);
+            ApplyQuizColors(ca, lessonPage);
         }
         for (var i = 1; i < ca.length; i++) {
-            ApplyQuizColor(ca[i], data.Answer)
+            ApplyQuizColor(ca[i], lessonPage)
         }
 
     }
 
     CheckReadyNextText(myanswer, blocked);
-    PageTracking(myanswer, blocked);
+    PageTracking(myanswer, blocked, lessonPage);
     RemoveOverlay();
 }
 
-function ApplyQuizColor(index, result) {
+function ApplyQuizColor(index, lessonPage) {
+    lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
     var id = "";
-    var widgets = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].Widget;
+    var widgets = OrthoVariables.LessonData.Page[lessonPage].Widget;
     for (var i = 0; i < widgets.length; i++) {
         if (widgets[i].type === "quiz") {
             id = widgets[i].Quiz.id;
@@ -2023,17 +2029,18 @@ function ApplyQuizColor(index, result) {
     inputlelem.parent().css("text-shadow", "1px 1px 0 black").stop(false, true).animate({backgroundColor:OrthoVariables.ColorRight, color:"white"}, 2000);
 }
 
-function ApplyQuizColors(ca) {
+function ApplyQuizColors(ca, lessonPage) {
+    lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
     var id = "";
-    var widgets = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].Widget;
+    var widgets = OrthoVariables.LessonData.Page[lessonPage].Widget;
     for (var i = 0; i < widgets.length; i++) {
         if (widgets[i].type === "quiz") {
             id = widgets[i].Quiz.id;
         }
     }
 
-    for (var i = 0; i < OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].quiz.length; i++) {
-        if (!Iscontains(i, ca) === true && OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].quiz[i] === true) {
+    for (var i = 0; i < OrthoVariables.lessonAnswers[lessonPage].quiz.length; i++) {
+        if (!Iscontains(i, ca) === true && OrthoVariables.lessonAnswers[lessonPage].quiz[i] === true) {
             var input = $("[name='" + i + ".answer_" + id + "']");
             input.parent().removeClass("quizselected").css("text-shadow", "1px 1px 0 black").animate({backgroundColor:OrthoVariables.ColorWrong, color:"white"}, 2000);
         }
@@ -2088,16 +2095,18 @@ function applyWrongCue(id, msg) {
 }
 
 
-function ApplyHotspotResult(data) {
+function ApplyHotspotResult(data, lessonPage) {
+    lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
+    var page = lessonPage % 2 === 0 && lessonPage !== 1 ? lessonPage + 1 : lessonPage;
     var myanswer = "wrong";
-    var blocked = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"]
+    var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(OrthoVariables.CurPage - 1);
+        applyCorrectCue(page -1);
     }
     else {
         myanswer = "wrong";
-        applyWrongCue(OrthoVariables.CurPage - 1);
+        applyWrongCue(page - 1);
     }
     var length = data.PaintShapes.length;
     //var fillcolor = (myanswer==="correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
@@ -2106,9 +2115,9 @@ function ApplyHotspotResult(data) {
     }
     var strikecolor = (myanswer === "correct") ? OrthoVariables.ColorRightEdge : OrthoVariables.ColorWrongEdge;
     if (length > 0) {
-        var mypage = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage];
+        var mypage = OrthoVariables.LessonData.Page[lessonPage];
         var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
-        var id = OrthoVariables.lessonPage.toString();
+        var id = lessonPage.toString();
         var mystage = OrthoVariables.origCanvas[id][2];
         var myshapelayer = mystage.get("#answerlayer")[0];
         myshapelayer.removeChildren();
@@ -2135,19 +2144,20 @@ function ApplyHotspotResult(data) {
         }
         myshapelayer.draw();
     }
-    PageTracking(myanswer, blocked);
+    PageTracking(myanswer, blocked, lessonPage);
     CheckReadyNextText(myanswer, blocked);
     RemoveOverlay();
 }
 
-function PageTracking(answer, blocked) {
+function PageTracking(answer, blocked,lessonPage) {
+    lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
     if (answer === "correct") {
-        OrthoVariables.PageTracking[OrthoVariables.lessonPage].status = "correct";
-        OrthoVariables.PageTracking[OrthoVariables.lessonPage].nextpass = true;
+        OrthoVariables.PageTracking[lessonPage].status = "correct";
+        OrthoVariables.PageTracking[lessonPage].nextpass = true;
     } else {
-        OrthoVariables.PageTracking[OrthoVariables.lessonPage].status = "wrong";
-        OrthoVariables.PageTracking[OrthoVariables.lessonPage].grade = -parseInt(OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes.negativeGrade);
-        OrthoVariables.PageTracking[OrthoVariables.lessonPage].nextpass = (blocked === "yes") ? false : true;
+        OrthoVariables.PageTracking[lessonPage].status = "wrong";
+        OrthoVariables.PageTracking[lessonPage].grade = -parseInt(OrthoVariables.LessonData.Page[lessonPage].attributes.negativeGrade);
+        OrthoVariables.PageTracking[lessonPage].nextpass = (blocked === "yes") ? false : true;
     }
 }
 
