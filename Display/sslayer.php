@@ -39,20 +39,26 @@ switch ($action) {
     case "2" :
         $type = $_GET["type"];
         $page = $_GET["Page"];
+        $answer = new stdClass();
         switch($type) {
             case 'quiz':
                 $typeID = 2;
+                $answer->userrespond = isset($_GET["answer"]) ? $_GET["answer"] : array();
                 break;
             case 'input':
                 $typeID = 0;
+                $answer->userrespond = intval((int)$_GET["value"]);
                 break;
             case 'hotspots':
                 $typeID = 1;
+                $answer->userrespond = isset($_GET["answer"]) ? $_GET["answer"] : array();
                 break;
         }
-        $answer =json_encode(GetAnswer($type));
-        puAnswerInMoodle($page, $typeID,$answer);
-        echo $answer;
+        $answer->myanswer = GetAnswer($type);
+        if ($answer->myanswer !== "error") {
+            puAnswerInMoodle($page, $typeID,json_encode($answer));
+        }
+        echo json_encode($answer->myanswer);
         break;
 }
 
@@ -77,6 +83,7 @@ function getAnswersFromMoodle()
 {
     global $DB, $USER, $ANSWER_TABLE, $orthoeman_id;
     $match_array = array('orthoeman_id' => $orthoeman_id, 'user_id' => $USER->id);
+    //$DB->delete_records($ANSWER_TABLE, $match_array);
     $answer_recs = $DB->get_records($ANSWER_TABLE, $match_array);
     $r = array();
     foreach ($answer_recs as $page)

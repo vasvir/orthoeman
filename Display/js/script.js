@@ -47,7 +47,8 @@ var OrthoVariables = {
     ColorWrongEdge:"#592835",
     zoomMouse:{ isdown:false, x:-1, y:-1},
     disableturn:true,
-    isOverAngleCircle:false
+    isOverAngleCircle:false,
+    loadedPreviousAnswer:[]
 };
 
 
@@ -229,24 +230,32 @@ function changedSpinControl(sender, newVal) {
 
 function loadPreviousAnswers(Page) {
     "use strict";
-    if (OrthoVariables.LessonData.Tracking !== undefined) {
-        if (OrthoVariables.LessonData.Tracking[Page] !== undefined) {
-            var tracking = OrthoVariables.LessonData.Tracking[Page];
-            if (tracking !== undefined) {
-                var data = JSON.parse(tracking.answer);
-                switch (tracking.type) {
-                    case "0": // Input
-                        applyInputResult(data);
-                        break;
-                    case "1": // Draw Hotspots
-                        ApplyHotspotResult(data, Page);
-                        break;
-                    case "2": //quiz
-                        ApplyQuizResult(data, parseInt(Page));
-                        break;
+    if (!OrthoVariables.loadedPreviousAnswer[parseInt(Page)]) {
+        if (OrthoVariables.LessonData.Tracking !== undefined) {
+            if (OrthoVariables.LessonData.Tracking[Page] !== undefined) {
+                var tracking = OrthoVariables.LessonData.Tracking[Page];
+                if (tracking !== undefined) {
+                    var data = JSON.parse(tracking.answer);
+                    switch (tracking.type) {
+                        case "0": // Input
+                            loadSpinControl(Page);
+                            applyInputUserResponse(data.userrespond,Page);
+                            applyInputResult(data.myanswer,parseInt(Page),false);
+                            break;
+                        case "1": // Draw Hotspots
+                            applyHotspotUserResponse(data.userrespond, Page);
+                            ApplyHotspotResult(data.myanswer, parseInt(Page),false);
+                            break;
+                        case "2": //quiz
+                            applyQuizUserResponse(data.userrespond,parseInt(Page));
+                            ApplyQuizResult(data.myanswer, parseInt(Page),false);
+                            break;
 
+                    }
+                    OrthoVariables.loadedPreviousAnswer[parseInt(Page)] = true;
                 }
             }
+
         }
     }
 
@@ -545,9 +554,11 @@ function LoadImages(Page) {
             addEvents(data.i,data.c, orig, data.imagesToLoad);
             OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
             CheckResizeLimits(data.imagesToLoad[data.i].id);
-            if (data.i===0 && data.page === "0") {
-                loadPreviousAnswers("0");
-            }
+            //if (data.i===0) {
+                loadPreviousAnswers((parseInt(data.page) + data.i).toString());
+            //    loadPreviousAnswers("0");
+            //}
+
             //console.log("Step:",data.i,5);
         });
         
@@ -1183,7 +1194,7 @@ function displayFunctions() {
             LoadImages((OrthoVariables.lessonPage + 1).toString());
             loadSpinControl((OrthoVariables.lessonPage + 1).toString());
             //setTracking((OrthoVariables.lessonPage + 1).toString());
-            loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
+            //loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
         }
 
         if (OrthoVariables.CurPage <= 1) {
@@ -1951,17 +1962,44 @@ function GetTypeofPage(PageID) {
     return type;
 }
 
-function ApplyQuizResult(data,lessonPage) {
+
+function applyQuizUserResponse(data, lessonPage) {
+    var ca = data.split(";");
+
+    var id = "";
+    var widgets = OrthoVariables.LessonData.Page[lessonPage].Widget;
+    for (var i = 0; i < widgets.length; i++) {
+        if (widgets[i].type === "quiz") {
+            id = widgets[i].Quiz.id;
+        }
+    }
+
+    for (var i=0; i< ca.length;i++) {
+        if (ca[i].length > 0){
+            OrthoVariables.lessonAnswers[lessonPage].quiz[ca[i]] = true;
+            var name = ca[i] + ".answer_" + id;
+            $("[name='" + name + "']").prop('checked',true);
+            $("[name='" + name + "']").parent().addClass("quizselected");
+        }
+
+    }
+
+
+
+}
+
+function ApplyQuizResult(data,lessonPage, showMsg) {
     lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
-    var page = lessonPage % 2 === 0 && lessonPage !== 1 ? lessonPage + 1 : lessonPage;
+    showMsg = (typeof showMsg === "undefined") ? true : false;
+    var page = 2*lessonPage + 2;
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(page - 1);
+        applyCorrectCue(page,undefined,showMsg);
     } else {
         myanswer = "wrong";
-        applyWrongCue(page - 1);
+        applyWrongCue(page,undefined, showMsg);
     }
     var length = data.PaintShapes.length;
     if (length > 0) {
@@ -2061,52 +2099,73 @@ function Iscontains(value, tables) {
 
 }
 
-function applyInputResult(data) {
+
+function applyInputUserResponse(data, lessonPage){
+    OrthoVariables.spinControls[lessonPage].SetCurrentValue(data);
+}
+
+function applyInputResult(data,lessonPage,showMsg) {
+    lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
+    showMsg = (typeof showMsg === "undefined") ? true : false;
+    var page = 2*lessonPage + 2;
     var myanswer = "wrong";
-    var blocked = OrthoVariables.LessonData.Page[OrthoVariables.lessonPage].attributes["Blocked"];
+    var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"];
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(OrthoVariables.CurPage - 1);
+        applyCorrectCue(page,undefined,showMsg);
     }
     else {
         myanswer = "wrong";
-        applyWrongCue(OrthoVariables.CurPage - 1);
+        applyWrongCue(page,undefined,showMsg);
     }
-    PageTracking(myanswer, blocked);
+    PageTracking(myanswer, blocked,lessonPage);
     CheckReadyNextText(myanswer, blocked);
     RemoveOverlay();
     if (!(blocked === "yes" && answer === "wrong")) {
-        OrthoVariables.spinControls[OrthoVariables.lessonPage].SetDisabled(true);
+        OrthoVariables.spinControls[lessonPage].SetDisabled(true);
     }
 }
 
-function applyCorrectCue(id, msg) {
-    msg = msg || "Your Answer is Correct!";
-    ShowMsg(msg, "highlight");
+function applyCorrectCue(id, msg, showMsg) {
+    showMsg = (typeof showMsg === "undefined") ? true : showMsg;
+    if (showMsg) {
+        msg = msg || "Your Answer is Correct!";
+        ShowMsg(msg, "highlight");
+    }
     $("#Page" + id).css("background", "url('img/bg_correct.png')").css('text-shadow', 'none');
 }
 
-function applyWrongCue(id, msg) {
-    msg = msg || "Your Answer is Wrong!";
-    ShowMsg(msg, "alert");
+function applyWrongCue(id, msg, showMsg) {
+    showMsg = (typeof showMsg === "undefined") ? true : showMsg;
+    if (showMsg) {
+        msg = msg || "Your Answer is Wrong!";
+        ShowMsg(msg, "alert");
+    }
     $("#Page" + id).css("background", "url('img/bg_wrong.png')").css('text-shadow', 'none');
 
 
 }
 
 
-function ApplyHotspotResult(data, lessonPage) {
+function applyHotspotUserResponse(data,lessonPage){
+    $.each(data, function () {
+        drawCircleHotSpot(lessonPage, this[0], this[1], "yes", lessonPage, true);
+    });
+}
+
+function ApplyHotspotResult(data, lessonPage,showMsg) {
     lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
-    var page = lessonPage % 2 === 0 && lessonPage !== 1 ? lessonPage + 1 : lessonPage;
+    showMsg = (typeof showMsg === "undefined") ? true : false;
+    var page = 2*lessonPage + 2;
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(page -1);
+        applyCorrectCue(page,undefined,showMsg);
     }
     else {
         myanswer = "wrong";
-        applyWrongCue(page - 1);
+        applyWrongCue(page,undefined,showMsg);
     }
     var length = data.PaintShapes.length;
     //var fillcolor = (myanswer==="correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
