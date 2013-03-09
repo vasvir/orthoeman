@@ -71,8 +71,8 @@ function getTimeout() {
 }
 
 function putAnswerInMoodle($pageID,$typeID, $answer) {
-    global $orthoeman_id;
-    put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
+    global $my_orthoeman;
+    put_answer($my_orthoeman->id,0, intval($pageID), intval($typeID), $answer);
 }
 
 function putAnswerInMoodle_old($pageID, $typeID, $answer ) {
