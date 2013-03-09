@@ -567,7 +567,7 @@ function get_answers($orthoeman_id, $page_id) {
 
 function put_answer($id, $n, $page_id, $type, $answer) {
     global $DB;
-
+    fb("here1");
     if ($id) {
         $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
         $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
