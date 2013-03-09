@@ -600,7 +600,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
 
     global $USER, $ANSWER_TABLE;
     $answer_rec = new Object();
-    $answer_rec->orthoeman_id = $id;//$orthoeman->id;
+    $answer_rec->orthoeman_id = $orthoeman->id;
     $answer_rec->user_id = $USER->id;
     $answer_rec->page_id = $page_id;
     $answer_rec->type = $type;
