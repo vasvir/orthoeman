@@ -162,12 +162,22 @@ $(document).ready(function () {
     });
 });
 
-function updateCounter(newValue) {
-    $('#counter').countdown('destroy');
-    $('#counter').countdown('init', {
-        timestamp:(new Date()).getTime() + newValue * 1000
-    }).hide();
+function updateCounter() {
 
+    var question = {
+        action: 3,
+        orthoeman_id: OrthoVariables.InitialQueryString.id
+    };
+    $.ajax({
+        url: OrthoVariables.JsonUrl,
+        data: question
+    }).done(function (data) {
+            //console.log(data);
+            $('#counter').countdown('destroy');
+            $('#counter').countdown('init', {
+                timestamp: (new Date()).getTime() + data * 1000
+            }).hide();
+        });
 }
 
 
@@ -1855,16 +1865,19 @@ function SubmitAnswer() {
         case "quiz":
             $.getJSON(OrthoVariables.JsonUrl, GetQuizQuestion(), function (data) {
                 ApplyQuizResult(data);
+                updateCounter();
             });
             break;
         case "hotspots":
             $.getJSON(OrthoVariables.JsonUrl, GetHotspotQuestion(), function (data) {
                 ApplyHotspotResult(data);
+                updateCounter();
             });
             break;
         case "input":
             $.getJSON(OrthoVariables.JsonUrl, GetInputQuestion(), function (data) {
                 applyInputResult(data);
+                updateCounter();
             });
             break;
     }

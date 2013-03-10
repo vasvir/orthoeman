@@ -4,7 +4,7 @@
     <list default="true" id="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" name="Default" comment="" />
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362944371319" ignored="false" />
+    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362945670917" ignored="false" />
     <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362918699597" ignored="false" />
     <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362919029542" ignored="false" />
     <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362944183260" ignored="false" />
@@ -26,44 +26,52 @@
     <favorites_list name="Display" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/script.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="169" column="0" selection-start="6054" selection-end="6054" vertical-scroll-proportion="-57.24">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="jquery.countdown.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="89" column="13" selection-start="2514" selection-end="2514" vertical-scroll-proportion="0.032858707">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="198" column="32" selection-start="11508" selection-end="11521" vertical-scroll-proportion="-15.25">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sslayer.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="80" column="4" selection-start="2613" selection-end="2613" vertical-scroll-proportion="-11.632653">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf>
+          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/js/script.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="164" column="22" selection-start="5876" selection-end="5889" vertical-scroll-proportion="0.384">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/index.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="198" column="32" selection-start="11508" selection-end="11521" vertical-scroll-proportion="-15.25">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/sslayer.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="80" column="4" selection-start="2613" selection-end="2613" vertical-scroll-proportion="-11.632653">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/js/script.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="1869" column="18" selection-start="72327" selection-end="72327" vertical-scroll-proportion="0.40114287">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -397,16 +405,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/script.js">
+    <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="169" column="0" selection-start="6054" selection-end="6054" vertical-scroll-proportion="-57.24">
+        <state line="89" column="13" selection-start="2514" selection-end="2514" vertical-scroll-proportion="1.4622124">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
+    <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="89" column="13" selection-start="2514" selection-end="2514" vertical-scroll-proportion="0.032858707">
+        <state line="1869" column="18" selection-start="72327" selection-end="72327" vertical-scroll-proportion="0.40114287">
           <folding />
         </state>
       </provider>
