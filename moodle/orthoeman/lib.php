@@ -473,7 +473,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                             var viewportHeight = dom.getViewportHeight();
                             if (lastHeight !== Math.min(dom.getDocumentHeight(), viewportHeight)) {
                                 console.log(viewportHeight, lastHeight, dom.getY(frame));
-                                frame.style.height = viewportHeight - dom.getY(frame) - 130 - padding + "px";
+                                frame.style.height = viewportHeight - dom.getY(frame) - 140 - padding + "px";
                                 lastHeight = Math.min(dom.getDocumentHeight(), dom.getViewportHeight());
                             }
                         };
