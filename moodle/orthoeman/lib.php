@@ -622,7 +622,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
 
     global $DB, $USER, $ANSWER_TABLE;
 
-    $answer_rec = new Object();
+    $answer_rec = new stdClass();
     $answer_rec->orthoeman_id = $orthoeman->id;
     $answer_rec->user_id = $USER->id;
     $answer_rec->page_id = $page_id;
