@@ -32,6 +32,7 @@ switch ($action) {
         //print_r($displaydata);
         //Here is definding a dummy tracking 
         $displaydata["Tracking"] = getAnswersFromMoodle();
+        putAnswerInMoodle(6969,3,"{}");
         $displaydata["Timeout"] = getTimeout();
         echo json_encode($displaydata);
         break;
@@ -66,13 +67,21 @@ switch ($action) {
 
 function getTimeout() {
     global $orthoeman_id;
-    $lessonDetails = get_lesson_details($orthoeman_id);
-    return $lessonDetails->timeout;
+    //$lessonDetails = get_lesson_details($orthoeman_id);
+    //return $lessonDetails->timeout;
+    return get_timeleft($orthoeman_id,0);
 }
 
 function putAnswerInMoodle($pageID,$typeID, $answer) {
-    global $orthoeman_id;
-    put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
+    global $orthoeman_id,$my_orthoeman;
+    //check if there is another answer
+    //$oldAnswers = get_answers($my_orthoeman->id,$pageID);
+    //fb($oldAnswers);
+    fb("count:".count($oldAnswers));
+    if (count($oldAnswers) === 0) {
+        put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
+    }
+
 }
 
 function putAnswerInMoodle_old($pageID, $typeID, $answer ) {
@@ -88,8 +97,8 @@ function putAnswerInMoodle_old($pageID, $typeID, $answer ) {
 
 function getAnswersFromMoodle() {
     global $orthoeman_id,$my_orthoeman ;
-    $answer_recs = get_answers($my_orthoeman->id, -1);
-    fb($answer_recs);
+    $answer_recs = get_answers($my_orthoeman->id, -2);
+    //fb($answer_recs);
     $r = array();
     foreach ($answer_recs as $page)
     {
