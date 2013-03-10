@@ -592,22 +592,7 @@ function get_answers($orthoeman_id, $page_id) {
 }
 
 function put_answer($id, $n, $page_id, $type, $answer) {
-    global $DB;
-
-    if ($id) {
-        $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
-        $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-        $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
-    } elseif ($n) {
-        $orthoeman  = $DB->get_record('orthoeman', array('id' => $n), '*', MUST_EXIST);
-        $course     = $DB->get_record('course', array('id' => $orthoeman->course), '*', MUST_EXIST);
-        $cm         = get_coursemodule_from_instance('orthoeman', $orthoeman->id, $course->id, false, MUST_EXIST);
-    } else {
-        error('You must specify a course_module ID or an instance ID');
-    }
-
-    require_login($course, true, $cm);
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
 
     $view_access = has_view_capability($id, $context);
     $read_access = has_capability('mod/orthoeman:read', $context);
@@ -625,7 +610,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
         return;
     }
 
-    global $USER, $ANSWER_TABLE;
+    global $DB, $USER, $ANSWER_TABLE;
 
     $answer_rec = new Object();
     $answer_rec->orthoeman_id = $orthoeman->id;
