@@ -521,6 +521,28 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     return $orthoeman_html;
 }
 
+function get_moodle_data($id, $n) {
+    global $DB;
+
+    if ($id) {
+        $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
+        $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+        $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
+    } elseif ($n) {
+        $orthoeman  = $DB->get_record('orthoeman', array('id' => $n), '*', MUST_EXIST);
+        $course     = $DB->get_record('course', array('id' => $orthoeman->course), '*', MUST_EXIST);
+        $cm         = get_coursemodule_from_instance('orthoeman', $orthoeman->id, $course->id, false, MUST_EXIST);
+    } else {
+        error('You must specify a course_module ID or an instance ID');
+    }
+
+    require_login($course, true, $cm);
+    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    
+    // read be list($course, $cm, $orthoeman, $context) = get_moodle_data($id, 0);
+    return array($course, $cm, $orthoeman, $context);
+}
+
 function get_database_data($orthoeman_id, $resource_id) {
     global $DB, $RESOURCE_TABLE, $TYPE_XML_VALUE;
 
@@ -532,13 +554,17 @@ function get_database_data($orthoeman_id, $resource_id) {
     return $resource_rec;
 }
 
-function get_lesson_details($id) {
+function get_lesson_details_from_orthoeman_id($orthoeman_id) {
     global $DB, $ORTHOEMAN_TABLE;
-    $cm = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
-    $orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
-    return $DB->get_record($ORTHOEMAN_TABLE, array('id' => $orthoeman->id));
+    return $DB->get_record($ORTHOEMAN_TABLE, array('id' => $orthoeman_id));
 }
 
+function get_lesson_details($id) {
+    global $DB;
+    $cm = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
+    $orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
+    return get_lesson_details_from_orthoeman_id($orthoeman->id);
+}
 
 function has_view_capability($id, context $context) {
     $lesson_details = get_lesson_details($id);
@@ -611,4 +637,17 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     $resource_id = $DB->insert_record($ANSWER_TABLE, $answer_rec);
 
     return $answer_rec;
+}
+
+function get_timeleft($id, $n) {
+    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+    $answers = get_answers($orthoeman->id, -1);
+    $ids = array();
+    foreach($answers as $id=>$answer) {
+        array_push($ids, (int) $id);
+    }
+    $min_id = min($ids);
+    $time_first = $answers[$min_id]->timesubmitted;
+    $timeleft = get_lesson_details_from_orthoeman_id($orthoeman->id)->timeout - (time() - $time_first);
+    return $timeleft > 0 ? $timeleft : 0;
 }
