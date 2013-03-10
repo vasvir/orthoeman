@@ -63,6 +63,9 @@ switch ($action) {
         }
         echo json_encode($answer->myanswer);
         break;
+    case "3":
+        echo getTimeout();
+        break;
 }
 
 function getTimeout() {
@@ -75,9 +78,9 @@ function getTimeout() {
 function putAnswerInMoodle($pageID,$typeID, $answer) {
     global $orthoeman_id,$my_orthoeman;
     //check if there is another answer
-    //$oldAnswers = get_answers($my_orthoeman->id,$pageID);
+    $oldAnswers = get_answers($my_orthoeman->id,$pageID);
     //fb($oldAnswers);
-    fb("count:".count($oldAnswers));
+    //fb("count:".count($oldAnswers));
     if (count($oldAnswers) === 0) {
         put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
     }
