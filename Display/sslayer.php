@@ -79,9 +79,9 @@ function putAnswerInMoodle($pageID,$typeID, $answer) {
     global $orthoeman_id,$my_orthoeman;
     //check if there is another answer
     $oldAnswers = get_answers($my_orthoeman->id,$pageID);
-    //fb($oldAnswers);
-    //fb("count:".count($oldAnswers));
-    if (count($oldAnswers) === 0) {
+    //and the remaining time
+    $timeleft = get_timeleft($orthoeman_id,0);
+    if (count($oldAnswers) === 0 && $timeleft > 0) {
         put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
     }
 
