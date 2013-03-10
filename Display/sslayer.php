@@ -19,7 +19,6 @@ require_view_capability($orthoeman_id, $my_context);
 add_to_log($my_course->id, 'orthoeman', 'launch display', "display.html?id={$my_cm->id}", $my_orthoeman->name, $my_cm->id);
 
 
-
 $old = 0;
 
 $action = $_GET["action"];
@@ -54,9 +53,12 @@ switch ($action) {
                 $answer->userrespond = isset($_GET["answer"]) ? $_GET["answer"] : array();
                 break;
         }
-        $answer->myanswer = GetAnswer($type);
+        $answer->myanswer = GetAnswer($type, $grade);
+        //fb($grade);
+        $answer->grade = $grade;
         if ($answer->myanswer !== "error") {
-            puAnswerInMoodle($page, $typeID,json_encode($answer));
+            putAnswerInMoodle($page, $typeID,json_encode($answer));
+
         }
         echo json_encode($answer->myanswer);
         break;
@@ -68,7 +70,12 @@ function getTimeout() {
     return $lessonDetails->timeout;
 }
 
-function puAnswerInMoodle($pageID, $typeID, $answer ) {
+function putAnswerInMoodle($pageID,$typeID, $answer) {
+    global $orthoeman_id;
+    put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
+}
+
+function putAnswerInMoodle_old($pageID, $typeID, $answer ) {
     global $orthoeman_id, $USER, $DB, $ANSWER_TABLE;
     $answer_rec = new stdClass();
     $answer_rec->orthoeman_id = $orthoeman_id;
@@ -79,7 +86,21 @@ function puAnswerInMoodle($pageID, $typeID, $answer ) {
     $DB->insert_record($ANSWER_TABLE, $answer_rec);
 }
 
-function getAnswersFromMoodle()
+function getAnswersFromMoodle() {
+    global $orthoeman_id,$my_orthoeman ;
+    $answer_recs = get_answers($my_orthoeman->id, -1);
+    fb($answer_recs);
+    $r = array();
+    foreach ($answer_recs as $page)
+    {
+        $r[$page->page_id] = new stdClass();
+        $r[$page->page_id]->type = $page->type;
+        $r[$page->page_id]->answer= $page->answer;
+    }
+    return $r;
+}
+
+function getAnswersFromMoodle_old()
 {
     global $DB, $USER, $ANSWER_TABLE, $orthoeman_id;
     $match_array = array('orthoeman_id' => $orthoeman_id, 'user_id' => $USER->id);
@@ -96,20 +117,20 @@ function getAnswersFromMoodle()
 }
 
 
-function GetAnswer($type)
+function GetAnswer($type, &$grade)
 {
     //sleep(2);
 
     $return = null;
     switch ($type) {
         case 'quiz' :
-            $return = GetQuizAnswer();
+            $return = GetQuizAnswer($grade);
             break;
         case 'hotspots':
-            $return = GetHotspotsAnswer();
+            $return = GetHotspotsAnswer($grade);
             break;
         case 'input':
-            $return = getInputAnswer();
+            $return = getInputAnswer($grade);
             break;
         default :
             $return = "error";
@@ -120,7 +141,7 @@ function GetAnswer($type)
 
 
 
-function GetQuizAnswer()
+function GetQuizAnswer(&$grade)
 {
     $return = array();
     $xml = getXMLData();
@@ -141,10 +162,11 @@ function GetQuizAnswer()
         $return["PaintShapes"] = GetShapesFromImage($Page, $xml);
         $return["CorrectAnswer"] = $xmlquizanswer;
     }
+    $grade =  getNormalizeGrade($Page, $xml, $return["Answer"]);
     return $return;
 }
 
-function getInputAnswer()
+function getInputAnswer(&$grade)
 {
     $return = array();
     $xml = getXMLData();
@@ -158,11 +180,11 @@ function getInputAnswer()
     }
     $isblocked = strval($xml->Page[intval($Page)]["block"]);
     $return["Answer"] = ($myvalue >= $min && $myvalue <= $max) ? "correct" : "wrong";
-
+    $grade =  getNormalizeGrade($Page, $xml, $return["Answer"]);
     return $return;
 }
 
-function GetHotspotsAnswer()
+function GetHotspotsAnswer(&$grade)
 {
     $useranswer = isset($_GET["answer"]) ? $_GET["answer"] : array();
     $return = array();
@@ -212,8 +234,27 @@ function GetHotspotsAnswer()
     $isblocked = strval($xml->Page[intval($Page)]["block"]);
     $return["PaintShapes"] = ($isblocked === "yes" && $return["Answer"] === "wrong") ? "" : GetShapesFromImage($Page, $xml);
     $return["Fill"] = $fillcolors;
+    $grade =  getNormalizeGrade($Page, $xml, $return["Answer"]);
     return $return;
 }
+
+
+function getNormalizeGrade($Page, $xml, $answer) {
+    $grade =  ($answer === "correct") ?
+        intval(strval($xml->Page[intval($Page)]["positiveGrade"])) :
+        -intval(strval($xml->Page[intval($Page)]["negativeGrade"]));
+    //fb("original grade:".$grade);
+    $sumGrade = 0;
+    foreach ($xml->Page as $key => $value) {
+        $sumGrade +=  intval(strval($value["positiveGrade"]));
+    }
+    //fb("sumGrade:".$sumGrade);
+    $ratio = 100/$sumGrade;
+    //fb("ratio:".$ratio);
+    return round($grade*$ratio,2);
+
+}
+
 
 function GetHotSpotImage($PageID, $xml)
 {
