@@ -28,6 +28,10 @@
 
         var left, d, h, m, s, positions;
 
+        var update = function (newValue) {
+            options.timestamp = newValue;
+        }
+
         // Initialize the plugin
         init(this, options);
 

@@ -142,7 +142,7 @@ $(document).ready(function () {
         }
 
         $('#counter').countdown({
-            timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1001
+            timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1000
         }).hide();
         $('#counter_small').click(function () {
                 $(this).hide();
@@ -161,6 +161,11 @@ $(document).ready(function () {
 
     });
 });
+
+function updateCounter() {
+    $('#counter').countdown.options.timestamp = (new Date()).getTime() + 300 * 1000;
+}
+
 
 
 function getUrlVars() {
