@@ -579,9 +579,10 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     } else {
         error('You must specify a course_module ID or an instance ID');
     }
-    
+
     require_login($course, true, $cm);
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+
     $view_access = has_view_capability($id, $context);
     $read_access = has_capability('mod/orthoeman:read', $context);
     $write_access = has_capability('mod/orthoeman:submit', $context);
@@ -599,6 +600,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     }
 
     global $USER, $ANSWER_TABLE;
+
     $answer_rec = new Object();
     $answer_rec->orthoeman_id = $orthoeman->id;
     $answer_rec->user_id = $USER->id;
