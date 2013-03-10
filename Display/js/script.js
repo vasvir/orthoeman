@@ -2,10 +2,11 @@
  The script logic for ORTHO e-Man
 
 
- TODO μυνήματα ενημερωτικά για το πως κάποιος να χειριστεί την εφαρμογή.
  TODO cruise mode
- TODO tracking implementation
  TODO disable html tag scrollbars, enable it for the minimum resolution
+ TODO Grade system - implement total final grade (design)
+ TODO Grade system - implement normalization final grade (take from the sslayer.php implementation)
+ TODO Grade system - if lesson is complete, don't disable and stop clock countdown
 
 
  */
@@ -142,6 +143,9 @@ $(document).ready(function () {
         }
 
         $('#counter').countdown('init', {
+            callback: function(d,h,m,s) {
+                checkCountDown(d,h,m,s);
+            },
             timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1000
         }).hide();
         $('#counter_small').click(function () {
@@ -162,6 +166,33 @@ $(document).ready(function () {
     });
 });
 
+
+function disableLesson(){
+    $("#overlay").removeClass("overlay_hidden").addClass("waiting");
+    $("#overlay_msg").css('display','block');
+    $("#shadow_overlay_msg").css('display','block');
+
+}
+
+function checkCountDown(d,h,m,s) {
+    var secsLeft = d*86400 + h*3600 +m*60 + s;
+    if (secsLeft<= 0) {
+        var question = {
+            action: 3,
+            orthoeman_id: OrthoVariables.InitialQueryString.id
+        };
+        $.ajax({
+            url: OrthoVariables.JsonUrl,
+            data: question
+        }).done(function (data) {
+               if (parseInt(data) <= 0) {
+                   $('#counter').countdown('destroy');
+                   disableLesson();
+               }
+            });
+    }
+}
+
 function updateCounter() {
 
     var question = {
@@ -175,6 +206,9 @@ function updateCounter() {
             //console.log(data);
             $('#counter').countdown('destroy');
             $('#counter').countdown('init', {
+                callback: function(d,h,m,s) {
+                    checkCountDown(d,h,m,s);
+                },
                 timestamp: (new Date()).getTime() + data * 1000
             }).hide();
         });
