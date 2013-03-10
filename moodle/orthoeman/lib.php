@@ -629,6 +629,11 @@ function put_answer($id, $n, $page_id, $type, $answer) {
 
 function get_timeleft($id, $n) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-    $timeleft = get_lesson_details_from_orthoeman_id($orthoeman->id)->timeout - (time() - reset(get_answers($orthoeman->id, -1))->timesubmitted);
+    $timeout = get_lesson_details_from_orthoeman_id($orthoeman->id)->timeout;
+    $answers = get_answers($orthoeman->id, -1);
+    if (empty($answers)) {
+        return (int) $timeout;
+    }
+    $timeleft = $timeout - (time() - reset($answers)->timesubmitted);
     return $timeleft > 0 ? $timeleft : 0;
 }
