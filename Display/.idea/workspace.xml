@@ -4,10 +4,10 @@
     <list default="true" id="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" name="Default" comment="" />
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362919318638" ignored="false" />
+    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362945670917" ignored="false" />
     <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362918699597" ignored="false" />
     <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362919029542" ignored="false" />
-    <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362919947380" ignored="false" />
+    <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362944183260" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,22 +26,13 @@
     <favorites_list name="Display" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5568369">
+    <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="143" column="31" selection-start="5206" selection-end="5229" vertical-scroll-proportion="-7.44">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="jquery.countdown.js" pinned="false" current="true" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="22" column="31" selection-start="514" selection-end="514" vertical-scroll-proportion="0.16429354">
+                <state line="164" column="22" selection-start="5876" selection-end="5889" vertical-scroll-proportion="0.384">
                   <folding />
                 </state>
               </provider>
@@ -69,10 +60,10 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/sslayer.php">
+          <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="559" column="84" selection-start="17800" selection-end="17832" vertical-scroll-proportion="0.017123288">
+                <state line="1869" column="18" selection-start="72327" selection-end="72327" vertical-scroll-proportion="0.40114287">
                   <folding />
                 </state>
               </provider>
@@ -97,9 +88,9 @@
         <option value="$PROJECT_DIR$/css/ortho_interface.css" />
         <option value="$PROJECT_DIR$/js/libs/myimagetools.js" />
         <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/js/script.js" />
         <option value="$PROJECT_DIR$/sslayer.php" />
         <option value="$PROJECT_DIR$/js/libs/jquery.countdown.js" />
+        <option value="$PROJECT_DIR$/js/script.js" />
       </list>
     </option>
   </component>
@@ -414,16 +405,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/script.js">
+    <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="143" column="31" selection-start="5206" selection-end="5229" vertical-scroll-proportion="-7.44">
+        <state line="89" column="13" selection-start="2514" selection-end="2514" vertical-scroll-proportion="1.4622124">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
+    <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="31" selection-start="514" selection-end="514" vertical-scroll-proportion="0.16429354">
+        <state line="1869" column="18" selection-start="72327" selection-end="72327" vertical-scroll-proportion="0.40114287">
           <folding />
         </state>
       </provider>
