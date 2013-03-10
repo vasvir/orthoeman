@@ -39,10 +39,6 @@ Immediate:
 		Moodle:
 			group and button. Needs to make everything else
 
-	Discussion:
-		Tracking - Display tool should be able to inform moodle about the progress / grades of the
-			student, submit.php get_submission.php
-
 	BUGS:
 		Exception thrown in startup
 		Zoom level changing leads to zoom canvas resizing
@@ -55,6 +51,13 @@ Immediate:
 
 
 * Don't allow to save lessons if there are submitted answers
-* gradebook and grades
 
 
+-fix API to have _from_orthoeman_id and consolidate the use of get_moodle_data()
+
+Immediate:
+	* gradebook and grades
+	* passwords
+	* backup/restore - import/export
+	* user guide
+	
