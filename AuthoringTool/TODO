@@ -38,7 +38,6 @@ Immediate:
 	Layout:
 		Moodle:
 			group and button. Needs to make everything else
-			invisible.  This is important because chrome may fuck up layout
 
 	Discussion:
 		Tracking - Display tool should be able to inform moodle about the progress / grades of the
