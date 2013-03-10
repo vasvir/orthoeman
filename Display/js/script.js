@@ -141,7 +141,7 @@ $(document).ready(function () {
             }
         }
 
-        $('#counter').countdown({
+        $('#counter').countdown('init', {
             timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1000
         }).hide();
         $('#counter_small').click(function () {
@@ -162,8 +162,12 @@ $(document).ready(function () {
     });
 });
 
-function updateCounter() {
-    $('#counter').countdown.options.timestamp = (new Date()).getTime() + 300 * 1000;
+function updateCounter(newValue) {
+    $('#counter').countdown('destroy');
+    $('#counter').countdown('init', {
+        timestamp:(new Date()).getTime() + newValue * 1000
+    }).hide();
+
 }
 
 
