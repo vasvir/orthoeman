@@ -588,7 +588,10 @@ function get_answers($orthoeman_id, $page_id) {
         $match_array['page_id'] = $page_id;
     }
 
-    return $DB->get_records($ANSWER_TABLE, $match_array);
+    $answers = $DB->get_records($ANSWER_TABLE, $match_array);
+    ksort($answers, SORT_NUMERIC);
+    
+    return $answers;
 }
 
 function put_answer($id, $n, $page_id, $type, $answer) {
@@ -626,13 +629,6 @@ function put_answer($id, $n, $page_id, $type, $answer) {
 
 function get_timeleft($id, $n) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-    $answers = get_answers($orthoeman->id, -1);
-    $ids = array();
-    foreach($answers as $id=>$answer) {
-        array_push($ids, (int) $id);
-    }
-    $min_id = min($ids);
-    $time_first = $answers[$min_id]->timesubmitted;
-    $timeleft = get_lesson_details_from_orthoeman_id($orthoeman->id)->timeout - (time() - $time_first);
+    $timeleft = get_lesson_details_from_orthoeman_id($orthoeman->id)->timeout - (time() - reset(get_answers($orthoeman->id, -1))->timesubmitted);
     return $timeleft > 0 ? $timeleft : 0;
 }
