@@ -612,6 +612,13 @@ function put_answer($id, $n, $page_id, $type, $answer) {
         //echo "Read only. Nothing to do. Exiting...";
         return;
     }
+    
+    $timeleft = get_timeleft_from_orthoeman_id($orthoeman->id);
+
+    if (!$timeleft) {
+        //echo "time's up";
+        return;
+    }
 
     global $DB, $USER, $ANSWER_TABLE;
 
@@ -627,13 +634,17 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     return $answer_rec;
 }
 
-function get_timeleft($id, $n) {
-    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-    $timeout = get_lesson_details_from_orthoeman_id($orthoeman->id)->timeout;
-    $answers = get_answers($orthoeman->id, -1);
+function get_timeleft_from_orthoeman_id($orthoeman_id) {
+    $timeout = get_lesson_details_from_orthoeman_id($orthoeman_id)->timeout;
+    $answers = get_answers($orthoeman_id, -1);
     if (empty($answers)) {
         return (int) $timeout;
     }
     $timeleft = $timeout - (time() - reset($answers)->timesubmitted);
     return $timeleft > 0 ? $timeleft : 0;
+}
+
+function get_timeleft($id, $n) {
+    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+    return get_timeleft_from_orthoeman_id($orthoeman->id);
 }
