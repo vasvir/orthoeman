@@ -41,7 +41,7 @@
           <file leaf-file-name="jquery.countdown.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="22" column="31" selection-start="514" selection-end="514" vertical-scroll-proportion="0.16429354">
+                <state line="35" column="10" selection-start="790" selection-end="790" vertical-scroll-proportion="-0.22033899">
                   <folding />
                 </state>
               </provider>
@@ -72,7 +72,7 @@
           <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="559" column="84" selection-start="17800" selection-end="17832" vertical-scroll-proportion="0.017123288">
+                <state line="559" column="84" selection-start="17800" selection-end="17832" vertical-scroll-proportion="0.017688679">
                   <folding />
                 </state>
               </provider>
@@ -106,9 +106,9 @@
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
     <option name="x" value="52" />
-    <option name="y" value="-4" />
+    <option name="y" value="24" />
     <option name="width" value="1869" />
-    <option name="height" value="1085" />
+    <option name="height" value="1057" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -251,8 +251,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="52" y="-4" width="1869" height="1085" extended-state="6" />
-    <editor active="true" />
+    <frame x="52" y="24" width="1869" height="1057" extended-state="7" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976446" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -423,7 +423,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="31" selection-start="514" selection-end="514" vertical-scroll-proportion="0.16429354">
+        <state line="35" column="10" selection-start="790" selection-end="790" vertical-scroll-proportion="-0.22033899">
           <folding />
         </state>
       </provider>
