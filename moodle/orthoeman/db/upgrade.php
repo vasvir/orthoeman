@@ -230,6 +230,20 @@ function xmldb_orthoeman_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2013021903, 'orthoeman');
     }
 
+    if ($oldversion < 2013031000) {
+        // Define field timesubmitted to be added to orthoeman_answer
+        $table = new xmldb_table('orthoeman_answer');
+        $field = new xmldb_field('timesubmitted', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'answer');
+
+        // Conditionally launch add field timesubmitted
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // orthoeman savepoint reached
+        upgrade_mod_savepoint(true, 2013031000, 'orthoeman');
+    }
+
     // And that's all. Please, examine and understand the 3 example blocks above. Also
     // it's interesting to look how other modules are using this script. Remember that
     // the basic idea is to have "blocks" of code (each one being executed only once,
