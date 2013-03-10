@@ -607,6 +607,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     $answer_rec->page_id = $page_id;
     $answer_rec->type = $type;
     $answer_rec->answer = $answer;
+    $answer_rec->timesubmitted = time();
     $resource_id = $DB->insert_record($ANSWER_TABLE, $answer_rec);
 
     return $answer_rec;
