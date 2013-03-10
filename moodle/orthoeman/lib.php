@@ -462,6 +462,8 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                         }
 
                         //Take scrollbars off the outer document to prevent double scroll bar effect
+                        // chrome needs to scrollTo top
+                        scrollTo(0, 0);
                         document.body.style.overflow = "hidden";
                         var dom = YAHOO.util.Dom;
                         var frame = document.getElementById(orthoeman_frame_id);
@@ -474,8 +476,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                                 lastHeight = Math.min(dom.getDocumentHeight(), dom.getViewportHeight());
                             }
                         };
-                        resize();
-                        //setInterval(resize, 250);
+                        setTimeout(resize, 0);
                         onresize = resize;
 
                         orthoeman_initialized = true;
