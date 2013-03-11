@@ -79,7 +79,7 @@
             (function tack() {
                 var left_str = pad(d, 1) + "d " + pad(h, 2) + "h " + pad(m, 2) + "m";
                 $("#counter_small>span").html(left_str);
-                timeoutIDTack = setTimeout(tack, 60000);
+                timeoutIDTack = setTimeout(tack, s*1000);
             })();
 
 

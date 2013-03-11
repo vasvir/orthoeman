@@ -4,10 +4,11 @@
     <list default="true" id="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" name="Default" comment="" />
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362945670917" ignored="false" />
-    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362918699597" ignored="false" />
-    <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362919029542" ignored="false" />
-    <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362944183260" ignored="false" />
+    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362954325332" ignored="false" />
+    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362954536142" ignored="false" />
+    <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362994431005" ignored="false" />
+    <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362994783705" ignored="false" />
+    <file path="/ortho_interface.css" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1362954217915" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,52 +27,17 @@
     <favorites_list name="Display" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
-      <split-first>
-        <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/js/script.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="164" column="22" selection-start="5876" selection-end="5889" vertical-scroll-proportion="0.384">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/index.html">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="198" column="32" selection-start="11508" selection-end="11521" vertical-scroll-proportion="-15.25">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/sslayer.php">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="80" column="4" selection-start="2613" selection-end="2613" vertical-scroll-proportion="-11.632653">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/js/script.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="1869" column="18" selection-start="72327" selection-end="72327" vertical-scroll-proportion="0.40114287">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf>
+      <file leaf-file-name="jquery.countdown.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="49" column="29" selection-start="1138" selection-end="1138" vertical-scroll-proportion="0.4779951">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -85,21 +51,21 @@
         <option value="$PROJECT_DIR$/js/libs/mediaelement/mediaelementplayer.css" />
         <option value="$PROJECT_DIR$/../Content/XML/orthoeman.xsd" />
         <option value="$PROJECT_DIR$/../Content/XML/XmlOrtho.xml" />
-        <option value="$PROJECT_DIR$/css/ortho_interface.css" />
         <option value="$PROJECT_DIR$/js/libs/myimagetools.js" />
-        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/css/ortho_interface.css" />
         <option value="$PROJECT_DIR$/sslayer.php" />
-        <option value="$PROJECT_DIR$/js/libs/jquery.countdown.js" />
         <option value="$PROJECT_DIR$/js/script.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/js/libs/jquery.countdown.js" />
       </list>
     </option>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="52" />
-    <option name="y" value="-4" />
-    <option name="width" value="1869" />
-    <option name="height" value="1085" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1296" />
+    <option name="height" value="1000" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -127,6 +93,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -159,24 +126,62 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="css" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
-    <property name="options.searchVisible" value="true" />
+    <property name="FullScreen" value="false" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
-  <component name="PublishConfig">
+  <component name="PublishConfig" serverName="orthoeman" serverId="e2be7cd5-2943-4bea-b0d9-123472161bf4" autoUpload="true">
     <servers>
-      <server id="a6ae160c-7b0d-42bc-8bf8-277259480893">
+      <server id="16ecbb06-82b5-4d57-927e-ca41912c2d8d">
+        <serverdata />
+      </server>
+      <server id="d5516c80-38c5-41b7-8dd5-d6cbb130ae8b">
+        <serverdata />
+      </server>
+      <server id="e2be7cd5-2943-4bea-b0d9-123472161bf4">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" />
+            <mapping deploy="/usr/share/moodle/mod/orthoeman/Display/" local="$PROJECT_DIR$" web="moodle/mod/orthoeman/Display/index.html?id=22#" />
           </mappings>
         </serverdata>
       </server>
@@ -242,14 +247,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="52" y="-4" width="1869" height="1085" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
+    <editor active="false" />
     <layout>
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938388" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976446" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1619989" sideWeight="0.8881789" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1993517" sideWeight="0.8881789" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.111821085" sideWeight="0.9989017" order="7" side_tool="true" content_ui="tabs" />
@@ -327,11 +333,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/js/libs/mediaelement/mediaelementplayer.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="5" selection-start="153" selection-end="153" vertical-scroll-proportion="0.11731844" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/libs/mediaelement/mediaelementplayer.min.css">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="127" selection-start="127" selection-end="127" vertical-scroll-proportion="0.0" />
@@ -367,13 +368,6 @@
         <state line="34" column="79" selection-start="2076" selection-end="2076" vertical-scroll-proportion="0.5862069" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="710" column="41" selection-start="13886" selection-end="13886" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/libs/myimagetools.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="22" column="1" selection-start="634" selection-end="634" vertical-scroll-proportion="0.018564356" />
@@ -386,35 +380,49 @@
     </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavascriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/DHTML.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1189" column="7" selection-start="18324" selection-end="18324" vertical-scroll-proportion="0.33296824">
-          <folding />
-        </state>
+        <state line="1189" column="7" selection-start="18324" selection-end="18324" vertical-scroll-proportion="0.33296824" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$PROJECT_DIR$/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="198" column="32" selection-start="11508" selection-end="11521" vertical-scroll-proportion="-15.25">
+        <state line="14" column="23" selection-start="473" selection-end="473" vertical-scroll-proportion="-2.6666667">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="80" column="4" selection-start="2613" selection-end="2613" vertical-scroll-proportion="-11.632653">
+        <state line="50" column="22" selection-start="1749" selection-end="1749" vertical-scroll-proportion="-0.65384614">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
+    <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="89" column="13" selection-start="2514" selection-end="2514" vertical-scroll-proportion="1.4622124">
+        <state line="211" column="12" selection-start="12002" selection-end="12002" vertical-scroll-proportion="-12.307693">
+          <folding>
+            <element signature="n#style#0;n#h2#0;n#div#3;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="32" selection-start="1265" selection-end="1265" vertical-scroll-proportion="0.29565218">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1869" column="18" selection-start="72327" selection-end="72327" vertical-scroll-proportion="0.40114287">
+        <state line="172" column="49" selection-start="6294" selection-end="6294" vertical-scroll-proportion="0.021118013">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/libs/jquery.countdown.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="49" column="29" selection-start="1138" selection-end="1138" vertical-scroll-proportion="0.4779951">
           <folding />
         </state>
       </provider>
