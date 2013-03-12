@@ -76,8 +76,7 @@ function getTimeout() {
     global $orthoeman_id;
     //$lessonDetails = get_lesson_details($orthoeman_id);
     //return $lessonDetails->timeout;
-    $isfinished = isLessonFinished();
-    return get_timeleft($orthoeman_id,0);
+    return isLessonFinished() ? get_duration($orthoeman_id,0)  : get_timeleft($orthoeman_id,0);
 }
 
 function isLessonFinished() {
