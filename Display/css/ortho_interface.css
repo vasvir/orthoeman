@@ -220,7 +220,7 @@ section {
     padding: 0 30px 0 30px;
 }
 
-#lesson h1, h2, h3 {
+#lesson h1, h2, h3, #pageresults2 h1 {
     padding: 5px 30px 5px 30px;
 }
 
@@ -506,6 +506,33 @@ div[id^="quiz_"]>ul>li:hover {
 
 }
 
+#shadow_pageresults2 {
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width:520px;
+    height: 380px;
+    position: fixed;
+    z-index: 10001;
+    display: none;
+}
+#pageresults2 {
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width:520px;
+    height: 380px;
+    position: fixed;
+    z-index: 10001;
+    background: url(../img/plainpaper1.png);
+    display: none;
+    text-align: center;
+}
+
 #overlay_msg > h2 {
     padding: 20px 0 10px 0px;
     text-align: center;
@@ -535,15 +562,21 @@ div[id^="quiz_"]>ul>li:hover {
 }
 
 /* Results Page */
-#pageresults>table {
+#pageresults>table, #pageresults2>div>table {
     margin:10px 30px;
     width:90%;
     text-align: center;
 }
-#pageresults>table>tr> {
+#pageresults>table>tr>, #pageresults2>div>table>tr> {
     text-align: center;
 }
 
+#closeResults {
+    float: none;
+    display: block;
+    margin: 40px auto 40px auto;
+
+}
 
 /* Spin control */
 

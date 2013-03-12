@@ -20,6 +20,7 @@ add_to_log($my_course->id, 'orthoeman', 'launch display', "display.html?id={$my_
 
 $totalAnswers = 0;
 $totalTheory = 0;
+$totalSum = 0;
 
 $old = 0;
 $action = $_GET["action"];
@@ -33,7 +34,7 @@ switch ($action) {
         //print_r($displaydata);
         //Here is definding a dummy tracking 
         $displaydata["Tracking"] = getAnswersFromMoodle();
-        putAnswerInMoodle(6969,3,"{}");
+        putAnswerInMoodle(-1,3,"{}");
         $displaydata["Timeout"] = getTimeout();
         $displaydata["final"] = isLessonFinished_totalanswers(count($displaydata["Tracking"]));
         echo json_encode($displaydata);
@@ -63,7 +64,7 @@ switch ($action) {
             putAnswerInMoodle($page, $typeID,json_encode($answer));
 
         }
-        $answer->myanswer["final"] = (($totalAnswers + $totalTheory) ===( intval($page) + 1)) ? "true" : "false";
+        $answer->myanswer["final"] = (($totalAnswers + $totalTheory) === intval($page)) ? "true" : "false";
         //fb($answer->myanswer["final"]);
         echo json_encode($answer->myanswer);
         break;
@@ -81,25 +82,25 @@ function getTimeout() {
 
 function isLessonFinished() {
     global $totalAnswers;
-    $tracking_ids = count(getAnswersFromMoodle()) - 1;
+    $tracking_ids = count(getAnswersFromMoodle());
     getXMLData();
-    fb($totalAnswers.",".$tracking_ids);
+    //fb($totalAnswers.",".$tracking_ids);
     return (intval($totalAnswers) === $tracking_ids) ? true : false;
 }
 
 function isLessonFinished_totalanswers($tracking_ids) {
     global $totalAnswers;
-    return (intval($totalAnswers)  === ($tracking_ids - 1)) ? true : false;
+    return (intval($totalAnswers)  === $tracking_ids) ? true : false;
 }
 
 function putAnswerInMoodle($pageID,$typeID, $answer) {
     global $orthoeman_id,$my_orthoeman;
     //check if there is another answer
-    $oldAnswers = get_answers($my_orthoeman->id,$pageID);
+    $oldAnswers = get_answers($my_orthoeman->id, intval($pageID) + 1);
     //and the remaining time
     $timeleft = get_timeleft($orthoeman_id,0);
     if (count($oldAnswers) === 0 && $timeleft > 0 && !isLessonFinished()) {
-        put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
+        put_answer($orthoeman_id,0, intval($pageID) + 1, intval($typeID), $answer);
     }
 
 }
@@ -122,9 +123,12 @@ function getAnswersFromMoodle() {
     $r = array();
     foreach ($answer_recs as $page)
     {
-        $r[$page->page_id] = new stdClass();
-        $r[$page->page_id]->type = $page->type;
-        $r[$page->page_id]->answer= $page->answer;
+        if ($page->page_id > 0)
+        {
+            $r[$page->page_id - 1] = new stdClass();
+            $r[$page->page_id - 1]->type = $page->type;
+            $r[$page->page_id - 1]->answer= $page->answer;
+        }
     }
     return $r;
 }
@@ -269,17 +273,19 @@ function GetHotspotsAnswer(&$grade)
 
 
 function getNormalizeGrade($Page, $xml, $answer) {
+    global $totalSum;
     $grade =  ($answer === "correct") ?
         intval(strval($xml->Page[intval($Page)]["positiveGrade"])) :
         -intval(strval($xml->Page[intval($Page)]["negativeGrade"]));
     //fb("original grade:".$grade);
-    $sumGrade = 0;
-    foreach ($xml->Page as $key => $value) {
-        $sumGrade +=  intval(strval($value["positiveGrade"]));
-    }
+    //$sumGrade = 0;
+    //foreach ($xml->Page as $key => $value) {
+    //    $sumGrade +=  intval(strval($value["positiveGrade"]));
+   // }
     //fb("sumGrade:".$sumGrade);
-    $ratio = 100/$sumGrade;
-    //fb("ratio:".$ratio);
+    $ratio = 100/$totalSum;
+    //fb(round($grade*$ratio,2));
+    //fb($totalSum);
     return round($grade*$ratio,2);
 
 }
@@ -569,10 +575,12 @@ function getWidgetType($key)
 
 function getTotalAnswers($data)
 {
+    global $totalSum;
     $count = 0;
     $index = 0;
     foreach ($data->Page as $key => $value) {
         $count++;
+        $totalSum +=  intval(strval($value["positiveGrade"]));
         $widget = array();
         $maxspots = 0;
         $windex = 0;
@@ -586,13 +594,16 @@ function getTotalAnswers($data)
         if ($widget[0] === "video" || $widget[1] === "video") {
             if ($widget[0] === "text" || $widget[1] === "text") {
                 $count--;
+                $totalSum -=  intval(strval($value["positiveGrade"]));
             }
         } else if ($widget[0] === "text" && $widget[1] === "text") {
             $count--;
+            $totalSum -=  intval(strval($value["positiveGrade"]));
         } else if ($widget[0] === "image" || $widget[1] === "image") {
             if ($widget[0] === "text" || $widget[1] === "text") {
                 if ($maxspots === 0) {
                    $count--;
+                    $totalSum -=  intval(strval($value["positiveGrade"]));
                 }
 
 
