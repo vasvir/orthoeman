@@ -155,19 +155,20 @@ $(document).ready(function () {
                 $('#counter').fadeIn("slow").delay(3000).fadeOut("slow", function () {
                     $("#counter_small").show();
                 });
-        })
-        /*$("#counter").mouseleave(function () {
-            if ($(this).css("opacity") === 1) {
-                $(this).delay(1500).fadeOut("slow", function () {
-                    $("#counter_small").show();
-                });
-            }
-        });*/
+         });
+        checkIsFinished();
+
+
 
 
     });
 });
 
+function checkIsFinished() {
+    if (OrthoVariables.LessonData["final"] === true) {
+        lessonFinalized();
+    }
+}
 
 function disableLesson(){
     if (OrthoVariables.isLessonComplete === false)   {
@@ -312,6 +313,7 @@ function loadPreviousAnswers(Page) {
 
                     }
                     OrthoVariables.loadedPreviousAnswer[parseInt(Page)] = true;
+
                 }
             }
 
@@ -632,6 +634,7 @@ function LoadImages(Page) {
     }*/
 
 }
+
 
 function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
     "use strict";
@@ -1906,18 +1909,21 @@ function SubmitAnswer() {
             $.getJSON(OrthoVariables.JsonUrl, GetQuizQuestion(), function (data) {
                 ApplyQuizResult(data);
                 updateCounter();
+                checkFinal(data);
             });
             break;
         case "hotspots":
             $.getJSON(OrthoVariables.JsonUrl, GetHotspotQuestion(), function (data) {
                 ApplyHotspotResult(data);
                 updateCounter();
+                checkFinal(data);
             });
             break;
         case "input":
             $.getJSON(OrthoVariables.JsonUrl, GetInputQuestion(), function (data) {
                 applyInputResult(data);
                 updateCounter();
+                checkFinal(data);
             });
             break;
     }
@@ -1926,9 +1932,13 @@ function SubmitAnswer() {
 
 function checkFinal(data){
     if (data.final === "true") {
-        OrthoVariables.isLessonComplete = true;
-        $('#counter').countdown('stop');
+        lessonFinalized()
     }
+}
+
+function lessonFinalized () {
+    OrthoVariables.isLessonComplete = true;
+    $('#counter').countdown('stop');
 }
 
 function GetQuizQuestion() {
