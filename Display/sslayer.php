@@ -18,6 +18,8 @@ require_view_capability($orthoeman_id, $my_context);
 
 add_to_log($my_course->id, 'orthoeman', 'launch display', "display.html?id={$my_cm->id}", $my_orthoeman->name, $my_cm->id);
 
+$totalAnswers = 0;
+$totalTheory = 0;
 
 $old = 0;
 
@@ -61,6 +63,8 @@ switch ($action) {
             putAnswerInMoodle($page, $typeID,json_encode($answer));
 
         }
+        $answer->myanswer["final"] = (($totalAnswers + $totalTheory) ===( intval($page) + 1)) ? "true" : "false";
+        //fb($answer->myanswer["final"]);
         echo json_encode($answer->myanswer);
         break;
     case "3":
@@ -502,7 +506,7 @@ function oldGetXMLData()
 
 function getXMLData()
 {
-    global $old, $my_orthoeman, $orthoeman_id;
+    global $old, $my_orthoeman, $orthoeman_id,$totalAnswers, $totalTheory;
     if ($old != 0) return oldGetXMLData();
     //global $DB;
     //$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
@@ -519,6 +523,10 @@ function getXMLData()
     $xmldata["title"] = $lessonDetails->name;
     $xmldata["id"] = $lessonDetails->course;
     $xmldata->Abstract = $lessonDetails->intro;
+    /** @var $totalAnswers int */
+    $totalAnswers = getTotalAnswers($xmldata);
+    $totalTheory = count($xmldata->Page) - $totalAnswers;
+    //fb("Total Answers:".$totalTheory);
     //print_r($lessonDetails);
     return $xmldata;
 }
@@ -544,6 +552,42 @@ function getWidgetType($key)
             break;
     }
     return $type;
+}
+
+function getTotalAnswers($data)
+{
+    $count = 0;
+    $index = 0;
+    foreach ($data->Page as $key => $value) {
+        $count++;
+        $widget = array();
+        $maxspots = 0;
+        $windex = 0;
+        foreach ($value as $wkey => $wvalue) {
+            $widget[$windex] = getWidgetType($wkey);
+            if ($widget[$windex] === "image") {
+                $maxspots = getHotSpotsNumber($wvalue);
+            }
+            $windex++;
+        }
+        if ($widget[0] === "video" || $widget[1] === "video") {
+            if ($widget[0] === "text" || $widget[1] === "text") {
+                $count--;
+            }
+        } else if ($widget[0] === "text" && $widget[1] === "text") {
+            $count--;
+        } else if ($widget[0] === "image" || $widget[1] === "image") {
+            if ($widget[0] === "text" || $widget[1] === "text") {
+                if ($maxspots === 0) {
+                   $count--;
+                }
+
+
+            }
+        }
+        $index++;
+    }
+    return $count;
 }
 
 function GetTemplateData($data)
