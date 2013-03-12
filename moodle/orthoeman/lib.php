@@ -649,3 +649,19 @@ function get_timeleft($id, $n) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
     return get_timeleft_from_orthoeman_id($orthoeman->id);
 }
+
+function get_duration_from_orthoeman_id($orthoeman_id) {
+    $timeout = get_lesson_details_from_orthoeman_id($orthoeman_id)->timeout;
+    $answers = get_answers($orthoeman_id, -1);
+    if (empty($answers)) {
+        return (int) $timeout;
+    }
+    $duration = $timeout - (end($answers)->timesubmitted - reset($answers)->timesubmitted);
+    return $timeleft > 0 ? $timeleft : 0;
+}
+
+function get_duration($id,$n) {
+    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+    return get_duration_from_orthoeman_id($orthoeman->id);
+
+}

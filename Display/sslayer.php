@@ -22,7 +22,6 @@ $totalAnswers = 0;
 $totalTheory = 0;
 
 $old = 0;
-
 $action = $_GET["action"];
 // 1- transform xml to json
 
@@ -36,6 +35,7 @@ switch ($action) {
         $displaydata["Tracking"] = getAnswersFromMoodle();
         putAnswerInMoodle(6969,3,"{}");
         $displaydata["Timeout"] = getTimeout();
+        $displaydata["final"] = isLessonFinished_totalanswers(count($displaydata["Tracking"]));
         echo json_encode($displaydata);
         break;
     case "2" :
@@ -76,7 +76,21 @@ function getTimeout() {
     global $orthoeman_id;
     //$lessonDetails = get_lesson_details($orthoeman_id);
     //return $lessonDetails->timeout;
+    $isfinished = isLessonFinished();
     return get_timeleft($orthoeman_id,0);
+}
+
+function isLessonFinished() {
+    global $totalAnswers;
+    $tracking_ids = count(getAnswersFromMoodle()) - 1;
+    getXMLData();
+    fb($totalAnswers.",".$tracking_ids);
+    return (intval($totalAnswers) === $tracking_ids) ? true : false;
+}
+
+function isLessonFinished_totalanswers($tracking_ids) {
+    global $totalAnswers;
+    return (intval($totalAnswers)  === ($tracking_ids - 1)) ? true : false;
 }
 
 function putAnswerInMoodle($pageID,$typeID, $answer) {
@@ -85,7 +99,7 @@ function putAnswerInMoodle($pageID,$typeID, $answer) {
     $oldAnswers = get_answers($my_orthoeman->id,$pageID);
     //and the remaining time
     $timeleft = get_timeleft($orthoeman_id,0);
-    if (count($oldAnswers) === 0 && $timeleft > 0) {
+    if (count($oldAnswers) === 0 && $timeleft > 0 && !isLessonFinished()) {
         put_answer($orthoeman_id,0, intval($pageID), intval($typeID), $answer);
     }
 
