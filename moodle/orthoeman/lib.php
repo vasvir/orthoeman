@@ -657,7 +657,7 @@ function get_duration_from_orthoeman_id($orthoeman_id) {
         return (int) $timeout;
     }
     $duration = $timeout - (end($answers)->timesubmitted - reset($answers)->timesubmitted);
-    return $timeleft > 0 ? $timeleft : 0;
+    return $duration;
 }
 
 function get_duration($id,$n) {
