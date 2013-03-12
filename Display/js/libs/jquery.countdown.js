@@ -97,6 +97,10 @@
             this.empty();
             $("#counter_small>span").empty();
             return this;
+        },
+        stop: function () {
+            clearTimeout(timeoutIDTack);
+            clearTimeout(timeoutIDTick);
         }
     };
 

@@ -23,6 +23,8 @@ var OrthoVariables = {
     JsonUrl:"sslayer.php",
     LessonData:"",
     buttonState:[],
+    isLessonDisable: false,
+    isLessonComplete: false,
     line:{
         "pressed":false,
         startx:-1,
@@ -168,9 +170,13 @@ $(document).ready(function () {
 
 
 function disableLesson(){
-    $("#overlay").removeClass("overlay_hidden").addClass("waiting");
-    $("#overlay_msg").css('display','block');
-    $("#shadow_overlay_msg").css('display','block');
+    if (OrthoVariables.isLessonComplete === false)   {
+        $("#overlay").removeClass("overlay_hidden").addClass("waiting");
+        $("#overlay_msg").css('display','block');
+        $("#shadow_overlay_msg").css('display','block');
+        OrthoVariables.isLessonDisable = true;
+    }
+
 
 }
 
@@ -1918,6 +1924,13 @@ function SubmitAnswer() {
     $("#overlay").removeClass("overlay_hidden").addClass("waiting");
 }
 
+function checkFinal(data){
+    if (data.final === "true") {
+        OrthoVariables.isLessonComplete = true;
+        $('#counter').countdown('stop');
+    }
+}
+
 function GetQuizQuestion() {
     var Question = new Object();
     Question.action = 2;
@@ -2269,6 +2282,7 @@ function PageTracking(answer, blocked,lessonPage) {
     if (answer === "correct") {
         OrthoVariables.PageTracking[lessonPage].status = "correct";
         OrthoVariables.PageTracking[lessonPage].nextpass = true;
+        OrthoVariables.PageTracking[lessonPage].grade = parseInt(OrthoVariables.LessonData.Page[lessonPage].attributes.Grade);
     } else {
         OrthoVariables.PageTracking[lessonPage].status = "wrong";
         OrthoVariables.PageTracking[lessonPage].grade = -parseInt(OrthoVariables.LessonData.Page[lessonPage].attributes.negativeGrade);
@@ -2277,7 +2291,10 @@ function PageTracking(answer, blocked,lessonPage) {
 }
 
 function RemoveOverlay() {
-    $("#overlay").removeClass("waiting").addClass("overlay_hidden");
+    if (OrthoVariables.isLessonDisable === false) {
+        $("#overlay").removeClass("waiting").addClass("overlay_hidden");
+    }
+
 }
 
 function PaintCircle(data, fillcolor, strokecolor) {
