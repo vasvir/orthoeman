@@ -290,7 +290,7 @@ function getNormalizeGrade($Page, $xml, $answer)
     $ratio = 100 / $totalSum;
     //fb(round($grade*$ratio,2));
     //fb($totalSum);
-    return round($grade * $ratio, 2);
+    return round($grade * $ratio, 1);
 
 }
 

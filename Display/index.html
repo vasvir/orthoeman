@@ -183,7 +183,10 @@
        <tr><td>Page {{:#index+1}}</td><td><span style="padding:0 20px;" class="ui-corner-all {{if status=='correct'}}quizcorrect{{else}}quizwrong{{/if}}">{{:status}}</span></td><td>{{:grade}}</td></tr>
        {{/if}}
        {{/for}}
+           <tr><td colspan="3"><hr /></td></tr>
+           <tr><td colspan="2" style="text-align:right;"><h1>Final Grade:</h1></td><td><h1 class="{{if finalGrade >= 50}}fontcolorCorrect{{else}}fontcolorWrong{{/if}}">{{:finalGrade }}</h1></td> </tr>
        </table>
+       <div id="stamp"><img src="img/pass.png" /></div>
    </script>
   <!-- End Templates Section -->
 
