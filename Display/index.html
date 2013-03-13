@@ -175,6 +175,7 @@
 
   <!-- Final Page Template  -->
    <script id="EndPageTemplate" type="text/x-jsrender">
+       <div id="stamp"><img src='img/{{if finalGrade >= 50}}pass.png{{else}}reject.png{{/if}}' /></div>
        <h1>Results</h1>
        <table>
        <tr><th>Page Number</th><th>Your Answer</th><th>Your Grade</th></tr>
@@ -186,7 +187,6 @@
            <tr><td colspan="3"><hr /></td></tr>
            <tr><td colspan="2" style="text-align:right;"><h1>Final Grade:</h1></td><td><h1 class="{{if finalGrade >= 50}}fontcolorCorrect{{else}}fontcolorWrong{{/if}}">{{:finalGrade }}</h1></td> </tr>
        </table>
-       <div id="stamp"><img src="img/pass.png" /></div>
    </script>
   <!-- End Templates Section -->
 

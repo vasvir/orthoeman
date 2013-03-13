@@ -586,10 +586,14 @@ div[id^="quiz_"]>ul>li:hover {
 
 }
 
-#pageresults>table>tr>td>h1.fontcolorCorrect, #pageresults2>div>table h1.fontcolorCorrect {
+#pageresults *, #pageresults2 * {
+    z-index: 1;
+}
+
+#pageresults>table  h1.fontcolorCorrect, #pageresults2>div>table h1.fontcolorCorrect {
     color:#047816;
 }
-#pageresults>table>tr>td>h1.fontcolorWrong, #pageresults2>div>table h1.fontcolorWrong {
+#pageresults>table h1.fontcolorWrong, #pageresults2>div>table h1.fontcolorWrong {
     color :#9C2100;
 }
 
@@ -604,6 +608,25 @@ div[id^="quiz_"]>ul>li:hover {
     color:#3B3B3B;
 }
 
+#pageresults2 #stamp>img {
+    z-index: -1;
+}
+#stamp>img {
+    -webkit-transform:rotate(-45deg);
+    tranform:rotate(-45deg);
+    -ms-tranform:rotate(-45deg);
+    -moz-tranform:rotate(-45deg);
+    -o-tranform:rotate(-45deg);
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 400px;
+    margin: auto;
+    display: block;
+
+}
 
 #closeResults {
     float: none;
