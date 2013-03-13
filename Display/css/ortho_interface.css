@@ -32,6 +32,13 @@ body {
     min-width: 500px;
 }
 
+hr {
+    border: solid 1px #3B3B3B;
+    background-color: #3B3B3B;
+    width: 85%;
+    margin: 20px auto 0px auto;
+}
+
 /* links */
 a:link, a:visited {
     color: #285935;
@@ -567,9 +574,36 @@ div[id^="quiz_"]>ul>li:hover {
     width:90%;
     text-align: center;
 }
-#pageresults>table>tr>, #pageresults2>div>table>tr> {
+#pageresults>table tr, #pageresults2>div>table tr {
     text-align: center;
 }
+
+#pageresults>table>tr>td>h1, #pageresults2>div>table h1 {
+    margin: 0;
+    padding: 0;
+    font-size:25px;
+    color:#3B3B3B;
+
+}
+
+#pageresults>table>tr>td>h1.fontcolorCorrect, #pageresults2>div>table h1.fontcolorCorrect {
+    color:#047816;
+}
+#pageresults>table>tr>td>h1.fontcolorWrong, #pageresults2>div>table h1.fontcolorWrong {
+    color :#9C2100;
+}
+
+
+
+#pageresults2>div>table td:last-child {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#pageresults h1, #pageresults2 h1 {
+    color:#3B3B3B;
+}
+
 
 #closeResults {
     float: none;

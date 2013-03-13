@@ -51,7 +51,8 @@ var OrthoVariables = {
     zoomMouse:{ isdown:false, x:-1, y:-1},
     disableturn:true,
     isOverAngleCircle:false,
-    loadedPreviousAnswer:[]
+    loadedPreviousAnswer:[],
+    finalGrade: 0
 };
 
 
@@ -187,16 +188,19 @@ function disableLesson(){
 }
 
 function normalizeGrades() {
+    var finalGrade = 0;
     for (var i=0;i< OrthoVariables.PageTracking.length;i++) {
         if (OrthoVariables.PageTracking[i].theory === false) {
 
             if (OrthoVariables.LessonData.Tracking[i]!== undefined) {
                 var answer = JSON.parse(OrthoVariables.LessonData.Tracking[i].answer);
                 OrthoVariables.PageTracking[i].status = answer.myanswer.Answer;
-                OrthoVariables.PageTracking[i].grade = parseInt(answer.grade);
+                OrthoVariables.PageTracking[i].grade = parseFloat(answer.grade);
             }
+            finalGrade += OrthoVariables.PageTracking[i].grade;
         }
     }
+    OrthoVariables.finalGrade = Math.round(finalGrade);
 }
 
 function lessonFinalized (showPage) {
@@ -335,6 +339,7 @@ function loadPreviousAnswers(Page) {
                             applyInputResult(data.myanswer,parseInt(Page),false);
                             break;
                         case "1": // Draw Hotspots
+                            OrthoVariables.PageTracking[Page].status = 'pending';
                             applyHotspotUserResponse(data.userrespond, Page);
                             ApplyHotspotResult(data.myanswer, parseInt(Page),false);
                             break;
@@ -2333,10 +2338,12 @@ function PageTracking(answer, blocked,lessonPage) {
 function getNormalizeGrade(Grade) {
     //calculate totalSum
     var totalSum = 0;
-    $.each(OrthoVariables.LessonData.Page, function() {
-       totalSum += parseInt(this.attributes.Grade);
-    });
-    return Math.round(100*(100/totalSum)*Grade)/100;
+    for (var i = 0;i< OrthoVariables.LessonData.Page.length;i++) {
+        if (!OrthoVariables.PageTracking[i].theory) {
+            totalSum += parseFloat(OrthoVariables.LessonData.Page[i].attributes.Grade);
+        }
+    }
+    return Math.round(10*(100/totalSum)*Grade)/10;
 }
 
 function RemoveOverlay() {
