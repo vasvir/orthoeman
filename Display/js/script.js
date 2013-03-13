@@ -189,23 +189,28 @@ function disableLesson(){
 function normalizeGrades() {
     for (var i=0;i< OrthoVariables.PageTracking.length;i++) {
         if (OrthoVariables.PageTracking[i].theory === false) {
-            var answer = JSON.parse(OrthoVariables.LessonData.Tracking[i].answer);
-            OrthoVariables.PageTracking[i].status = answer.myanswer.Answer;
-            //OrthoVariables.PageTracking[i].nextpass = true;
-            OrthoVariables.PageTracking[i].grade = parseInt(answer.grade);
 
+            if (OrthoVariables.LessonData.Tracking[i]!== undefined) {
+                var answer = JSON.parse(OrthoVariables.LessonData.Tracking[i].answer);
+                OrthoVariables.PageTracking[i].status = answer.myanswer.Answer;
+                OrthoVariables.PageTracking[i].grade = parseInt(answer.grade);
+            }
         }
     }
 }
 
-function lessonFinalized () {
+function lessonFinalized (showPage) {
+    showPage = !!(typeof showPage === "undefined");
     OrthoVariables.isLessonComplete = true;
+
     normalizeGrades();
     $('#counter').countdown('stop');
-    $("#pageresults2>div").html($("#EndPageTemplate").render(OrthoVariables));
-    $("#overlay").removeClass("overlay_hidden").addClass("waiting");
-    $("#shadow_pageresults2").fadeIn('slow');
-    $("#pageresults2").fadeIn('slow');
+    if (showPage) {
+        $("#pageresults2>div").html($("#EndPageTemplate").render(OrthoVariables));
+        $("#overlay").removeClass("overlay_hidden").addClass("waiting");
+        $("#shadow_pageresults2").fadeIn('slow');
+        $("#pageresults2").fadeIn('slow');
+    }
 }
 
 function checkCountDown(d,h,m,s) {
@@ -1959,7 +1964,7 @@ function SubmitAnswer() {
 
 function checkFinal(data){
     if (data.final === "true") {
-        lessonFinalized()
+        lessonFinalized(false)
     }
 }
 

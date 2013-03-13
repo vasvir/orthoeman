@@ -7,9 +7,9 @@ require_once('../lib.php');
 
 // check credentials
 $orthoeman_id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
-$my_cm         = get_coursemodule_from_id('orthoeman', $orthoeman_id, 0, false, MUST_EXIST);
-$my_course     = $DB->get_record('course', array('id' => $my_cm->course), '*', MUST_EXIST);
-$my_orthoeman  = $DB->get_record('orthoeman', array('id' => $my_cm->instance), '*', MUST_EXIST);
+$my_cm = get_coursemodule_from_id('orthoeman', $orthoeman_id, 0, false, MUST_EXIST);
+$my_course = $DB->get_record('course', array('id' => $my_cm->course), '*', MUST_EXIST);
+$my_orthoeman = $DB->get_record('orthoeman', array('id' => $my_cm->instance), '*', MUST_EXIST);
 
 require_login($my_course, true, $my_cm);
 $my_context = get_context_instance(CONTEXT_MODULE, $my_cm->id);
@@ -34,7 +34,7 @@ switch ($action) {
         //print_r($displaydata);
         //Here is definding a dummy tracking 
         $displaydata["Tracking"] = getAnswersFromMoodle();
-        putAnswerInMoodle(-1,3,"{}");
+        putAnswerInMoodle(-1, 3, "{}");
         $displaydata["Timeout"] = getTimeout();
         $displaydata["final"] = isLessonFinished_totalanswers(count($displaydata["Tracking"]));
         echo json_encode($displaydata);
@@ -43,7 +43,7 @@ switch ($action) {
         $type = $_GET["type"];
         $page = $_GET["Page"];
         $answer = new stdClass();
-        switch($type) {
+        switch ($type) {
             case 'quiz':
                 $typeID = 2;
                 $answer->userrespond = isset($_GET["answer"]) ? $_GET["answer"] : array();
@@ -61,11 +61,12 @@ switch ($action) {
         //fb($grade);
         $answer->grade = $grade;
         if ($answer->myanswer !== "error") {
-            putAnswerInMoodle($page, $typeID,json_encode($answer));
+            putAnswerInMoodle($page, $typeID, json_encode($answer));
 
         }
-        $answer->myanswer["final"] = (($totalAnswers + $totalTheory) === intval($page)) ? "true" : "false";
-        //fb($answer->myanswer["final"]);
+        $savedanswers = count(getAnswersFromMoodle());
+        fb($savedanswers.",".$totalAnswers);
+        $answer->myanswer["final"] = ($totalAnswers === $savedanswers) ? "true" : "false";
         echo json_encode($answer->myanswer);
         break;
     case "3":
@@ -73,14 +74,16 @@ switch ($action) {
         break;
 }
 
-function getTimeout() {
+function getTimeout()
+{
     global $orthoeman_id;
     //$lessonDetails = get_lesson_details($orthoeman_id);
     //return $lessonDetails->timeout;
-    return isLessonFinished() ? get_duration($orthoeman_id,0)  : get_timeleft($orthoeman_id,0);
+    return isLessonFinished() ? get_duration($orthoeman_id, 0) : get_timeleft($orthoeman_id, 0);
 }
 
-function isLessonFinished() {
+function isLessonFinished()
+{
     global $totalAnswers;
     $tracking_ids = count(getAnswersFromMoodle());
     getXMLData();
@@ -88,24 +91,27 @@ function isLessonFinished() {
     return (intval($totalAnswers) === $tracking_ids) ? true : false;
 }
 
-function isLessonFinished_totalanswers($tracking_ids) {
+function isLessonFinished_totalanswers($tracking_ids)
+{
     global $totalAnswers;
-    return (intval($totalAnswers)  === $tracking_ids) ? true : false;
+    return (intval($totalAnswers) === $tracking_ids) ? true : false;
 }
 
-function putAnswerInMoodle($pageID,$typeID, $answer) {
-    global $orthoeman_id,$my_orthoeman;
+function putAnswerInMoodle($pageID, $typeID, $answer)
+{
+    global $orthoeman_id, $my_orthoeman;
     //check if there is another answer
     $oldAnswers = get_answers($my_orthoeman->id, intval($pageID) + 1);
     //and the remaining time
-    $timeleft = get_timeleft($orthoeman_id,0);
+    $timeleft = get_timeleft($orthoeman_id, 0);
     if (count($oldAnswers) === 0 && $timeleft > 0 && !isLessonFinished()) {
-        put_answer($orthoeman_id,0, intval($pageID) + 1, intval($typeID), $answer);
+        put_answer($orthoeman_id, 0, intval($pageID) + 1, intval($typeID), $answer);
     }
 
 }
 
-function putAnswerInMoodle_old($pageID, $typeID, $answer ) {
+function putAnswerInMoodle_old($pageID, $typeID, $answer)
+{
     global $orthoeman_id, $USER, $DB, $ANSWER_TABLE;
     $answer_rec = new stdClass();
     $answer_rec->orthoeman_id = $orthoeman_id;
@@ -116,18 +122,17 @@ function putAnswerInMoodle_old($pageID, $typeID, $answer ) {
     $DB->insert_record($ANSWER_TABLE, $answer_rec);
 }
 
-function getAnswersFromMoodle() {
-    global $orthoeman_id,$my_orthoeman ;
+function getAnswersFromMoodle()
+{
+    global $orthoeman_id, $my_orthoeman;
     $answer_recs = get_answers($my_orthoeman->id, -2);
     //fb($answer_recs);
     $r = array();
-    foreach ($answer_recs as $page)
-    {
-        if ($page->page_id > 0)
-        {
+    foreach ($answer_recs as $page) {
+        if ($page->page_id > 0) {
             $r[$page->page_id - 1] = new stdClass();
             $r[$page->page_id - 1]->type = $page->type;
-            $r[$page->page_id - 1]->answer= $page->answer;
+            $r[$page->page_id - 1]->answer = $page->answer;
         }
     }
     return $r;
@@ -140,11 +145,10 @@ function getAnswersFromMoodle_old()
     //$DB->delete_records($ANSWER_TABLE, $match_array);
     $answer_recs = $DB->get_records($ANSWER_TABLE, $match_array);
     $r = array();
-    foreach ($answer_recs as $page)
-    {
+    foreach ($answer_recs as $page) {
         $r[$page->page_id] = new stdClass();
         $r[$page->page_id]->type = $page->type;
-        $r[$page->page_id]->answer= $page->answer;
+        $r[$page->page_id]->answer = $page->answer;
     }
     return $r;
 }
@@ -173,7 +177,6 @@ function GetAnswer($type, &$grade)
 }
 
 
-
 function GetQuizAnswer(&$grade)
 {
     $return = array();
@@ -195,7 +198,7 @@ function GetQuizAnswer(&$grade)
         $return["PaintShapes"] = GetShapesFromImage($Page, $xml);
         $return["CorrectAnswer"] = $xmlquizanswer;
     }
-    $grade =  getNormalizeGrade($Page, $xml, $return["Answer"]);
+    $grade = getNormalizeGrade($Page, $xml, $return["Answer"]);
     return $return;
 }
 
@@ -213,7 +216,7 @@ function getInputAnswer(&$grade)
     }
     $isblocked = strval($xml->Page[intval($Page)]["block"]);
     $return["Answer"] = ($myvalue >= $min && $myvalue <= $max) ? "correct" : "wrong";
-    $grade =  getNormalizeGrade($Page, $xml, $return["Answer"]);
+    $grade = getNormalizeGrade($Page, $xml, $return["Answer"]);
     return $return;
 }
 
@@ -267,26 +270,27 @@ function GetHotspotsAnswer(&$grade)
     $isblocked = strval($xml->Page[intval($Page)]["block"]);
     $return["PaintShapes"] = ($isblocked === "yes" && $return["Answer"] === "wrong") ? "" : GetShapesFromImage($Page, $xml);
     $return["Fill"] = $fillcolors;
-    $grade =  getNormalizeGrade($Page, $xml, $return["Answer"]);
+    $grade = getNormalizeGrade($Page, $xml, $return["Answer"]);
     return $return;
 }
 
 
-function getNormalizeGrade($Page, $xml, $answer) {
+function getNormalizeGrade($Page, $xml, $answer)
+{
     global $totalSum;
-    $grade =  ($answer === "correct") ?
+    $grade = ($answer === "correct") ?
         intval(strval($xml->Page[intval($Page)]["positiveGrade"])) :
         -intval(strval($xml->Page[intval($Page)]["negativeGrade"]));
     //fb("original grade:".$grade);
     //$sumGrade = 0;
     //foreach ($xml->Page as $key => $value) {
     //    $sumGrade +=  intval(strval($value["positiveGrade"]));
-   // }
+    // }
     //fb("sumGrade:".$sumGrade);
-    $ratio = 100/$totalSum;
+    $ratio = 100 / $totalSum;
     //fb(round($grade*$ratio,2));
     //fb($totalSum);
-    return round($grade*$ratio,2);
+    return round($grade * $ratio, 2);
 
 }
 
@@ -525,7 +529,7 @@ function oldGetXMLData()
 
 function getXMLData()
 {
-    global $old, $my_orthoeman, $orthoeman_id,$totalAnswers, $totalTheory;
+    global $old, $my_orthoeman, $orthoeman_id, $totalAnswers, $totalTheory;
     if ($old != 0) return oldGetXMLData();
     //global $DB;
     //$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
@@ -536,7 +540,7 @@ function getXMLData()
     $resource = get_database_data($my_orthoeman->id, -1);
     // Inject into xml the course details from the moodle database
 
-    $xmldata =  simplexml_load_string($resource->data);
+    $xmldata = simplexml_load_string($resource->data);
     $lessonDetails = get_lesson_details($orthoeman_id);
     $xmldata["cruiseMode"] = $lessonDetails->cruise;
     $xmldata["title"] = $lessonDetails->name;
@@ -580,7 +584,7 @@ function getTotalAnswers($data)
     $index = 0;
     foreach ($data->Page as $key => $value) {
         $count++;
-        $totalSum +=  intval(strval($value["positiveGrade"]));
+        $totalSum += intval(strval($value["positiveGrade"]));
         $widget = array();
         $maxspots = 0;
         $windex = 0;
@@ -594,16 +598,16 @@ function getTotalAnswers($data)
         if ($widget[0] === "video" || $widget[1] === "video") {
             if ($widget[0] === "text" || $widget[1] === "text") {
                 $count--;
-                $totalSum -=  intval(strval($value["positiveGrade"]));
+                $totalSum -= intval(strval($value["positiveGrade"]));
             }
         } else if ($widget[0] === "text" && $widget[1] === "text") {
             $count--;
-            $totalSum -=  intval(strval($value["positiveGrade"]));
+            $totalSum -= intval(strval($value["positiveGrade"]));
         } else if ($widget[0] === "image" || $widget[1] === "image") {
             if ($widget[0] === "text" || $widget[1] === "text") {
                 if ($maxspots === 0) {
-                   $count--;
-                    $totalSum -=  intval(strval($value["positiveGrade"]));
+                    $count--;
+                    $totalSum -= intval(strval($value["positiveGrade"]));
                 }
 
 
@@ -628,7 +632,7 @@ function GetTemplateData($data)
         $a["Page"][$index]["attributes"]["Grade"] = strval($value["positiveGrade"]);
         $a["Page"][$index]["attributes"]["negativeGrade"] = strval($value["negativeGrade"]);
         $a["Page"][$index]["attributes"]["Title"] = strval($value["title"]);
-        $a["Page"][$index]["attributes"]["Blocked"] = "no";// strval($value["block"]);
+        $a["Page"][$index]["attributes"]["Blocked"] = "no"; // strval($value["block"]);
         $windex = 0;
         foreach ($value as $wkey => $wvalue) {
             $widgetype = getWidgetType($wkey);
@@ -638,7 +642,7 @@ function GetTemplateData($data)
                     $a["Page"][$index]["Widget"][$windex]["Image"] = GetDisplayComplexImg($wvalue, $index, $windex);
                     $a["Images"][] = array('id' => $index, 'subid' => $windex,
                         //'url' => $a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
-                        'url' => '../get_resource.php?id='.$orthoeman_id.'&resource_id='.$a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
+                        'url' => '../get_resource.php?id=' . $orthoeman_id . '&resource_id=' . $a["Page"][$index]["Widget"][$windex]["Image"]["ImageURI"],
                         'HotSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["HotSpots"],
                         'MaxSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["MaxSpots"],
                         'ShowRegions' => $a["Page"][$index]["Widget"][$windex]["Image"]["ShowRegions"],
@@ -689,18 +693,18 @@ function GetDisplayVideo($data, $id, $subid)
     $r["video_webm"] = "no";
     foreach ($data->Source as $value) {
         //print_r($value);
-        
+
         switch (strval($value["type"])) {
             case 'video/mp4':
-                $r["mp4"] = '../get_resource.php?id='.$orthoeman_id.'&resource_id='.strval($value["id"]);
+                $r["mp4"] = '../get_resource.php?id=' . $orthoeman_id . '&resource_id=' . strval($value["id"]);
                 $r["video_mp4"] = "yes";
                 break;
             case 'video/ogg':
-                $r["ogg"] = '../get_resource.php?id='.$orthoeman_id.'&resource_id='.strval($value["id"]);
+                $r["ogg"] = '../get_resource.php?id=' . $orthoeman_id . '&resource_id=' . strval($value["id"]);
                 $r["video_ogg"] = "yes";
                 break;
             case 'video/webm':
-                $r["webm"] = '../get_resource.php?id='.$orthoeman_id.'&resource_id='.strval($value["id"]);
+                $r["webm"] = '../get_resource.php?id=' . $orthoeman_id . '&resource_id=' . strval($value["id"]);
                 $r["video_webm"] = "yes";
                 break;
         }
