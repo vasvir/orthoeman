@@ -438,7 +438,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     $toggle_link_id = "toggle_link_$frame_id";
     $show_text = "Edit OrthoEMan Case...";
     $hide_text = "Hide OrthoEMan Case";
-
+    $addHeight = (substr($url, 0,7) === "Display") ? 140 : 0;
     //Output script to make the object tag be as large as possible
     $orthoeman_html = '<div id="'.$parent_id.'"><script type="text/javascript">
             //<![CDATA[
@@ -473,7 +473,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                             var viewportHeight = dom.getViewportHeight();
                             if (lastHeight !== Math.min(dom.getDocumentHeight(), viewportHeight)) {
                                 //console.log(viewportHeight, lastHeight, dom.getY(frame));
-                                frame.style.height = viewportHeight - dom.getY(frame) - padding + "px";
+                                frame.style.height = viewportHeight -'.$addHeight.' - dom.getY(frame) - padding + "px";
                                 lastHeight = Math.min(dom.getDocumentHeight(), dom.getViewportHeight());
 
                             }
