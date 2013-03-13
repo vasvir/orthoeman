@@ -2321,12 +2321,22 @@ function PageTracking(answer, blocked,lessonPage) {
     if (answer === "correct") {
         OrthoVariables.PageTracking[lessonPage].status = "correct";
         OrthoVariables.PageTracking[lessonPage].nextpass = true;
-        OrthoVariables.PageTracking[lessonPage].grade = parseInt(OrthoVariables.LessonData.Page[lessonPage].attributes.Grade);
+        OrthoVariables.PageTracking[lessonPage].grade = getNormalizeGrade(parseInt(OrthoVariables.LessonData.Page[lessonPage].attributes.Grade));
     } else {
         OrthoVariables.PageTracking[lessonPage].status = "wrong";
-        OrthoVariables.PageTracking[lessonPage].grade = -parseInt(OrthoVariables.LessonData.Page[lessonPage].attributes.negativeGrade);
-        OrthoVariables.PageTracking[lessonPage].nextpass = (blocked === "yes") ? false : true;
+        OrthoVariables.PageTracking[lessonPage].grade = getNormalizeGrade(-parseInt(OrthoVariables.LessonData.Page[lessonPage].attributes.negativeGrade));
+        OrthoVariables.PageTracking[lessonPage].nextpass = (blocked !== "yes");
     }
+}
+
+
+function getNormalizeGrade(Grade) {
+    //calculate totalSum
+    var totalSum = 0;
+    $.each(OrthoVariables.LessonData.Page, function() {
+       totalSum += parseInt(this.attributes.Grade);
+    });
+    return Math.round(100*(100/totalSum)*Grade)/100;
 }
 
 function RemoveOverlay() {
