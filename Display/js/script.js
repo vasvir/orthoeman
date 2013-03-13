@@ -3,11 +3,8 @@
 
 
  TODO cruise mode
- TODO disable html tag scrollbars, enable it for the minimum resolution
- TODO Grade system - implement total final grade (design)
- TODO Grade system - implement normalization final grade (take from the sslayer.php implementation)
- TODO Grade system - if lesson is complete, don't disable and stop clock countdown
-
+ TODO expose a function to get the total grade in sslayer
+ TODO Update jquery, jquery ui, kinetic and jsrender libraries
 
  */
 
