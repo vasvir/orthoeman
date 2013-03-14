@@ -63,30 +63,30 @@
       <div id="Page{{:(2*#index + 1)}}">
           {{if Widget[0].type == "image"}}
             {{for Widget[0] tmpl="#ComplexImageTemplate"/}}
-          {{else if Widget[1].type == "image"}}
+          {{else Widget[1].type == "image"}}
             {{for Widget[1] tmpl="#ComplexImageTemplate"/}}
-          {{else if Widget[0].type == "video"}}
+          {{else Widget[0].type == "video"}}
             {{for Widget[0] tmpl="#VideoTemplate"/}}
-          {{else if Widget[1].type == "video"}}
+          {{else Widget[1].type == "video"}}
             {{for Widget[1] tmpl="#VideoTemplate"/}}
-          {{else if Widget[0].type == "text"}}
+          {{else Widget[0].type == "text"}}
             {{for Widget[0] tmpl="#TextTemplate"/}}
-          {{else if Widget[1].type == "text"}}
+          {{else Widget[1].type == "text"}}
             {{for Widget[1] tmpl="#TextTemplate"/}}
           {{/if}}
      </div>
       <div id="Page{{:(2*#index + 2)}}">
           {{if Widget[0].type == "quiz"}}
             {{for Widget[0] tmpl="#QuizTemplate"/}}
-          {{else if Widget[1].type == "quiz"}}
+          {{else Widget[1].type == "quiz"}}
             {{for Widget[1] tmpl="#QuizTemplate"/}}
-          {{else if Widget[0].type == "text"}}
+          {{else Widget[0].type == "text"}}
              {{for Widget[0] tmpl="#TextTemplate"/}}
-          {{else if Widget[1].type == "text"}}
+          {{else Widget[1].type == "text"}}
             {{for Widget[1] tmpl="#TextTemplate"/}}
-          {{else if Widget[0].type == "input"}}
+          {{else Widget[0].type == "input"}}
             {{for Widget[0] tmpl="#InputTemplate"/}}
-          {{else if Widget[1].type == "input"}}
+          {{else Widget[1].type == "input"}}
             {{for Widget[1] tmpl="#InputTemplate"/}}
           {{/if}}
       </div>
@@ -165,9 +165,9 @@
   <!-- Message Template -->
   <script id="msgboxTemplate" type="text/x-jsrender">
       <div id="msgbox_{{:id}}" class="ui-widget" style="margin-top:5px;display:none;">
-          <div class="{{if type === 'alert'}}ui-state-error{{else if type === 'highlight'}}ui-state-highlight{{/if}} ui-corner-all" style="padding: 0 .7em;">
+          <div class="{{if type === 'alert'}}ui-state-error{{else type === 'highlight'}}ui-state-highlight{{/if}} ui-corner-all" style="padding: 0 .7em;">
               <span title="Close the Message Box" class="ui-icon ui-icon-closethick" />
-              <p style="text-shadow:none;"><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else if type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;"></span>
+              <p style="text-shadow:none;"><span class="ui-icon {{if type === 'alert'}}ui-icon-alert{{else type === 'highlight'}}ui-icon-info{{/if}}" style="float: left; margin-right: .3em;"></span>
                   <strong>Alert:</strong> {{:message}}. </p>
           </div>
       </div>
@@ -231,8 +231,8 @@
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script> -->
 
   <!-- scripts concatenated and minified via build script -->
-  <script src="js/libs/jquery-1.8.3.min.js"></script>
-  <script src="js/libs/jquery-ui-1.8.23.custom.min.js"></script>
+  <script src="js/libs/jquery-1.9.1.min.js"></script>
+  <script src="js/libs/jquery-ui-1.10.1.custom.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="js/libs/jsrender.js"></script>

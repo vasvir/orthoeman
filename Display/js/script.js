@@ -1,10 +1,9 @@
-/* Author: Konstantinos Zagoris
+﻿/* Author: Konstantinos Zagoris
  The script logic for ORTHO e-Man
 
 
  TODO cruise mode
  TODO expose a function to get the total grade in sslayer
- TODO Update jquery, jquery ui, kinetic and jsrender libraries
 
  */
 
