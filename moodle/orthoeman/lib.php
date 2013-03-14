@@ -252,14 +252,7 @@ function orthoeman_get_extra_capabilities() {
  * @return bool true if the scale is used by the given orthoeman instance
  */
 function orthoeman_scale_used($orthoemanid, $scaleid) {
-    global $DB;
-
-    /** @example */
-    if ($scaleid and $DB->record_exists('orthoeman', array('id' => $orthoemanid, 'grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 /**
@@ -271,14 +264,7 @@ function orthoeman_scale_used($orthoemanid, $scaleid) {
  * @return boolean true if the scale is used by any orthoeman instance
  */
 function orthoeman_scale_used_anywhere($scaleid) {
-    global $DB;
-
-    /** @example */
-    if ($scaleid and $DB->record_exists('orthoeman', array('grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 /**
