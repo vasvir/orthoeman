@@ -30,34 +30,29 @@ Later:
 		show documents inline (may require a plugin)
 		Use moodle file facilities for storing and retrieving files
 
+Later:
+	fix API to have _from_orthoeman_id and consolidate the use of get_moodle_data()
+	move sslayer.php to moodle directory
+	make the project GPL and post it to github
+	move Display and AuthoringTool under moodle
+
 Immediate:
 	Functionality:
 		Moodle:
 			backup/restore - import/export capability
+			gradebook and grades
 
 	Layout:
 		Moodle:
-			group and button. Needs to make everything else
+			BUG: group and button. Needs to make everything else. BUG on scrollbar behavior
 
 	BUGS:
-		Exception thrown in startup
-		Zoom level changing leads to zoom canvas resizing
+		Authoring Tool:
+			Exception thrown in startup
+			Zoom level changing leads to zoom canvas resizing
 
 	Kwstas:
-		do we need img.php?
-		move sslayer.php to moodle directory
 		implement get_grade($orthoeman_id, $user_id);
 
-
-
-* Don't allow to save lessons if there are submitted answers
-
-
--fix API to have _from_orthoeman_id and consolidate the use of get_moodle_data()
-
-Immediate:
-	* gradebook and grades
-	* passwords
-	* backup/restore - import/export
-	* user guide
-	
+Open issues:
+	* Don't allow to save lessons if there are submitted answers
