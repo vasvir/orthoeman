@@ -181,7 +181,7 @@
        <tr><th>Page Number</th><th>Your Answer</th><th>Your Grade</th></tr>
        {{for PageTracking}}
        {{if theory==false}}
-       <tr><td>Page {{:#index+1}}</td><td><span style="padding:0 20px;" class="ui-corner-all {{if status=='correct'}}quizcorrect{{else}}quizwrong{{/if}}">{{:status}}</span></td><td>{{:grade}}</td></tr>
+       <tr><td>Page {{:#getIndex()}}</td><td><span style="padding:0 20px;" class="ui-corner-all {{if status=='correct'}}quizcorrect{{else}}quizwrong{{/if}}">{{:status}}</span></td><td>{{:grade}}</td></tr>
        {{/if}}
        {{/for}}
            <tr><td colspan="3"><hr /></td></tr>

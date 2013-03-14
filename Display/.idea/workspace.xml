@@ -41,7 +41,7 @@
       <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="221" column="8" selection-start="12566" selection-end="12566" vertical-scroll-proportion="2.0279255">
+            <state line="34" column="31" selection-start="1607" selection-end="1607" vertical-scroll-proportion="0.2777778">
               <folding />
             </state>
           </provider>
@@ -50,10 +50,8 @@
       <file leaf-file-name="jquery.prettyLoader.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/libs/jquery.prettyLoader.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="14" selection-start="1963" selection-end="1963" vertical-scroll-proportion="-20.08">
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+            <state line="61" column="14" selection-start="1963" selection-end="1963" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -91,8 +89,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1296" />
-    <option name="height" value="1000" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -178,31 +176,28 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="FullScreen" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
   </component>
-  <component name="PublishConfig" serverName="orthoeman" serverId="e2be7cd5-2943-4bea-b0d9-123472161bf4" autoUpload="true">
+  <component name="PublishConfig" serverName="orthoeman" serverId="4cc00224-3356-4aa1-9ec7-fb069a5a7e98" autoUpload="true">
     <servers>
-      <server id="16ecbb06-82b5-4d57-927e-ca41912c2d8d">
-        <serverdata />
-      </server>
-      <server id="d5516c80-38c5-41b7-8dd5-d6cbb130ae8b">
-        <serverdata />
-      </server>
-      <server id="e2be7cd5-2943-4bea-b0d9-123472161bf4">
+      <server id="4cc00224-3356-4aa1-9ec7-fb069a5a7e98">
         <serverdata>
           <mappings>
             <mapping deploy="/usr/share/moodle/mod/orthoeman/Display/" local="$PROJECT_DIR$" web="/moodle/mod/orthoeman/Display/" />
           </mappings>
         </serverdata>
+      </server>
+      <server id="f4e5cb2b-fe5e-491b-9bdf-8883e8d73c17">
+        <serverdata />
       </server>
     </servers>
   </component>
@@ -212,7 +207,7 @@
     </configuration>
     <configuration default="true" type="JavascriptDebugSession" factoryName="Remote" singleton="true">
       <JSRemoteDebuggerConfigurationSettings>
-        <option name="engineId" />
+        <option name="engineId" value="embedded" />
         <option name="fileUrl" />
       </JSRemoteDebuggerConfigurationSettings>
       <method />
@@ -273,15 +268,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31947744" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3192436" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938388" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25364667" sideWeight="0.68052256" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23319103" sideWeight="0.6807564" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1108742" sideWeight="0.9989017" order="7" side_tool="true" content_ui="tabs" />
@@ -426,17 +421,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="292" column="35" selection-start="9058" selection-end="9058" vertical-scroll-proportion="0.033464566">
-          <folding />
-        </state>
+        <state line="292" column="35" selection-start="9058" selection-end="9058" vertical-scroll-proportion="0.033464566" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/libs/jquery.prettyLoader.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="14" selection-start="1963" selection-end="1963" vertical-scroll-proportion="-20.08">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state line="61" column="14" selection-start="1963" selection-end="1963" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -449,7 +440,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="221" column="8" selection-start="12566" selection-end="12566" vertical-scroll-proportion="2.0279255">
+        <state line="34" column="31" selection-start="1607" selection-end="1607" vertical-scroll-proportion="0.2777778">
           <folding />
         </state>
       </provider>
