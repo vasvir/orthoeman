@@ -68,6 +68,7 @@ $ANSWER_TYPE_INPUT_VALUE = 2;
 function orthoeman_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:         return true;
+        case FEATURE_GRADE_HAS_GRADE:	return true;
         default:                        return null;
     }
 }
@@ -268,6 +269,19 @@ function orthoeman_scale_used_anywhere($scaleid) {
 }
 
 /**
+ * Seriously now. I don't get it. But I can't stand code duplication
+ */
+function get_item_details(stdClass $orthoeman) {
+    $item = array();
+    $item['itemname'] = clean_param($orthoeman->name, PARAM_NOTAGS);
+    $item['gradetype'] = GRADE_TYPE_VALUE;
+    $item['grademax']  = 100;
+    $item['grademin']  = 0;
+
+    return $item;
+}
+
+/**
  * Creates or updates grade item for the give orthoeman instance
  *
  * Needed by grade_update_mod_grades() in lib/gradelib.php
@@ -279,14 +293,7 @@ function orthoeman_grade_item_update(stdClass $orthoeman) {
     global $CFG;
     require_once($CFG->libdir.'/gradelib.php');
 
-    /** @example */
-    $item = array();
-    $item['itemname'] = clean_param($orthoeman->name, PARAM_NOTAGS);
-    $item['gradetype'] = GRADE_TYPE_VALUE;
-    $item['grademax']  = $orthoeman->grade;
-    $item['grademin']  = 0;
-
-    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, null, $item);
+    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, null, get_item_details($orthoeman));
 }
 
 /**
@@ -302,10 +309,7 @@ function orthoeman_update_grades(stdClass $orthoeman, $userid = 0) {
     global $CFG, $DB;
     require_once($CFG->libdir.'/gradelib.php');
 
-    /** @example */
-    $grades = array(); // populate array of grade objects indexed by userid
-
-    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, $grades);
+    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, orthoeman_get_user_grades($orthoeman, $userid), get_item_details($orthoeman));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -653,4 +657,13 @@ function get_duration($id,$n) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
     return get_duration_from_orthoeman_id($orthoeman->id);
 
+}
+
+function orthoeman_get_user_grades(stdClass $orthoeman, $userid) {
+    /** @example */
+    $grades = array(); // populate array of grade objects indexed by userid
+    $grades['userid'] = 6;
+    $grades['rawgrade'] = 62;
+    
+    return $grades;
 }
