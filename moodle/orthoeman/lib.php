@@ -309,7 +309,7 @@ function orthoeman_update_grades(stdClass $orthoeman, $userid = 0) {
     global $CFG, $DB;
     require_once($CFG->libdir.'/gradelib.php');
 
-    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, orthoeman_get_user_grades($orthoeman, $userid), get_item_details($orthoeman));
+    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, get_user_grades_from_orthoeman_id($orthoeman->id, $userid), get_item_details($orthoeman));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -653,17 +653,20 @@ function get_duration_from_orthoeman_id($orthoeman_id) {
     return $duration;
 }
 
-function get_duration($id,$n) {
+function get_duration($id, $n) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
     return get_duration_from_orthoeman_id($orthoeman->id);
 
 }
 
-function orthoeman_get_user_grades(stdClass $orthoeman, $userid) {
+function get_user_grades_from_orthoeman_id($orthoeman_id, $userid) {
+    $answers = get_answers($orthoeman_id, -1);
+
     /** @example */
     $grades = array(); // populate array of grade objects indexed by userid
     $grades['userid'] = 6;
-    $grades['rawgrade'] = 62;
+    $grades['rawgrade'] = 67;
+
     
     return $grades;
 }
