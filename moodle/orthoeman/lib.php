@@ -428,7 +428,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     $toggle_link_id = "toggle_link_$frame_id";
     $show_text = "Edit OrthoEMan Case...";
     $hide_text = "Hide OrthoEMan Case";
-    $addHeight = (substr($url, 0,7) === "Display") ? 140 : 0;
+    $addHeight = 0; //(substr($url, 0,7) === "Display") ? 140 : 0;
     //Output script to make the object tag be as large as possible
     $orthoeman_html = '<div id="'.$parent_id.'"><script type="text/javascript">
             //<![CDATA[
@@ -452,8 +452,6 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                         }
 
                         //Take scrollbars off the outer document to prevent double scroll bar effect
-                        // chrome needs to scrollTo top
-                        scrollTo(0, 0);
                         document.body.style.overflow = "hidden";
                         var dom = YAHOO.util.Dom;
                         var frame = document.getElementById(orthoeman_frame_id);
@@ -467,13 +465,14 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                                 lastHeight = Math.min(dom.getDocumentHeight(), dom.getViewportHeight());
 
                             }
-                             scrollTo(0, 0);
+                            // chrome needs to scrollTo top
+                            scrollTo(0, 0);
                         };
                         setTimeout(resize, 0);
                         onresize = resize;
+                        // chrome needs to scrollTo top
+                        onscroll = function() { scrollTo(0, 0); }
                         orthoeman_initialized = true;
-                        scrollTo(0, 0);
-                        
                 }
 
                 function toggle_orthoeman() {
