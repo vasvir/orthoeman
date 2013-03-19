@@ -662,10 +662,22 @@ function get_user_grades_from_orthoeman_id($orthoeman_id, $userid) {
     $answers = get_answers($orthoeman_id, -1);
 
     /** @example */
-    $grades = array(); // populate array of grade objects indexed by userid
-    $grades['userid'] = 6;
-    $grades['rawgrade'] = 67;
-
+    $grades = array(); // this is bad way to implement it
+    // I propose for better way this:
+    // $grades = new stdClass();
+    // $grades->userid = $userid;
+    // $grades->rawgrade = $grade;
+    $grades['userid'] = $userid;
     
+    $grade= 0;
+
+    foreach ($answers as $page) {
+        $answer_dec = json_decode($page->answer);
+        if (isset($answer_dec->grade)) {
+            $grade += $answer_dec->grade;    
+        }
+        
+    }
+    $grades['rawgrade'] = ($grade < 0) ? 0 : $grade;
     return $grades;
 }
