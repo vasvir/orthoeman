@@ -25,7 +25,7 @@ $totalSum = 0;
 $old = 0;
 $action = $_GET["action"];
 // 1- transform xml to json
-
+//fb(get_user_grades_from_orthoeman_id($my_orthoeman->id,3));
 switch ($action) {
     case "1" :
         //$lessonid = $_GET["lessonid"];
@@ -125,7 +125,7 @@ function putAnswerInMoodle_old($pageID, $typeID, $answer)
 function getAnswersFromMoodle()
 {
     global $orthoeman_id, $my_orthoeman;
-    $answer_recs = get_answers($my_orthoeman->id, -2);
+    $answer_recs = get_answers($my_orthoeman->id, -1);
     //fb($answer_recs);
     $r = array();
     foreach ($answer_recs as $page) {

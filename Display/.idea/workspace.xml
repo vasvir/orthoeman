@@ -5,7 +5,7 @@
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363218300546" ignored="false" />
-    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363169092847" ignored="false" />
+    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363711103768" ignored="false" />
     <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363257465297" ignored="false" />
     <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363083131044" ignored="false" />
     <file path="/ortho_interface.css" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363206111787" ignored="false" />
@@ -29,28 +29,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/script.js">
+      <file leaf-file-name="sslayer.php" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sslayer.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="819" column="31" selection-start="32751" selection-end="32760" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="31" selection-start="1607" selection-end="1607" vertical-scroll-proportion="0.2777778">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="jquery.prettyLoader.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/libs/jquery.prettyLoader.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="14" selection-start="1963" selection-end="1963" vertical-scroll-proportion="0.0">
+            <state line="27" column="2" selection-start="909" selection-end="909" vertical-scroll-proportion="0.6037234">
               <folding />
             </state>
           </provider>
@@ -77,11 +59,11 @@
         <option value="$PROJECT_DIR$/../Content/XML/XmlOrtho.xml" />
         <option value="$PROJECT_DIR$/js/libs/myimagetools.js" />
         <option value="$PROJECT_DIR$/js/libs/jquery.countdown.js" />
-        <option value="$PROJECT_DIR$/sslayer.php" />
         <option value="$PROJECT_DIR$/css/ortho_interface.css" />
         <option value="$PROJECT_DIR$/js/script.js" />
         <option value="$PROJECT_DIR$/js/libs/jquery.prettyLoader.js" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/sslayer.php" />
       </list>
     </option>
   </component>
@@ -89,8 +71,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="width" value="1296" />
+    <option name="height" value="1000" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -176,28 +158,31 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="FullScreen" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="FullScreen" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
-  <component name="PublishConfig" serverName="orthoeman" serverId="4cc00224-3356-4aa1-9ec7-fb069a5a7e98" autoUpload="true">
+  <component name="PublishConfig" serverName="orthoeman" serverId="e2be7cd5-2943-4bea-b0d9-123472161bf4" autoUpload="true">
     <servers>
-      <server id="4cc00224-3356-4aa1-9ec7-fb069a5a7e98">
+      <server id="16ecbb06-82b5-4d57-927e-ca41912c2d8d">
+        <serverdata />
+      </server>
+      <server id="d5516c80-38c5-41b7-8dd5-d6cbb130ae8b">
+        <serverdata />
+      </server>
+      <server id="e2be7cd5-2943-4bea-b0d9-123472161bf4">
         <serverdata>
           <mappings>
-            <mapping deploy="/usr/share/moodle/mod/orthoeman/Display/" local="$PROJECT_DIR$" web="/moodle/mod/orthoeman/Display/" />
+            <mapping deploy="/usr/share/moodle/mod/orthoeman/Display/" local="$PROJECT_DIR$" web="moodle/mod/orthoeman/Display/" />
           </mappings>
         </serverdata>
-      </server>
-      <server id="f4e5cb2b-fe5e-491b-9bdf-8883e8d73c17">
-        <serverdata />
       </server>
     </servers>
   </component>
@@ -268,15 +253,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3192436" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3182898" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938388" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23319103" sideWeight="0.6807564" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23743922" sideWeight="0.68171024" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1108742" sideWeight="0.9989017" order="7" side_tool="true" content_ui="tabs" />
@@ -414,33 +399,33 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="683" column="0" selection-start="12754" selection-end="12754" vertical-scroll-proportion="0.031835206">
-          <folding />
-        </state>
+        <state line="683" column="0" selection-start="12754" selection-end="12754" vertical-scroll-proportion="0.031835206" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sslayer.php">
+    <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="292" column="35" selection-start="9058" selection-end="9058" vertical-scroll-proportion="0.033464566" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/libs/jquery.prettyLoader.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="14" selection-start="1963" selection-end="1963" vertical-scroll-proportion="0.0">
+        <state line="54" column="27" selection-start="2577" selection-end="2577" vertical-scroll-proportion="0.45945945">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="819" column="31" selection-start="32751" selection-end="32760" vertical-scroll-proportion="0.0">
+        <state line="818" column="31" selection-start="32688" selection-end="32697" vertical-scroll-proportion="0.02117061">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$PROJECT_DIR$/js/libs/jquery.prettyLoader.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="31" selection-start="1607" selection-end="1607" vertical-scroll-proportion="0.2777778">
+        <state line="61" column="14" selection-start="1963" selection-end="1963" vertical-scroll-proportion="0.02117061">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sslayer.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="2" selection-start="909" selection-end="909" vertical-scroll-proportion="0.6037234">
           <folding />
         </state>
       </provider>
