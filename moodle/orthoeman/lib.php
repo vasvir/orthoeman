@@ -588,9 +588,7 @@ function get_answers($orthoeman_id, $page_id) {
     return $answers;
 }
 
-function put_answer($id, $n, $page_id, $type, $answer) {
-    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-
+function has_submit_capability($id, $context) {
     $view_access = has_view_capability($id, $context);
     $read_access = has_capability('mod/orthoeman:read', $context);
     $write_access = has_capability('mod/orthoeman:submit', $context);
@@ -599,14 +597,22 @@ function put_answer($id, $n, $page_id, $type, $answer) {
         throw new required_capability_exception($context, 'mod/orthoeman:submit', 'nopermissions', '');
     }
 
-    add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
+    return !$read_access;
+}
 
 
-    if ($read_access) {
+function put_answer($id, $n, $page_id, $type, $answer) {
+    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+
+    $submit_access = has_submit_capability($id, $context);
+
+    if (!$submit_access) {
         //echo "Read only. Nothing to do. Exiting...";
         return;
     }
     
+    add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
+
     $timeleft = get_timeleft_from_orthoeman_id($orthoeman->id);
 
     if (!$timeleft) {
@@ -656,7 +662,6 @@ function get_duration_from_orthoeman_id($orthoeman_id) {
 function get_duration($id, $n) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
     return get_duration_from_orthoeman_id($orthoeman->id);
-
 }
 
 function get_user_grades_from_orthoeman_id($orthoeman_id, $userid) {
@@ -681,4 +686,18 @@ function get_user_grades_from_orthoeman_id($orthoeman_id, $userid) {
     }
     $grades['rawgrade'] = ($grade < 0) ? 0 : $grade;
     return $grades;
+}
+
+function submit_grade($id, $n) {
+    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+
+    $submit_access = has_submit_capability($id, $context);
+
+    if (!$submit_access) {
+        //echo "Read only. Nothing to do. Exiting...";
+        return;
+    }
+
+    global $USER;
+    return orthoeman_update_grades($orthoeman, $USER->id);
 }
