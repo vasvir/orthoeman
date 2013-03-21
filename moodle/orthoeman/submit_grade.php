@@ -35,10 +35,4 @@ require_once(dirname(__FILE__).'/lib.php');
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
 
-list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-
-global $USER;
-
-orthoeman_update_grades($orthoeman, $USER->id);
-echo json_encode($orthoeman);
-#echo json_encode(remove_course_grades($orthoeman->course, 1)(;
+echo json_encode(submit_grade($id, $n));
