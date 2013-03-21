@@ -33,26 +33,18 @@ Later:
 Later:
 	fix API to have _from_orthoeman_id and consolidate the use of get_moodle_data()
 	move sslayer.php to moodle directory
-	make the project GPL and post it to github
 	move Display and AuthoringTool under moodle
+	make the project GPL and post it to github
 
 Immediate:
 	Functionality:
 		Moodle:
 			backup/restore - import/export capability
-			gradebook and grades
-
-	Layout:
-		Moodle:
-			BUG: group and button. Needs to make everything else. BUG on scrollbar behavior
 
 	BUGS:
 		Authoring Tool:
 			Exception thrown in startup
 			Zoom level changing leads to zoom canvas resizing
-
-	Kwstas:
-		implement get_grade($orthoeman_id, $user_id);
 
 Open issues:
 	* Don't allow to save lessons if there are submitted answers
