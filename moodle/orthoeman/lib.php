@@ -70,6 +70,8 @@ function orthoeman_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:         return true;
         case FEATURE_GRADE_HAS_GRADE:	return true;
+        case FEATURE_BACKUP_MOODLE2:	return true;
+        case FEATURE_SHOW_DESCRIPTION:	return true;
         default:                        return null;
     }
 }
@@ -269,17 +271,31 @@ function orthoeman_scale_used_anywhere($scaleid) {
     return false;
 }
 
-/**
- * Seriously now. I don't get it. But I can't stand code duplication
- */
-function get_item_details(stdClass $orthoeman) {
-    $item = array();
-    $item['itemname'] = clean_param($orthoeman->name, PARAM_NOTAGS);
-    $item['gradetype'] = GRADE_TYPE_VALUE;
-    $item['grademax']  = 100;
-    $item['grademin']  = 0;
+function orthoeman_reset_course_form_definition(&$mform) {
+}
 
-    return $item;
+function orthoeman_reset_course_form_defaults($course) {
+    return array();
+}
+
+function orthoeman_reset_userdata($data) {
+    global $DB;
+    
+    $orthoemans = $DB->get_records_sql("SELECT o.*, cm.idnumber as cmidnumber, o.course as courseid
+        FROM {modules} m 
+        JOIN {course_modules} cm ON m.id = cm.module
+        JOIN {orthoeman} o ON cm.instance = o.id
+        WHERE m.name = 'orthoeman' AND cm.course = ?", array($data->courseid));
+    foreach ($orthoemans as $orthoeman) {
+        orthoeman_grade_item_update($orthoeman, 'reset');
+    }
+
+    $status[] = array(
+        'component' => get_string('modulenameplural', 'orthoeman'),
+        'item' => get_string('gradesdeleted', 'orthoeman'),
+        'error' => false);
+                                            
+    return $status;
 }
 
 /**
@@ -290,11 +306,25 @@ function get_item_details(stdClass $orthoeman) {
  * @param stdClass $orthoeman instance object with extra cmidnumber and modname property
  * @return void
  */
-function orthoeman_grade_item_update(stdClass $orthoeman) {
+function orthoeman_grade_item_update(stdClass $orthoeman, $grades=NULL) {
     global $CFG;
     require_once($CFG->libdir.'/gradelib.php');
 
-    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, null, get_item_details($orthoeman));
+    $params = array();
+    $params['itemname'] = clean_param($orthoeman->name, PARAM_NOTAGS);
+    $params['gradetype'] = GRADE_TYPE_VALUE;
+    $params['grademax']  = 100;
+    $params['grademin']  = 0;
+
+    if ($grades  === 'reset') {
+        $params['reset'] = true;
+        $grades = NULL;
+
+        delete_answers_from_orthoeman_id($orthoeman->id);
+    }
+
+    //error_log("orthoeman_grade_item_update: " . json_encode($grades));
+    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, $grades, $params);
 }
 
 /**
@@ -306,11 +336,20 @@ function orthoeman_grade_item_update(stdClass $orthoeman) {
  * @param int $userid update grade of specific user only, 0 means all participants
  * @return void
  */
-function orthoeman_update_grades(stdClass $orthoeman, $userid = 0) {
+function orthoeman_update_grades(stdClass $orthoeman, $userid = 0, $nullifnone = true) {
     global $CFG, $DB;
     require_once($CFG->libdir.'/gradelib.php');
 
-    grade_update('mod/orthoeman', $orthoeman->course, 'mod', 'orthoeman', $orthoeman->id, 0, get_user_grades_from_orthoeman_id($orthoeman->id, $userid), get_item_details($orthoeman));
+    if ($grades = orthoeman_get_user_grades($orthoeman, $userid)) {
+        orthoeman_grade_item_update($orthoeman, $grades);
+    } else if ($userid && $nullifnone) {
+        $grade = new stdClass();
+        $grade->userid = $userid;
+        $grade->rawgrade = null;
+        orthoeman_grade_item_update($orthoeman, $grade);
+    } else {
+        orthoeman_grade_item_update($orthoeman);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -575,10 +614,14 @@ function require_view_capability($id, context $context) {
     }
 }
 
-function get_answers($orthoeman_id, $page_id) {
-    global $USER, $DB, $ANSWER_TABLE;
+// userid == 0 means all users
+function get_user_answers($orthoeman_id, $user_id, $page_id) {
+    global $DB, $ANSWER_TABLE;
     
-    $match_array = array('orthoeman_id' => $orthoeman_id, 'user_id' => $USER->id);
+    $match_array = array('orthoeman_id' => $orthoeman_id);
+    if ($user_id > 0) {
+        $match_array['user_id'] = $user_id;
+    }
     if ($page_id >= 0) {
         $match_array['page_id'] = $page_id;
     }
@@ -587,6 +630,12 @@ function get_answers($orthoeman_id, $page_id) {
     ksort($answers, SORT_NUMERIC);
     
     return $answers;
+}
+
+function get_answers($orthoeman_id, $page_id) {
+    global $USER;
+
+    return get_user_answers($orthoeman_id, $USER->id, $page_id);    
 }
 
 function has_submit_capability($id, $context) {
@@ -600,7 +649,6 @@ function has_submit_capability($id, $context) {
 
     return !$read_access;
 }
-
 
 function put_answer($id, $n, $page_id, $type, $answer) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
@@ -635,6 +683,34 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     return $answer_rec;
 }
 
+function delete_answers_from_orthoeman_id($orthoeman_id, $user_id = -1, $page_id = -1) {
+    $match_array = array('orthoeman_id' => $orthoeman_id);
+
+    if ($user_id >= 0) {
+        $match_array['user_id'] = $user_id;
+    }
+    
+    if ($page_id >= 0) {
+        $match_array['page_id'] = $page_id;
+    }
+
+    global $DB, $ANSWER_TABLE;        
+    $DB->delete_records($ANSWER_TABLE, $match_array);
+}
+
+function delete_answers($id, $n, $user_id = -1, $page_id = -1) {
+    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+
+    require_login($course, true, $cm);
+    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+
+    require_capability('mod/orthoeman:write', $context);
+
+    add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
+
+    delete_answers_from_orthoeman_id($orthoeman->id, $user_id, $page_id);
+}
+
 function get_timeleft_from_orthoeman_id($orthoeman_id) {
     $timeout = get_lesson_details_from_orthoeman_id($orthoeman_id)->timeout;
     $answers = get_answers($orthoeman_id, -1);
@@ -665,26 +741,27 @@ function get_duration($id, $n) {
     return get_duration_from_orthoeman_id($orthoeman->id);
 }
 
-function get_user_grades_from_orthoeman_id($orthoeman_id, $userid) {
-    $answers = get_answers($orthoeman_id, -1);
+// param int $userid update grade of specific user only, 0 means all participants
+function orthoeman_get_user_grades($orthoeman, $userid) {
+    $answers = get_user_answers($orthoeman->id, $userid, -1);
 
-    /** @example */
-    $grades = array(); // this is bad way to implement it
-    // I propose for better way this:
-    // $grades = new stdClass();
-    // $grades->userid = $userid;
-    // $grades->rawgrade = $grade;
-    $grades['userid'] = $userid;
-    
-    $grade= 0;
-
-    foreach ($answers as $page) {
-        $answer_dec = json_decode($page->answer);
+    $grades = array();
+    foreach ($answers as $answer) {
+        if (isset($grades[$answer->user_id])) {
+            $grade =& $grades[$answer->user_id];
+        } else {
+            $grade = array();
+            $grade['userid'] = $answer->user_id;
+            $grade['rawgrade'] = 0;
+            $grade['dategraded'] = 0;
+            $grades[$answer->user_id] = $grade;
+        }
+        $answer_dec = json_decode($answer->answer);
         if (isset($answer_dec->grade)) {
-            $grade += $answer_dec->grade;    
+            $grade['rawgrade'] += $answer_dec->grade;
+            $grade['dategraded'] = $answer->timesubmitted;
         }
     }
-    $grades['rawgrade'] = ($grade < 0) ? 0 : $grade;
     return $grades;
 }
 
