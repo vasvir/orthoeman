@@ -35,6 +35,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $ORTHOEMAN_TABLE = 'orthoeman';
 $RESOURCE_TABLE = 'orthoeman_resource';
+global $ANSWER_TABLE;
 $ANSWER_TABLE = 'orthoeman_answer';
 // this should be RESOURCE_TYPE_* really
 $TYPE_XML = 'XML';
@@ -682,7 +683,6 @@ function get_user_grades_from_orthoeman_id($orthoeman_id, $userid) {
         if (isset($answer_dec->grade)) {
             $grade += $answer_dec->grade;    
         }
-        
     }
     $grades['rawgrade'] = ($grade < 0) ? 0 : $grade;
     return $grades;
