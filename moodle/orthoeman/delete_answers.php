@@ -34,37 +34,7 @@ require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
-
-if ($id) {
-    $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($n) {
-    $orthoeman  = $DB->get_record('orthoeman', array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $orthoeman->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('orthoeman', $orthoeman->id, $course->id, false, MUST_EXIST);
-} else {
-    error('You must specify a course_module ID or an instance ID');
-}
-
 $user_id = optional_param('user_id', -1, PARAM_INT);
 $page_id = optional_param('page_id', -1, PARAM_INT);
 
-require_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-
-require_capability('mod/orthoeman:write', $context);
-
-add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
-
-$match_array = array('orthoeman_id' => $orthoeman->id);
-
-if ($user_id >= 0) {
-    $match_array['user_id'] = $user_id;
-}
-
-if ($page_id >= 0) {
-    $match_array['page_id'] = $page_id;
-}
-
-$DB->delete_records($ANSWER_TABLE, $match_array);
+delete_answers($id, $n, $user_id, $page_id);
