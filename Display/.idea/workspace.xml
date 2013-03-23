@@ -4,7 +4,7 @@
     <list default="true" id="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" name="Default" comment="" />
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363996759520" ignored="false" />
+    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1364027012904" ignored="false" />
     <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363996582237" ignored="false" />
     <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363996963847" ignored="false" />
     <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363083131044" ignored="false" />
@@ -28,22 +28,22 @@
     <favorites_list name="Display" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5021565">
+    <splitter split-orientation="horizontal" split-proportion="0.4391593">
       <split-first>
         <leaf>
           <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="76" column="54" selection-start="2778" selection-end="2778" vertical-scroll-proportion="-10.040816">
+                <state line="76" column="54" selection-start="2778" selection-end="2778" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="247" column="28" selection-start="11886" selection-end="11886" vertical-scroll-proportion="0.106529206">
+                <state line="15" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="-9.375">
                   <folding>
                     <element signature="n#style#0;n#div#0;n#script#2;n#body#0;n#html#0;n#!!top" expanded="true" />
                     <element signature="n#style#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -70,10 +70,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="78" column="4" selection-start="2235" selection-end="2235" vertical-scroll-proportion="0.0">
+                <state line="149" column="0" selection-start="4713" selection-end="4713" vertical-scroll-proportion="0.6075515">
                   <folding />
                 </state>
               </provider>
@@ -86,7 +86,7 @@
           <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="100" column="9" selection-start="3009" selection-end="3009" vertical-scroll-proportion="0.5733945">
+                <state line="1328" column="25" selection-start="50667" selection-end="50667" vertical-scroll-proportion="0.7963387">
                   <folding />
                 </state>
               </provider>
@@ -95,7 +95,7 @@
           <file leaf-file-name="ortho_interface.css" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="521" column="12" selection-start="9924" selection-end="9924" vertical-scroll-proportion="-18.2">
+                <state line="521" column="12" selection-start="9924" selection-end="9924" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -128,8 +128,8 @@
         <option value="$PROJECT_DIR$/css/jquery-ui-1.8.23.custom.css" />
         <option value="$PROJECT_DIR$/sslayer.php" />
         <option value="$PROJECT_DIR$/css/ortho_interface.css" />
-        <option value="$PROJECT_DIR$/js/script.js" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/js/script.js" />
       </list>
     </option>
   </component>
@@ -238,16 +238,16 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="FullScreen" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="FullScreen" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PublishConfig" serverName="orthoeman" serverId="58bfadf1-dfd1-4d1c-b662-06ea7f02be7d" autoUpload="true">
     <servers>
@@ -327,15 +327,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="66" y="22" width="1854" height="1058" extended-state="6" />
+    <frame x="66" y="22" width="1854" height="1058" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31769723" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31702128" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938388" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.10232301" sideWeight="0.6823028" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.10212998" sideWeight="0.6823028" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31769723" sideWeight="0.4944" order="7" side_tool="true" content_ui="tabs" />
@@ -473,35 +473,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/css/jquery-ui-1.8.23.custom.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="438" column="59" selection-start="25729" selection-end="25729" vertical-scroll-proportion="0.8695652">
-          <folding />
-        </state>
+        <state line="438" column="59" selection-start="25729" selection-end="25729" vertical-scroll-proportion="0.8695652" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="54" selection-start="2778" selection-end="2778" vertical-scroll-proportion="-10.040816">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="521" column="12" selection-start="9924" selection-end="9924" vertical-scroll-proportion="-18.2">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/script.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="4" selection-start="2235" selection-end="2235" vertical-scroll-proportion="0.0">
+        <state line="76" column="54" selection-start="2778" selection-end="2778" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="247" column="28" selection-start="11886" selection-end="11886" vertical-scroll-proportion="0.106529206">
+        <state line="15" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="-9.375">
           <folding>
             <element signature="n#style#0;n#div#0;n#script#2;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -524,6 +508,20 @@
             <marker date="1363997076000" expanded="true" signature="2021:2254" placeholder="..." />
             <marker date="1363997076000" expanded="true" signature="2089:2127" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="521" column="12" selection-start="9924" selection-end="9924" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/script.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="149" column="0" selection-start="4713" selection-end="4713" vertical-scroll-proportion="0.6075515">
+          <folding />
         </state>
       </provider>
     </entry>
