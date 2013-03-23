@@ -76,6 +76,35 @@ $(document).ready(function () {
     OrthoVariables.InitialQueryString = getUrlVars();
     OrthoVariables.disableturn = OrthoVariables.InitialQueryString["DisablePaging"] || OrthoVariables.disableturn;
     //console.log("id:" + OrthoVariables.InitialQueryString["id"]);
+    $.getJSON(OrthoVariables.JsonUrl,{
+        "action":4,"orthoeman_id":OrthoVariables.InitialQueryString.id, "name":OrthoVariables.InitialQueryString.name
+    }, function(data) {
+        var count = parseInt(data);
+        if (count > 0) {
+            initializeOrthoeMAN();
+        }
+        else {
+            $("#dialog").dialog({
+                resizable:false,
+                height:235,
+                modal:true,
+                buttons: {
+                    "Start Lesson" : function() {
+                        $(this).dialog("close");
+                        initializeOrthoeMAN();
+                    },
+                    "Cancel":function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+    });
+});
+
+
+
+function initializeOrthoeMAN() {
     $.getJSON(OrthoVariables.JsonUrl, {
         "action":1, "orthoeman_id":OrthoVariables.InitialQueryString.id, "name":OrthoVariables.InitialQueryString.name
     }, function (data) {
@@ -155,18 +184,19 @@ $(document).ready(function () {
             timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1000
         }).hide();
         $('#counter_small').click(function () {
-                $(this).hide();
-                $('#counter').fadeIn("slow").delay(3000).fadeOut("slow", function () {
-                    $("#counter_small").show();
-                });
-         });
+            $(this).hide();
+            $('#counter').fadeIn("slow").delay(3000).fadeOut("slow", function () {
+                $("#counter_small").show();
+            });
+        });
         checkIsFinished();
 
 
 
 
     });
-});
+}
+
 
 function checkIsFinished() {
     if (OrthoVariables.LessonData["final"] === true) {

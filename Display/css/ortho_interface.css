@@ -513,6 +513,10 @@ div[id^="quiz_"]>ul>li:hover {
 
 }
 
+#dialog {
+    display: none;
+}
+
 #shadow_pageresults2 {
     margin: auto;
     left: 0;
