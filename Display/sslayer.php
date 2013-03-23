@@ -65,12 +65,16 @@ switch ($action) {
 
         }
         $savedanswers = count(getAnswersFromMoodle());
-        fb($savedanswers.",".$totalAnswers);
+        //fb($savedanswers.",".$totalAnswers);
         $answer->myanswer["final"] = ($totalAnswers === $savedanswers) ? "true" : "false";
         echo json_encode($answer->myanswer);
+        submit_grade($orthoeman_id,0);
         break;
     case "3":
         echo getTimeout();
+        break;
+    case "4":
+        echo count(get_answers($my_orthoeman->id, -1));
         break;
 }
 
