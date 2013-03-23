@@ -137,6 +137,11 @@ function initializeOrthoeMAN() {
         displayFunctions();
         LoadImages("0");
         loadSpinControl("0");
+        if (OrthoVariables.LessonData.Page[0] != undefined) {
+            if (!(OrthoVariables.LessonData.Page[0].Widget[0].type === "image" || OrthoVariables.LessonData.Page[0].Widget[1].type === "image")) {
+                loadPreviousAnswers(0);
+            }
+        }
         //setTracking("0");
 
 
@@ -1318,6 +1323,13 @@ function displayFunctions() {
             ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
             LoadImages((OrthoVariables.lessonPage + 1).toString());
             loadSpinControl((OrthoVariables.lessonPage + 1).toString());
+            var nPage = OrthoVariables.lessonPage + 1;
+
+            if (OrthoVariables.LessonData.Page[nPage] != undefined) {
+                if (!(OrthoVariables.LessonData.Page[nPage].Widget[0].type === "image" || OrthoVariables.LessonData.Page[nPage].Widget[1].type === "image")) {
+                    loadPreviousAnswers(nPage);
+                }
+            }
             //setTracking((OrthoVariables.lessonPage + 1).toString());
             //loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
         }
