@@ -231,7 +231,7 @@ function normalizeGrades() {
             finalGrade += OrthoVariables.PageTracking[i].grade;
         }
     }
-    OrthoVariables.finalGrade = Math.round(finalGrade);
+    OrthoVariables.finalGrade =   (finalGrade < 0) ? 0 : Math.round(finalGrade);
 }
 
 function lessonFinalized (showPage) {
@@ -244,7 +244,7 @@ function lessonFinalized (showPage) {
         $("#pageresults2>div").html($("#EndPageTemplate").render(OrthoVariables));
         $("#overlay").removeClass("overlay_hidden").addClass("waiting");
         $("#shadow_pageresults2").fadeIn('slow');
-        $("#pageresults2").fadeIn('slow');
+        //$("#pageresults2").fadeIn('slow');
     }
 }
 
