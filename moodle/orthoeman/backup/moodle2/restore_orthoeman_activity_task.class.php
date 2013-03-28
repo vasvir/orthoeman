@@ -17,7 +17,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/orthoeman/backup/moodle2/restore_orthoeman_stepslib.php'); // Because it exists (must)
+//require_once($CFG->dirroot . '/mod/orthoeman/backup/moodle2/restore_orthoeman_stepslib.php'); // Because it exists (must)
 
 /**
  * orthoeman restore task that provides all the settings and steps to perform one
