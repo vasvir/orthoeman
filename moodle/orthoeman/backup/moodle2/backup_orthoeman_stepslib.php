@@ -37,20 +37,39 @@ class backup_orthoeman_activity_structure_step extends backup_activity_structure
         $resources = new backup_nested_element('resources');
 
         $resource = new backup_nested_element('resource', array('id'), array(
-            'type', 'md5', 'data', 'content_type',
+            'orthoeman_id', 'type', 'md5', 'hex_data', 'content_type',
             'codecs', 'parent_id'));
+
+        $answers = new backup_nested_element('answers');
+
+        $answer = new backup_nested_element('answer', array('id'), array(
+            'orthoeman_id', 'user_id', 'page_id', 'type', 'answer',
+            'timesubmitted'));
 
         // Build the tree
 
         $orthoeman->add_child($resources);
         $resources->add_child($resource);
 
-        // Define sources
+        $orthoeman->add_child($answers);
+        $answers->add_child($answer);
 
+        // Define sources
         $orthoeman->set_source_table('orthoeman', array('id' => backup::VAR_ACTIVITYID));
+        $resource->set_source_sql('SELECT id, orthoeman_id, type, md5,
+            hex(data) AS hex_data, content_type, codecs, parent_id FROM {orthoeman_resource}
+            WHERE orthoeman_id = ? ORDER BY id', array(backup::VAR_ACTIVITYID));
+
+        if ($userinfo) {
+            $answer->set_source_sql('SELECT id, orthoeman_id, user_id, 
+                page_id, type, answer, timesubmitted FROM {orthoeman_answer}
+                WHERE orthoeman_id = ? ORDER BY id', array(backup::VAR_ACTIVITYID));
+        }
+
+        //annotate ids
+        $answer->annotate_ids('user', 'user_id');
 
         // Return the root element (orthoeman), wrapped into standard activity structure
         return $this->prepare_activity_structure($orthoeman);
     }
-
 }
