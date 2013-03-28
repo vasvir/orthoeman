@@ -660,7 +660,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
         return;
     }
     
-    add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
+    add_to_log($course->id, 'orthoeman', 'put_answer', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
     $timeleft = get_timeleft_from_orthoeman_id($orthoeman->id);
 
@@ -706,7 +706,7 @@ function delete_answers($id, $n, $user_id = -1, $page_id = -1) {
 
     require_capability('mod/orthoeman:write', $context);
 
-    add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
+    add_to_log($course->id, 'orthoeman', 'delete_answers', "delete_answers.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
     delete_answers_from_orthoeman_id($orthoeman->id, $user_id, $page_id);
 }
