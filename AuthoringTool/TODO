@@ -34,10 +34,6 @@ Later:
 	make the project GPL and post it to github
 
 Immediate:
-	Functionality:
-		Moodle:
-			backup/restore - import/export capability
-
 	BUGS:
 		Authoring Tool:
 			Exception thrown in startup
