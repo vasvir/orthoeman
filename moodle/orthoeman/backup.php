@@ -30,13 +30,16 @@
 /// (Replace orthoeman with the name of your module and remove this line)
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
 
 list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+
+require_login($course, true, $cm);
+require_capability('moodle/backup:backupactivity', $context);
 
 global $USER;
   
