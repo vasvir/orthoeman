@@ -17,7 +17,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-//require_once($CFG->dirroot . '/mod/orthoeman/backup/moodle2/restore_orthoeman_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/orthoeman/backup/moodle2/restore_orthoeman_stepslib.php'); // Because it exists (must)
 
 /**
  * orthoeman restore task that provides all the settings and steps to perform one
@@ -48,7 +48,6 @@ class restore_orthoeman_activity_task extends restore_activity_task {
         $contents = array();
 
         $contents[] = new restore_decode_content('orthoeman', array('intro'), 'orthoeman');
-        $contents[] = new restore_decode_content('orthoeman_posts', array('message'), 'orthoeman_post');
 
         return $contents;
     }
@@ -64,14 +63,7 @@ class restore_orthoeman_activity_task extends restore_activity_task {
         $rules[] = new restore_decode_rule('ORTHOEMANINDEX', '/mod/orthoeman/index.php?id=$1', 'course');
         // orthoeman by cm->id and orthoeman->id
         $rules[] = new restore_decode_rule('ORTHOEMANVIEWBYID', '/mod/orthoeman/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('ORTHOEMANVIEWBYF', '/mod/orthoeman/view.php?f=$1', 'orthoeman');
-        // Link to orthoeman discussion
-        $rules[] = new restore_decode_rule('ORTHOEMANDISCUSSIONVIEW', '/mod/orthoeman/discuss.php?d=$1', 'orthoeman_discussion');
-        // Link to discussion with parent and with anchor posts
-        $rules[] = new restore_decode_rule('ORTHOEMANDISCUSSIONVIEWPARENT', '/mod/orthoeman/discuss.php?d=$1&parent=$2',
-                                           array('orthoeman_discussion', 'orthoeman_post'));
-        $rules[] = new restore_decode_rule('ORTHOEMANDISCUSSIONVIEWINSIDE', '/mod/orthoeman/discuss.php?d=$1#$2',
-                                           array('orthoeman_discussion', 'orthoeman_post'));
+        $rules[] = new restore_decode_rule('ORTHOEMANVIEWBYN', '/mod/orthoeman/view.php?n=$1', 'orthoeman');
 
         return $rules;
     }
@@ -89,24 +81,6 @@ class restore_orthoeman_activity_task extends restore_activity_task {
         $rules[] = new restore_log_rule('orthoeman', 'update', 'view.php?id={course_module}', '{orthoeman}');
         $rules[] = new restore_log_rule('orthoeman', 'view', 'view.php?id={course_module}', '{orthoeman}');
         $rules[] = new restore_log_rule('orthoeman', 'view orthoeman', 'view.php?id={course_module}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'mark read', 'view.php?f={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'start tracking', 'view.php?f={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'stop tracking', 'view.php?f={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'subscribe', 'view.php?f={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'unsubscribe', 'view.php?f={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'subscriber', 'subscribers.php?id={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'subscribers', 'subscribers.php?id={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'view subscribers', 'subscribers.php?id={orthoeman}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'add discussion', 'discuss.php?d={orthoeman_discussion}', '{orthoeman_discussion}');
-        $rules[] = new restore_log_rule('orthoeman', 'view discussion', 'discuss.php?d={orthoeman_discussion}', '{orthoeman_discussion}');
-        $rules[] = new restore_log_rule('orthoeman', 'move discussion', 'discuss.php?d={orthoeman_discussion}', '{orthoeman_discussion}');
-        $rules[] = new restore_log_rule('orthoeman', 'delete discussi', 'view.php?id={course_module}', '{orthoeman}',
-                                        null, 'delete discussion');
-        $rules[] = new restore_log_rule('orthoeman', 'delete discussion', 'view.php?id={course_module}', '{orthoeman}');
-        $rules[] = new restore_log_rule('orthoeman', 'add post', 'discuss.php?d={orthoeman_discussion}&parent={orthoeman_post}', '{orthoeman_post}');
-        $rules[] = new restore_log_rule('orthoeman', 'update post', 'discuss.php?d={orthoeman_discussion}#p{orthoeman_post}&parent={orthoeman_post}', '{orthoeman_post}');
-        $rules[] = new restore_log_rule('orthoeman', 'prune post', 'discuss.php?d={orthoeman_discussion}', '{orthoeman_post}');
-        $rules[] = new restore_log_rule('orthoeman', 'delete post', 'discuss.php?d={orthoeman_discussion}', '[post]');
 
         return $rules;
     }
