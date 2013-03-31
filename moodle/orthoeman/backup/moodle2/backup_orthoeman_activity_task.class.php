@@ -57,20 +57,8 @@ class backup_orthoeman_activity_task extends backup_activity_task {
         $content= preg_replace($search, '$@ORTHOEMANVIEWBYID*$2@$', $content);
 
         // Link to orthoeman view by orthoemanid
-        $search="/(".$base."\/mod\/orthoeman\/view.php\?f\=)([0-9]+)/";
-        $content= preg_replace($search, '$@ORTHOEMANVIEWBYF*$2@$', $content);
-
-        // Link to orthoeman discussion with parent syntax
-        $search="/(".$base."\/mod\/orthoeman\/discuss.php\?d\=)([0-9]+)\&parent\=([0-9]+)/";
-        $content= preg_replace($search, '$@ORTHOEMANDISCUSSIONVIEWPARENT*$2*$3@$', $content);
-
-        // Link to orthoeman discussion with relative syntax
-        $search="/(".$base."\/mod\/orthoeman\/discuss.php\?d\=)([0-9]+)\#([0-9]+)/";
-        $content= preg_replace($search, '$@ORTHOEMANDISCUSSIONVIEWINSIDE*$2*$3@$', $content);
-
-        // Link to orthoeman discussion by discussionid
-        $search="/(".$base."\/mod\/orthoeman\/discuss.php\?d\=)([0-9]+)/";
-        $content= preg_replace($search, '$@ORTHOEMANDISCUSSIONVIEW*$2@$', $content);
+        $search="/(".$base."\/mod\/orthoeman\/view.php\?n\=)([0-9]+)/";
+        $content= preg_replace($search, '$@ORTHOEMANVIEWBYN*$2@$', $content);
 
         return $content;
     }
