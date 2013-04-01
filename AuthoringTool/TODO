@@ -41,3 +41,8 @@ Immediate:
 
 Open issues:
 	* Don't allow to save lessons if there are submitted answers
+
+
+	data_hex --> unxeh(data)
+	map parent_id
+	map ids in xml

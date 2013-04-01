@@ -36,7 +36,7 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
             $paths[] = new restore_path_element('orthoeman_answer', '/activity/orthoeman/answers/answer');
         }
 
-        $resource_id_map = array();
+        $this->resource_id_map = array();
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -53,7 +53,7 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function process_resource($data) {
+    protected function process_orthoeman_resource($data) {
         global $DB;
 
         $data = (object)$data;
@@ -63,6 +63,7 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
         $data->orthoeman_id = $this->get_new_parentid('orthoeman');
 
         $newitemid = $DB->insert_record('orthoeman_resource', $data);
+        $this->resource_id_map[$oldid] = $newitemid;
         $this->set_mapping('orthoeman_resource', $oldid, $newitemid);
     }
 
@@ -79,7 +80,7 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
     }
 
     protected function after_execute() {
-        error_log(json_encode($resource_id_map));
-        error_log(json_encode(this->get_mapping()));
+        error_log(json_encode($this->resource_id_map));
+        //error_log(json_encode($this->get_mapping('orthoeman_resource', 119)));
     }
 }
