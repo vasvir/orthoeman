@@ -39,6 +39,7 @@ global $ANSWER_TABLE;
 $ANSWER_TABLE = 'orthoeman_answer';
 // this should be RESOURCE_TYPE_* really
 $TYPE_XML = 'XML';
+global $TYPE_XML_VALUE;
 $TYPE_XML_VALUE = 0;
 $TYPE_IMAGE = 'IMAGE';
 $TYPE_IMAGE_VALUE = 1;

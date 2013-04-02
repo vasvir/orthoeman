@@ -22,8 +22,12 @@
 /**
  * Structure step to restore one orthoeman activity
  */
+require_once(dirname(__FILE__).'/../../lib.php');
+
 class restore_orthoeman_activity_structure_step extends restore_activity_structure_step {
     private $resource_id_map;
+    private $xml_id_map;
+    private $orthoeman_id;
 
     protected function define_structure() {
 
@@ -37,6 +41,7 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
         }
 
         $this->resource_id_map = array();
+        $this->xml_id_map = array();
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -50,20 +55,26 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
         $data->course = $this->get_courseid();
 
         $newitemid = $DB->insert_record('orthoeman', $data);
+        $this->orthoeman_id = $newitemid;
         $this->apply_activity_instance($newitemid);
     }
 
     protected function process_orthoeman_resource($data) {
-        global $DB;
+        global $DB, $TYPE_XML_VALUE;
 
         $data = (object)$data;
         $oldid = $data->id;
         $data->course = $this->get_courseid();
-
         $data->orthoeman_id = $this->get_new_parentid('orthoeman');
+        $data->data = $data->hex_data;
+        //error_log("resource: " . json_encode($data));
 
         $newitemid = $DB->insert_record('orthoeman_resource', $data);
         $this->resource_id_map[$oldid] = $newitemid;
+        //error_log("data->type: " . $data->type . " TYPE_XML_VALUE: " . $TYPE_XML_VALUE);
+        if ($data->type == $TYPE_XML_VALUE) {
+            $this->xml_id_map[$oldid] = $newitemid;
+        }
         $this->set_mapping('orthoeman_resource', $oldid, $newitemid);
     }
 
@@ -80,7 +91,24 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
     }
 
     protected function after_execute() {
-        error_log(json_encode($this->resource_id_map));
+        global $DB;
+
+        //error_log("orthoeman_id: ". json_encode($this->orthoeman_id));
+        //error_log("resources: " . json_encode($this->resource_id_map));
+        //error_log("xmls: " . json_encode($this->xml_id_map));
+
+        // unhex the data
+        $DB->execute('UPDATE {orthoeman_resource} SET data = unhex(data) 
+            WHERE orthoeman_id = ? AND id IN (' . implode(', ', $this->resource_id_map)  . ')', array($this->orthoeman_id));
+
+        foreach ($this->resource_id_map as $oldid => $newid) {
+            // map the parent ids
+            $DB->execute('UPDATE {orthoeman_resource} SET parent_id = ? 
+                WHERE orthoeman_id = ? AND parent_id = ?', array($newid, $this->orthoeman_id, $oldid));
+        }
+
+        // TODO: map the ids inside the xml
+
         //error_log(json_encode($this->get_mapping('orthoeman_resource', 119)));
     }
 }
