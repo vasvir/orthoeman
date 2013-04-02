@@ -93,7 +93,7 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
     protected function after_execute() {
         global $DB;
 
-        //error_log("orthoeman_id: ". json_encode($this->orthoeman_id));
+        //error_log("orthoeman_id: " . json_encode($this->orthoeman_id));
         //error_log("resources: " . json_encode($this->resource_id_map));
         //error_log("xmls: " . json_encode($this->xml_id_map));
 
@@ -107,8 +107,25 @@ class restore_orthoeman_activity_structure_step extends restore_activity_structu
                 WHERE orthoeman_id = ? AND parent_id = ?', array($newid, $this->orthoeman_id, $oldid));
         }
 
-        // TODO: map the ids inside the xml
+        // map the ids inside the xml
+        foreach ($this->xml_id_map as $old_xml_id => $new_xml_id) {
+            $replace_str = 'data';
+            $replace_cnt = 0;
+            foreach ($this->resource_id_map as $oldid => $newid) {
+                if ($oldid == $old_xml_id)
+                    continue;
+                $replace_str = "REPLACE($replace_str, 'id=\"$oldid\"', 'id=\"$newid\"')";
+                $replace_cnt++;
+            }
+            if ($replace_cnt) {
+                $DB->execute('UPDATE {orthoeman_resource} SET data = ' . $replace_str  . '
+                    WHERE orthoeman_id = ? AND id = ? AND type = 0', array($this->orthoeman_id, $new_xml_id));
+                $DB->execute('UPDATE {orthoeman_resource} SET md5 = md5(data) 
+                    WHERE orthoeman_id = ? AND id = ? AND type = 0', array($this->orthoeman_id, $new_xml_id));
+                //error_log("replace_str: " . $replace_str);
+            }
+        }
 
-        //error_log(json_encode($this->get_mapping('orthoeman_resource', 119)));
+        //error_log(json_encode($this->get_mapping('orthoeman_resource', $old_xml_id)));
     }
 }
