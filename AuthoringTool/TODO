@@ -36,7 +36,6 @@ Later:
 Immediate:
 	BUGS:
 		Authoring Tool:
-			Exception thrown in startup
 			Zoom level changing leads to zoom canvas resizing
 
 Open issues:
