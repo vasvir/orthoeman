@@ -401,9 +401,6 @@ public class AuthoringTool implements EntryPoint {
 							+ "px");
 		}
 
-		final int height_left = getHeightLeft();
-		resizeSecondaryContainers(page_width, height_left);
-
 		final Page page = getCurrentPage();
 		if (page == null
 				|| !Arrays.asList(page.getItemTypeCombination()).contains(
@@ -411,6 +408,9 @@ public class AuthoringTool implements EntryPoint {
 			Log.trace("Image does not exist. Nothing to redraw. Exiting...");
 			return;
 		}
+
+		final int height_left = getHeightLeft();
+		resizeSecondaryContainers(page_width, height_left);
 
 		final PreloadedImage img = page.getImageItem().getImage();
 		final Zoom zoom = page.getImageItem().getZoom();
