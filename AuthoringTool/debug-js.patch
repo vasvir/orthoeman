@@ -27,3 +27,16 @@ index b6d2775..4717fb9 100644
    <!-- Inherit the core Web Toolkit stuff.                        -->
    <inherits name='com.google.gwt.user.User'/>
  
+diff --git a/AuthoringTool/war/AuthoringTool.html b/AuthoringTool/war/AuthoringTool.html
+index e537896..94b4e1f 100644
+--- a/AuthoringTool/war/AuthoringTool.html
++++ b/AuthoringTool/war/AuthoringTool.html
+@@ -118,7 +118,7 @@
+ 					</button>
+ 				</div>
+ 				<div class="cell nowrap">
+-					<button id="debugButton" class="gwt-Button" style="display: none;" type="button" title="Debug">
++					<button id="debugButton" class="gwt-Button" type="button" title="Debug">
+ 						<img src="icons/Applications-development.svg" alt="Debug" width="24" height="24"/>
+ 					</button>
+ 					<button id="reportBugButton" class="gwt-Button" type="button" title="Report a bug...">
