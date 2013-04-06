@@ -34,7 +34,7 @@
           <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="76" column="54" selection-start="2778" selection-end="2778" vertical-scroll-proportion="0.0">
+                <state line="80" column="21" selection-start="2819" selection-end="2819" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -43,37 +43,16 @@
           <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="15" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="-9.375">
-                  <folding>
-                    <element signature="n#style#0;n#div#0;n#script#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#canvas#0;n#div#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#1;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#0;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#div#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#span#0;n#p#0;n#div#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#span#0;n#td#1;n#tr#1;n#table#0;n#script#8;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#td#0;n#tr#3;n#table#0;n#script#8;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#h2#0;n#div#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#p#0;n#div#5;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <element signature="n#style#0;n#span#0;n#p#0;n#div#5;n#body#0;n#html#0;n#!!top" expanded="true" />
-                    <marker date="1363997076000" expanded="true" signature="2021:2254" placeholder="..." />
-                    <marker date="1363997076000" expanded="true" signature="2089:2127" placeholder="..." />
-                  </folding>
+                <state line="21" column="0" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0">
+                  <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="149" column="0" selection-start="4713" selection-end="4713" vertical-scroll-proportion="0.6075515">
+                <state line="184" column="0" selection-start="6534" selection-end="6534" vertical-scroll-proportion="0.019767443">
                   <folding />
                 </state>
               </provider>
@@ -83,10 +62,10 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="1328" column="25" selection-start="50667" selection-end="50667" vertical-scroll-proportion="0.7963387">
+                <state line="1370" column="7" selection-start="52287" selection-end="52287" vertical-scroll-proportion="0.019767443">
                   <folding />
                 </state>
               </provider>
@@ -95,7 +74,7 @@
           <file leaf-file-name="ortho_interface.css" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="521" column="12" selection-start="9924" selection-end="9924" vertical-scroll-proportion="0.0">
+                <state line="525" column="12" selection-start="9987" selection-end="9987" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -135,10 +114,10 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="66" />
-    <option name="y" value="22" />
-    <option name="width" value="1854" />
-    <option name="height" value="1058" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -154,7 +133,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -165,98 +144,29 @@
       <autoscrollFromSource />
       <sortByType />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Display" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="css" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="FullScreen" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
   </component>
   <component name="PublishConfig" serverName="orthoeman" serverId="58bfadf1-dfd1-4d1c-b662-06ea7f02be7d" autoUpload="true">
     <servers>
-      <server id="58bfadf1-dfd1-4d1c-b662-06ea7f02be7d">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/usr/share/moodle/mod/orthoeman/Display" local="$PROJECT_DIR$" web="moodle/mod/orthoeman/Display" />
-          </mappings>
-        </serverdata>
+      <server id="4cc00224-3356-4aa1-9ec7-fb069a5a7e98">
+        <serverdata />
+      </server>
+      <server id="f4e5cb2b-fe5e-491b-9bdf-8883e8d73c17">
+        <serverdata />
       </server>
     </servers>
   </component>
@@ -327,10 +237,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="66" y="22" width="1854" height="1058" extended-state="0" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31702128" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938388" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -341,6 +250,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31769723" sideWeight="0.4944" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31702128" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -478,49 +388,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="54" selection-start="2778" selection-end="2778" vertical-scroll-proportion="0.0">
+        <state line="80" column="21" selection-start="2819" selection-end="2819" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="-9.375">
-          <folding>
-            <element signature="n#style#0;n#div#0;n#script#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#canvas#0;n#div#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#p#0;n#div#0;n#div#0;n#script#7;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#td#1;n#tr#1;n#table#0;n#script#8;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#3;n#table#0;n#script#8;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#h2#0;n#div#3;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#p#0;n#div#5;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#p#0;n#div#5;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <marker date="1363997076000" expanded="true" signature="2021:2254" placeholder="..." />
-            <marker date="1363997076000" expanded="true" signature="2089:2127" placeholder="..." />
-          </folding>
+        <state line="21" column="0" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="521" column="12" selection-start="9924" selection-end="9924" vertical-scroll-proportion="0.0">
+        <state line="525" column="12" selection-start="9987" selection-end="9987" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="149" column="0" selection-start="4713" selection-end="4713" vertical-scroll-proportion="0.6075515">
+        <state line="1370" column="7" selection-start="52287" selection-end="52287" vertical-scroll-proportion="0.019767443">
           <folding />
         </state>
       </provider>
