@@ -5,7 +5,7 @@
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1364027012904" ignored="false" />
-    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1368435021216" ignored="false" />
+    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1368442668006" ignored="false" />
     <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363996963847" ignored="false" />
     <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363083131044" ignored="false" />
     <file path="/ortho_interface.css" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363994879821" ignored="false" />
@@ -34,7 +34,16 @@
           <file leaf-file-name="sslayer.php" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="745" column="0" selection-start="24822" selection-end="24822" vertical-scroll-proportion="0.9351145">
+                <state line="742" column="14" selection-start="24770" selection-end="24770" vertical-scroll-proportion="0.71374047">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Core.php" pinned="false" current="false" current-in-tab="false">
+            <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/Core.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="537" column="9" selection-start="14551" selection-end="14551" vertical-scroll-proportion="-7.5384617">
                   <folding />
                 </state>
               </provider>
@@ -253,7 +262,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.10212998" sideWeight="0.6823028" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3170189" sideWeight="0.49626467" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3170189" sideWeight="0.49626467" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -330,11 +339,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../moodle/orthoeman/lib.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="429" column="33" selection-start="14134" selection-end="14134" vertical-scroll-proportion="0.24563445" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../moodle/orthoeman/get_resource.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="70" column="0" selection-start="2758" selection-end="2758" vertical-scroll-proportion="0.7454751" />
@@ -411,9 +415,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/Core.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="537" column="9" selection-start="14551" selection-end="14551" vertical-scroll-proportion="-7.5384617">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="745" column="0" selection-start="24822" selection-end="24822" vertical-scroll-proportion="0.9351145">
+        <state line="742" column="14" selection-start="24770" selection-end="24770" vertical-scroll-proportion="0.71374047">
           <folding />
         </state>
       </provider>
