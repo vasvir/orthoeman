@@ -738,11 +738,12 @@ function getHotSpotsNumber($image)
     //fb(get_object_vars($image));
     foreach (get_object_vars($image) as $key => $value) {
         if ($key != "@attributes") {
-            if (isset($value["isHotspot"])){
+            //fb(strval($value['isHotspot']));
+            //if (array_key_exists("isHotspot", $value)){
                 if (strval($value["isHotSpot"]) === "yes") {
                     $hotSpots++;
                 }
-            }
+            //}
 
         }
     }
