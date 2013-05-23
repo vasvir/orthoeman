@@ -40,3 +40,36 @@ Immediate:
 
 Open issues:
 	* Don't allow to save lessons if there are submitted answers
+
+
+Meeting in Valencia:
+
+	Authoring Tool
+		* BUG: Don't allow techers to save lessons with binary characters
+		* BUG: Don't allow to save ellipsis with zero size
+		* Wish: Allow to move areas
+		* Wish: Duplicate page / Use already loaded Image
+		* Doc: screencast for Auhoring Tool usage.  
+		* Doc: Tutorial created with authoring Tool
+
+	Display Tool:
+		* video should be scaled. Scrollbars are difficult to work with 1280x960
+		* BUG:display of images with zoom in and out creates artifacts (firefox latest)
+		* Wish: display number of current pages / total pages
+		* Wish: when you break out of the view page and return, it would be nice to return to the first unanswered page	
+		* BUG: Info areas should be immediately visible (Actually this is a required feature)
+		* Style: It's not easy to see what is disabled (Stavros...)
+		* Doc: screencast for Display Tool usage.
+		* Doc: Tutorial created with authoring Tool
+
+	moodle:
+		* BUG: enrollment key problem (when the account is created after the enrollment key. See if we can have enrollment to categories)
+		* BUG: Cannot find User Guide. Fixed in welcome page and rigth panel help
+		* Wish: Screen cast for moodle usage
+		* Doc: Better Welcome message with links and explanations
+		* Full screen mode when screen size is small
+
+	Discussion:
+		-In hotspots teacher decides if the correct answer is visible
+		-In quiz the correct answers are always visible
+		-In range quiz the correct value is never visible
