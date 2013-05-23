@@ -78,7 +78,7 @@ function get_url_data($url) {
 //echo $OUTPUT->footer();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($type == $TYPE_XML) {
-        $xml = urldecode(file_get_contents('php://input'));
+        $xml = clean_xml(urldecode(file_get_contents('php://input')));
 
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_XML_VALUE));
         if ($resource_rec) {

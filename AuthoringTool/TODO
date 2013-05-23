@@ -45,7 +45,6 @@ Open issues:
 Meeting in Valencia:
 
 	Authoring Tool
-		* BUG: Don't allow techers to save lessons with binary characters
 		* BUG: Don't allow to save ellipsis with zero size
 		* Wish: Allow to move areas
 		* Wish: Duplicate page / Use already loaded Image

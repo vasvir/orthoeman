@@ -779,3 +779,8 @@ function submit_grade($id, $n) {
     global $USER;
     return orthoeman_update_grades($orthoeman, $USER->id);
 }
+
+function clean_xml($xml) {
+    $pattern = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
+    return preg_replace($pattern, '', $xml);
+}
