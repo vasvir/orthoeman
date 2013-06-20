@@ -492,8 +492,10 @@ function addEvents(i, c, orig, imagesToLoad) {
 
     var tooltiplayer = new Kinetic.Layer({
         id: "tooltiplayer",
-        name: "tooltiplayer"
-        //throttle: 20
+        name: "tooltiplayer",
+        throttle: 20
+
+
 
     });
     var tooltip = new Kinetic.Text({
@@ -509,6 +511,7 @@ function addEvents(i, c, orig, imagesToLoad) {
         opacity: 1,
         id: "tooltip",
         name: "tooltip"
+
     });
     tooltiplayer.add(tooltip);
     stage.add(shapelayer);
@@ -757,15 +760,13 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
                     if (OrthoVariables.PageTracking[lessonPage].status === "pending") {
                         $("#pointer_" + id).removeClass().addClass("erasercursor");
                         var mousePos = mystage.getMousePosition();
-                        var x = (mousePos.x + 0) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
-                        var y = (mousePos.y + 0) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
+                        var x = (mousePos.x + 10) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
+                        var y = (mousePos.y + 15) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
                         drawTooltip(mytooltip, x, y, "click to remove");
                         var tween = new Kinetic.Tween({
                             node: this,
-                            scale: {
-                                x: 1.7,
-                                y: 1.7
-                            },
+                            scaleX: 1.7,
+                            scaleY: 1.7,
                             duration: 0.3,
                             easing: Kinetic.Easings.EaseOut
                         });
@@ -774,30 +775,38 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
 
                 });
                 circle.on("mouseout", function () {
-                    SetCursor(id);
-                    mytooltip.hide();
-                    //$.each( mytooltip.getChildren(), function() { this.remove();});
-                    //mytooltip.remove();
-                    mytooltip.getLayer().draw();
-                    var tween = new Kinetic.Tween({
-                        node: this,
-                        scale: {
-                            x: 1,
-                            y: 1
-                        },
-                        duration: 0.3,
-                        easing: Kinetic.Easings.EaseIn
-                    });
-                    tween.play();
+
+                    if (!OrthoVariables.clickcatch) {
+                        SetCursor(id);
+                        mytooltip.hide();
+                        var mytooltiplayer = mytooltip.getLayer();
+                        mytooltiplayer.get(".backgroundRect").remove();
+                        mytooltiplayer.draw();
+                        var tween = new Kinetic.Tween({
+                            node: this,
+                            scaleX: 1,
+                            scaleY: 1,
+                            duration: 0.3,
+                            easing: Kinetic.Easings.EaseIn
+                        });
+                        tween.play();
+                    }
+
                 });
                 circle.on("click", function () {
                     if (OrthoVariables.PageTracking[lessonPage].status === "pending") {
                         OrthoVariables.clickcatch = true;
-                        //myshapelayer.remove(this);
-                        this.remove();
+                        this.off("mouseout");
+                        this.off("mouseover");
+
                         OrthoVariables.lessonAnswers[lessonPage].hotspots[circle._id] = undefined;
                         var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
                         mytooltip.hide();
+                        var mytooltiplayer = mytooltip.getLayer();
+                        mytooltiplayer.get(".backgroundRect").remove();
+                        mytooltiplayer.draw();
+                        this.remove();
+                        //this.getLayer().draw();
                         mystage.draw();
                         SetCursor(id);
                         if (!isDraw) {
@@ -830,7 +839,20 @@ function drawTooltip(tooltip, x, y, text) {
     tooltip.setPosition(x, y );
     tooltip.show();
     tooltip.setScale(1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]), 1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
-    tooltip.getLayer().draw();
+    var tooltiplayer = tooltip.getLayer();
+
+    var rect = new Kinetic.Rect ({
+        x: x,
+        y: y,
+        height: tooltip.getHeight(),
+        width: tooltip.getWidth(),
+        fill: "black",
+        name: "backgroundRect"
+    })
+
+    tooltiplayer.add(rect);
+    rect.moveToBottom();
+    tooltiplayer.draw();
 
 }
 
@@ -850,7 +872,7 @@ function CheckShape(strID) {
     if (mousepos !== undefined) {
         var distance = Distance(OrthoVariables.line.startx, OrthoVariables.line.starty, mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]), mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
         if (OrthoVariables.line.prevline !== null && distance < OrthoVariables.linemindistance) {
-            var myshapelayer = mystage.get("#shapelayer")[0];
+            var myshapelayer = mystage.get(".shapelayer")[0];
             OrthoVariables.line.prevline.remove();
             OrthoVariables.line.prevline = null;
             myshapelayer.draw();
@@ -991,9 +1013,6 @@ function addAngleCircle(x, y, group, angle, mystage, point1, point2, point1A, po
         var langley = -1;
         var r_angle = 180 - parseInt(angle, 10);
         drawTooltip(leftAngleTip, langlex, langley, "Angles:       " + angle + "⁰,        " + r_angle + "⁰");
-        //console.log(x,y,point1, point2);
-        //console.log(moveAngleTip(point1.x,point2.x,x),moveAngleTipX(point1.y,point2.y,y));
-        //drawTooltip(rightAngleTip,x + (x-langlex),langley, 180 - angle);
         triangle1.show();
         triangle1A.show();
         triangle2.show();
@@ -1002,6 +1021,7 @@ function addAngleCircle(x, y, group, angle, mystage, point1, point2, point1A, po
         resetRectDims(rect2, 130);
         rect1.show();
         rect2.show();
+        rect1.moveToTop();
         leftAngleTip.getLayer().draw();
     });
 
@@ -1014,7 +1034,9 @@ function addAngleCircle(x, y, group, angle, mystage, point1, point2, point1A, po
         triangle2A.hide();
         rect1.hide();
         rect2.hide();
-        leftAngleTip.getLayer().draw();
+        var mytooltiplayer = leftAngleTip.getLayer();
+        mytooltiplayer.get(".backgroundRect").remove();
+        mytooltiplayer.draw();
     });
     group.add(leftAngleTip);
     group.add(triangle1);
@@ -1195,8 +1217,8 @@ function SetonLine(strID) {
             var mystage = obj.getStage();
             var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
             var mousepos = mystage.getMousePosition();
-            var x = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 15;
-            var y = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 10;
+            var x = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 10;
+            var y = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 5;
             drawTooltip(mytooltip, x, y, "click to remove");
         };
 
@@ -1207,7 +1229,9 @@ function SetonLine(strID) {
             {
                 var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
                 mytooltip.hide();
-                mytooltip.getLayer().draw();
+                var mytooltiplayer = mytooltip.getLayer();
+                mytooltiplayer.get(".backgroundRect").remove();
+                mytooltiplayer.draw();
             }
 
         };
@@ -1234,7 +1258,11 @@ function SetonLine(strID) {
             var mystage = this.getStage();
             var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
             mytooltip.hide();
-            mytooltip.getLayer().draw();
+            var mytooltiplayer = mytooltip.getLayer();
+            mytooltiplayer.get(".backgroundRect").remove();
+            mytooltiplayer.draw();
+            this.off("mouseout");
+            this.off("mouseover");
             this.remove();
             mylayer.draw();
             OrthoVariables.line.pressed = false;
@@ -1656,7 +1684,7 @@ function ReloadImage(id) {
         //mycanvas.getContext("2d").drawImage(canvasobj, 0, 0);
         $('#canvasid_' + id).get(0).getContext("2d").drawImage(OrthoVariables.origCanvas[id][0], 0, 0);
         var mystage = OrthoVariables.origCanvas[id][2];
-        var myshapelayer = mystage.get("#shapelayer")[0];
+        var myshapelayer = mystage.get(".shapelayer")[0];
         myshapelayer.removeChildren();
         if (OrthoVariables.lessonAnswers[id].hotspots.length > 0) {
             OrthoVariables.lessonAnswers[id].hotspots = [];
@@ -2320,7 +2348,7 @@ function ApplyHotspotResult(data, lessonPage, showMsg) {
         var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
         var id = lessonPage.toString();
         var mystage = OrthoVariables.origCanvas[id][2];
-        var myshapelayer = mystage.get("#answerlayer")[0];
+        var myshapelayer = mystage.get(".answerlayer")[0];
         myshapelayer.removeChildren();
         for (var i = 0; i < length; i++) {
             switch (data.PaintShapes[i][0]) {
