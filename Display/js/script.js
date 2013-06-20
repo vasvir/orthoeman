@@ -4,50 +4,60 @@
 
  TODO cruise mode
  TODO expose a function to get the total grade in sslayer
+ TODO BUG: when xml contains multiple hotspots it crashes. Lesson is not displayed at all.
+ TODO BUG: display of images with zoom in and out creates artifacts (firefox latest)
+ TODO BUG: Info areas should be immediately visible (Actually this is a required feature)
+ TODO Style: It's not easy to see which buttons are disabled (Stavros...)
+ TODO Wish: video should be scaled. Scrollbars are difficult to work with 1280x960
+ TODO Wish: display number of current pages / total pages
+ TODO Wish: when you break out of the view page and return, it would be nice to return to the first unanswered page
+ TODO Doc: screencast for Display Tool usage.
+ TODO Update kineticjs library
+ TODO Update JsRender library
 
  */
 
 
 var OrthoVariables = {
-    maxPages:5,
-    CurPage:1,
-    HeightFromBottom:120, //$('#navigation').height() - $('footer').height();
-    origCanvas:[], // is array with [0] original image, [1] imageurl, [2] stage [3] brightness [4] contrast, [5] is invert
+    maxPages: 5,
+    CurPage: 1,
+    HeightFromBottom: 120, //$('#navigation').height() - $('footer').height();
+    origCanvas: [], // is array with [0] original image, [1] imageurl, [2] stage [3] brightness [4] contrast, [5] is invert
     // scale:1, //official scale
-    scalePage:[], //scale for each page.
-    zoomPage:[], //zoom for each page
-    JsonUrl:"sslayer.php",
-    LessonData:"",
-    buttonState:[],
+    scalePage: [], //scale for each page.
+    zoomPage: [], //zoom for each page
+    JsonUrl: "sslayer.php",
+    LessonData: "",
+    buttonState: [],
     isLessonDisable: false,
     isLessonComplete: false,
-    line:{
-        "pressed":false,
-        startx:-1,
-        starty:-1,
-        "prevline":null,
-        "previnfotip":null,
-        id:0
+    line: {
+        "pressed": false,
+        startx: -1,
+        starty: -1,
+        "prevline": null,
+        "previnfotip": null,
+        id: 0
     },
-    msg_info:[],
-    msg_curIndex:0,
-    linemindistance:10,
-    clickcatch:false,
-    lessonAnswers:[],
-    lessonPage:-1,
-    InitialQueryString:[],
-    lessonLoaded:[],
-    MaxHotSpots:[],
-    spinControls:[],
-    PageTracking:[],
-    ColorRight:"#047816",
-    ColorRightEdge:"#285935",
-    ColorWrong:"#9C2100",
-    ColorWrongEdge:"#592835",
-    zoomMouse:{ isdown:false, x:-1, y:-1},
-    disableturn:true,
-    isOverAngleCircle:false,
-    loadedPreviousAnswer:[],
+    msg_info: [],
+    msg_curIndex: 0,
+    linemindistance: 10,
+    clickcatch: false,
+    lessonAnswers: [],
+    lessonPage: -1,
+    InitialQueryString: [],
+    lessonLoaded: [],
+    MaxHotSpots: [],
+    spinControls: [],
+    PageTracking: [],
+    ColorRight: "#047816",
+    ColorRightEdge: "#285935",
+    ColorWrong: "#9C2100",
+    ColorWrongEdge: "#592835",
+    zoomMouse: { isdown: false, x: -1, y: -1},
+    disableturn: true,
+    isOverAngleCircle: false,
+    loadedPreviousAnswer: [],
     finalGrade: 0
 };
 
@@ -58,16 +68,16 @@ $(document).ready(function () {
     $.pnotify.defaults.history = false;
     $("#NextTest").data("fire", true);
     $.prettyLoader({
-        animation_speed:'normal',
-        bind_to_ajax:true,
-        delay:false,
-        loader:'img/ajax-loader.gif'
+        animation_speed: 'normal',
+        bind_to_ajax: true,
+        delay: false,
+        loader: 'img/ajax-loader.gif'
     });
     document.onselectstart = function () {
         return false;
     };
-    $("#closeResults").click(function() {
-        $("#overlay").fadeOut('slow',function() {
+    $("#closeResults").click(function () {
+        $("#overlay").fadeOut('slow', function () {
             $(this).removeClass("waiting").addClass("overlay_hidden");
         });
         $("#shadow_pageresults2").fadeOut('slow');
@@ -76,24 +86,24 @@ $(document).ready(function () {
     OrthoVariables.InitialQueryString = getUrlVars();
     OrthoVariables.disableturn = OrthoVariables.InitialQueryString["DisablePaging"] || OrthoVariables.disableturn;
     //console.log("id:" + OrthoVariables.InitialQueryString["id"]);
-    $.getJSON(OrthoVariables.JsonUrl,{
-        "action":4,"orthoeman_id":OrthoVariables.InitialQueryString.id, "name":OrthoVariables.InitialQueryString.name
-    }, function(data) {
+    $.getJSON(OrthoVariables.JsonUrl, {
+        "action": 4, "orthoeman_id": OrthoVariables.InitialQueryString.id, "name": OrthoVariables.InitialQueryString.name
+    }, function (data) {
         var count = parseInt(data);
         if (count > 0) {
             initializeOrthoeMAN();
         }
         else {
             $("#dialog").dialog({
-                resizable:false,
-                height:235,
-                modal:true,
+                resizable: false,
+                height: 235,
+                modal: true,
                 buttons: {
-                    "Start Lesson" : function() {
+                    "Start Lesson": function () {
                         $(this).dialog("close");
                         initializeOrthoeMAN();
                     },
-                    "Cancel":function () {
+                    "Cancel": function () {
                         $(this).dialog("close");
                     }
                 }
@@ -103,10 +113,9 @@ $(document).ready(function () {
 });
 
 
-
 function initializeOrthoeMAN() {
     $.getJSON(OrthoVariables.JsonUrl, {
-        "action":1, "orthoeman_id":OrthoVariables.InitialQueryString.id, "name":OrthoVariables.InitialQueryString.name
+        "action": 1, "orthoeman_id": OrthoVariables.InitialQueryString.id, "name": OrthoVariables.InitialQueryString.name
     }, function (data) {
         OrthoVariables.LessonData = data;
         OrthoVariables.maxPages = 2 * (OrthoVariables.LessonData.Page.length + 1);
@@ -114,24 +123,24 @@ function initializeOrthoeMAN() {
         //initialize the buttonstates
         for (var i = 0; i < OrthoVariables.LessonData.Page.length; i++) {
             OrthoVariables.buttonState[i] = {
-                "b":false,
-                "c":false,
-                "l":false,
-                "t":false,
-                "h":false
+                "b": false,
+                "c": false,
+                "l": false,
+                "t": false,
+                "h": false
             };
             OrthoVariables.scalePage[i] = 1;
             OrthoVariables.zoomPage[i] = 1;
             OrthoVariables.PageTracking[i] = {
-                status:"pending",
-                grade:parseInt(OrthoVariables.LessonData.Page[i].attributes.Grade),
-                nextpass:false,
-                submitbutton:false,
-                theory:false
+                status: "pending",
+                grade: parseInt(OrthoVariables.LessonData.Page[i].attributes.Grade),
+                nextpass: false,
+                submitbutton: false,
+                theory: false
             };
             OrthoVariables.lessonAnswers[i] = {
-                quiz:[],
-                hotspots:[]
+                quiz: [],
+                hotspots: []
             };
         }
         displayFunctions();
@@ -183,10 +192,10 @@ function initializeOrthoeMAN() {
         }
 
         $('#counter').countdown('init', {
-            callback: function(d,h,m,s) {
-                checkCountDown(d,h,m,s);
+            callback: function (d, h, m, s) {
+                checkCountDown(d, h, m, s);
             },
-            timestamp:(new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1000
+            timestamp: (new Date()).getTime() + OrthoVariables.LessonData.Timeout * 1000
         }).hide();
         $('#counter_small').click(function () {
             $(this).hide();
@@ -195,8 +204,6 @@ function initializeOrthoeMAN() {
             });
         });
         checkIsFinished();
-
-
 
 
     });
@@ -209,21 +216,21 @@ function checkIsFinished() {
     }
 }
 
-function disableLesson(){
-    if (OrthoVariables.isLessonComplete === false)   {
+function disableLesson() {
+    if (OrthoVariables.isLessonComplete === false) {
         $("#overlay").removeClass("overlay_hidden").addClass("waiting");
-        $("#overlay_msg").css('display','block');
-        $("#shadow_overlay_msg").css('display','block');
+        $("#overlay_msg").css('display', 'block');
+        $("#shadow_overlay_msg").css('display', 'block');
         OrthoVariables.isLessonDisable = true;
     }
 }
 
 function normalizeGrades() {
     var finalGrade = 0;
-    for (var i=0;i< OrthoVariables.PageTracking.length;i++) {
+    for (var i = 0; i < OrthoVariables.PageTracking.length; i++) {
         if (OrthoVariables.PageTracking[i].theory === false) {
 
-            if (OrthoVariables.LessonData.Tracking[i]!== undefined) {
+            if (OrthoVariables.LessonData.Tracking[i] !== undefined) {
                 var answer = JSON.parse(OrthoVariables.LessonData.Tracking[i].answer);
                 OrthoVariables.PageTracking[i].status = answer.myanswer.Answer;
                 OrthoVariables.PageTracking[i].grade = parseFloat(answer.grade);
@@ -231,10 +238,10 @@ function normalizeGrades() {
             finalGrade += OrthoVariables.PageTracking[i].grade;
         }
     }
-    OrthoVariables.finalGrade =   (finalGrade < 0) ? 0 : Math.round(finalGrade);
+    OrthoVariables.finalGrade = (finalGrade < 0) ? 0 : Math.round(finalGrade);
 }
 
-function lessonFinalized (showPage) {
+function lessonFinalized(showPage) {
     showPage = !!(typeof showPage === "undefined");
     OrthoVariables.isLessonComplete = true;
 
@@ -248,9 +255,9 @@ function lessonFinalized (showPage) {
     }
 }
 
-function checkCountDown(d,h,m,s) {
-    var secsLeft = d*86400 + h*3600 +m*60 + s;
-    if (secsLeft<= 0) {
+function checkCountDown(d, h, m, s) {
+    var secsLeft = d * 86400 + h * 3600 + m * 60 + s;
+    if (secsLeft <= 0) {
         var question = {
             action: 3,
             orthoeman_id: OrthoVariables.InitialQueryString.id
@@ -259,10 +266,10 @@ function checkCountDown(d,h,m,s) {
             url: OrthoVariables.JsonUrl,
             data: question
         }).done(function (data) {
-               if (parseInt(data) <= 0) {
-                   $('#counter').countdown('destroy');
-                   disableLesson();
-               }
+                if (parseInt(data) <= 0) {
+                    $('#counter').countdown('destroy');
+                    disableLesson();
+                }
             });
     }
 }
@@ -280,14 +287,13 @@ function updateCounter() {
             //console.log(data);
             $('#counter').countdown('destroy');
             $('#counter').countdown('init', {
-                callback: function(d,h,m,s) {
-                    checkCountDown(d,h,m,s);
+                callback: function (d, h, m, s) {
+                    checkCountDown(d, h, m, s);
                 },
                 timestamp: (new Date()).getTime() + data * 1000
             }).hide();
         });
 }
-
 
 
 function getUrlVars() {
@@ -308,9 +314,9 @@ function LoadVideo(Page) {
     for (var wid in OrthoVariables.LessonData.Page[Page].Widget) {
         if (OrthoVariables.LessonData.Page[Page].Widget[wid].type === "video") {
             $("#video_" + OrthoVariables.LessonData.Page[Page].Widget[wid].Video.id).mediaelementplayer({
-                enableAutosize:true,
-                pauseOtherPlayers:true,
-                features: ['playpause','progress','duration','volume']
+                enableAutosize: true,
+                pauseOtherPlayers: true,
+                features: ['playpause', 'progress', 'duration', 'volume']
             });
             OrthoVariables.lessonLoaded[parseInt(Page)];
         }
@@ -350,7 +356,7 @@ function changedSpinControl(sender, newVal) {
     var id = sender.Tag;
     if (OrthoVariables.lessonPage === Number(id)) {
         EnableButtonLink("SubmitAnswer");
-        OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].input = {value:newVal};
+        OrthoVariables.lessonAnswers[OrthoVariables.lessonPage].input = {value: newVal};
     }
 
 }
@@ -366,17 +372,17 @@ function loadPreviousAnswers(Page) {
                     switch (tracking.type) {
                         case "0": // Input
                             loadSpinControl(Page);
-                            applyInputUserResponse(data.userrespond,Page);
-                            applyInputResult(data.myanswer,parseInt(Page),false);
+                            applyInputUserResponse(data.userrespond, Page);
+                            applyInputResult(data.myanswer, parseInt(Page), false);
                             break;
                         case "1": // Draw Hotspots
                             OrthoVariables.PageTracking[Page].status = 'pending';
                             applyHotspotUserResponse(data.userrespond, Page);
-                            ApplyHotspotResult(data.myanswer, parseInt(Page),false);
+                            ApplyHotspotResult(data.myanswer, parseInt(Page), false);
                             break;
                         case "2": //quiz
-                            applyQuizUserResponse(data.userrespond,parseInt(Page));
-                            ApplyQuizResult(data.myanswer, parseInt(Page),false);
+                            applyQuizUserResponse(data.userrespond, parseInt(Page));
+                            ApplyQuizResult(data.myanswer, parseInt(Page), false);
                             break;
 
                     }
@@ -400,7 +406,7 @@ function loadLessonPage_old(Page) {
                 switch (tracking.Type) {
                     case 0: // Input
                         OrthoVariables.spinControls[OrthoVariables.lessonPage].SetCurrentValue(tracking);
-                            OrthoVariables.spinControls[OrthoVariables.lessonPage].SetDisabled(true);
+                        OrthoVariables.spinControls[OrthoVariables.lessonPage].SetDisabled(true);
                         break;
                     case 1: // Draw Hotspots
                         $.each(tracking.Hotspots, function () {
@@ -413,11 +419,10 @@ function loadLessonPage_old(Page) {
                 }
                 // Set the variables so to be answered
                 var answer = (tracking.Results === true ) ? "correct" : "answer";
-                PageTracking(answer,"no");
+                PageTracking(answer, "no");
                 CheckReadyNextText(answer, "no");
 
-                if (tracking.Results === true )
-                {
+                if (tracking.Results === true) {
                     $("#Page" + id).css("background", "url('img/bg_correct.png')").css('text-shadow', 'none');
                 }
                 else //wrong answer
@@ -433,199 +438,204 @@ function loadLessonPage_old(Page) {
 }
 
 
-function addEvents(i, c , orig,imagesToLoad) {
+function addEvents(i, c, orig, imagesToLoad) {
     OrthoVariables.origCanvas[imagesToLoad[i].id] = [orig, imagesToLoad[i].url, undefined , 0, 0, false, false ];
-        //OrthoVariables.origCanvas[imagesToLoad[i].id][6] = (imagesToLoad[i].EnableTracking === "yes");
-        OrthoVariables.MaxHotSpots[imagesToLoad[i].id] = imagesToLoad[i].MaxSpots;
-        //sliders
-        $('#slider_b_' + imagesToLoad[i].id).slider({
-            range:"max",
-            min:-100,
-            max:100,
-            value:0,
-            slide:function (event, ui) {
-                var id = this.id.substr(this.id.lastIndexOf("_") + 1, this.id.length);
-                var value = ui.value / 100;
-                OrthoVariables.origCanvas[id][3] = value;
-                ApplyImageOperations(id);
-            }
-        });
-        $('#slider_c_' + imagesToLoad[i].id).slider({
-            range:"max",
-            min:-100,
-            max:100,
-            value:0,
-            slide:function (event, ui) {
-                var id = getID(this.id);
-                var value = ui.value / 100;
-                OrthoVariables.origCanvas[id][4] = value;
-                ApplyImageOperations(id);
-            }
-        });
-        //for shapes
-        var stage = new Kinetic.Stage({
-            container:"container_" + imagesToLoad[i].id,
-            width:c.width,
-            height:c.height,
-            listen:true
-        });
-
-        var shapelayer = new Kinetic.Layer({
-            id:"shapelayer"
-        });
-        var answerlayer = new Kinetic.Layer({
-            id:"answerlayer"
-        });
-
-        var trackingLayer = new Kinetic.Layer({
-            id:"trackinglayer"
-        });
-
-
-        var tooltiplayer = new Kinetic.Layer({
-            id:"tooltiplayer",
-            throttle:20
-
-        });
-        var tooltip = new Kinetic.Text({
-            text:"",
-            textFill:"#FFCDC1",
-            fontFamily:"MerriweatherRegular,Georgia",
-            fontSize:9,
-            verticalAlign:"middle",
-            lineHeight:1,
-            padding:6,
-            fill:"black",
-            visible:false,
-            opacity:0.75,
-            id:"tooltip"
-        });
-        tooltiplayer.add(tooltip);
-        stage.add(shapelayer);
-        stage.add(trackingLayer);
-        stage.add(tooltiplayer);
-        stage.add(answerlayer);
-        OrthoVariables.origCanvas[imagesToLoad[i].id][2] = stage;
-
-        $("#pointer_" + imagesToLoad[i].id).mousedown(function (e) {
-            if (!OrthoVariables.line.pressed &&  !OrthoVariables.buttonState[OrthoVariables.lessonPage]['h']) {
-                $(this).addClass("movecursor");
-                OrthoVariables.zoomMouse.isdown = true;
-                OrthoVariables.zoomMouse.x = e.pageX;
-                OrthoVariables.zoomMouse.y = e.pageY;
-            }
-        });
-
-        $("#pointer_" + imagesToLoad[i].id).mousemove({id:imagesToLoad[i].id}, function (e) {
-            if (OrthoVariables.zoomMouse.isdown && OrthoVariables.buttonState[OrthoVariables.lessonPage]['h'] === false) {
-                var nx = e.pageX - OrthoVariables.zoomMouse.x;
-                var ny = e.pageY - OrthoVariables.zoomMouse.y;
-                OrthoVariables.zoomMouse.x = e.pageX;
-                OrthoVariables.zoomMouse.y = e.pageY;
-                var top = parseFloat($(this).css("top")) + ny;
-                var left = parseFloat($(this).css("left")) + nx;
-                //console.log($(this).parent().height(),  $(this).height());
-                var mintop = $(this).parent().height() - $(this).height();
-                var minleft = $(this).parent().width() - $(this).width();
-                if (top < mintop) {
-                    top = mintop;
-                }
-
-                if (left < minleft) {
-                    left = minleft;
-                }
-
-                if (left > 0) {
-                    left = 0;
-                }
-                if (top > 0) {
-                    top = 0;
-                }
-                $(this).css("left", left).css("top", top);
-                //console.log($(this).attr('id'), e.data.id);
-                //OrthoVariables.origCanvas[e.data.id][2].draw();
-
-            }
-        });
-
-        $("#pointer_" + imagesToLoad[i].id).mouseleave(function () {
-            $(this).removeClass("movecursor");
-            OrthoVariables.zoomMouse.isdown = false;
-            OrthoVariables.zoomMouse.x = OrthoVariables.zoomMouse.y = -1;
-        });
-
-        $("#pointer_" + imagesToLoad[i].id).mouseup(function () {
-            $(this).removeClass("movecursor");
-            OrthoVariables.zoomMouse.isdown = false;
-            OrthoVariables.zoomMouse.x = OrthoVariables.zoomMouse.y = -1;
-        });
-        $("#container_" + imagesToLoad[i].id).click({
-            "pos":imagesToLoad[i].HotSpots
-        }, function (event) {
+    //OrthoVariables.origCanvas[imagesToLoad[i].id][6] = (imagesToLoad[i].EnableTracking === "yes");
+    OrthoVariables.MaxHotSpots[imagesToLoad[i].id] = imagesToLoad[i].MaxSpots;
+    //sliders
+    $('#slider_b_' + imagesToLoad[i].id).slider({
+        range: "max",
+        min: -100,
+        max: 100,
+        value: 0,
+        slide: function (event, ui) {
+            var id = this.id.substr(this.id.lastIndexOf("_") + 1, this.id.length);
+            var value = ui.value / 100;
+            OrthoVariables.origCanvas[id][3] = value;
+            ApplyImageOperations(id);
+        }
+    });
+    $('#slider_c_' + imagesToLoad[i].id).slider({
+        range: "max",
+        min: -100,
+        max: 100,
+        value: 0,
+        slide: function (event, ui) {
             var id = getID(this.id);
-            if (OrthoVariables.buttonState[id]['h'] === true) {
-                var ishotspots = event.data.pos;
-                var mystage = OrthoVariables.origCanvas[id][2];
-                var mousepos = mystage.getMousePosition();
-                if (mousepos !== undefined) {
-                    drawCircleHotSpot(id, mousepos.x, mousepos.y, ishotspots, OrthoVariables.lessonPage, false);
-                }
-            }
-        });
-        $("#container_" + imagesToLoad[i].id).mousedown(function () {
-            if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"]) {
-                var id = getID(this.id);
-                var mystage = OrthoVariables.origCanvas[id][2];
-                var mousepos = mystage.getMousePosition();
-                if (mousepos !== undefined) {
-                    OrthoVariables.line.pressed = true;
-                    OrthoVariables.line.startx = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
-                    OrthoVariables.line.starty = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
-                }
-            }
-        });
+            var value = ui.value / 100;
+            OrthoVariables.origCanvas[id][4] = value;
+            ApplyImageOperations(id);
+        }
+    });
+    //for shapes
+    var stage = new Kinetic.Stage({
+        container: "container_" + imagesToLoad[i].id,
+        width: c.width,
+        height: c.height,
+        listen: true
+    });
 
-        $("#container_" + imagesToLoad[i].id).mousemove(function () {
-            if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"] && OrthoVariables.line.pressed) {
-                DrawShape(this.id);
-            }
-            var imgID = getID(this.id);
-            if (OrthoVariables.buttonState[imgID]['t']) {
-                DrawTrackingLines(imgID);
-            }
-        });
+    var shapelayer = new Kinetic.Layer({
+        id: "shapelayer",
+        name: "shapelayer"
+    });
+    var answerlayer = new Kinetic.Layer({
+        id: "answerlayer",
+        name: "answerlayer"
+    });
 
-        $("#container_" + imagesToLoad[i].id).mouseup(function () {
-            if (OrthoVariables.buttonState[OrthoVariables.lessonPage].l && OrthoVariables.line.pressed) {
-                DrawShape(this.id);
-                SetonLine(this.id);
-                CheckShape(this.id);
-                OrthoVariables.line.pressed = false;
-                OrthoVariables.line.startx = -1;
-                OrthoVariables.line.starty = -1;
-                OrthoVariables.line.prevline = null;
-                OrthoVariables.line.id++;
+    var trackingLayer = new Kinetic.Layer({
+        id: "trackinglayer",
+        name: "trackinglayer"
+    });
+
+
+    var tooltiplayer = new Kinetic.Layer({
+        id: "tooltiplayer",
+        name: "tooltiplayer"
+        //throttle: 20
+
+    });
+    var tooltip = new Kinetic.Text({
+        text: "",
+        fill: "#FFCDC1",
+        fontFamily: "MerriweatherRegular,Georgia",
+        fontSize: 14,
+        verticalAlign: "middle",
+        lineHeight: 1,
+        padding: 6,
+        //fill:"black",
+        visible: false,
+        opacity: 1,
+        id: "tooltip",
+        name: "tooltip"
+    });
+    tooltiplayer.add(tooltip);
+    stage.add(shapelayer);
+    stage.add(trackingLayer);
+    stage.add(tooltiplayer);
+    stage.add(answerlayer);
+    OrthoVariables.origCanvas[imagesToLoad[i].id][2] = stage;
+
+    $("#pointer_" + imagesToLoad[i].id).mousedown(function (e) {
+        if (!OrthoVariables.line.pressed && !OrthoVariables.buttonState[OrthoVariables.lessonPage]['h']) {
+            $(this).addClass("movecursor");
+            OrthoVariables.zoomMouse.isdown = true;
+            OrthoVariables.zoomMouse.x = e.pageX;
+            OrthoVariables.zoomMouse.y = e.pageY;
+        }
+    });
+
+    $("#pointer_" + imagesToLoad[i].id).mousemove({id: imagesToLoad[i].id}, function (e) {
+        if (OrthoVariables.zoomMouse.isdown && OrthoVariables.buttonState[OrthoVariables.lessonPage]['h'] === false) {
+            var nx = e.pageX - OrthoVariables.zoomMouse.x;
+            var ny = e.pageY - OrthoVariables.zoomMouse.y;
+            OrthoVariables.zoomMouse.x = e.pageX;
+            OrthoVariables.zoomMouse.y = e.pageY;
+            var top = parseFloat($(this).css("top")) + ny;
+            var left = parseFloat($(this).css("left")) + nx;
+            //console.log($(this).parent().height(),  $(this).height());
+            var mintop = $(this).parent().height() - $(this).height();
+            var minleft = $(this).parent().width() - $(this).width();
+            if (top < mintop) {
+                top = mintop;
             }
 
-        });
-
-        $("#container_" + imagesToLoad[i].id).mouseout(function () {
-            if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"] && OrthoVariables.line.pressed) {
-                SetonLine(this.id);
-                CheckShape(this.id);
-
-                OrthoVariables.line.pressed = false;
-                OrthoVariables.line.startx = -1;
-                OrthoVariables.line.starty = -1;
-                OrthoVariables.line.prevline = null;
-                OrthoVariables.line.id++;
-            }
-            var imgID = getID(this.id);
-            if (OrthoVariables.buttonState[imgID]['t']) {
-                clearTrackingLines(imgID);
+            if (left < minleft) {
+                left = minleft;
             }
 
-        });
+            if (left > 0) {
+                left = 0;
+            }
+            if (top > 0) {
+                top = 0;
+            }
+            $(this).css("left", left).css("top", top);
+            //console.log($(this).attr('id'), e.data.id);
+            //OrthoVariables.origCanvas[e.data.id][2].draw();
+
+        }
+    });
+
+    $("#pointer_" + imagesToLoad[i].id).mouseleave(function () {
+        $(this).removeClass("movecursor");
+        OrthoVariables.zoomMouse.isdown = false;
+        OrthoVariables.zoomMouse.x = OrthoVariables.zoomMouse.y = -1;
+    });
+
+    $("#pointer_" + imagesToLoad[i].id).mouseup(function () {
+        $(this).removeClass("movecursor");
+        OrthoVariables.zoomMouse.isdown = false;
+        OrthoVariables.zoomMouse.x = OrthoVariables.zoomMouse.y = -1;
+    });
+    $("#container_" + imagesToLoad[i].id).click({
+        "pos": imagesToLoad[i].HotSpots
+    }, function (event) {
+        var id = getID(this.id);
+        if (OrthoVariables.buttonState[id]['h'] === true) {
+            var ishotspots = event.data.pos;
+            var mystage = OrthoVariables.origCanvas[id][2];
+            var mousepos = mystage.getMousePosition();
+            if (mousepos !== undefined && mystage !== undefined) {
+                drawCircleHotSpot(id, mousepos.x, mousepos.y, ishotspots, OrthoVariables.lessonPage, false);
+            }
+        }
+    });
+    $("#container_" + imagesToLoad[i].id).mousedown(function () {
+        if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"]) {
+            var id = getID(this.id);
+            var mystage = OrthoVariables.origCanvas[id][2];
+            var mousepos = mystage.getMousePosition();
+            if (mousepos !== undefined && mystage !== undefined) {
+                OrthoVariables.line.pressed = true;
+                OrthoVariables.line.startx = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
+                OrthoVariables.line.starty = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
+            }
+        }
+    });
+
+    $("#container_" + imagesToLoad[i].id).mousemove(function () {
+        if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"] && OrthoVariables.line.pressed) {
+            DrawShape(this.id);
+        }
+        var imgID = getID(this.id);
+        if (OrthoVariables.buttonState[imgID]['t']) {
+            DrawTrackingLines(imgID);
+        }
+    });
+
+    $("#container_" + imagesToLoad[i].id).mouseup(function () {
+        if (OrthoVariables.buttonState[OrthoVariables.lessonPage].l && OrthoVariables.line.pressed) {
+            DrawShape(this.id);
+            SetonLine(this.id);
+            CheckShape(this.id);
+            OrthoVariables.line.pressed = false;
+            OrthoVariables.line.startx = -1;
+            OrthoVariables.line.starty = -1;
+            OrthoVariables.line.prevline = null;
+            OrthoVariables.line.id++;
+        }
+
+    });
+
+    $("#container_" + imagesToLoad[i].id).mouseout(function () {
+        if (OrthoVariables.buttonState[OrthoVariables.lessonPage]["l"] && OrthoVariables.line.pressed) {
+            SetonLine(this.id);
+            CheckShape(this.id);
+
+            OrthoVariables.line.pressed = false;
+            OrthoVariables.line.startx = -1;
+            OrthoVariables.line.starty = -1;
+            OrthoVariables.line.prevline = null;
+            OrthoVariables.line.id++;
+        }
+        var imgID = getID(this.id);
+        if (OrthoVariables.buttonState[imgID]['t']) {
+            clearTrackingLines(imgID);
+        }
+
+    });
 }
 
 function LoadImages(Page) {
@@ -641,11 +651,15 @@ function LoadImages(Page) {
     }
 
     /*if (Page < OrthoVariables.LessonData.Page.length) {
-        if (OrthoVariables.LessonData.Page[Page].Widget[0].type === "video" || OrthoVariables.LessonData.Page[Page].Widget[1].type === "video")
-        { LoadVideo(Page); }
-    } */
-    if (Page < OrthoVariables.LessonData.Page.length && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) { LoadVideo(Page); }
-    if ( (Number(Page) + 1) < OrthoVariables.LessonData.Page.length && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) { LoadVideo(Number(Page) + 1); }
+     if (OrthoVariables.LessonData.Page[Page].Widget[0].type === "video" || OrthoVariables.LessonData.Page[Page].Widget[1].type === "video")
+     { LoadVideo(Page); }
+     } */
+    if (Page < OrthoVariables.LessonData.Page.length && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) {
+        LoadVideo(Page);
+    }
+    if ((Number(Page) + 1) < OrthoVariables.LessonData.Page.length && OrthoVariables.lessonLoaded[parseInt(Page)] === undefined) {
+        LoadVideo(Number(Page) + 1);
+    }
 
 
     for (i = 0; i < imagesToLoad.length; i++) {
@@ -657,49 +671,48 @@ function LoadImages(Page) {
          hide: "fold"
          });*/
         var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
-        $('#canvasid_' + imagesToLoad[i].id).css("background","url("+imagesToLoad[i].url +")");
+        $('#canvasid_' + imagesToLoad[i].id).css("background", "url(" + imagesToLoad[i].url + ")");
         //console.log("Step:",i,1)
         /*c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
-        var orig = document.createElement('canvas');
-        orig.width = c.width;
-        orig.height = c.height;
-        orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });*/
-
+         var orig = document.createElement('canvas');
+         orig.width = c.width;
+         orig.height = c.height;
+         orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });*/
 
 
         //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
-        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url,{i : i,page:Page, c : c, imagesToLoad:imagesToLoad  }).done(function(data) {
+        c.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i: i, page: Page, c: c, imagesToLoad: imagesToLoad  }).done(function (data) {
             //console.log("Step:",data.i,4);
-            if(typeof G_vmlCanvasManager != 'undefined') {
+            if (typeof G_vmlCanvasManager != 'undefined') {
                 data.c = G_vmlCanvasManager.initElement(data.c);
             }
             var orig = document.createElement('canvas');
             orig.width = data.c.width;
             orig.height = data.c.height;
-            orig.getContext("2d").drawImage(data.c, 0 , 0);
-            if(typeof G_vmlCanvasManager != 'undefined') {
+            orig.getContext("2d").drawImage(data.c, 0, 0);
+            if (typeof G_vmlCanvasManager != 'undefined') {
                 orig = G_vmlCanvasManager.initElement(orig);
             }
-            addEvents(data.i,data.c, orig, data.imagesToLoad);
+            addEvents(data.i, data.c, orig, data.imagesToLoad);
             OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
             CheckResizeLimits(data.imagesToLoad[data.i].id);
             //if (data.i===0) {
-                loadPreviousAnswers((parseInt(data.page) + data.i).toString());
+            loadPreviousAnswers((parseInt(data.page) + data.i).toString());
             //    loadPreviousAnswers("0");
             //}
 
             //console.log("Step:",data.i,5);
         });
-        
-        
-       //
-        
+
+
+        //
+
 
     }
     /*OrthoVariables.lessonLoaded[parseInt(Page)] = true;
-    if (counter > 0) {
-        CheckResizeLimits(Page);
-    }*/
+     if (counter > 0) {
+     CheckResizeLimits(Page);
+     }*/
 
 }
 
@@ -709,11 +722,11 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
     // var id = getID(this.id);
     var mystage = OrthoVariables.origCanvas[id][2];
     //console.log(id);
-    var mousepos = {"x":x, "y":y};
+    var mousepos = {"x": x, "y": y};
     if (mousepos !== undefined) {
 
-        var myshapelayer = mystage.get("#shapelayer")[0];
-        var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
+        var myshapelayer = mystage.get(".shapelayer")[0];
+        var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
         if (!OrthoVariables.buttonState[lessonPage].l && ishotspots === "yes") {
             if (OrthoVariables.PageTracking[lessonPage].status === "correct") {
                 ShowMsg("You already answer it!", "highlight");
@@ -723,37 +736,40 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
                 ShowMsg("You already answer it!", "highlight");
                 return true;
             }
-            var shapes = mystage.getIntersections({
-                x:mousepos.x / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]),
-                y:mousepos.y / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage])
+            var shapes = mystage.getIntersection({
+                x: mousepos.x / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]),
+                y: mousepos.y / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage])
             });
-            if (shapes.length === 0) {
+            if (shapes === null) {
                 var circle = new Kinetic.Circle({
-                    x:mousepos.x / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]),
-                    y:mousepos.y / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]),
-                    radius:10,
-                    fill:"#cb842e",
-                    stroke:"#cbb48f",
-                    strokeWidth:1,
-                    opacity:0.5,
-                    id:"circle_" + id
+                    x: mousepos.x / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]),
+                    y: mousepos.y / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]),
+                    radius: 10,
+                    fill: "#cb842e",
+                    stroke: "#cbb48f",
+                    strokeWidth: 1,
+                    opacity: 0.5,
+                    id: "circle_" + id,
+                    name: "circle_" + id
                 });
 
                 circle.on("mouseover", function () {
                     if (OrthoVariables.PageTracking[lessonPage].status === "pending") {
                         $("#pointer_" + id).removeClass().addClass("erasercursor");
                         var mousePos = mystage.getMousePosition();
-                        var x = (mousePos.x + 5) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
-                        var y = (mousePos.y + 10) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
+                        var x = (mousePos.x + 0) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
+                        var y = (mousePos.y + 0) / (OrthoVariables.scalePage[lessonPage] * OrthoVariables.zoomPage[lessonPage]);
                         drawTooltip(mytooltip, x, y, "click to remove");
-                        this.transitionTo({
-                            scale:{
-                                x:1.7,
-                                y:1.7
+                        var tween = new Kinetic.Tween({
+                            node: this,
+                            scale: {
+                                x: 1.7,
+                                y: 1.7
                             },
-                            duration:0.3,
-                            easing:'ease-out'
+                            duration: 0.3,
+                            easing: Kinetic.Easings.EaseOut
                         });
+                        tween.play();
                     }
 
                 });
@@ -763,15 +779,16 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
                     //$.each( mytooltip.getChildren(), function() { this.remove();});
                     //mytooltip.remove();
                     mytooltip.getLayer().draw();
-                    this.transitionTo({
-                        scale:{
-                            x:1,
-                            y:1
+                    var tween = new Kinetic.Tween({
+                        node: this,
+                        scale: {
+                            x: 1,
+                            y: 1
                         },
-
-                        duration:0.3,
-                        easing:'ease-in'
+                        duration: 0.3,
+                        easing: Kinetic.Easings.EaseIn
                     });
+                    tween.play();
                 });
                 circle.on("click", function () {
                     if (OrthoVariables.PageTracking[lessonPage].status === "pending") {
@@ -779,7 +796,7 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
                         //myshapelayer.remove(this);
                         this.remove();
                         OrthoVariables.lessonAnswers[lessonPage].hotspots[circle._id] = undefined;
-                        var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
+                        var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
                         mytooltip.hide();
                         mystage.draw();
                         SetCursor(id);
@@ -810,7 +827,7 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
 function drawTooltip(tooltip, x, y, text) {
     "use strict";
     tooltip.setText(text);
-    tooltip.setPosition(x, y + 10);
+    tooltip.setPosition(x, y );
     tooltip.show();
     tooltip.setScale(1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]), 1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
     tooltip.getLayer().draw();
@@ -850,13 +867,14 @@ function checkIntersections(id) {
     var mystage = OrthoVariables.origCanvas[id][2];
     //var mousepos = mystage.getMousePosition();
     var groupline = OrthoVariables.line.prevline;
-    var line = groupline.get("#" + groupline.getId())[0];
+    //var line = groupline.get("#" + groupline.getId())[0];
+    var line = groupline.get("Line")[0];
     var points = line.getPoints();
     var prevlines = line.getLayer().getChildren();
     for (var l in prevlines) {
         if (prevlines[l] instanceof Kinetic.Group) {
             if (prevlines[l].getId() !== line.getId()) {
-                var t_points = prevlines[l].get("#" + prevlines[l].getId())[0].getPoints();
+                var t_points = prevlines[l].get("Line")[0].getPoints();
                 var intersectPoint = lineToLineIntersect(points[0].x, points[0].y, points[1].x, points[1].y, t_points[0].x, t_points[0].y, t_points[1].x, t_points[1].y);
                 if (intersectPoint.x !== 0 || intersectPoint.y !== 0) {
                     var p1 = minPointY(points[0], points[1], intersectPoint);
@@ -899,79 +917,78 @@ function maxPointY(pointA, pointB, pointX) {
 function addAngleCircle(x, y, group, angle, mystage, point1, point2, point1A, point2A) {
     "use strict";
     var circle = new Kinetic.Circle({
-        x:x, // / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
-        y:y, // / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
-        radius:10,
-        fill:"#FF550C",
-        stroke:"#ff0000",
-        strokeWidth:1,
-        opacity:0.7
+        x: x, // / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
+        y: y, // / (OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]),
+        radius: 10,
+        fill: "#FF550C",
+        stroke: "#ff0000",
+        strokeWidth: 1,
+        opacity: 0.7
         //id:"circle_" + id
     });
 
     var leftAngleTip = new Kinetic.Text({
-        text:"",
-        textFill:"#DDDDDD",
-        fontFamily:"MerriweatherRegular,Georgia",
-        fontSize:11,
-        fontStyle:"normal",
-        verticalAlign:"left",
-        fill:"black",
-        lineHeight:1,
-        padding:13,
+        text: "",
+        fill: "#DDDDDD",
+        fontFamily: "MerriweatherRegular,Georgia",
+        fontSize: 14,
+        fontStyle: "normal",
+        verticalAlign: "left",
+        lineHeight: 1,
+        padding: 13,
         //fill:"black",
-        visible:false,
-        opacity:1
+        visible: false,
+        opacity: 1
         //id:"leftAngleTip"
     });
 
     var triangle1 = new Kinetic.Polygon({
-        points:[x, y, point1.x, point1.y, point2.x, point2.y],
-        fill:"#F74E0C",
-        stroke:"#ff0000",
-        strokeWidth:1,
-        opacity:0.4,
-        visible:false
+        points: [x, y, point1.x, point1.y, point2.x, point2.y],
+        fill: "#F74E0C",
+        stroke: "#ff0000",
+        strokeWidth: 1,
+        opacity: 0.4,
+        visible: false
     });
 
     var triangle1A = triangle1.clone({
-        points:[x, y, point1A.x, point1A.y, point2A.x, point2A.y]
+        points: [x, y, point1A.x, point1A.y, point2A.x, point2A.y]
     });
 
 
     var triangle2 = triangle1.clone({
-        points:[x, y, point1.x, point1.y, point2A.x, point2A.y],
-        fill:"#38A008", stroke:"#00ff00"
+        points: [x, y, point1.x, point1.y, point2A.x, point2A.y],
+        fill: "#38A008", stroke: "#00ff00"
     });
 
     var triangle2A = triangle2.clone({
-        points:[x, y, point1A.x, point1A.y, point2.x, point2.y]
+        points: [x, y, point1A.x, point1A.y, point2.x, point2.y]
     });
 
     var rect1 = new Kinetic.Rect({
-        fill:"#F74E0C",
-        stroke:"#ff0000",
-        strokeWidth:1,
-        opacity:0.7,
-        visible:false,
-        x:72,
-        y:8,
-        width:20,
-        height:20
+        fill: "#F74E0C",
+        stroke: "#ff0000",
+        strokeWidth: 1,
+        opacity: 0.7,
+        visible: false,
+        x: 72,
+        y: 8,
+        width: 20,
+        height: 20
     });
 
     var rect2 = rect1.clone({
-        x:130,
-        y:8,
-        fill:"#38A008",
-        stroke:"#00ff00"
+        x: 130,
+        y: 8,
+        fill: "#38A008",
+        stroke: "#00ff00"
     });
     //group.setVisible(false);
 
     circle.on("mouseover", function () {
         OrthoVariables.isOverAngleCircle = true;
         var langlex = 0;
-        var langley = -10;
+        var langley = -1;
         var r_angle = 180 - parseInt(angle, 10);
         drawTooltip(leftAngleTip, langlex, langley, "Angles:       " + angle + "⁰,        " + r_angle + "⁰");
         //console.log(x,y,point1, point2);
@@ -1013,10 +1030,10 @@ function addAngleCircle(x, y, group, angle, mystage, point1, point2, point1A, po
 function resetRectDims(rect, x) {
     var size = rect.getSize();
     var pos = rect.getPosition();
-    size.width = 20 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
-    size.height = 20 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
-    pos.x = x / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
-    pos.y = 8 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage]*OrthoVariables.scalePage[OrthoVariables.lessonPage]);
+    size.width = 20 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage] * OrthoVariables.scalePage[OrthoVariables.lessonPage]);
+    size.height = 20 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage] * OrthoVariables.scalePage[OrthoVariables.lessonPage]);
+    pos.x = x / (OrthoVariables.zoomPage[OrthoVariables.lessonPage] * OrthoVariables.scalePage[OrthoVariables.lessonPage]);
+    pos.y = 8 / (OrthoVariables.zoomPage[OrthoVariables.lessonPage] * OrthoVariables.scalePage[OrthoVariables.lessonPage]);
     rect.setPosition(pos.x, pos.y);
     rect.setSize(size.width, size.height);
 
@@ -1048,7 +1065,7 @@ function moveAngleTipY(y1, y2, y) {
 function lineToLineIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
     "use strict";
     var UBottom, Ua, Ub, interceptX, interceptY;
-    var i = {b:false, x:0, y:0};
+    var i = {b: false, x: 0, y: 0};
     UBottom = ((y4 - y3) * (x2 - x1)) - ((x4 - x3) * (y2 - y1));
     if (UBottom !== 0) {
         Ua = (((x4 - x3) * (y1 - y3)) - ((y4 - y3) * (x1 - x3))) / UBottom;
@@ -1069,7 +1086,7 @@ function lineToLineIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
 function clearTrackingLines(canvasID) {
     "use strict";
     var mystage = OrthoVariables.origCanvas[canvasID][2];
-    var mytracking = mystage.get("#trackinglayer")[0];
+    var mytracking = mystage.get(".trackinglayer")[0];
     mytracking.removeChildren();
     mytracking.draw();
 }
@@ -1082,31 +1099,31 @@ function DrawTrackingLines(canvasID) {
     var height = mystage.getHeight() / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
     var strokecolor = "#227BAB";
     if (mousepos !== undefined) {
-        var mytracking = mystage.get("#trackinglayer")[0];
+        var mytracking = mystage.get(".trackinglayer")[0];
         mytracking.removeChildren();
         var x1 = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
         var y1 = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
         var lineHorizontal = new Kinetic.Line({
-            points:[
-                { x:0, y:y1},
-                {x:width, y:y1}
+            points: [
+                { x: 0, y: y1},
+                {x: width, y: y1}
             ],
-            stroke:strokecolor,
-            lineCap:"butt",
-            opacity:0.7,
-            strokeWidth:3,
-            dashArray:[10, 5]
+            stroke: strokecolor,
+            lineCap: "butt",
+            opacity: 0.7,
+            strokeWidth: 3,
+            dashArray: [10, 5]
         });
         var lineVertical = new Kinetic.Line({
-            points:[
-                { x:x1, y:0},
-                {x:x1, y:height}
+            points: [
+                { x: x1, y: 0},
+                {x: x1, y: height}
             ],
-            stroke:strokecolor,
-            lineCap:"butt",
-            opacity:0.7,
-            strokeWidth:3,
-            dashArray:[10, 5]
+            stroke: strokecolor,
+            lineCap: "butt",
+            opacity: 0.7,
+            strokeWidth: 3,
+            dashArray: [10, 5]
         });
         mytracking.add(lineHorizontal);
         mytracking.add(lineVertical);
@@ -1120,8 +1137,8 @@ function DrawShape(strid) {
     var shapeid = OrthoVariables.line.id;
     var mystage = OrthoVariables.origCanvas[id][2];
     var mousepos = mystage.getMousePosition();
-    if (mousepos !== undefined) {
-        var myshapelayer = mystage.get("#shapelayer")[0];
+    if (mousepos !== undefined && mystage.get(".shapelayer")[0] !== undefined) {
+        var myshapelayer = mystage.get(".shapelayer")[0];
 
         if (OrthoVariables.line.prevline !== null) {
             //myshapelayer.remove(OrthoVariables.line.prevline);
@@ -1132,47 +1149,26 @@ function DrawShape(strid) {
         var x1 = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
         var y1 = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
         var line = new Kinetic.Line({
-            points:[
-                {x:OrthoVariables.line.startx, y:OrthoVariables.line.starty },
-                {x:x1, y:y1}
+            points: [
+                {x: OrthoVariables.line.startx, y: OrthoVariables.line.starty },
+                {x: x1, y: y1}
             ],
-            fill:"orange",
-            stroke:"orange",
-            strokeWidth:5,
-            id:"line_" + shapeid
+            fill: "orange",
+            stroke: "orange",
+            strokeWidth: 5,
+            id: "line_" + shapeid,
+            name: "line_" + shapeid
         });
 
-        var linegroup = new Kinetic.Group({id:"line_" + shapeid});
+        var linegroup = new Kinetic.Group({
+            id: "line_" + shapeid,
+            name: "line_" + shapeid
+        });
         linegroup.add(line);
-        /*var distance =  Math.round(10*EuclideanDistance(OrthoVariables.line.startx ,OrthoVariables.line.starty,x1, y1))/100;
-         var text = "Distance :\t " + distance + "cm \nHorizontal Angle:\t " + horizAngle(OrthoVariables.line.startx ,OrthoVariables.line.starty,x1, y1) + "°";
-         var infotip = new Kinetic.Text({
-         x: OrthoVariables.line.startx + Math.round((x1 - OrthoVariables.line.startx )/2) ,
-         y: OrthoVariables.line.starty +  Math.round((y1 - OrthoVariables.line.starty )/2),
-         text:text,
-         textFill:"white",
-         fontFamily:"MerriweatherRegular,Georgia",
-         fontSize:12,
-         lineHeight: 1.4,
-         verticalAlign:"bottom",
-         align: "left",
-         padding:4,
-         fill:"black",
-         visible:true,
-         opacity:0.75,
-         id:"infotip_"+shapeid,
-         cornerRadius: 5
-         //scale: [OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage],OrthoVariables.scalePage[OrthoVariables.lessonPage]*OrthoVariables.zoomPage[OrthoVariables.lessonPage]]
-         });   */
 
-
-        //var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
 
         myshapelayer.add(linegroup);
-        //myshapelayer.add(infotip)
         OrthoVariables.line.prevline = linegroup;
-        //OrthoVariables.line.previnfotip = infotip;
-        //line.saveData();
         myshapelayer.draw();
     }
 }
@@ -1192,72 +1188,60 @@ function horizAngle(x1, y1, x2, y2) {
 function SetonLine(strID) {
     var id = getID(strID);
     var line = OrthoVariables.line.prevline;
-    //var infotip = OrthoVariables.line.previnfotip;
+    if (line !== null) {
 
-    var mouseover_func = function (obj) {
-        $("#pointer_" + id).removeClass().addClass("erasercursor");
-        var mystage = obj.getStage();
-        var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
-        var mousepos = mystage.getMousePosition();
-        var x = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 15;
-        var y = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 10;
-        drawTooltip(mytooltip, x, y, "click to remove");
-    };
+        var mouseover_func = function (obj) {
+            $("#pointer_" + id).removeClass().addClass("erasercursor");
+            var mystage = obj.getStage();
+            var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
+            var mousepos = mystage.getMousePosition();
+            var x = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 15;
+            var y = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]) + 10;
+            drawTooltip(mytooltip, x, y, "click to remove");
+        };
 
-    var mouseout_func = function (obj, lid) {
-        SetCursor(lid);
-        var mystage = obj.getStage();
-        var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
-        mytooltip.hide();
-        mytooltip.getLayer().draw();
-    };
-    line.on("mouseover", function () {
-        if (!OrthoVariables.isOverAngleCircle) {
-            mouseover_func(this);
-        }
-    });
+        var mouseout_func = function (obj, lid) {
+            SetCursor(lid);
+            var mystage = obj.getStage();
+            if (mystage !== undefined)
+            {
+                var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
+                mytooltip.hide();
+                mytooltip.getLayer().draw();
+            }
 
-    //infotip.on("mouseover", function() { mouseover_func(this);});
+        };
+        line.on("mouseover", function () {
+            if (!OrthoVariables.isOverAngleCircle) {
+                mouseover_func(this);
+            }
+        });
+
+        //infotip.on("mouseover", function() { mouseover_func(this);});
 
 
-    line.on("mouseout", function () {
-        mouseout_func(this, id);
-    });
+        line.on("mouseout", function () {
+            mouseout_func(this, id);
+        });
 
-    //infotip.on("mouseout", function() {mouseout_func(this,id)});
+        //infotip.on("mouseout", function() {mouseout_func(this,id)});
 
-    line.on("click", function () {
-        OrthoVariables.clickcatch = true;
-        SetCursor(id);
-        var mylayer = this.getLayer();
-        var shapeid = this.getId().split('_')[1];
-        //mylayer.remove();
-        //mylayer.get("#infotip_"+shapeid)[0].remove();
-        this.remove();
-        //console.log(mylayer.get("#line_"+shapeid)[0]);
-        //mylayer.get("#line_"+shapeid)[0].remove();
-        //mylayer.remove(this);
-        mylayer.draw();
-        var mystage = this.getStage();
-        var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
-        mytooltip.hide();
-        mytooltip.getLayer().draw();
-    });
+        line.on("click", function () {
+            OrthoVariables.clickcatch = true;
+            SetCursor(id);
+            var mylayer = this.getLayer();
+            var shapeid = this.getId().split('_')[1];
+            var mystage = this.getStage();
+            var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
+            mytooltip.hide();
+            mytooltip.getLayer().draw();
+            this.remove();
+            mylayer.draw();
+            OrthoVariables.line.pressed = false;
 
-    /* infotip.on ("click", function() {
-     OrthoVariables.clickcatch = true;
-     SetCursor(id);
-     var mylayer = this.getLayer();
-     var shapeid = this.getId().split('_')[1];
-     mylayer.remove(mylayer.get("#line_"+shapeid)[0]);
-     mylayer.remove(this);
-     mylayer.draw();
-     var mystage = this.getStage();
-     var mytooltip = mystage.get("#tooltiplayer")[0].get("#tooltip")[0];
-     mytooltip.hide();
-     mytooltip.getLayer().draw();
+        });
 
-     });*/
+    }
 }
 
 function SetCursor(id) {
@@ -1281,7 +1265,7 @@ function getBrOrCo(strID) {
 
 
 function displayFunctions() {
-    $('#lesson').turn({duration:600});
+    $('#lesson').turn({duration: 600});
     $('#lesson').turn('size', $('#content_wrap').width(), $(window).height() - OrthoVariables.HeightFromBottom);
     //console.log("turn size:",$('#content_wrap').width());
     $('#lesson').turn('disable', OrthoVariables.disableturn);
@@ -1362,7 +1346,9 @@ function displayFunctions() {
 
 
         CheckResizeLimits();
-        if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {CheckResizeLimits(OrthoVariables.lessonPage + 1); }
+        if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
+            CheckResizeLimits(OrthoVariables.lessonPage + 1);
+        }
 
     });
 
@@ -1466,7 +1452,7 @@ function resize(id, newHeight, newWidth, page) {
         var ratio = OrthoVariables.origCanvas[id][0].width / OrthoVariables.origCanvas[id][0].height;
         var newWidth = Math.round(OrthoVariables.zoomPage[id] * OrthoVariables.scalePage[page] * OrthoVariables.origCanvas[id][0].width);
         var newHeight = Math.round(newWidth / ratio);
-        zoomResize(id, newHeight, newWidth,page);
+        zoomResize(id, newHeight, newWidth, page);
 
     }
 
@@ -1609,7 +1595,7 @@ function ShowOffImage(id, imgTarget) {
     }
 }
 
-function TogglePaint(action,id) {
+function TogglePaint(action, id) {
     if (!(OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "correct"
         || OrthoVariables.PageTracking[OrthoVariables.lessonPage].status === "wrong")) {
         switch (action) {
@@ -1767,13 +1753,13 @@ function DisableButtonLink(id) {
     }
     switch (id) {
         case "NextTest":
-            $("#" + id).animate({right:"-130px"}, 500, 'linear');
+            $("#" + id).animate({right: "-130px"}, 500, 'linear');
             break;
         case "PreviousTest":
-            $("#" + id).animate({left:"-130px"}, 500, 'linear');
+            $("#" + id).animate({left: "-130px"}, 500, 'linear');
             break;
         case "SubmitAnswer":
-            $("#" + id).animate({top:"-50px"}, 500, 'linear');
+            $("#" + id).animate({top: "-50px"}, 500, 'linear');
             break;
     }
 }
@@ -1793,7 +1779,7 @@ function EnableButtonLink(id) {
                     }
                 });
                 $('#lesson').turn('disable', OrthoVariables.disableturn);
-                $("#" + id).animate({right:"10px"}, 1000, 'easeOutElastic');
+                $("#" + id).animate({right: "10px"}, 1000, 'easeOutElastic');
                 break;
             case "PreviousTest":
                 $("#" + id).on("click", function () {
@@ -1801,14 +1787,14 @@ function EnableButtonLink(id) {
                         DecreasePage();
                     }
                 });
-                $("#" + id).animate({left:"10px"}, 1000, 'easeOutElastic');
+                $("#" + id).animate({left: "10px"}, 1000, 'easeOutElastic');
                 break;
             case "SubmitAnswer":
                 $("#" + id).on("click", function () {
                     SubmitAnswer();
                 });
                 OrthoVariables.PageTracking[OrthoVariables.lessonPage].submitbutton = true;
-                $("#" + id).animate({top:"+=50px"}, 1000, 'easeOutElastic');
+                $("#" + id).animate({top: "+=50px"}, 1000, 'easeOutElastic');
                 break;
         }
 
@@ -1846,16 +1832,16 @@ function newShowMsg(message, type) {
             break;
     }
 
-    var stack_bottomright = {"dir1":"up", "dir2":"left", "firstpos1":25, "firstpos2":25};
+    var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25};
     $.pnotify({
-        title:'Please Notice',
-        text:message,
-        icon:'ui-icon ' + vicon,
-        type:vtype,
-        opacity:.8,
-        addclass:"stack-bottomright",
-        stack:stack_bottomright,
-        hide:vhide
+        title: 'Please Notice',
+        text: message,
+        icon: 'ui-icon ' + vicon,
+        type: vtype,
+        opacity: .8,
+        addclass: "stack-bottomright",
+        stack: stack_bottomright,
+        hide: vhide
 
     });
 }
@@ -1864,9 +1850,9 @@ function newShowMsg(message, type) {
 function ShowMsg(message, type) {
     var id = ++OrthoVariables.msg_curIndex;
     $("#msg_area").append($("#msgboxTemplate").render({
-        "id":id,
-        "type":type,
-        "message":message
+        "id": id,
+        "type": type,
+        "message": message
     }));
     // Clear the timeout or stop animation when mouse over notification
     $("#msgbox_" + id).mouseenter(function () {
@@ -2005,12 +1991,11 @@ function SubmitAnswer() {
     $("#overlay").removeClass("overlay_hidden").addClass("waiting");
 }
 
-function checkFinal(data){
+function checkFinal(data) {
     if (data.final === "true") {
         lessonFinalized(false)
     }
 }
-
 
 
 function GetQuizQuestion() {
@@ -2125,32 +2110,31 @@ function applyQuizUserResponse(data, lessonPage) {
         }
     }
 
-    for (var i=0; i< ca.length;i++) {
-        if (ca[i].length > 0){
+    for (var i = 0; i < ca.length; i++) {
+        if (ca[i].length > 0) {
             OrthoVariables.lessonAnswers[lessonPage].quiz[ca[i]] = true;
             var name = ca[i] + ".answer_" + id;
-            $("[name='" + name + "']").prop('checked',true);
+            $("[name='" + name + "']").prop('checked', true);
             $("[name='" + name + "']").parent().addClass("quizselected");
         }
 
     }
 
 
-
 }
 
-function ApplyQuizResult(data,lessonPage, showMsg) {
+function ApplyQuizResult(data, lessonPage, showMsg) {
     lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
     showMsg = (typeof showMsg === "undefined") ? true : false;
-    var page = 2*lessonPage + 2;
+    var page = 2 * lessonPage + 2;
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(page,undefined,showMsg);
+        applyCorrectCue(page, undefined, showMsg);
     } else {
         myanswer = "wrong";
-        applyWrongCue(page,undefined, showMsg);
+        applyWrongCue(page, undefined, showMsg);
     }
     var length = data.PaintShapes.length;
     if (length > 0) {
@@ -2158,7 +2142,7 @@ function ApplyQuizResult(data,lessonPage, showMsg) {
         var subid = (mypage.Widget[0].type === "image") ? 0 : 1;
         var id = lessonPage.toString() //+ subid.toString();
         var mystage = OrthoVariables.origCanvas[id][2];
-        var myshapelayer = mystage.get("#answerlayer")[0];
+        var myshapelayer = mystage.get(".answerlayer")[0];
         myshapelayer.removeChildren();
         var fillcolor = (myanswer === "correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
 
@@ -2182,8 +2166,15 @@ function ApplyQuizResult(data,lessonPage, showMsg) {
         myshapelayer.draw();
         var childrens = myshapelayer.getChildren();
         for (var i = 0; i < childrens.length; i++) {
-            childrens[i].transitionTo({opacity:0.5, duration:2, easing:'ease-out'});
+            var tween = new Kinetic.Tween({
+                node: childrens[i],
+                opacity: 0.5,
+                duration: 2,
+                easing: Kinetic.Easings.EaseOut
+            });
+            tween.play();
         }
+
         myshapelayer.draw();
     }
 
@@ -2215,7 +2206,7 @@ function ApplyQuizColor(index, lessonPage) {
     }
     id = index + ".answer_" + id;
     var inputlelem = $("[name='" + id + "']");
-    inputlelem.parent().css("text-shadow", "1px 1px 0 black").stop(false, true).animate({backgroundColor:OrthoVariables.ColorRight, color:"white"}, 2000);
+    inputlelem.parent().css("text-shadow", "1px 1px 0 black").stop(false, true).animate({backgroundColor: OrthoVariables.ColorRight, color: "white"}, 2000);
 }
 
 function ApplyQuizColors(ca, lessonPage) {
@@ -2231,7 +2222,7 @@ function ApplyQuizColors(ca, lessonPage) {
     for (var i = 0; i < OrthoVariables.lessonAnswers[lessonPage].quiz.length; i++) {
         if (!Iscontains(i, ca) === true && OrthoVariables.lessonAnswers[lessonPage].quiz[i] === true) {
             var input = $("[name='" + i + ".answer_" + id + "']");
-            input.parent().removeClass("quizselected").css("text-shadow", "1px 1px 0 black").animate({backgroundColor:OrthoVariables.ColorWrong, color:"white"}, 2000);
+            input.parent().removeClass("quizselected").css("text-shadow", "1px 1px 0 black").animate({backgroundColor: OrthoVariables.ColorWrong, color: "white"}, 2000);
         }
 
     }
@@ -2251,25 +2242,25 @@ function Iscontains(value, tables) {
 }
 
 
-function applyInputUserResponse(data, lessonPage){
+function applyInputUserResponse(data, lessonPage) {
     OrthoVariables.spinControls[lessonPage].SetCurrentValue(data);
 }
 
-function applyInputResult(data,lessonPage,showMsg) {
+function applyInputResult(data, lessonPage, showMsg) {
     lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
     showMsg = (typeof showMsg === "undefined") ? true : false;
-    var page = 2*lessonPage + 2;
+    var page = 2 * lessonPage + 2;
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"];
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(page,undefined,showMsg);
+        applyCorrectCue(page, undefined, showMsg);
     }
     else {
         myanswer = "wrong";
-        applyWrongCue(page,undefined,showMsg);
+        applyWrongCue(page, undefined, showMsg);
     }
-    PageTracking(myanswer, blocked,lessonPage);
+    PageTracking(myanswer, blocked, lessonPage);
     CheckReadyNextText(myanswer, blocked);
     RemoveOverlay();
     if (!(blocked === "yes" && answer === "wrong")) {
@@ -2298,25 +2289,25 @@ function applyWrongCue(id, msg, showMsg) {
 }
 
 
-function applyHotspotUserResponse(data,lessonPage){
+function applyHotspotUserResponse(data, lessonPage) {
     $.each(data, function () {
         drawCircleHotSpot(lessonPage, this[0], this[1], "yes", lessonPage, true);
     });
 }
 
-function ApplyHotspotResult(data, lessonPage,showMsg) {
+function ApplyHotspotResult(data, lessonPage, showMsg) {
     lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
     showMsg = (typeof showMsg === "undefined") ? true : false;
-    var page = 2*lessonPage + 2;
+    var page = 2 * lessonPage + 2;
     var myanswer = "wrong";
     var blocked = OrthoVariables.LessonData.Page[lessonPage].attributes["Blocked"]
     if (data.Answer === "correct") {
         myanswer = "correct";
-        applyCorrectCue(page,undefined,showMsg);
+        applyCorrectCue(page, undefined, showMsg);
     }
     else {
         myanswer = "wrong";
-        applyWrongCue(page,undefined,showMsg);
+        applyWrongCue(page, undefined, showMsg);
     }
     var length = data.PaintShapes.length;
     //var fillcolor = (myanswer==="correct") ? OrthoVariables.ColorRight : OrthoVariables.ColorWrong;
@@ -2350,7 +2341,13 @@ function ApplyHotspotResult(data, lessonPage,showMsg) {
         //myshapelayer.draw();
         var childrens = myshapelayer.getChildren();
         for (var i = 0; i < childrens.length; i++) {
-            childrens[i].transitionTo({opacity:0.5, duration:2, easing:'ease-out'});
+            var tween = new Kinetic.Tween({
+                node: childrens[i],
+                opacity: 0.5,
+                duration: 2,
+                easing: Kinetic.Easings.EaseOut
+            });
+            tween.play();
         }
         myshapelayer.draw();
     }
@@ -2359,7 +2356,7 @@ function ApplyHotspotResult(data, lessonPage,showMsg) {
     RemoveOverlay();
 }
 
-function PageTracking(answer, blocked,lessonPage) {
+function PageTracking(answer, blocked, lessonPage) {
     lessonPage = (typeof lessonPage === "undefined") ? OrthoVariables.lessonPage : lessonPage;
     if (answer === "correct") {
         OrthoVariables.PageTracking[lessonPage].status = "correct";
@@ -2376,12 +2373,12 @@ function PageTracking(answer, blocked,lessonPage) {
 function getNormalizeGrade(Grade) {
     //calculate totalSum
     var totalSum = 0;
-    for (var i = 0;i< OrthoVariables.LessonData.Page.length;i++) {
+    for (var i = 0; i < OrthoVariables.LessonData.Page.length; i++) {
         if (!OrthoVariables.PageTracking[i].theory) {
             totalSum += parseFloat(OrthoVariables.LessonData.Page[i].attributes.Grade);
         }
     }
-    return Math.round(10*(100/totalSum)*Grade)/10;
+    return Math.round(10 * (100 / totalSum) * Grade) / 10;
 }
 
 function RemoveOverlay() {
@@ -2393,13 +2390,13 @@ function RemoveOverlay() {
 
 function PaintCircle(data, fillcolor, strokecolor) {
     var circle = new Kinetic.Circle({
-        x:data[1]["X"],
-        y:data[1]["Y"],
-        radius:parseInt(data[2]),
-        fill:fillcolor,
-        stroke:strokecolor,
-        strokeWidth:1,
-        opacity:0
+        x: data[1]["X"],
+        y: data[1]["Y"],
+        radius: parseInt(data[2]),
+        fill: fillcolor,
+        stroke: strokecolor,
+        strokeWidth: 1,
+        opacity: 0
     });
     return circle;
 }
@@ -2419,13 +2416,13 @@ function oldPaintEclipse(data, fillcolor, strokecolor) {  // for kinetic 3.9.4
         scalex = radx / rady;
     }
     var eclipse = new Kinetic.Circle({
-        x:data[1]["X"],
-        y:data[1]["Y"],
-        radius:radius,
-        fill:fillcolor,
-        stroke:strokecolor,
-        strokeWidth:1,
-        opacity:0
+        x: data[1]["X"],
+        y: data[1]["Y"],
+        radius: radius,
+        fill: fillcolor,
+        stroke: strokecolor,
+        strokeWidth: 1,
+        opacity: 0
     });
     eclipse.setScale(scalex, scaley);
     return eclipse;
@@ -2433,27 +2430,27 @@ function oldPaintEclipse(data, fillcolor, strokecolor) {  // for kinetic 3.9.4
 
 function PaintEclipse(data, fillcolor, strokecolor) {
     var eclipse = new Kinetic.Ellipse({
-        x:data[1]["X"],
-        y:data[1]["Y"],
-        radius:{x:data[2]["RadiusX"], y:data[2]["RadiusY"]},
-        fill:fillcolor,
-        stroke:strokecolor,
-        strokeWidth:1,
-        opacity:0
+        x: data[1]["X"],
+        y: data[1]["Y"],
+        radius: {x: data[2]["RadiusX"], y: data[2]["RadiusY"]},
+        fill: fillcolor,
+        stroke: strokecolor,
+        strokeWidth: 1,
+        opacity: 0
     });
     return eclipse;
 }
 
 function PaintRect(data, fillcolor, strokecolor) {
     var rect = new Kinetic.Rect({
-        x:data[1]["X"],
-        y:data[1]["Y"],
-        width:data[2],
-        height:data[3],
-        fill:fillcolor,
-        stroke:strokecolor,
-        strokeWidth:1,
-        opacity:0
+        x: data[1]["X"],
+        y: data[1]["Y"],
+        width: data[2],
+        height: data[3],
+        fill: fillcolor,
+        stroke: strokecolor,
+        strokeWidth: 1,
+        opacity: 0
     });
     return rect;
 }
@@ -2463,16 +2460,16 @@ function PaintPolygon(data, fillcolor, strokecolor) {
     var len = (data.length - 1);
     for (var i = 0; i < len; i++) {
         points[i] = {
-            x:parseInt(data[i + 1]["X"]),
-            y:parseInt(data[i + 1]["Y"])
+            x: parseInt(data[i + 1]["X"]),
+            y: parseInt(data[i + 1]["Y"])
         };
     }
     var poly = new Kinetic.Polygon({
-        points:points,
-        fill:fillcolor,
-        stroke:strokecolor,
-        strokeWidth:1,
-        opacity:0
+        points: points,
+        fill: fillcolor,
+        stroke: strokecolor,
+        strokeWidth: 1,
+        opacity: 0
     });
     return poly;
 }
