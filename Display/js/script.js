@@ -6,8 +6,6 @@
  TODO expose a function to get the total grade in sslayer
  TODO BUG: Info areas should be immediately visible (Actually this is a required feature)
  TODO Style: It's not easy to see which buttons are disabled (Stavros...)
- TODO Wish: video should be scaled. Scrollbars are difficult to work with 1280x960
- TODO Wish: display number of current pages / total pages
  TODO Wish: when you break out of the view page and return, it would be nice to return to the first unanswered page
  TODO Doc: screencast for Display Tool usage.
 
@@ -200,6 +198,8 @@ function initializeOrthoeMAN() {
             });
         });
         checkIsFinished();
+        $("#curPage").html(parseInt(OrthoVariables.CurPage/2));
+        $("#totalPage").html(parseInt(OrthoVariables.maxPages/2));
 
 
     });
@@ -1364,6 +1364,7 @@ function displayFunctions() {
         if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
             CheckResizeLimits(OrthoVariables.lessonPage + 1);
         }
+        $("#curPage").html(parseInt(OrthoVariables.CurPage/2));
 
     });
 
