@@ -12,6 +12,17 @@ Object.getPrototypeOf(document.createElement('canvas').getContext('2d')).zag_Loa
     var context = this;
     ImageObj.onload = function () {
         context.drawImage(this, 0, 0);
+        var imgd = context.getImageData(0,0, this.width, this.height);
+        var pixel = imgd.data;
+        for (var i=0;i<pixel.length;i+=4) {
+            if (pixel[i+3] === 0) {
+                pixel[i] = 255;
+                pixel[i+1] = 255;
+                pixel[i+2] = 255;
+                pixel[i+3] = 255;
+            }
+        }
+        context.putImageData(imgd,0 ,0);
         if (callback !== undefined) {
             callback(data);
         }
