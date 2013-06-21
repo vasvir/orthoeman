@@ -5,8 +5,7 @@
  TODO cruise mode
  TODO expose a function to get the total grade in sslayer
  TODO BUG: Info areas should be immediately visible (Actually this is a required feature)
- TODO Style: It's not easy to see which buttons are disabled (Stavros...)
- TODO Wish: when you break out of the view page and return, it would be nice to return to the first unanswered page
+ TODO BUG: when refresh and page go to a page, the hotspots does not draw as the corresponding image is not loaded yet.
  TODO Doc: screencast for Display Tool usage.
 
  */
@@ -200,6 +199,20 @@ function initializeOrthoeMAN() {
         checkIsFinished();
         $("#curPage").html(parseInt(OrthoVariables.CurPage/2));
         $("#totalPage").html(parseInt(OrthoVariables.maxPages/2));
+
+       if (OrthoVariables.LessonData["final"] === false) {
+           var maxpage = 0;
+           $.each(OrthoVariables.LessonData.Tracking, function(key,value) {
+               if (key > maxpage) maxpage = parseInt(key);
+           });
+
+           maxpage =  2*(maxpage+1);
+           for (i =2;i<=maxpage ;i+= 2) {
+               pageIsTurned(i);
+           }
+           $("#lesson").turn('page', maxpage + 2);
+       }
+
 
 
     });
@@ -687,7 +700,7 @@ function LoadImages(Page) {
             OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
             CheckResizeLimits(data.imagesToLoad[data.i].id);
             //if (data.i===0) {
-            loadPreviousAnswers((parseInt(data.page) + data.i).toString());
+            loadPreviousAnswers(data.imagesToLoad[data.i].id);
             //    loadPreviousAnswers("0");
             //}
 
@@ -1312,7 +1325,8 @@ function displayFunctions() {
         $("#PreviousTest").data("fire", false);
     });
     $('#lesson').bind('turned', function (e, page, pageObj) {
-        $("#NextTest").data("fire", true);
+        pageIsTurned(page);
+        /*$("#NextTest").data("fire", true);
         $("#PreviousTest").data("fire", true);
 
         OrthoVariables.CurPage = page % 2 === 0 && page !== 1 ? page + 1 : page;
@@ -1364,7 +1378,7 @@ function displayFunctions() {
         if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
             CheckResizeLimits(OrthoVariables.lessonPage + 1);
         }
-        $("#curPage").html(parseInt(OrthoVariables.CurPage/2));
+        $("#curPage").html(parseInt(OrthoVariables.CurPage/2));*/
 
     });
 
@@ -1374,6 +1388,64 @@ function displayFunctions() {
 
 
 }
+
+function pageIsTurned (newPage) {
+    $("#NextTest").data("fire", true);
+    $("#PreviousTest").data("fire", true);
+
+    OrthoVariables.CurPage = newPage % 2 === 0 && newPage !== 1 ? newPage + 1 : newPage;
+    var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages) ? -1 : ( Math.floor(OrthoVariables.CurPage / 2)) - 1;
+    OrthoVariables.lessonPage = lessonpage;
+    if (OrthoVariables.maxPages >= OrthoVariables.CurPage) {
+        ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
+        LoadImages((OrthoVariables.lessonPage + 1).toString());
+        loadSpinControl((OrthoVariables.lessonPage + 1).toString());
+        var nPage = OrthoVariables.lessonPage + 1;
+
+        if (OrthoVariables.LessonData.Page[nPage] != undefined) {
+            if (!(OrthoVariables.LessonData.Page[nPage].Widget[0].type === "image" || OrthoVariables.LessonData.Page[nPage].Widget[1].type === "image")) {
+                loadPreviousAnswers(nPage);
+            }
+        }
+        //setTracking((OrthoVariables.lessonPage + 1).toString());
+        //loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
+    }
+
+    if (OrthoVariables.CurPage <= 1) {
+        DisableButtonLink("PreviousTest");
+        EnableButtonLink("NextTest");
+        DisableButtonLink("SubmitAnswer");
+    }
+    else if (OrthoVariables.CurPage >= OrthoVariables.maxPages) {
+        EnableButtonLink("PreviousTest");
+        DisableButtonLink("NextTest");
+        DisableButtonLink("SubmitAnswer");
+    }
+    else {
+        EnableButtonLink("PreviousTest");
+        if (!OrthoVariables.PageTracking[lessonpage].nextpass) {
+            DisableButtonLink("NextTest");
+        }
+        else {
+            EnableButtonLink("NextTest");
+        }
+
+        if (OrthoVariables.PageTracking[lessonpage].submitbutton) {
+            EnableButtonLink("SubmitAnswer");
+        } else {
+            DisableButtonLink("SubmitAnswer");
+        }
+    }
+
+
+    CheckResizeLimits();
+    if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
+        CheckResizeLimits(OrthoVariables.lessonPage + 1);
+    }
+    $("#curPage").html(parseInt(OrthoVariables.CurPage/2));
+
+}
+
 
 // Image Functions
 function CheckResizeLimits(page) {
