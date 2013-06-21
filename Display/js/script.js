@@ -4,16 +4,12 @@
 
  TODO cruise mode
  TODO expose a function to get the total grade in sslayer
- TODO BUG: when xml contains multiple hotspots it crashes. Lesson is not displayed at all.
- TODO BUG: display of images with zoom in and out creates artifacts (firefox latest)
  TODO BUG: Info areas should be immediately visible (Actually this is a required feature)
  TODO Style: It's not easy to see which buttons are disabled (Stavros...)
  TODO Wish: video should be scaled. Scrollbars are difficult to work with 1280x960
  TODO Wish: display number of current pages / total pages
  TODO Wish: when you break out of the view page and return, it would be nice to return to the first unanswered page
  TODO Doc: screencast for Display Tool usage.
- TODO Update kineticjs library
- TODO Update JsRender library
 
  */
 
@@ -673,19 +669,10 @@ function LoadImages(Page) {
          show: "fold",
          hide: "fold"
          });*/
-        var c = $('#canvasid_' + imagesToLoad[i].id).get(0);
-        $('#canvasid_' + imagesToLoad[i].id).css("background", "url(" + imagesToLoad[i].url + ")");
-        //console.log("Step:",i,1)
-        /*c.getContext("2d").zag_LoadImage(imagesToLoad[i].url);
-         var orig = document.createElement('canvas');
-         orig.width = c.width;
-         orig.height = c.height;
-         orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });*/
-
-
-        //orig.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i : i, c : c, orig : orig, imagesToLoad:imagesToLoad  } ,function(data) { addEvents(data.i,data.c, data.orig, data.imagesToLoad); });
+        var imageToLoadvar = $('#canvasid_' + imagesToLoad[i].id);
+        var c = imageToLoadvar.get(0);
+        imageToLoadvar.css("background", "url(" + imagesToLoad[i].url + ")");
         c.getContext("2d").zag_LoadImage(imagesToLoad[i].url, {i: i, page: Page, c: c, imagesToLoad: imagesToLoad  }).done(function (data) {
-            //console.log("Step:",data.i,4);
             if (typeof G_vmlCanvasManager != 'undefined') {
                 data.c = G_vmlCanvasManager.initElement(data.c);
             }
@@ -836,19 +823,20 @@ function drawCircleHotSpot(id, x, y, ishotspots, lessonPage, isDraw) {
 function drawTooltip(tooltip, x, y, text) {
     "use strict";
     tooltip.setText(text);
-    tooltip.setPosition(x, y );
+    tooltip.setPosition(x, y);
     tooltip.show();
     tooltip.setScale(1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]), 1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
     var tooltiplayer = tooltip.getLayer();
 
-    var rect = new Kinetic.Rect ({
+    var rect = new Kinetic.Rect({
         x: x,
         y: y,
         height: tooltip.getHeight(),
         width: tooltip.getWidth(),
         fill: "black",
         name: "backgroundRect"
-    })
+    });
+    rect.setScale(1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]), 1 / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]));
 
     tooltiplayer.add(rect);
     rect.moveToBottom();
@@ -1163,10 +1151,7 @@ function DrawShape(strid) {
         var myshapelayer = mystage.get(".shapelayer")[0];
 
         if (OrthoVariables.line.prevline !== null) {
-            //myshapelayer.remove(OrthoVariables.line.prevline);
-            //myshapelayer.remove(OrthoVariables.line.previnfotip);
             OrthoVariables.line.prevline.remove();
-            //OrthoVariables.line.previnfotip.remove();
         }
         var x1 = mousepos.x / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
         var y1 = mousepos.y / (OrthoVariables.scalePage[OrthoVariables.lessonPage] * OrthoVariables.zoomPage[OrthoVariables.lessonPage]);
@@ -1225,8 +1210,7 @@ function SetonLine(strID) {
         var mouseout_func = function (obj, lid) {
             SetCursor(lid);
             var mystage = obj.getStage();
-            if (mystage !== undefined)
-            {
+            if (mystage !== undefined) {
                 var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
                 mytooltip.hide();
                 var mytooltiplayer = mytooltip.getLayer();
@@ -1251,21 +1235,24 @@ function SetonLine(strID) {
         //infotip.on("mouseout", function() {mouseout_func(this,id)});
 
         line.on("click", function () {
-            OrthoVariables.clickcatch = true;
-            SetCursor(id);
-            var mylayer = this.getLayer();
-            var shapeid = this.getId().split('_')[1];
-            var mystage = this.getStage();
-            var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
-            mytooltip.hide();
-            var mytooltiplayer = mytooltip.getLayer();
-            mytooltiplayer.get(".backgroundRect").remove();
-            mytooltiplayer.draw();
-            this.off("mouseout");
-            this.off("mouseover");
-            this.remove();
-            mylayer.draw();
-            OrthoVariables.line.pressed = false;
+            if (!OrthoVariables.isOverAngleCircle) {
+                OrthoVariables.clickcatch = true;
+                SetCursor(id);
+                var mylayer = this.getLayer();
+                var shapeid = this.getId().split('_')[1];
+                var mystage = this.getStage();
+                var mytooltip = mystage.get(".tooltiplayer")[0].get(".tooltip")[0];
+                mytooltip.hide();
+                var mytooltiplayer = mytooltip.getLayer();
+                mytooltiplayer.get(".backgroundRect").remove();
+                mytooltiplayer.draw();
+                this.off("mouseout");
+                this.off("mouseover");
+                this.remove();
+                mylayer.draw();
+                OrthoVariables.line.pressed = false;
+            }
+
 
         });
 
