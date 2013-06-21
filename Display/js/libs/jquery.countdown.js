@@ -18,7 +18,7 @@
     }
 
     var timeoutIDTick, timeoutIDTack;
-
+    var smallTimeSpan = $("#smalltime");
 
     var methods = {
         init: function (prop) {
@@ -78,7 +78,7 @@
 
             (function tack() {
                 var left_str = pad(d, 1) + "d " + pad(h, 2) + "h " + pad(m, 2) + "m";
-                $("#counter_small>span").html(left_str);
+                smallTimeSpan.html(left_str);
                 timeoutIDTack = setTimeout(tack, s*1000);
             })();
 
@@ -95,7 +95,7 @@
             clearTimeout(timeoutIDTack);
             clearTimeout(timeoutIDTick);
             this.empty();
-            $("#counter_small>span").empty();
+            smallTimeSpan.empty();
             return this;
         },
         stop: function () {
