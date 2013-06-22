@@ -3,8 +3,6 @@
 
 
  TODO cruise mode
- TODO expose a function to get the total grade in sslayer
- TODO BUG: Info areas should be immediately visible (Actually this is a required feature)
  TODO Doc: screencast for Display Tool usage.
 
  */
@@ -49,7 +47,7 @@ var OrthoVariables = {
     ColorInfo:"#041678",
     ColorInfoEdge: "#283559",
     zoomMouse: { isdown: false, x: -1, y: -1},
-    disableturn: false,
+    disableturn: true,
     isOverAngleCircle: false,
     loadedPreviousAnswer: [],
     finalGrade: 0,
