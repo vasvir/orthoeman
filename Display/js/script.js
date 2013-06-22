@@ -5,7 +5,6 @@
  TODO cruise mode
  TODO expose a function to get the total grade in sslayer
  TODO BUG: Info areas should be immediately visible (Actually this is a required feature)
- TODO BUG: when refresh and page go to a page, the hotspots does not draw as the corresponding image is not loaded yet.
  TODO Doc: screencast for Display Tool usage.
 
  */
@@ -51,7 +50,8 @@ var OrthoVariables = {
     disableturn: true,
     isOverAngleCircle: false,
     loadedPreviousAnswer: [],
-    finalGrade: 0
+    finalGrade: 0,
+    queue: { imgLoaded: [], funcQueue: [] }
 };
 
 
@@ -135,6 +135,9 @@ function initializeOrthoeMAN() {
                 quiz: [],
                 hotspots: []
             };
+            // enable the function queues
+            OrthoVariables.queue.imgLoaded[i] = false;
+            OrthoVariables.queue.funcQueue[i] = new Queue();
         }
         displayFunctions();
         LoadImages("0");
@@ -197,22 +200,24 @@ function initializeOrthoeMAN() {
             });
         });
         checkIsFinished();
-        $("#curPage").html(parseInt(OrthoVariables.CurPage/2));
-        $("#totalPage").html(parseInt(OrthoVariables.maxPages/2));
+        $("#curPage").html(parseInt(OrthoVariables.CurPage / 2));
+        $("#totalPage").html(parseInt(OrthoVariables.maxPages / 2));
 
-       if (OrthoVariables.LessonData["final"] === false) {
-           var maxpage = 0;
-           $.each(OrthoVariables.LessonData.Tracking, function(key,value) {
-               if (key > maxpage) maxpage = parseInt(key);
-           });
+        if (OrthoVariables.LessonData["final"] === false) {
+            var maxpage = 0;
+            $.each(OrthoVariables.LessonData.Tracking, function (key, value) {
+                if (key > maxpage) maxpage = parseInt(key);
+            });
 
-           maxpage =  2*(maxpage+1);
-           for (i =2;i<=maxpage ;i+= 2) {
-               pageIsTurned(i);
-           }
-           $("#lesson").turn('page', maxpage + 2);
-       }
+            if (maxpage > 0) {
+                maxpage = 2 * (maxpage + 1);
+                for (i = 2; i <= maxpage; i += 2) {
+                    pageIsTurned(i);
+                }
+                $("#lesson").turn('page', maxpage);
+            }
 
+        }
 
 
     });
@@ -385,9 +390,22 @@ function loadPreviousAnswers(Page) {
                             applyInputResult(data.myanswer, parseInt(Page), false);
                             break;
                         case "1": // Draw Hotspots
-                            OrthoVariables.PageTracking[Page].status = 'pending';
-                            applyHotspotUserResponse(data.userrespond, Page);
-                            ApplyHotspotResult(data.myanswer, parseInt(Page), false);
+                            if (OrthoVariables.queue.imgLoaded[Page] === true) {
+                                OrthoVariables.PageTracking[Page].status = 'pending';
+                                applyHotspotUserResponse(data.userrespond, Page);
+                                ApplyHotspotResult(data.myanswer, parseInt(Page), false);
+                            }
+                            else {
+                                OrthoVariables.queue.funcQueue[Page].enqueue((function (xdata, yPage) {
+                                    return function () {
+                                        OrthoVariables.PageTracking[yPage].status = 'pending';
+                                        applyHotspotUserResponse(xdata.userrespond, yPage);
+                                        ApplyHotspotResult(xdata.myanswer, parseInt(yPage), false);
+                                    }
+
+                                })(data,Page));
+                            }
+
                             break;
                         case "2": //quiz
                             applyQuizUserResponse(data.userrespond, parseInt(Page));
@@ -696,15 +714,16 @@ function LoadImages(Page) {
             if (typeof G_vmlCanvasManager != 'undefined') {
                 orig = G_vmlCanvasManager.initElement(orig);
             }
+            var thePage = data.imagesToLoad[data.i].id;
             addEvents(data.i, data.c, orig, data.imagesToLoad);
-            OrthoVariables.lessonLoaded[data.imagesToLoad[data.i].id] = true;
-            CheckResizeLimits(data.imagesToLoad[data.i].id);
-            //if (data.i===0) {
-            loadPreviousAnswers(data.imagesToLoad[data.i].id);
-            //    loadPreviousAnswers("0");
-            //}
+            OrthoVariables.lessonLoaded[thePage] = true;
+            CheckResizeLimits(thePage);
+            loadPreviousAnswers(thePage);
+            while (OrthoVariables.queue.funcQueue[thePage].isEmpty() === false) {
+               setTimeout(OrthoVariables.queue.funcQueue[thePage].dequeue(), 500);
+            }
+            OrthoVariables.queue.imgLoaded[thePage] = true;
 
-            //console.log("Step:",data.i,5);
         });
 
 
@@ -1327,58 +1346,58 @@ function displayFunctions() {
     $('#lesson').bind('turned', function (e, page, pageObj) {
         pageIsTurned(page);
         /*$("#NextTest").data("fire", true);
-        $("#PreviousTest").data("fire", true);
+         $("#PreviousTest").data("fire", true);
 
-        OrthoVariables.CurPage = page % 2 === 0 && page !== 1 ? page + 1 : page;
-        var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages) ? -1 : ( Math.floor(OrthoVariables.CurPage / 2)) - 1;
-        OrthoVariables.lessonPage = lessonpage;
-        if (OrthoVariables.maxPages >= OrthoVariables.CurPage) {
-            ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
-            LoadImages((OrthoVariables.lessonPage + 1).toString());
-            loadSpinControl((OrthoVariables.lessonPage + 1).toString());
-            var nPage = OrthoVariables.lessonPage + 1;
+         OrthoVariables.CurPage = page % 2 === 0 && page !== 1 ? page + 1 : page;
+         var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages) ? -1 : ( Math.floor(OrthoVariables.CurPage / 2)) - 1;
+         OrthoVariables.lessonPage = lessonpage;
+         if (OrthoVariables.maxPages >= OrthoVariables.CurPage) {
+         ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
+         LoadImages((OrthoVariables.lessonPage + 1).toString());
+         loadSpinControl((OrthoVariables.lessonPage + 1).toString());
+         var nPage = OrthoVariables.lessonPage + 1;
 
-            if (OrthoVariables.LessonData.Page[nPage] != undefined) {
-                if (!(OrthoVariables.LessonData.Page[nPage].Widget[0].type === "image" || OrthoVariables.LessonData.Page[nPage].Widget[1].type === "image")) {
-                    loadPreviousAnswers(nPage);
-                }
-            }
-            //setTracking((OrthoVariables.lessonPage + 1).toString());
-            //loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
-        }
+         if (OrthoVariables.LessonData.Page[nPage] != undefined) {
+         if (!(OrthoVariables.LessonData.Page[nPage].Widget[0].type === "image" || OrthoVariables.LessonData.Page[nPage].Widget[1].type === "image")) {
+         loadPreviousAnswers(nPage);
+         }
+         }
+         //setTracking((OrthoVariables.lessonPage + 1).toString());
+         //loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
+         }
 
-        if (OrthoVariables.CurPage <= 1) {
-            DisableButtonLink("PreviousTest");
-            EnableButtonLink("NextTest");
-            DisableButtonLink("SubmitAnswer");
-        }
-        else if (OrthoVariables.CurPage >= OrthoVariables.maxPages) {
-            EnableButtonLink("PreviousTest");
-            DisableButtonLink("NextTest");
-            DisableButtonLink("SubmitAnswer");
-        }
-        else {
-            EnableButtonLink("PreviousTest");
-            if (!OrthoVariables.PageTracking[lessonpage].nextpass) {
-                DisableButtonLink("NextTest");
-            }
-            else {
-                EnableButtonLink("NextTest");
-            }
+         if (OrthoVariables.CurPage <= 1) {
+         DisableButtonLink("PreviousTest");
+         EnableButtonLink("NextTest");
+         DisableButtonLink("SubmitAnswer");
+         }
+         else if (OrthoVariables.CurPage >= OrthoVariables.maxPages) {
+         EnableButtonLink("PreviousTest");
+         DisableButtonLink("NextTest");
+         DisableButtonLink("SubmitAnswer");
+         }
+         else {
+         EnableButtonLink("PreviousTest");
+         if (!OrthoVariables.PageTracking[lessonpage].nextpass) {
+         DisableButtonLink("NextTest");
+         }
+         else {
+         EnableButtonLink("NextTest");
+         }
 
-            if (OrthoVariables.PageTracking[lessonpage].submitbutton) {
-                EnableButtonLink("SubmitAnswer");
-            } else {
-                DisableButtonLink("SubmitAnswer");
-            }
-        }
+         if (OrthoVariables.PageTracking[lessonpage].submitbutton) {
+         EnableButtonLink("SubmitAnswer");
+         } else {
+         DisableButtonLink("SubmitAnswer");
+         }
+         }
 
 
-        CheckResizeLimits();
-        if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
-            CheckResizeLimits(OrthoVariables.lessonPage + 1);
-        }
-        $("#curPage").html(parseInt(OrthoVariables.CurPage/2));*/
+         CheckResizeLimits();
+         if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
+         CheckResizeLimits(OrthoVariables.lessonPage + 1);
+         }
+         $("#curPage").html(parseInt(OrthoVariables.CurPage/2));*/
 
     });
 
@@ -1389,7 +1408,7 @@ function displayFunctions() {
 
 }
 
-function pageIsTurned (newPage) {
+function pageIsTurned(newPage) {
     $("#NextTest").data("fire", true);
     $("#PreviousTest").data("fire", true);
 
@@ -1442,7 +1461,7 @@ function pageIsTurned (newPage) {
     if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
         CheckResizeLimits(OrthoVariables.lessonPage + 1);
     }
-    $("#curPage").html(parseInt(OrthoVariables.CurPage/2));
+    $("#curPage").html(parseInt(OrthoVariables.CurPage / 2));
 
 }
 

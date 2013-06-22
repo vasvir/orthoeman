@@ -238,6 +238,7 @@ function GetHotspotsAnswer(&$grade)
         $fillcolors[$j] = false;
     }
     $r = array();
+
     for ($i = 0; $i < count($useranswer); $i++) {
         $r[$i] = false;
         $x = $useranswer[$i][0];
@@ -259,6 +260,7 @@ function GetHotspotsAnswer(&$grade)
         }
     }
 
+
     foreach ($r as $rs) {
         if ($rs === false) {
             $result = false;
@@ -271,6 +273,7 @@ function GetHotspotsAnswer(&$grade)
     }
 
     $return["Answer"] = $result && count($useranswer) > 0 ? "correct" : "wrong";
+
     $isblocked = strval($xml->Page[intval($Page)]["block"]);
     $return["PaintShapes"] = ($isblocked === "yes" && $return["Answer"] === "wrong") ? "" : GetShapesFromImage($Page, $xml);
     $return["Fill"] = $fillcolors;
@@ -301,6 +304,7 @@ function getNormalizeGrade($Page, $xml, $answer)
 
 function GetHotSpotImage($PageID, $xml)
 {
+    //each shape is a different image.
     $quizimage = null;
     foreach ($xml->Page[intval($PageID)] as $key => $value) {
 
@@ -319,51 +323,90 @@ function GetHotSpotImage($PageID, $xml)
         $return = array();
         foreach (get_object_vars($quizimage) as $key => $value) {
             if ($key != "@attributes") {
-                $tempimg = imagecreate($width, $height);
-                $white = imagecolorallocate($tempimg, 255, 255, 255);
-                $black = imagecolorallocate($tempimg, 0, 0, 0);
-                imagefill($tempimg, 0, 0, $white);
                 switch ($key) {
                     case 'Circle' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                $tempimg = imagecreate($width, $height);
+                                $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                imagefill($tempimg, 0, 0, $white);
                                 PaintCircle($tempimg, $bvalue, $black);
+                                $myimg[] = $tempimg;
                             }
                         } else {
+                            $tempimg = imagecreate($width, $height);
+                            $white = imagecolorallocate($tempimg, 255, 255, 255);
+                            $black = imagecolorallocate($tempimg, 0, 0, 0);
+                            imagefill($tempimg, 0, 0, $white);
                             PaintCircle($tempimg, $value, $black);
+                            $myimg[] = $tempimg;
                         }
-                        $myimg[] = $tempimg;
+
                         break;
                     case 'Rectangle' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                $tempimg = imagecreate($width, $height);
+                                $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                imagefill($tempimg, 0, 0, $white);
                                 PaintRect($tempimg, $bvalue, $black);
+                                $myimg[] = $tempimg;
+
                             }
                         } else {
+                            $tempimg = imagecreate($width, $height);
+                            $white = imagecolorallocate($tempimg, 255, 255, 255);
+                            $black = imagecolorallocate($tempimg, 0, 0, 0);
+                            imagefill($tempimg, 0, 0, $white);
                             PaintRect($tempimg, $value, $black);
+                            $myimg[] = $tempimg;
+
                         }
                         $myimg[] = $tempimg;
                         break;
                     case 'Polygon' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                $tempimg = imagecreate($width, $height);
+                                $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                imagefill($tempimg, 0, 0, $white);
                                 PaintPolygon($tempimg, $bvalue, $black);
+                                $myimg[] = $tempimg;
+
                             }
                         } else {
+                            $tempimg = imagecreate($width, $height);
+                            $white = imagecolorallocate($tempimg, 255, 255, 255);
+                            $black = imagecolorallocate($tempimg, 0, 0, 0);
+                            imagefill($tempimg, 0, 0, $white);
                             PaintPolygon($tempimg, $value, $black);
+                            $myimg[] = $tempimg;
+
                         }
-                        $myimg[] = $tempimg;
                         break;
                     case 'Ellipse' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                $tempimg = imagecreate($width, $height);
+                                $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                imagefill($tempimg, 0, 0, $white);
                                 PaintEclipse($tempimg, $bvalue, $black);
+                                $myimg[] = $tempimg;
                             }
                         } else {
+                            $tempimg = imagecreate($width, $height);
+                            $white = imagecolorallocate($tempimg, 255, 255, 255);
+                            $black = imagecolorallocate($tempimg, 0, 0, 0);
+                            imagefill($tempimg, 0, 0, $white);
                             PaintEclipse($tempimg, $value, $black);
+                            $myimg[] = $tempimg;
 
                         }
-                        $myimg[] = $tempimg;
+
                         break;
                 }
                 //header('Content-Type: image/png');
