@@ -513,6 +513,78 @@ function GetShapesFromImage($PageID, $xml)
 
 }
 
+function getInfoShapes($quizimage)
+{
+    //var_dump($quizimage);
+
+    //die();
+    $return = array();
+    if (isset($quizimage["showRegions"])) {
+        if (strval($quizimage["showRegions"]) === "yes") {
+            $return = array();
+            foreach (get_object_vars($quizimage) as $key => $value) {
+                switch ($key) {
+                    case 'Circle' :
+                        if (is_array($value)) {
+                            foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "no") {
+                                    $return[] = GetCircle($bvalue);
+                                }
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "no") {
+                                $return[] = GetCircle($value);
+                            }
+                        }
+                        break;
+                    case 'Rectangle' :
+                        if (is_array($value)) {
+                            foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "no") {
+                                    $return[] = GetRect($bvalue);
+                                }
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "no") {
+                                $return[] = GetRect($value);
+                            }
+                        }
+                        break;
+                    case 'Polygon' :
+                        if (is_array($value)) {
+                            foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "no") {
+                                    $return[] = GetPolygon($bvalue);
+                                }
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "no") {
+                                $return[] = GetPolygon($value);
+                            }
+                        }
+                        break;
+                    case 'Ellipse' :
+                        if (is_array($value)) {
+                            foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "no") {
+                                    $return[] = GetEclipse($bvalue);
+                                }
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "no") {
+                                $return[] = GetEclipse($value);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+    }
+    return $return;
+
+}
+
+
 function GetCircle($data)
 {
     $circle = array();
@@ -540,7 +612,7 @@ function GetRect($data)
 
 function PaintRect($imageone, $data, $color)
 {
-    imagefilledrectangle($imageone, strval($data->Point["x"]), strval($data->Point["y"]), strval($data->Point["x"]) + strval($data["width"]), strval($data->Point["y"]) + strval($data["height"]), $color);
+    imagefilledrectangle($imageone, strval($data->Point["x"]), strval($data->Point["y"]), intval($data->Point["x"]) + intval($data["width"]), intval($data->Point["y"]) + intval($data["height"]), $color);
     return $imageone;
 }
 
@@ -727,6 +799,7 @@ function GetTemplateData($data)
                         'HotSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["HotSpots"],
                         'MaxSpots' => $a["Page"][$index]["Widget"][$windex]["Image"]["MaxSpots"],
                         'ShowRegions' => $a["Page"][$index]["Widget"][$windex]["Image"]["ShowRegions"],
+                        'InfoShapes' => getInfoShapes($wvalue)
                     );
                     break;
                 case 'quiz' :
