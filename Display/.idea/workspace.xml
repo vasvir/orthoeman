@@ -4,8 +4,8 @@
     <list default="true" id="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" name="Default" comment="" />
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371900124510" ignored="false" />
-    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371905542829" ignored="false" />
+    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371915078853" ignored="false" />
+    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371911220964" ignored="false" />
     <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371841746420" ignored="false" />
     <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371807765773" ignored="false" />
     <file path="/ortho_interface.css" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363994879821" ignored="false" />
@@ -29,13 +29,13 @@
     <favorites_list name="Display" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5497526">
+    <splitter split-orientation="horizontal" split-proportion="0.4964266">
       <split-first>
         <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="394" column="81" selection-start="14627" selection-end="14627" vertical-scroll-proportion="0.0">
+                <state line="1866" column="58" selection-start="71593" selection-end="71593" vertical-scroll-proportion="0.4929078">
                   <folding />
                 </state>
               </provider>
@@ -53,11 +53,13 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="sslayer.php" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="339" column="32" selection-start="10722" selection-end="10722" vertical-scroll-proportion="0.3270366">
-                  <folding />
+                <state line="530" column="37" selection-start="19284" selection-end="19284" vertical-scroll-proportion="-10.916667">
+                  <folding>
+                    <element signature="n#GetShapesFromImage#0;n#!!top" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -66,19 +68,30 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="7" column="1" selection-start="235" selection-end="235" vertical-scroll-proportion="-4.2">
+                <state line="51" column="22" selection-start="1425" selection-end="1425" vertical-scroll-proportion="0.20921986">
+                  <folding>
+                    <element signature="n#!!doc" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/sslayer.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="797" column="27" selection-start="28580" selection-end="28580" vertical-scroll-proportion="-4.367347">
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/sslayer.php">
+          <file leaf-file-name="gd.php" pinned="false" current="false" current-in-tab="false">
+            <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/gd.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="808" column="14" selection-start="28835" selection-end="28835" vertical-scroll-proportion="0.6340024">
+                <state line="1190" column="9" selection-start="33387" selection-end="33387" vertical-scroll-proportion="-12.083333">
                   <folding />
                 </state>
               </provider>
@@ -111,8 +124,8 @@
         <option value="$PROJECT_DIR$/js/libs/myimagetools.js" />
         <option value="$PROJECT_DIR$/js/libs/jquery.countdown.js" />
         <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/js/script.js" />
         <option value="$PROJECT_DIR$/sslayer.php" />
+        <option value="$PROJECT_DIR$/js/script.js" />
       </list>
     </option>
   </component>
@@ -243,7 +256,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="53" y="24" width="1867" height="1056" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31318682" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -333,13 +346,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/js/script.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1264" column="0" selection-start="47684" selection-end="47684" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../moodle/orthoeman/get_resource.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="70" column="0" selection-start="2758" selection-end="2758" vertical-scroll-proportion="0.7454751" />
@@ -402,6 +408,13 @@
         <state line="16" column="8" selection-start="377" selection-end="377" vertical-scroll-proportion="0.34386852" />
       </provider>
     </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/gd.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1190" column="9" selection-start="33387" selection-end="33387" vertical-scroll-proportion="-12.083333">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="323" column="42" selection-start="14965" selection-end="14965" vertical-scroll-proportion="-23.416666">
@@ -412,16 +425,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/script.js">
+    <entry file="file://$PROJECT_DIR$/sslayer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="394" column="81" selection-start="14627" selection-end="14627" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="530" column="37" selection-start="19284" selection-end="19284" vertical-scroll-proportion="-10.916667">
+          <folding>
+            <element signature="n#GetShapesFromImage#0;n#!!top" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sslayer.php">
+    <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="339" column="32" selection-start="10722" selection-end="10722" vertical-scroll-proportion="0.3270366">
+        <state line="1866" column="58" selection-start="71593" selection-end="71593" vertical-scroll-proportion="0.4929078">
           <folding />
         </state>
       </provider>

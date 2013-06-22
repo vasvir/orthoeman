@@ -46,8 +46,10 @@ var OrthoVariables = {
     ColorRightEdge: "#285935",
     ColorWrong: "#9C2100",
     ColorWrongEdge: "#592835",
+    ColorInfo:"#041678",
+    ColorInfoEdge: "#283559",
     zoomMouse: { isdown: false, x: -1, y: -1},
-    disableturn: true,
+    disableturn: false,
     isOverAngleCircle: false,
     loadedPreviousAnswer: [],
     finalGrade: 0,
@@ -506,6 +508,11 @@ function addEvents(i, c, orig, imagesToLoad) {
         id: "shapelayer",
         name: "shapelayer"
     });
+
+    var infolayer = new Kinetic.Layer({
+       id: "infolayer",
+        name: "infolayer"
+    });
     var answerlayer = new Kinetic.Layer({
         id: "answerlayer",
         name: "answerlayer"
@@ -541,6 +548,7 @@ function addEvents(i, c, orig, imagesToLoad) {
 
     });
     tooltiplayer.add(tooltip);
+    stage.add(infolayer);
     stage.add(shapelayer);
     stage.add(trackingLayer);
     stage.add(tooltiplayer);
@@ -719,6 +727,7 @@ function LoadImages(Page) {
             OrthoVariables.lessonLoaded[thePage] = true;
             CheckResizeLimits(thePage);
             loadPreviousAnswers(thePage);
+            drawInfoShapes(thePage, data.imagesToLoad[data.i].InfoShapes);
             while (OrthoVariables.queue.funcQueue[thePage].isEmpty() === false) {
                setTimeout(OrthoVariables.queue.funcQueue[thePage].dequeue(), 500);
             }
@@ -736,6 +745,41 @@ function LoadImages(Page) {
      CheckResizeLimits(Page);
      }*/
 
+}
+
+function drawInfoShapes(pageID, data) {
+    var id = pageID.toString() //+ subid.toString();
+    var mystage = OrthoVariables.origCanvas[id][2];
+    var myshapelayer = mystage.get(".infolayer")[0];
+    $.each(data, function(index, value) {
+       switch (value[0]) {
+           case "Circle":
+               myshapelayer.add(PaintCircle(value, OrthoVariables.ColorInfo, OrthoVariables.ColorInfoEdge));
+               break;
+           case "Rect":
+               myshapelayer.add(PaintRect(value, OrthoVariables.ColorInfo, OrthoVariables.ColorInfoEdge));
+               break;
+           case "Polygon":
+               myshapelayer.add(PaintPolygon(value, OrthoVariables.ColorInfo, OrthoVariables.ColorInfoEdge));
+               break;
+           case "Eclipse" :
+               myshapelayer.add(PaintEclipse(value, OrthoVariables.ColorInfo, OrthoVariables.ColorInfoEdge));
+               break;
+       }
+    });
+    //myshapelayer.draw();
+    var childrens = myshapelayer.getChildren();
+    for (var i = 0; i < childrens.length; i++) {
+        var tween = new Kinetic.Tween({
+            node: childrens[i],
+            opacity: 0.5,
+            duration: 2,
+            easing: Kinetic.Easings.EaseOut
+        });
+        tween.play();
+    }
+
+    myshapelayer.draw();
 }
 
 
@@ -1345,59 +1389,7 @@ function displayFunctions() {
     });
     $('#lesson').bind('turned', function (e, page, pageObj) {
         pageIsTurned(page);
-        /*$("#NextTest").data("fire", true);
-         $("#PreviousTest").data("fire", true);
 
-         OrthoVariables.CurPage = page % 2 === 0 && page !== 1 ? page + 1 : page;
-         var lessonpage = (OrthoVariables.CurPage === 0 || OrthoVariables.CurPage >= OrthoVariables.maxPages) ? -1 : ( Math.floor(OrthoVariables.CurPage / 2)) - 1;
-         OrthoVariables.lessonPage = lessonpage;
-         if (OrthoVariables.maxPages >= OrthoVariables.CurPage) {
-         ApplyRoundtoPages(OrthoVariables.CurPage, OrthoVariables.CurPage + 2);
-         LoadImages((OrthoVariables.lessonPage + 1).toString());
-         loadSpinControl((OrthoVariables.lessonPage + 1).toString());
-         var nPage = OrthoVariables.lessonPage + 1;
-
-         if (OrthoVariables.LessonData.Page[nPage] != undefined) {
-         if (!(OrthoVariables.LessonData.Page[nPage].Widget[0].type === "image" || OrthoVariables.LessonData.Page[nPage].Widget[1].type === "image")) {
-         loadPreviousAnswers(nPage);
-         }
-         }
-         //setTracking((OrthoVariables.lessonPage + 1).toString());
-         //loadPreviousAnswers((OrthoVariables.lessonPage + 1).toString());
-         }
-
-         if (OrthoVariables.CurPage <= 1) {
-         DisableButtonLink("PreviousTest");
-         EnableButtonLink("NextTest");
-         DisableButtonLink("SubmitAnswer");
-         }
-         else if (OrthoVariables.CurPage >= OrthoVariables.maxPages) {
-         EnableButtonLink("PreviousTest");
-         DisableButtonLink("NextTest");
-         DisableButtonLink("SubmitAnswer");
-         }
-         else {
-         EnableButtonLink("PreviousTest");
-         if (!OrthoVariables.PageTracking[lessonpage].nextpass) {
-         DisableButtonLink("NextTest");
-         }
-         else {
-         EnableButtonLink("NextTest");
-         }
-
-         if (OrthoVariables.PageTracking[lessonpage].submitbutton) {
-         EnableButtonLink("SubmitAnswer");
-         } else {
-         DisableButtonLink("SubmitAnswer");
-         }
-         }
-
-
-         CheckResizeLimits();
-         if ((OrthoVariables.lessonPage + 1) < OrthoVariables.LessonData.Page.length) {
-         CheckResizeLimits(OrthoVariables.lessonPage + 1);
-         }
-         $("#curPage").html(parseInt(OrthoVariables.CurPage/2));*/
 
     });
 
@@ -1860,13 +1852,13 @@ function DisableButtonLink(id) {
     }
     switch (id) {
         case "NextTest":
-            $("#" + id).animate({right: "-130px"}, 500, 'linear');
+            $("#" + id).stop(true,true).animate({right: "-130px"}, 500, 'linear');
             break;
         case "PreviousTest":
-            $("#" + id).animate({left: "-130px"}, 500, 'linear');
+            $("#" + id).stop(true,true).animate({left: "-130px"}, 500, 'linear');
             break;
         case "SubmitAnswer":
-            $("#" + id).animate({top: "-50px"}, 500, 'linear');
+            $("#" + id).stop(true,true).animate({top: "-50px"}, 500, 'linear');
             break;
     }
 }
@@ -1886,7 +1878,7 @@ function EnableButtonLink(id) {
                     }
                 });
                 $('#lesson').turn('disable', OrthoVariables.disableturn);
-                $("#" + id).animate({right: "10px"}, 1000, 'easeOutElastic');
+                $("#" + id).stop(true,true).animate({right: "10px"}, 1000, 'easeOutElastic');
                 break;
             case "PreviousTest":
                 $("#" + id).on("click", function () {
@@ -1894,14 +1886,14 @@ function EnableButtonLink(id) {
                         DecreasePage();
                     }
                 });
-                $("#" + id).animate({left: "10px"}, 1000, 'easeOutElastic');
+                $("#" + id).stop(true,true).animate({left: "10px"}, 1000, 'easeOutElastic');
                 break;
             case "SubmitAnswer":
                 $("#" + id).on("click", function () {
                     SubmitAnswer();
                 });
                 OrthoVariables.PageTracking[OrthoVariables.lessonPage].submitbutton = true;
-                $("#" + id).animate({top: "+=50px"}, 1000, 'easeOutElastic');
+                $("#" + id).stop(true,true).animate({top: "+=50px"}, 1000, 'easeOutElastic');
                 break;
         }
 
@@ -2270,7 +2262,7 @@ function ApplyQuizResult(data, lessonPage, showMsg) {
                     break;
             }
         }
-        myshapelayer.draw();
+        //myshapelayer.draw();
         var childrens = myshapelayer.getChildren();
         for (var i = 0; i < childrens.length; i++) {
             var tween = new Kinetic.Tween({
@@ -2459,7 +2451,10 @@ function ApplyHotspotResult(data, lessonPage, showMsg) {
         myshapelayer.draw();
     }
     PageTracking(myanswer, blocked, lessonPage);
-    CheckReadyNextText(myanswer, blocked);
+    if (lessonPage === OrthoVariables.lessonPage) {
+        CheckReadyNextText(myanswer, blocked);
+    }
+
     RemoveOverlay();
 }
 
