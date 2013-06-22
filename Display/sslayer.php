@@ -68,7 +68,7 @@ switch ($action) {
         //fb($savedanswers.",".$totalAnswers);
         $answer->myanswer["final"] = ($totalAnswers === $savedanswers) ? "true" : "false";
         echo json_encode($answer->myanswer);
-        submit_grade($orthoeman_id,0);
+        submit_grade($orthoeman_id, 0);
         break;
     case "3":
         echo getTimeout();
@@ -319,6 +319,7 @@ function GetHotSpotImage($PageID, $xml)
     $myimg = array();
     //fb($quizimage);
     $hotspotsNumber = getHotSpotsNumber($quizimage);
+    //var_dump($hotspotsNumber);
     if ($hotspotsNumber > 0) {
         $return = array();
         foreach (get_object_vars($quizimage) as $key => $value) {
@@ -327,83 +328,99 @@ function GetHotSpotImage($PageID, $xml)
                     case 'Circle' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $tempimg = imagecreate($width, $height);
+                                    $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                    $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                    imagefill($tempimg, 0, 0, $white);
+                                    PaintCircle($tempimg, $bvalue, $black);
+                                    $myimg[] = $tempimg;
+                                }
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "yes") {
                                 $tempimg = imagecreate($width, $height);
                                 $white = imagecolorallocate($tempimg, 255, 255, 255);
                                 $black = imagecolorallocate($tempimg, 0, 0, 0);
                                 imagefill($tempimg, 0, 0, $white);
-                                PaintCircle($tempimg, $bvalue, $black);
+                                PaintCircle($tempimg, $value, $black);
                                 $myimg[] = $tempimg;
                             }
-                        } else {
-                            $tempimg = imagecreate($width, $height);
-                            $white = imagecolorallocate($tempimg, 255, 255, 255);
-                            $black = imagecolorallocate($tempimg, 0, 0, 0);
-                            imagefill($tempimg, 0, 0, $white);
-                            PaintCircle($tempimg, $value, $black);
-                            $myimg[] = $tempimg;
                         }
 
                         break;
                     case 'Rectangle' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $tempimg = imagecreate($width, $height);
+                                    $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                    $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                    imagefill($tempimg, 0, 0, $white);
+                                    PaintRect($tempimg, $bvalue, $black);
+                                    $myimg[] = $tempimg;
+                                }
+
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "yes") {
                                 $tempimg = imagecreate($width, $height);
                                 $white = imagecolorallocate($tempimg, 255, 255, 255);
                                 $black = imagecolorallocate($tempimg, 0, 0, 0);
                                 imagefill($tempimg, 0, 0, $white);
-                                PaintRect($tempimg, $bvalue, $black);
+                                PaintRect($tempimg, $value, $black);
                                 $myimg[] = $tempimg;
-
                             }
-                        } else {
-                            $tempimg = imagecreate($width, $height);
-                            $white = imagecolorallocate($tempimg, 255, 255, 255);
-                            $black = imagecolorallocate($tempimg, 0, 0, 0);
-                            imagefill($tempimg, 0, 0, $white);
-                            PaintRect($tempimg, $value, $black);
-                            $myimg[] = $tempimg;
 
                         }
-                        $myimg[] = $tempimg;
                         break;
                     case 'Polygon' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $tempimg = imagecreate($width, $height);
+                                    $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                    $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                    imagefill($tempimg, 0, 0, $white);
+                                    PaintPolygon($tempimg, $bvalue, $black);
+                                    $myimg[] = $tempimg;
+                                }
+
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "yes") {
                                 $tempimg = imagecreate($width, $height);
                                 $white = imagecolorallocate($tempimg, 255, 255, 255);
                                 $black = imagecolorallocate($tempimg, 0, 0, 0);
                                 imagefill($tempimg, 0, 0, $white);
-                                PaintPolygon($tempimg, $bvalue, $black);
+                                PaintPolygon($tempimg, $value, $black);
                                 $myimg[] = $tempimg;
-
                             }
-                        } else {
-                            $tempimg = imagecreate($width, $height);
-                            $white = imagecolorallocate($tempimg, 255, 255, 255);
-                            $black = imagecolorallocate($tempimg, 0, 0, 0);
-                            imagefill($tempimg, 0, 0, $white);
-                            PaintPolygon($tempimg, $value, $black);
-                            $myimg[] = $tempimg;
 
                         }
                         break;
                     case 'Ellipse' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $tempimg = imagecreate($width, $height);
+                                    $white = imagecolorallocate($tempimg, 255, 255, 255);
+                                    $black = imagecolorallocate($tempimg, 0, 0, 0);
+                                    imagefill($tempimg, 0, 0, $white);
+                                    PaintEclipse($tempimg, $bvalue, $black);
+                                    $myimg[] = $tempimg;
+                                }
+                            }
+                        } else {
+                            if (strval($value["isHotSpot"]) === "yes") {
                                 $tempimg = imagecreate($width, $height);
+
                                 $white = imagecolorallocate($tempimg, 255, 255, 255);
                                 $black = imagecolorallocate($tempimg, 0, 0, 0);
                                 imagefill($tempimg, 0, 0, $white);
-                                PaintEclipse($tempimg, $bvalue, $black);
+                                PaintEclipse($tempimg, $value, $black);
                                 $myimg[] = $tempimg;
                             }
-                        } else {
-                            $tempimg = imagecreate($width, $height);
-                            $white = imagecolorallocate($tempimg, 255, 255, 255);
-                            $black = imagecolorallocate($tempimg, 0, 0, 0);
-                            imagefill($tempimg, 0, 0, $white);
-                            PaintEclipse($tempimg, $value, $black);
-                            $myimg[] = $tempimg;
 
                         }
 
@@ -412,12 +429,13 @@ function GetHotSpotImage($PageID, $xml)
                 //header('Content-Type: image/png');
                 //imagepng($tempimg);
 
-                //header('Content-Type: image/png');
-                //imagepng($myimg[0]);
+
             }
         }
 
     }
+    //header('Content-Type: image/png');
+    //imagepng($myimg[4]);
     return $myimg;
 }
 
@@ -438,37 +456,53 @@ function GetShapesFromImage($PageID, $xml)
                     case 'Circle' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                $return[] = GetCircle($bvalue);
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $return[] = GetCircle($bvalue);
+                                }
                             }
                         } else {
-                            $return[] = GetCircle($value);
+                            if (strval($value["isHotSpot"]) === "yes") {
+                                $return[] = GetCircle($value);
+                            }
                         }
                         break;
                     case 'Rectangle' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                $return[] = GetRect($bvalue);
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $return[] = GetRect($bvalue);
+                                }
                             }
                         } else {
-                            $return[] = GetRect($value);
+                            if (strval($value["isHotSpot"]) === "yes") {
+                                $return[] = GetRect($value);
+                            }
                         }
                         break;
                     case 'Polygon' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                $return[] = GetPolygon($bvalue);
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $return[] = GetPolygon($bvalue);
+                                }
                             }
                         } else {
-                            $return[] = GetPolygon($value);
+                            if (strval($value["isHotSpot"]) === "yes") {
+                                $return[] = GetPolygon($value);
+                            }
                         }
                         break;
                     case 'Ellipse' :
                         if (is_array($value)) {
                             foreach ($value as $bkey => $bvalue) {
-                                $return[] = GetEclipse($bvalue);
+                                if (strval($bvalue["isHotSpot"]) === "yes") {
+                                    $return[] = GetEclipse($bvalue);
+                                }
                             }
                         } else {
-                            $return[] = GetEclipse($value);
+                            if (strval($value["isHotSpot"]) === "yes") {
+                                $return[] = GetEclipse($value);
+                            }
                         }
                         break;
                 }
@@ -782,9 +816,6 @@ function getHotSpotsNumber($image)
     foreach (get_object_vars($image) as $key => $value) {
 
         if ($key != "@attributes") {
-            //if (array_key_exists("isHotspot", $nvalue)){
-            //print_r($value);
-            //print_r($key);
             if (is_array($value)) {
                 foreach ($value as $key => $avalue) {
                     if (strval($avalue["isHotSpot"]) === "yes") {
