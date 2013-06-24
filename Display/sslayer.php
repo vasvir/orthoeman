@@ -265,6 +265,7 @@ function getInputAnswer($xml,$Page, $myvalue, &$grade)
     }
     $isblocked = strval($xml->Page[intval($Page)]["block"]);
     $return["Answer"] = ($myvalue >= $min && $myvalue <= $max) ? "correct" : "wrong";
+    $return["CorrectAnswer"] = $min + round(($max - $min)/2);
     $grade = getNormalizeGrade($Page, $xml, $return["Answer"]);
     return $return;
 }

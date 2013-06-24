@@ -867,3 +867,8 @@ div#div_input>div {
 #counter .Hours { margin-left: 3px; }
 #counter .Seconds { margin-left: 1px; }
 
+.spanRangeCorrect {
+    display: none;
+    color: #047816;
+    font-weight: bold;
+}

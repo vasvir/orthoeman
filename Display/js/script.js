@@ -205,12 +205,12 @@ function initializeOrthoeMAN() {
         $("#totalPage").html(parseInt(OrthoVariables.maxPages / 2));
 
         if (OrthoVariables.LessonData["final"] === false) {
-            var maxpage = 0;
+            var maxpage = -1;
             $.each(OrthoVariables.LessonData.Tracking, function (key, value) {
                 if (key > maxpage) maxpage = parseInt(key);
             });
 
-            if (maxpage > 0) {
+            if (maxpage > -1) {
                 maxpage = 2 * (maxpage + 1);
                 for (i = 2; i <= maxpage; i += 2) {
                     pageIsTurned(i);
@@ -333,7 +333,8 @@ function LoadVideo(Page) {
                 pauseOtherPlayers: true,
                 features: ['playpause', 'progress', 'duration', 'volume']
             });*/
-            OrthoVariables.lessonLoaded[parseInt(Page)];
+            //OrthoVariables.lessonLoaded[parseInt(Page)];
+            CheckResizeLimits(Page);
         }
     }
 }
@@ -1526,6 +1527,9 @@ function CheckResizeLimits(page) {
                         myvideo.width(w);
                         myvideo.height(h);
                     }
+                    else {
+                        myvideo.width(w);
+                    }
                 }
             }
         }
@@ -2360,6 +2364,7 @@ function applyInputResult(data, lessonPage, showMsg) {
     else {
         myanswer = "wrong";
         applyWrongCue(page, undefined, showMsg);
+        showCorrectInputResult(data.CorrectAnswer, getSpinID(lessonPage));
     }
     PageTracking(myanswer, blocked, lessonPage);
     CheckReadyNextText(myanswer, blocked);
@@ -2367,6 +2372,21 @@ function applyInputResult(data, lessonPage, showMsg) {
     if (!(blocked === "yes" && answer === "wrong")) {
         OrthoVariables.spinControls[lessonPage].SetDisabled(true);
     }
+}
+
+function getSpinID(Page) {
+    var id = -1;
+    for (var wid in OrthoVariables.LessonData.Page[Page].Widget) {
+        if (OrthoVariables.LessonData.Page[Page].Widget[wid].type === "input") {
+            id = OrthoVariables.LessonData.Page[Page].Widget[wid].Input.id;
+        }
+    }
+    return id
+}
+
+function showCorrectInputResult(correctValue, id) {
+    $("#correctRangeValue_" + id + ">span").html(correctValue);
+    $("#correctRangeValue_" + id).fadeIn('slow');
 }
 
 function applyCorrectCue(id, msg, showMsg) {
