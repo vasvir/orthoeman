@@ -4,7 +4,6 @@
 
  TODO cruise mode
  TODO make quiz and rangequiz obey the show results/do not show the
- TODO replave video javascript with the native brosers controls 
  TODO Doc: screencast for Display Tool usage.
 
  */
@@ -329,11 +328,11 @@ function getUrlVars() {
 function LoadVideo(Page) {
     for (var wid in OrthoVariables.LessonData.Page[Page].Widget) {
         if (OrthoVariables.LessonData.Page[Page].Widget[wid].type === "video") {
-            $("#video_" + OrthoVariables.LessonData.Page[Page].Widget[wid].Video.id).mediaelementplayer({
+            /*$("#video_" + OrthoVariables.LessonData.Page[Page].Widget[wid].Video.id).mediaelementplayer({
                 enableAutosize: true,
                 pauseOtherPlayers: true,
                 features: ['playpause', 'progress', 'duration', 'volume']
-            });
+            });*/
             OrthoVariables.lessonLoaded[parseInt(Page)];
         }
     }
@@ -1505,8 +1504,9 @@ function CheckResizeLimits(page) {
                 if (OrthoVariables.LessonData.Page[page].Widget[wid].type === "video") {
                     w = Math.round($('#content_wrap').width() / 2) - 80;
                     var maxh = $(window).height() - OrthoVariables.HeightFromBottom;
-                    var n_w = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).width();
-                    var n_h = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id).height();
+                    var myvideo = $("#video_" + OrthoVariables.LessonData.Page[page].Widget[wid].Video.id);
+                    var n_w = myvideo.width();
+                    var n_h = myvideo.height();
                     if (n_w > 0 && n_h > 0) {
                         if (n_w == 0) n_w = 150;
                         if (n_h == 0) n_h = 150;
@@ -1515,14 +1515,16 @@ function CheckResizeLimits(page) {
                             h = maxh - 35;
                             w = Math.round(h * (n_w / n_h));
                         }
-                        var vid = OrthoVariables.LessonData.Page[page].Widget[wid].Video.id;
-                        for (var e in mejs.players) {
+                        //var vid = OrthoVariables.LessonData.Page[page].Widget[wid].Video.id;
+                        /*for (var e in mejs.players) {
                             if (mejs.players[e].media.id === "video_" + vid) {
                                 mejs.players[e].setPlayerSize(w, h);
                                 mejs.players[e].media.setVideoSize(w, h);
                                 mejs.players[e].setControlsSize();
                             }
-                        }
+                        }*/
+                        myvideo.width(w);
+                        myvideo.height(h);
                     }
                 }
             }
