@@ -4,8 +4,8 @@
     <list default="true" id="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" name="Default" comment="" />
     <ignored path="Display.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371915078853" ignored="false" />
-    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371911220964" ignored="false" />
+    <file path="/script.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1372079655134" ignored="false" />
+    <file path="/sslayer.php" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1372079090359" ignored="false" />
     <file path="/index.html" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371841746420" ignored="false" />
     <file path="/jquery.countdown.js" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1371807765773" ignored="false" />
     <file path="/ortho_interface.css" changelist="47dd0ee1-6c99-4842-8739-6d5cbdf59ef3" time="1363994879821" ignored="false" />
@@ -29,25 +29,27 @@
     <favorites_list name="Display" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.4964266">
+    <splitter split-orientation="horizontal" split-proportion="0.39637163">
       <split-first>
         <leaf>
-          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="script.js" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="1864" column="58" selection-start="71444" selection-end="71444" vertical-scroll-proportion="0.025597269">
+                <state line="1885" column="9" selection-start="72223" selection-end="72223" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="323" column="42" selection-start="14965" selection-end="14965" vertical-scroll-proportion="0.0">
+                <state line="298" column="0" selection-start="13781" selection-end="13781" vertical-scroll-proportion="0.40035588">
                   <folding>
-                    <marker date="1371841759138" expanded="true" signature="2021:2254" placeholder="..." />
-                    <marker date="1371841759138" expanded="true" signature="2089:2127" placeholder="..." />
+                    <element signature="n#style#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
+                    <element signature="n#style#0;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
+                    <marker date="1372080502548" expanded="true" signature="2021:2254" placeholder="..." />
+                    <marker date="1372080502548" expanded="true" signature="2089:2127" placeholder="..." />
                   </folding>
                 </state>
               </provider>
@@ -56,7 +58,7 @@
           <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="530" column="37" selection-start="19284" selection-end="19284" vertical-scroll-proportion="0.0">
+                <state line="189" column="5" selection-start="6121" selection-end="6121" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -69,7 +71,7 @@
           <file leaf-file-name="script.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/script.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="4" column="1" selection-start="69" selection-end="69" vertical-scroll-proportion="0.102389075">
+                <state line="19" column="22" selection-start="602" selection-end="602" vertical-scroll-proportion="0.025597269">
                   <folding />
                 </state>
               </provider>
@@ -78,16 +80,7 @@
           <file leaf-file-name="sslayer.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/sslayer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="797" column="27" selection-start="28580" selection-end="28580" vertical-scroll-proportion="0.0">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="gd.php" pinned="false" current="false" current-in-tab="false">
-            <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/gd.php">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="1190" column="9" selection-start="33387" selection-end="33387" vertical-scroll-proportion="0.0">
+                <state line="26" column="56" selection-start="966" selection-end="966" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -119,9 +112,9 @@
         <option value="$PROJECT_DIR$/css/ortho_interface.css" />
         <option value="$PROJECT_DIR$/js/libs/myimagetools.js" />
         <option value="$PROJECT_DIR$/js/libs/jquery.countdown.js" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/sslayer.php" />
         <option value="$PROJECT_DIR$/js/script.js" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
@@ -146,7 +139,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1" splitterProportion="0.5">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -157,21 +150,57 @@
       <autoscrollFromSource />
       <sortByType />
     </navigator>
-    <panes />
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Display" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="options.lastSelected" value="preferences.updates" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="FullScreen" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
   </component>
   <component name="PublishConfig" serverName="orthoeman" serverId="3b6c51b2-7e5a-4da8-a840-abe873cc1764" autoUpload="true">
     <servers>
@@ -261,7 +290,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32870865" sideWeight="0.6829811" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19901045" sideWeight="0.6861234" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19901045" sideWeight="0.6868132" order="0" side_tool="false" content_ui="combo" x="876" y="97" width="223" height="939" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2852423" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -389,9 +418,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/css/ortho_interface.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="525" column="12" selection-start="9987" selection-end="9987" vertical-scroll-proportion="0.02117061">
-          <folding />
-        </state>
+        <state line="525" column="12" selection-start="9987" selection-end="9987" vertical-scroll-proportion="0.02117061" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/libs/myimagetools.js">
@@ -404,34 +431,34 @@
         <state line="16" column="8" selection-start="377" selection-end="377" vertical-scroll-proportion="0.34386852" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/gd.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="323" column="42" selection-start="14965" selection-end="14965" vertical-scroll-proportion="0.0">
-          <folding>
-            <marker date="1371841759138" expanded="true" signature="2021:2254" placeholder="..." />
-            <marker date="1371841759138" expanded="true" signature="2089:2127" placeholder="..." />
-          </folding>
+        <state line="1190" column="9" selection-start="33387" selection-end="33387" vertical-scroll-proportion="0.017709563" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sslayer.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="56" selection-start="966" selection-end="966" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="1" selection-start="69" selection-end="69" vertical-scroll-proportion="0.102389075">
+        <state line="19" column="22" selection-start="602" selection-end="602" vertical-scroll-proportion="0.025597269">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sslayer.php">
+    <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="797" column="27" selection-start="28580" selection-end="28580" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/gd.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1190" column="9" selection-start="33387" selection-end="33387" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="298" column="0" selection-start="13781" selection-end="13781" vertical-scroll-proportion="0.40035588">
+          <folding>
+            <element signature="n#style#0;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#script#3;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <marker date="1372080502548" expanded="true" signature="2021:2254" placeholder="..." />
+            <marker date="1372080502548" expanded="true" signature="2089:2127" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>

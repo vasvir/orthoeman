@@ -23,17 +23,26 @@ $totalTheory = 0;
 $totalSum = 0;
 
 $old = 0;
-$action = $_GET["action"];
-// 1- transform xml to json
-//fb(get_user_grades_from_orthoeman_id($my_orthoeman->id,3));
+$action = isset($_GET["action"]) ? $_GET["action"] : "0";
+//fb(get_user_grades_from_orthoeman_id($my_orthoeman->di,3));
+//getCorrectAnswers (getXMLData());
+
+
+
 switch ($action) {
     case "1" :
         //$lessonid = $_GET["lessonid"];
         $xml = getXMLData();
         $displaydata = GetTemplateData($xml);
-        //print_r($displaydata);
-        //Here is definding a dummy tracking 
+        
+        //if ($displaydata["attributes"]["cuiseMode"] == 1)  {
+        //    $displaydata["Tracking"] = getCorrectAnswers($xml);
+       //     $displaydata["Timeout"] = 0;
+       //     $displaydata["final"] = true;
+       // }
+
         $displaydata["Tracking"] = getAnswersFromMoodle();
+        
         putAnswerInMoodle(-1, 3, "{}");
         $displaydata["Timeout"] = getTimeout();
         $displaydata["final"] = isLessonFinished_totalanswers(count($displaydata["Tracking"]));
@@ -161,17 +170,19 @@ function getAnswersFromMoodle_old()
 function GetAnswer($type, &$grade)
 {
     //sleep(2);
-
+    $xml = getXMLData();
+    $Page = $_GET["Page"];
     $return = null;
     switch ($type) {
         case 'quiz' :
-            $return = GetQuizAnswer($grade);
+            $return = GetQuizAnswer($xml,$Page,$_GET["answer"], $grade);
             break;
         case 'hotspots':
-            $return = GetHotspotsAnswer($grade);
+            $useranswer = isset($_GET["answer"]) ? $_GET["answer"] : array();
+            $return = GetHotspotsAnswer($xml,$Page, $useranswer, $grade);
             break;
         case 'input':
-            $return = getInputAnswer($grade);
+            $return = getInputAnswer($xml,$Page, intval((int)$_GET["value"]), $grade);
             break;
         default :
             $return = "error";
@@ -180,13 +191,50 @@ function GetAnswer($type, &$grade)
     return $return;
 }
 
+function getCorrectAnswers ($xml) 
+{
+    $r = array();
+    $r[0] = new stdClass();
+    $r[0]->type = 3;
+    $r[0]->answer = "{}";
+    $Page = 1;
 
-function GetQuizAnswer(&$grade)
+    for ($i=0;$i< count($xml->Page);$i++)
+    {
+        echo $i;
+        foreach ($xml->Page[$i] as $wkey => $wvalue)
+        {
+            $type = getWidgetType($wkey);
+            echo $type;
+            switch ($type)
+            {
+
+                case 'quiz' :
+                    //$return = GetQuizAnswer($xml,$Page,$_GET["answer"], $grade);
+                    break;
+                case 'hotspots':
+                    //$useranswer = isset($_GET["answer"]) ? $_GET["answer"] : array();
+                    //$return = GetHotspotsAnswer($xml,$Page, $useranswer, $grade);
+                    break;
+                case 'input':
+                    //$return = getInputAnswer($xml,$Page, intval((int)$_GET["value"]), $grade);
+                    break;
+                default :
+                    //$return = "error";
+                    break;
+            }
+        }
+
+    }
+
+
+
+}
+
+
+function GetQuizAnswer($xml, $Page, $useranswer , &$grade)
 {
     $return = array();
-    $xml = getXMLData();
-    $useranswer = $_GET["answer"];
-    $Page = $_GET["Page"];
     $xmlquizanswer = GetQuizXMLData($Page, $xml);
     if ($xmlquizanswer === $useranswer) {
         $return["Answer"] = "correct";
@@ -206,12 +254,9 @@ function GetQuizAnswer(&$grade)
     return $return;
 }
 
-function getInputAnswer(&$grade)
+function getInputAnswer($xml,$Page, $myvalue, &$grade)
 {
     $return = array();
-    $xml = getXMLData();
-    $myvalue = intval((int)$_GET["value"]);
-    $Page = $_GET["Page"];
     foreach ($xml->Page[intval($Page)] as $key => $value) {
         if ($key === "RangeQuiz") {
             $min = intval($value["minValue"]);
@@ -224,12 +269,9 @@ function getInputAnswer(&$grade)
     return $return;
 }
 
-function GetHotspotsAnswer(&$grade)
+function GetHotspotsAnswer($xml,$Page,$useranswer, &$grade)
 {
-    $useranswer = isset($_GET["answer"]) ? $_GET["answer"] : array();
     $return = array();
-    $Page = $_GET["Page"];
-    $xml = getXMLData();
     $myimg = GetHotSpotImage($Page, $xml);
     $result = true;
     $burnded = array();
