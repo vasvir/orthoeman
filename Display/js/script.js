@@ -3,6 +3,8 @@
 
 
  TODO cruise mode
+ TODO make quiz and rangequiz obey the show results/do not show the
+ TODO replave video javascript with the native brosers controls 
  TODO Doc: screencast for Display Tool usage.
 
  */
