@@ -7,8 +7,8 @@
 
 git update-server-info
 git archive master | tar -x -C /var www
-git archive master | tar -x --strip-components=2 -C /var/www Content/XML/orthoeman.xsd
-git archive master | tar --strip-components=1 -x -C /usr/share/moodle/mod moodle/orthoeman
+git archive master | tar -x --strip-components=1 -C /var/www orthoeman/orthoeman.xsd
+git archive master | tar -x --exclude orthoeman/AuthoringTool -C /usr/share/moodle/mod orthoeman
 mkdir -p /usr/share/moodle/mod/orthoeman/AuthoringTool
-git archive master | tar --strip-components=2 -x -C /usr/share/moodle/mod/orthoeman/AuthoringTool AuthoringTool/war
-git archive master | tar -x -C /usr/share/moodle/mod/orthoeman Display
+git archive master | tar -x --strip-components=3 -C /usr/share/moodle/mod/orthoeman/AuthoringTool orthoeman/AuthoringTool/war
+#git archive master | tar -x -C /usr/share/moodle/mod/orthoeman Display
