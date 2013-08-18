@@ -38,7 +38,6 @@ $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should b
 
 list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
 
-require_login($course, true, $cm);
 require_capability('moodle/restore:restorecourse', $context);
 
 global $DB, $USER;
