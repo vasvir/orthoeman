@@ -67,7 +67,7 @@ if (!$resource_rec) {
 } else {
   if ($resource_rec->type == $TYPE_XML_VALUE) {
     require_capability("mod/orthoeman:read", $context);
-  }
+}
 
   //unset magic quotes; otherwise, file contents will be modified
   set_magic_quotes_runtime(0);
