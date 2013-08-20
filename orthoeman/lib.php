@@ -784,3 +784,42 @@ function clean_xml($xml) {
     $pattern = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
     return preg_replace($pattern, '', $xml);
 }
+
+function report_bug($course, $cm, $orthoeman, $context, $subject, $text) {
+    require_capability('mod/orthoeman:write', $context);
+    add_to_log($course->id, 'orthoeman', 'report_bug', "report_bug?id={$cm->id}", $orthoeman->name, $cm->id);
+
+    $result = new stdClass();
+
+    global $USER;
+
+    $moodle_info = "Username: $USER->username
+Name: $USER->firstname $USER->lastname
+e-mail: $USER->email
+skype: $USER->skype
+url:$USER->url
+Institution: $USER->institution
+Department: $USER->department
+Address: $USER->address
+City: $USER->city
+Country: $USER->country\ncm: " . print_r($cm, true) . "\ncourse: " . print_r($course, true) . "\northoeman: " . print_r($orthoeman, true) . "\nuser: " . print_r($USER, true);
+    $body = "$text\n\nMoodle Information\n\n$moodle_info\n";
+
+    //echo $body;
+
+    $to_user = get_admin();
+    $subject = "[BUG: $course->shortname] $USER->firstname $USER->lastname: $subject";
+    $success = email_to_user($to_user, $USER, $subject, $body);
+    if ($success == "1") {  
+        $result->msg = "E-mail successful sent to $to_user->firstname $to_user->lastname!";
+        $result->status = 200;
+    } else if ($success === "emailstop") {
+        $result->msg = "E-mail of $to_user->firstname $to_user->lastname has been DISABLED! E-mail NOT sent";
+        $result->status = 406;
+    } else if (!$success) {
+        $result->msg = "Error: E-mail unsuccessful.";
+        $result->status = 404;
+    }
+
+    return $result;
+}

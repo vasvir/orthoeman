@@ -1,0 +1,30 @@
+== parts of moodle plugin ==
+
+lib.php
+version.php
+view.php
+mod_form.php
+locallib.php
+index.php
+
+== parts used just for testing ==
+
+backup.php
+restore.php
+
+== parts that are 3rd party implementation bits ==
+
+byteserve.php
+jsupload.php
+
+== parts of API ==
+
+get_resource.php
+put_resource.php
+delete_answers.php
+submit_grade.php
+get_timeleft.php
+get_answers.php
+put_answer.php
+get_details.php
+report_bug.php
