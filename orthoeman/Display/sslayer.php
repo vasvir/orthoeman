@@ -7,12 +7,8 @@ require_once('../lib.php');
 
 // check credentials
 $orthoeman_id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
-$my_cm = get_coursemodule_from_id('orthoeman', $orthoeman_id, 0, false, MUST_EXIST);
-$my_course = $DB->get_record('course', array('id' => $my_cm->course), '*', MUST_EXIST);
-$my_orthoeman = $DB->get_record('orthoeman', array('id' => $my_cm->instance), '*', MUST_EXIST);
-
-require_login($my_course, true, $my_cm);
-$my_context = get_context_instance(CONTEXT_MODULE, $my_cm->id);
+/// TODO $orthoeman_id should be $id, $n like the rest of the scripts
+list($my_course, $my_cm, $my_orthoeman, $my_context) = get_moodle_data($orthoeman_id, 0);
 
 require_view_capability($orthoeman_id, $my_context);
 
