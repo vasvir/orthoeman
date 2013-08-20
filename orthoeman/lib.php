@@ -556,6 +556,10 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     return $orthoeman_html;
 }
 
+    /**
+    *  should be called like that
+    *  list($course, $cm, $orthoeman, $context) = get_moodle_data($id, 0);
+    */
 function get_moodle_data($id, $n) {
     global $DB;
 
@@ -574,7 +578,6 @@ function get_moodle_data($id, $n) {
     require_login($course, true, $cm);
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
     
-    // read be list($course, $cm, $orthoeman, $context) = get_moodle_data($id, 0);
     return array($course, $cm, $orthoeman, $context);
 }
 
