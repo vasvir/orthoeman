@@ -592,14 +592,14 @@ function get_database_data($orthoeman_id, $resource_id) {
     return $resource_rec;
 }
 
-function get_lesson_details($orthoeman) {
+function get_details($orthoeman) {
     global $DB, $ORTHOEMAN_TABLE;
     return $DB->get_record($ORTHOEMAN_TABLE, array('id' => $orthoeman->id));
 }
 
 function has_view_capability($orthoeman, context $context) {
-    $lesson_details = get_lesson_details($orthoeman);
-    if ($lesson_details->cruise)
+    $details = get_details($orthoeman);
+    if ($details->cruise)
         return true;
 
     return has_capability('mod/orthoeman:view', $context);
@@ -709,7 +709,7 @@ function delete_answers($id, $n, $user_id = -1, $page_id = -1) {
 }
 
 function get_timeleft($orthoeman) {
-    $timeout = get_lesson_details($orthoeman)->timeout;
+    $timeout = get_details($orthoeman)->timeout;
     $answers = get_answers($orthoeman->id, -1);
     if (empty($answers)) {
         return (int) $timeout;
@@ -719,7 +719,7 @@ function get_timeleft($orthoeman) {
 }
 
 function get_duration($orthoeman {
-    $timeout = get_lesson_details($orthoeman->timeout;
+    $timeout = get_details($orthoeman->timeout;
     $answers = get_answers($orthoeman->id, -1);
     if (empty($answers)) {
         return (int) $timeout;

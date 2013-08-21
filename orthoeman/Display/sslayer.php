@@ -733,7 +733,7 @@ function getXMLData()
     // Inject into xml the course details from the moodle database
 
     $xmldata = simplexml_load_string($resource->data);
-    $lessonDetails = get_lesson_details($my_orthoeman);
+    $lessonDetails = get_details($my_orthoeman);
     $xmldata["cruiseMode"] = $lessonDetails->cruise;
     $xmldata["title"] = $lessonDetails->name;
     $xmldata["id"] = $lessonDetails->course;

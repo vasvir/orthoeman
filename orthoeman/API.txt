@@ -25,12 +25,12 @@ put_resource.php
 get_answers.php
 put_answer.php
 delete_answers.php
-get_details.php
 
 === fixed ===
 get_timeleft.php
 submit_grade.php
 report_bug.php
+get_details.php
 
 
 TODO
