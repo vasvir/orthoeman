@@ -64,7 +64,7 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('orthoeman-'.$somevar);
 
-require_view_capability($id, $context);
+require_view_capability($orthoeman, $context);
 
 // Output starts here
 echo $OUTPUT->header();

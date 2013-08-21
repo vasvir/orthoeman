@@ -16,18 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of orthoeman
- *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
+ * Prints the time left for a specifice user on a orthoeman case
  *
  * @package    mod
  * @subpackage orthoeman
- * @copyright  2011 Your Name
+ * @copyright  Vassilis Virvilis
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/// (Replace orthoeman with the name of your module and remove this line)
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -35,4 +30,5 @@ require_once(dirname(__FILE__).'/lib.php');
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
 
-echo json_encode(get_timeleft($id, $n));
+list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+echo json_encode(get_timeleft($orthoeman));
