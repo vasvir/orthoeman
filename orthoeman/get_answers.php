@@ -52,7 +52,7 @@ $page_id = optional_param('page_id', -1, PARAM_INT);
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-require_view_capability($id, $context);
+require_view_capability($orthoeman, $context);
 
 add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 

@@ -592,28 +592,21 @@ function get_database_data($orthoeman_id, $resource_id) {
     return $resource_rec;
 }
 
-function get_lesson_details_from_orthoeman_id($orthoeman_id) {
+function get_lesson_details($orthoeman) {
     global $DB, $ORTHOEMAN_TABLE;
-    return $DB->get_record($ORTHOEMAN_TABLE, array('id' => $orthoeman_id));
+    return $DB->get_record($ORTHOEMAN_TABLE, array('id' => $orthoeman->id));
 }
 
-function get_lesson_details($id) {
-    global $DB;
-    $cm = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
-    $orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
-    return get_lesson_details_from_orthoeman_id($orthoeman->id);
-}
-
-function has_view_capability($id, context $context) {
-    $lesson_details = get_lesson_details($id);
+function has_view_capability($orthoeman, context $context) {
+    $lesson_details = get_lesson_details($orthoeman);
     if ($lesson_details->cruise)
         return true;
 
     return has_capability('mod/orthoeman:view', $context);
 }
 
-function require_view_capability($id, context $context) {
-    if (!has_view_capability($id, $context)) {
+function require_view_capability($orthoeman, context $context) {
+    if (!has_view_capability($orthoeman, $context)) {
         throw new required_capability_exception($context, 'mod/orthoeman:view', 'nopermissions', '');
     }
 }
@@ -642,8 +635,8 @@ function get_answers($orthoeman_id, $page_id) {
     return get_user_answers($orthoeman_id, $USER->id, $page_id);    
 }
 
-function has_submit_capability($id, $context) {
-    $view_access = has_view_capability($id, $context);
+function has_submit_capability($orthoeman, $context) {
+    $view_access = has_view_capability($orthoeman, $context);
     $read_access = has_capability('mod/orthoeman:read', $context);
     $write_access = has_capability('mod/orthoeman:submit', $context);
 
@@ -657,7 +650,7 @@ function has_submit_capability($id, $context) {
 function put_answer($id, $n, $page_id, $type, $answer) {
     list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
 
-    $submit_access = has_submit_capability($id, $context);
+    $submit_access = has_submit_capability($orthoeman, $context);
 
     if (!$submit_access) {
         //echo "Read only. Nothing to do. Exiting...";
@@ -666,7 +659,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     
     add_to_log($course->id, 'orthoeman', 'put_answer', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
-    $timeleft = get_timeleft_from_orthoeman_id($orthoeman->id);
+    $timeleft = get_timeleft($orthoeman);
 
     if (!$timeleft) {
         //echo "time's up";
@@ -715,9 +708,9 @@ function delete_answers($id, $n, $user_id = -1, $page_id = -1) {
     delete_answers_from_orthoeman_id($orthoeman->id, $user_id, $page_id);
 }
 
-function get_timeleft_from_orthoeman_id($orthoeman_id) {
-    $timeout = get_lesson_details_from_orthoeman_id($orthoeman_id)->timeout;
-    $answers = get_answers($orthoeman_id, -1);
+function get_timeleft($orthoeman) {
+    $timeout = get_lesson_details($orthoeman)->timeout;
+    $answers = get_answers($orthoeman->id, -1);
     if (empty($answers)) {
         return (int) $timeout;
     }
@@ -725,24 +718,14 @@ function get_timeleft_from_orthoeman_id($orthoeman_id) {
     return $timeleft > 0 ? $timeleft : 0;
 }
 
-function get_timeleft($id, $n) {
-    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-    return get_timeleft_from_orthoeman_id($orthoeman->id);
-}
-
-function get_duration_from_orthoeman_id($orthoeman_id) {
-    $timeout = get_lesson_details_from_orthoeman_id($orthoeman_id)->timeout;
-    $answers = get_answers($orthoeman_id, -1);
+function get_duration($orthoeman {
+    $timeout = get_lesson_details($orthoeman->timeout;
+    $answers = get_answers($orthoeman->id, -1);
     if (empty($answers)) {
         return (int) $timeout;
     }
     $duration = $timeout - (end($answers)->timesubmitted - reset($answers)->timesubmitted);
     return $duration;
-}
-
-function get_duration($id, $n) {
-    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-    return get_duration_from_orthoeman_id($orthoeman->id);
 }
 
 // param int $userid update grade of specific user only, 0 means all participants
@@ -769,10 +752,8 @@ function orthoeman_get_user_grades($orthoeman, $userid) {
     return $grades;
 }
 
-function submit_grade($id, $n) {
-    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-
-    $submit_access = has_submit_capability($id, $context);
+function submit_grade($orthoeman, context $context) {
+    $submit_access = has_submit_capability($orthoeman, $context);
 
     if (!$submit_access) {
         //echo "Read only. Nothing to do. Exiting...";
@@ -788,7 +769,7 @@ function clean_xml($xml) {
     return preg_replace($pattern, '', $xml);
 }
 
-function report_bug($course, $cm, $orthoeman, $context, $subject, $text) {
+function report_bug($course, $cm, $orthoeman, context $context, $subject, $text) {
     require_capability('mod/orthoeman:write', $context);
     add_to_log($course->id, 'orthoeman', 'report_bug', "report_bug?id={$cm->id}", $orthoeman->name, $cm->id);
 

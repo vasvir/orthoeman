@@ -10,7 +10,7 @@ $orthoeman_id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module I
 /// TODO $orthoeman_id should be $id, $n like the rest of the scripts
 list($my_course, $my_cm, $my_orthoeman, $my_context) = get_moodle_data($orthoeman_id, 0);
 
-require_view_capability($orthoeman_id, $my_context);
+require_view_capability($my_orthoeman, $my_context);
 
 add_to_log($my_course->id, 'orthoeman', 'launch display', "display.html?id={$my_cm->id}", $my_orthoeman->name, $my_cm->id);
 
@@ -73,7 +73,7 @@ switch ($action) {
         //fb($savedanswers.",".$totalAnswers);
         $answer->myanswer["final"] = ($totalAnswers === $savedanswers) ? "true" : "false";
         echo json_encode($answer->myanswer);
-        submit_grade($orthoeman_id, 0);
+        submit_grade($my_orthoeman, $my_context);
         break;
     case "3":
         echo getTimeout();
@@ -85,10 +85,10 @@ switch ($action) {
 
 function getTimeout()
 {
-    global $orthoeman_id;
+    global $my_orthoeman;
     //$lessonDetails = get_lesson_details($orthoeman_id);
     //return $lessonDetails->timeout;
-    return isLessonFinished() ? get_duration($orthoeman_id, 0) : get_timeleft($orthoeman_id, 0);
+    return isLessonFinished() ? get_duration($my_orthoeman) : get_timeleft($my_orthoeman);
 }
 
 function isLessonFinished()
@@ -112,7 +112,7 @@ function putAnswerInMoodle($pageID, $typeID, $answer)
     //check if there is another answer
     $oldAnswers = get_answers($my_orthoeman->id, intval($pageID) + 1);
     //and the remaining time
-    $timeleft = get_timeleft($orthoeman_id, 0);
+    $timeleft = get_timeleft($my_orthoeman);
     if (count($oldAnswers) === 0 && $timeleft > 0 && !isLessonFinished()) {
         put_answer($orthoeman_id, 0, intval($pageID) + 1, intval($typeID), $answer);
     }
@@ -733,7 +733,7 @@ function getXMLData()
     // Inject into xml the course details from the moodle database
 
     $xmldata = simplexml_load_string($resource->data);
-    $lessonDetails = get_lesson_details($orthoeman_id);
+    $lessonDetails = get_lesson_details($my_orthoeman);
     $xmldata["cruiseMode"] = $lessonDetails->cruise;
     $xmldata["title"] = $lessonDetails->name;
     $xmldata["id"] = $lessonDetails->course;
