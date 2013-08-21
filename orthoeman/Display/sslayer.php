@@ -79,16 +79,16 @@ switch ($action) {
         echo getTimeout();
         break;
     case "4":
-        echo count(get_answers($my_orthoeman->id, -1));
+        echo count(get_answers($my_orthoeman, $my_context, -1));
         break;
 }
 
 function getTimeout()
 {
-    global $my_orthoeman;
+    global $my_orthoeman, $my_context;
     //$lessonDetails = get_lesson_details($orthoeman_id);
     //return $lessonDetails->timeout;
-    return isLessonFinished() ? get_duration($my_orthoeman) : get_timeleft($my_orthoeman);
+    return isLessonFinished() ? get_duration($my_orthoeman, $my_context) : get_timeleft($my_orthoeman, $my_context);
 }
 
 function isLessonFinished()
@@ -108,11 +108,11 @@ function isLessonFinished_totalanswers($tracking_ids)
 
 function putAnswerInMoodle($pageID, $typeID, $answer)
 {
-    global $orthoeman_id, $my_orthoeman;
+    global $orthoeman_id, $my_orthoeman, $my_context;
     //check if there is another answer
-    $oldAnswers = get_answers($my_orthoeman->id, intval($pageID) + 1);
+    $oldAnswers = get_answers($my_orthoeman, $my_context, intval($pageID) + 1);
     //and the remaining time
-    $timeleft = get_timeleft($my_orthoeman);
+    $timeleft = get_timeleft($my_orthoeman, $my_context);
     if (count($oldAnswers) === 0 && $timeleft > 0 && !isLessonFinished()) {
         put_answer($orthoeman_id, 0, intval($pageID) + 1, intval($typeID), $answer);
     }
@@ -133,8 +133,8 @@ function putAnswerInMoodle_old($pageID, $typeID, $answer)
 
 function getAnswersFromMoodle()
 {
-    global $orthoeman_id, $my_orthoeman;
-    $answer_recs = get_answers($my_orthoeman->id, -1);
+    global $orthoeman_id, $my_orthoeman, $my_context;
+    $answer_recs = get_answers($my_orthoeman, $my_context, -1);
     //fb($answer_recs);
     $r = array();
     foreach ($answer_recs as $page) {

@@ -22,7 +22,6 @@ jsupload.php
 === unfixed ===
 get_resource.php
 put_resource.php
-get_answers.php
 put_answer.php
 delete_answers.php
 
@@ -31,31 +30,14 @@ get_timeleft.php
 submit_grade.php
 report_bug.php
 get_details.php
+get_answers.php
+
 
 
 TODO
-----
-submit_grade($orthoeman, $context)		ok
-get_lesson_details($orthoeman)			ok
-has_view_capability($orthoeman, $context)	ok
-require_view_capability($orthoeman, $context)	ok
-	./orthoeman/get_resource.php:55:require_view_capability($id, $context);
-	./orthoeman/view.php:67:require_view_capability($id, $context);
-	./orthoeman/get_answers.php:55:require_view_capability($id, $context);
-	./orthoeman/get_details.php:53:require_view_capability($id, $context);
-has_submit_capability($orthoeman, $context)	ok
-get_timeleft($orthoeman)			ok
-get_duration($orthoeman)			ok
-
-drop
-----
-get_lesson_details_from_orthoeman_id	ok
-get_timeleft_from_orthoeman_id		ok
-get_duration_from_orthoeman_id		ok
 
 needs fixing
 ------------
-get_answers
 view.php
 
 
@@ -64,3 +46,4 @@ sanity check:
 get_moodle_data must be called from php scripts only and not functions
 Display/sslayer.php  -- get rid of orthoeman_id
 lib.php shouldn't have any rogue functions
+fix copyrights

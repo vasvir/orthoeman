@@ -31,4 +31,4 @@ $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
 
 list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-echo json_encode(get_timeleft($orthoeman));
+echo json_encode(get_timeleft($orthoeman, $context));
