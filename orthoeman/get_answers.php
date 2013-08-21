@@ -16,44 +16,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of orthoeman
- *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
+ * Prints the answers of the current user in the specific page
  *
  * @package    mod
  * @subpackage orthoeman
- * @copyright  2011 Your Name
+ * @copyright  Vassilis Virvilis
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/// (Replace orthoeman with the name of your module and remove this line)
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should be named as the first character of the module
-
-if ($id) {
-    $cm         = get_coursemodule_from_id('orthoeman', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $orthoeman  = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($n) {
-    $orthoeman  = $DB->get_record('orthoeman', array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $orthoeman->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('orthoeman', $orthoeman->id, $course->id, false, MUST_EXIST);
-} else {
-    error('You must specify a course_module ID or an instance ID');
-}
-
 $page_id = optional_param('page_id', -1, PARAM_INT);
 
-require_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-
-require_view_capability($orthoeman, $context);
-
-add_to_log($course->id, 'orthoeman', 'put_resource', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
-
-echo json_encode(get_answers($orthoeman->id, $page_id));
+list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+echo json_encode(get_answers($orthoeman, $context, $page_id));

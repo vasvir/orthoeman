@@ -629,10 +629,13 @@ function get_user_answers($orthoeman_id, $user_id, $page_id) {
     return $answers;
 }
 
-function get_answers($orthoeman_id, $page_id) {
+function get_answers($orthoeman, context $context, $page_id) {
+    require_view_capability($orthoeman, $context);
+    //add_to_log($course->id, 'orthoeman', 'get_answers', "get_answers.php?id={$cm->id}", $orthoeman->name, $cm->id);
+    
     global $USER;
 
-    return get_user_answers($orthoeman_id, $USER->id, $page_id);    
+    return get_user_answers($orthoeman->id, $USER->id, $page_id);
 }
 
 function has_submit_capability($orthoeman, $context) {
@@ -659,7 +662,7 @@ function put_answer($id, $n, $page_id, $type, $answer) {
     
     add_to_log($course->id, 'orthoeman', 'put_answer', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
-    $timeleft = get_timeleft($orthoeman);
+    $timeleft = get_timeleft($orthoeman, $context);
 
     if (!$timeleft) {
         //echo "time's up";
@@ -708,9 +711,9 @@ function delete_answers($id, $n, $user_id = -1, $page_id = -1) {
     delete_answers_from_orthoeman_id($orthoeman->id, $user_id, $page_id);
 }
 
-function get_timeleft($orthoeman) {
+function get_timeleft($orthoeman, context $context) {
     $timeout = get_details($orthoeman)->timeout;
-    $answers = get_answers($orthoeman->id, -1);
+    $answers = get_answers($orthoeman, $context, -1);
     if (empty($answers)) {
         return (int) $timeout;
     }
@@ -718,9 +721,9 @@ function get_timeleft($orthoeman) {
     return $timeleft > 0 ? $timeleft : 0;
 }
 
-function get_duration($orthoeman {
-    $timeout = get_details($orthoeman->timeout;
-    $answers = get_answers($orthoeman->id, -1);
+function get_duration($orthoeman, context $context) {
+    $timeout = get_details($orthoeman)->timeout;
+    $answers = get_answers($orthoeman, $context, -1);
     if (empty($answers)) {
         return (int) $timeout;
     }
