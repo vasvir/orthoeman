@@ -30,14 +30,6 @@ get_resource.php
 put_resource.php
 
 
-TODO
-----
-
-view.php
-
-
 sanity check:
 -------------
-get_moodle_data must be called from php scripts only and not functions
-Display/sslayer.php  -- get rid of orthoeman_id
 lib.php shouldn't have any rogue functions
