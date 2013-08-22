@@ -30,6 +30,9 @@ get_resource.php
 put_resource.php
 
 
-sanity check:
--------------
-lib.php shouldn't have any rogue functions
+
+TODO
+----
+
+security documentation
+

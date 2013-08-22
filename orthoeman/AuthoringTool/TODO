@@ -28,9 +28,7 @@ Later:
 		Use moodle file facilities for storing and retrieving files
 
 Later:
-	fix API to have _from_orthoeman_id and consolidate the use of get_moodle_data()
 	move sslayer.php to moodle directory
-	move Display and AuthoringTool under moodle
 	make the project GPL and post it to github
 
 Immediate:
