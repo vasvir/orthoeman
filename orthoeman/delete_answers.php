@@ -16,14 +16,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of orthoeman
- *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
+ * Deletes one or all answers of a particular instance of an orthoeman
+ * instance
  *
  * @package    mod
  * @subpackage orthoeman
- * @copyright  2011 Your Name
+ * @copyright  Vassilis Virvilis
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

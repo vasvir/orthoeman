@@ -22,7 +22,6 @@
  * The subject is optional in the url.
  * The user part of the body must be transmited with a POST http request
  *
- *
  * @package    mod
  * @subpackage orthoeman
  * @copyright  Vassilis Virvilis
