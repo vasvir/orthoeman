@@ -108,13 +108,13 @@ function isLessonFinished_totalanswers($tracking_ids)
 
 function putAnswerInMoodle($pageID, $typeID, $answer)
 {
-    global $orthoeman_id, $my_orthoeman, $my_context;
+    global $orthoeman_id, $my_course, $my_cm, $my_orthoeman, $my_context;
     //check if there is another answer
     $oldAnswers = get_answers($my_orthoeman, $my_context, intval($pageID) + 1);
     //and the remaining time
     $timeleft = get_timeleft($my_orthoeman, $my_context);
     if (count($oldAnswers) === 0 && $timeleft > 0 && !isLessonFinished()) {
-        put_answer($orthoeman_id, 0, intval($pageID) + 1, intval($typeID), $answer);
+        put_answer($my_course, $my_cm, $my_orthoeman, $my_context, intval($pageID) + 1, intval($typeID), $answer);
     }
 
 }
