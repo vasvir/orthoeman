@@ -27,14 +27,12 @@ get_answers.php
 put_answer.php
 delete_answers.php
 get_resource.php
-
+put_resource.php
 
 
 TODO
+----
 
-needs fixing
-------------
-put_resource.php
 view.php
 
 
