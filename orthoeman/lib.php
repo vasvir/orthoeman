@@ -650,17 +650,13 @@ function has_submit_capability($orthoeman, $context) {
     return !$read_access;
 }
 
-function put_answer($id, $n, $page_id, $type, $answer) {
-    list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
-
+function put_answer($course, $cm, $orthoeman, context $context, $page_id, $type, $answer) {
     $submit_access = has_submit_capability($orthoeman, $context);
 
     if (!$submit_access) {
         //echo "Read only. Nothing to do. Exiting...";
         return;
     }
-    
-    add_to_log($course->id, 'orthoeman', 'put_answer', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
     $timeleft = get_timeleft($orthoeman, $context);
 
@@ -668,6 +664,8 @@ function put_answer($id, $n, $page_id, $type, $answer) {
         //echo "time's up";
         return;
     }
+
+    add_to_log($course->id, 'orthoeman', 'put_answer', "put_answer.php?id={$cm->id}", $orthoeman->name, $cm->id);
 
     global $DB, $USER, $ANSWER_TABLE;
 

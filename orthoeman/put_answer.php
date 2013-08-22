@@ -38,4 +38,6 @@ $page_id = required_param('page_id', PARAM_INT);
 $type = required_param('type', PARAM_INT);
 $answer = required_param('answer', PARAM_TEXT);
 
-echo json_encode(put_answer($id, $n, $page_id, $type, $answer));
+list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+
+echo json_encode(put_answer($course, $cm, $orthoeman, $context, $page_id, $type, $answer));
