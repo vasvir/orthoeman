@@ -108,7 +108,7 @@ function isLessonFinished_totalanswers($tracking_ids)
 
 function putAnswerInMoodle($pageID, $typeID, $answer)
 {
-    global $orthoeman_id, $my_course, $my_cm, $my_orthoeman, $my_context;
+    global $my_course, $my_cm, $my_orthoeman, $my_context;
     //check if there is another answer
     $oldAnswers = get_answers($my_orthoeman, $my_context, intval($pageID) + 1);
     //and the remaining time
@@ -133,7 +133,7 @@ function putAnswerInMoodle_old($pageID, $typeID, $answer)
 
 function getAnswersFromMoodle()
 {
-    global $orthoeman_id, $my_orthoeman, $my_context;
+    global $my_orthoeman, $my_context;
     $answer_recs = get_answers($my_orthoeman, $my_context, -1);
     //fb($answer_recs);
     $r = array();
@@ -721,7 +721,7 @@ function oldGetXMLData()
 
 function getXMLData()
 {
-    global $orthoeman_id, $my_course, $my_cm, $my_orthoeman, $my_context;
+    global $my_course, $my_cm, $my_orthoeman, $my_context;
     global $old, $totalAnswers, $totalTheory;
 
     if ($old != 0) return oldGetXMLData();
