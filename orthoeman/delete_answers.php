@@ -37,4 +37,5 @@ $n  = optional_param('n', 0, PARAM_INT);  // orthoeman instance ID - it should b
 $user_id = optional_param('user_id', -1, PARAM_INT);
 $page_id = optional_param('page_id', -1, PARAM_INT);
 
-delete_answers($id, $n, $user_id, $page_id);
+list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
+delete_answers($course, $cm, $orthoeman, $context, $user_id, $page_id);
