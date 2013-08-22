@@ -22,9 +22,11 @@
  * This code fragment is called by moodle_needs_upgrading() and
  * /admin/index.php
  *
+ * moodle plugin skeleton file
+ *
  * @package    mod
  * @subpackage orthoeman
- * @copyright  2011 Your Name
+ * @copyright  moodle
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
