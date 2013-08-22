@@ -21,9 +21,11 @@
  * It uses the standard core Moodle formslib. For more info about them, please
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
+ * moodle plugin skeleton file
+ *
  * @package    mod
  * @subpackage orthoeman
- * @copyright  2011 Your Name
+ * @copyright  Vassilis Virvilis
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

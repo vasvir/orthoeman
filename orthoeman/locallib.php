@@ -20,10 +20,12 @@
  *
  * All the orthoeman specific functions, needed to implement the module
  * logic, should go here. Never include this file from your lib.php!
+ * 
+ * moodle plugin skeleton file
  *
  * @package    mod
  * @subpackage orthoeman
- * @copyright  2011 Your Name
+ * @copyright  moodle
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
