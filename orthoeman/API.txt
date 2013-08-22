@@ -19,11 +19,6 @@ jsupload.php
 
 == parts of API ==
 
-=== unfixed ===
-get_resource.php
-put_resource.php
-
-=== fixed ===
 get_timeleft.php
 submit_grade.php
 report_bug.php
@@ -31,6 +26,7 @@ get_details.php
 get_answers.php
 put_answer.php
 delete_answers.php
+get_resource.php
 
 
 
@@ -38,6 +34,7 @@ TODO
 
 needs fixing
 ------------
+put_resource.php
 view.php
 
 
