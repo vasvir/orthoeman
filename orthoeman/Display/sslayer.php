@@ -721,7 +721,9 @@ function oldGetXMLData()
 
 function getXMLData()
 {
-    global $old, $my_orthoeman, $orthoeman_id, $totalAnswers, $totalTheory;
+    global $orthoeman_id, $my_course, $my_cm, $my_orthoeman, $my_context;
+    global $old, $totalAnswers, $totalTheory;
+
     if ($old != 0) return oldGetXMLData();
     //global $DB;
     //$id = optional_param('orthoeman_id', 0, PARAM_INT); // course_module ID, or
@@ -729,7 +731,7 @@ function getXMLData()
     //$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     //$orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
 
-    $resource = get_database_data($my_orthoeman->id, -1);
+    $resource = get_resource($my_course, $my_cm, $my_orthoeman, $my_context);
     // Inject into xml the course details from the moodle database
 
     $xmldata = simplexml_load_string($resource->data);

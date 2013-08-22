@@ -591,14 +591,25 @@ function get_moodle_data($id, $n) {
     return array($course, $cm, $orthoeman, $context);
 }
 
-function get_database_data($orthoeman_id, $resource_id) {
+function get_resource($course, $cm, $orthoeman, context $context, $resource_id = -1) {
+    require_view_capability($orthoeman, $context);
+
     global $DB, $RESOURCE_TABLE, $TYPE_XML_VALUE;
 
     if ($resource_id == -1) {
-        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman_id, 'type' => $TYPE_XML_VALUE));
+        require_capability("mod/orthoeman:read", $context);
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_XML_VALUE));
     } else {
-        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('id' => $resource_id, 'orthoeman_id' => $orthoeman_id));
+        $resource_rec = $DB->get_record($RESOURCE_TABLE, array('id' => $resource_id, 'orthoeman_id' => $orthoeman->id));
     }
+
+    // in case a clever guy asks for a XML by resource_id
+    if ($resource_rec && $resource_rec->type == $TYPE_XML_VALUE) {
+            require_capability("mod/orthoeman:read", $context);
+    }
+
+    add_to_log($course->id, 'orthoeman', 'get_resource', "get_resource.php?id={$cm->id}", $orthoeman->name, $cm->id);
+
     return $resource_rec;
 }
 
