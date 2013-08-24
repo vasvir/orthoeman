@@ -581,8 +581,10 @@ function get_moodle_data($id, $n) {
     return array($course, $cm, $orthoeman, $context);
 }
 
-function get_resource($course, $cm, $orthoeman, context $context, $resource_id = -1) {
-    require_view_capability($orthoeman, $context);
+function get_resource($course, $cm, $orthoeman, context $context, $check_access = true, $resource_id = -1) {
+    if ($check_access) {
+        require_view_capability($orthoeman, $context);
+    }
 
     global $DB, $RESOURCE_TABLE, $TYPE_XML_VALUE;
 

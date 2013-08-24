@@ -731,7 +731,7 @@ function getXMLData()
     //$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     //$orthoeman = $DB->get_record('orthoeman', array('id' => $cm->instance), '*', MUST_EXIST);
 
-    $resource = get_resource($my_course, $my_cm, $my_orthoeman, $my_context);
+    $resource = get_resource($my_course, $my_cm, $my_orthoeman, $my_context, false);
     // Inject into xml the course details from the moodle database
 
     $xmldata = simplexml_load_string($resource->data);
