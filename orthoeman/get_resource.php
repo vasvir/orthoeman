@@ -37,7 +37,7 @@ $resource_id = optional_param('resource_id', -1, PARAM_INT); // resource_id -1 g
 
 list($course, $cm, $orthoeman, $context) = get_moodle_data($id, $n);
 
-$resource_rec = get_resource($course, $cm, $orthoeman, $context, $resource_id);
+$resource_rec = get_resource($course, $cm, $orthoeman, $context, true, $resource_id);
 
 if ($resource_rec) {
   //unset magic quotes; otherwise, file contents will be modified
