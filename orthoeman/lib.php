@@ -596,7 +596,7 @@ function get_resource($course, $cm, $orthoeman, context $context, $check_access 
     }
 
     // in case a clever guy asks for a XML by resource_id
-    if ($resource_rec && $resource_rec->type == $TYPE_XML_VALUE && check_access) {
+    if ($resource_rec && $resource_rec->type == $TYPE_XML_VALUE && $check_access) {
             require_capability("mod/orthoeman:read", $context);
     }
 
