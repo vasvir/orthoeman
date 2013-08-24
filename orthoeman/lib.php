@@ -321,8 +321,7 @@ function orthoeman_grade_item_update(stdClass $orthoeman, $grades=NULL) {
         $params['reset'] = true;
         $grades = NULL;
 
-        list($course, $cm, $orthoeman, $context) = get_moodle_data_from_orthoeman($orthoeman);
-        delete_answers($course, $cm, $orthoeman, $context);
+        delete_answers_from_orthoeman($orthoeman);
     }
 
     //error_log("orthoeman_grade_item_update: " . json_encode($grades));
@@ -557,19 +556,10 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     return $orthoeman_html;
 }
 
-function get_moodle_data_from_orthoeman($orthoeman) {
-    global $DB;
-    $course     = $DB->get_record('course', array('id' => $orthoeman->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('orthoeman', $orthoeman->id, $course->id, false, MUST_EXIST);
-    require_login($course, true, $cm);
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-    return array($course, $cm, $orthoeman, $context);
-}
-
-    /**
-    *  should be called like that
-    *  list($course, $cm, $orthoeman, $context) = get_moodle_data($id, 0);
-    */
+/**
+ *  should be called like that
+ *  list($course, $cm, $orthoeman, $context) = get_moodle_data($id, 0);
+ */
 function get_moodle_data($id, $n) {
     global $DB;
 
@@ -702,11 +692,7 @@ function put_answer($course, $cm, $orthoeman, context $context, $page_id, $type,
     return $answer_rec;
 }
 
-function delete_answers($course, $cm, $orthoeman, $context, $user_id = -1, $page_id = -1) {
-    require_capability('mod/orthoeman:write', $context);
-
-    add_to_log($course->id, 'orthoeman', 'delete_answers', "delete_answers.php?id={$cm->id}", $orthoeman->name, $cm->id);
-
+function delete_answers_from_orthoeman($orthoeman, $user_id = -1, $page_id = -1) {
     $match_array = array('orthoeman_id' => $orthoeman->id);
 
     if ($user_id >= 0) {
@@ -719,6 +705,14 @@ function delete_answers($course, $cm, $orthoeman, $context, $user_id = -1, $page
 
     global $DB, $ANSWER_TABLE;        
     $DB->delete_records($ANSWER_TABLE, $match_array);
+}
+
+function delete_answers($course, $cm, $orthoeman, $context, $user_id = -1, $page_id = -1) {
+    require_capability('mod/orthoeman:write', $context);
+
+    add_to_log($course->id, 'orthoeman', 'delete_answers', "delete_answers.php?id={$cm->id}", $orthoeman->name, $cm->id);
+
+    delete_answers_from_orthoeman($orthoeman, $user_id,$page_id);
 }
 
 function get_timeleft($orthoeman, context $context) {
