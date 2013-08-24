@@ -582,21 +582,21 @@ function get_moodle_data($id, $n) {
 }
 
 function get_resource($course, $cm, $orthoeman, context $context, $check_access = true, $resource_id = -1) {
-    if ($check_access) {
-        require_view_capability($orthoeman, $context);
-    }
+    require_view_capability($orthoeman, $context);
 
     global $DB, $RESOURCE_TABLE, $TYPE_XML_VALUE;
 
     if ($resource_id == -1) {
-        require_capability("mod/orthoeman:read", $context);
+        if ($check_access) {
+            require_capability("mod/orthoeman:read", $context);
+        }
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_XML_VALUE));
     } else {
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('id' => $resource_id, 'orthoeman_id' => $orthoeman->id));
     }
 
     // in case a clever guy asks for a XML by resource_id
-    if ($resource_rec && $resource_rec->type == $TYPE_XML_VALUE) {
+    if ($resource_rec && $resource_rec->type == $TYPE_XML_VALUE && check_access) {
             require_capability("mod/orthoeman:read", $context);
     }
 
