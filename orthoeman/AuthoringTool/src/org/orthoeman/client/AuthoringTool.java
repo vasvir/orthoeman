@@ -147,7 +147,7 @@ public class AuthoringTool implements EntryPoint {
 	private Slider contrast_sl;
 	private SimpleCheckBox invert_cb;
 
-	private String orthoeman_id = "-1";
+	private String cm_id = "-1";
 
 	private int scrollbar_width;
 
@@ -557,8 +557,8 @@ public class AuthoringTool implements EntryPoint {
 		}
 		final Widget divLogger = Log.getLogger(DivLogger.class).getWidget();
 
-		orthoeman_id = Window.Location.getParameter("id");
-		Log.info("Starting Authoring Tool with orthoeman_id " + orthoeman_id);
+		cm_id = Window.Location.getParameter("id");
+		Log.info("Starting Authoring Tool with orthoeman_id " + cm_id);
 
 		final Label splashScreenLabel = getLabel("splashScreenLabel");
 
@@ -621,9 +621,9 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				final String iframe_display_tool_url = "view.php?id="
-						+ orthoeman_id;
+						+ cm_id;
 				final String full_display_tool_url = "Display/index.html?id="
-						+ orthoeman_id;
+						+ cm_id;
 				final boolean fullscreen_display_tool = false;
 				final String display_tool_url = fullscreen_display_tool ? full_display_tool_url
 						: iframe_display_tool_url;
@@ -632,7 +632,7 @@ public class AuthoringTool implements EntryPoint {
 						Window.Location.getPath().replaceAll(
 								"AuthoringTool/AuthoringTool.html.*$",
 								display_tool_url),
-						"AuthoringTool_Preview_DisplayTool_" + orthoeman_id, "");
+						"AuthoringTool_Preview_DisplayTool_" + cm_id, "");
 			}
 		});
 
@@ -665,7 +665,7 @@ public class AuthoringTool implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				final RequestBuilder rb = new RequestBuilder(
 						RequestBuilder.POST, "../report_bug.php?id="
-								+ orthoeman_id + "&subject="
+								+ cm_id + "&subject="
 								+ bugReportSubjectTextBox.getText());
 				rb.setHeader("Content-Type",
 						"application/x-www-form-urlencoded");
@@ -1519,7 +1519,7 @@ public class AuthoringTool implements EntryPoint {
 
 		splashScreenLabel.setText("Reading Lesson...");
 
-		final String url = Lesson.getResourceURL(orthoeman_id, null);
+		final String url = Lesson.getResourceURL(cm_id, null);
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url);
 		try {
 			rb.sendRequest(null, new RequestCallback() {
@@ -1531,7 +1531,7 @@ public class AuthoringTool implements EntryPoint {
 				@Override
 				public void onResponseReceived(final Request request,
 						final Response response) {
-					lesson = Lesson.readXML(response.getText(), orthoeman_id,
+					lesson = Lesson.readXML(response.getText(), cm_id,
 							AuthoringTool.this);
 
 					lesson.addPageListener(new Lesson.PageListener() {
@@ -2099,7 +2099,7 @@ public class AuthoringTool implements EntryPoint {
 			final String data, final Object extra_info,
 			final ProgressDialogBox pd) {
 		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
-				"../put_resource.php?id=" + orthoeman_id + "&type="
+				"../put_resource.php?id=" + cm_id + "&type="
 						+ resource_type
 						+ getResourceIdsArgument(resource_type, extra_info));
 		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -2126,7 +2126,7 @@ public class AuthoringTool implements EntryPoint {
 								.getImageIdString(response_text);
 						image_item.setId(id);
 						image_item.setImage(new PreloadedImage(Lesson
-								.getResourceURL(orthoeman_id, id),
+								.getResourceURL(cm_id, id),
 								new ImageItemOnLoadPreloadedImageHandler(
 										image_item, true)));
 						setButtonsEnabled(image_edit_buttons, true);
@@ -2171,7 +2171,7 @@ public class AuthoringTool implements EntryPoint {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<video class=\"fill_x\" controls preload=\"none\">"); // poster="image_url
 		for (final Page.VideoItem.Source source : video_item.getSources()) {
-			final String url = Lesson.getResourceURL(orthoeman_id, source.id);
+			final String url = Lesson.getResourceURL(cm_id, source.id);
 			sb.append("<source src='" + url + "' type='" + source.content_type
 					+ "'/>");
 			// sb.append("<source src='" + url + "' type='" +
