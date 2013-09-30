@@ -270,6 +270,8 @@ function GetHotspotsAnswer($xml,$Page,$useranswer, &$grade)
 {
     $return = array();
     $myimg = GetHotSpotImage($Page, $xml);
+    //header('Content-Type: image/jpeg');
+    //imagejpeg($myimg[1]);
     $result = true;
     $burnded = array();
     $fillcolors = array();
@@ -277,17 +279,17 @@ function GetHotspotsAnswer($xml,$Page,$useranswer, &$grade)
         $fillcolors[$j] = false;
     }
     $r = array();
-
     for ($i = 0; $i < count($useranswer); $i++) {
         $r[$i] = false;
         $x = $useranswer[$i][0];
         $y = $useranswer[$i][1];
+
         for ($j = 0; $j < count($myimg); $j++) {
             if (!array_key_exists($j, $burnded)) {
                 $colorint = imagecolorat($myimg[$j], $x, $y);
                 if ($colorint === 1) {
                     $r[$i] = true;
-                    $burnded[] = $j;
+                    $burnded[$j] = $j;
                     $fillcolors[$j] = true;
                     break;
                 }
@@ -298,6 +300,7 @@ function GetHotspotsAnswer($xml,$Page,$useranswer, &$grade)
             //break;
         }
     }
+
 
 
     foreach ($r as $rs) {
