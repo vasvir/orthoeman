@@ -62,3 +62,15 @@ Meeting in Valencia:
 	Discussion:
 		-In hotspots teacher decides if the correct answer is visible
 		-In quiz and range quiz the correct answers are always visible
+
+Meeting in Sinaia:
+	-A link that will point in questionaires (pending on Taina - Dorin)
+	-Links to glossaries (pending on Taina)
+	-Link to greek glossary (pending to Kostas)
+	-BUG?: Cruise mode functionality. Kosta we have to review the semantics. (Vassilis, Kwstas)
+	-Manually enroll all users in User course guide so they can get -announcements by the support team (Vassilis)
+	-BUG: Authoring Tool does not allow you to set Negative Grade == 0 (Vassilis)
+	-Set the timeout to 100d for all courses in module 1, 2, 3 (Vassilis)
+	-Search Tool? Proper solution requires upgrade to moodle 2.5 and write searc-index backend (Vassilis)
+	-Tools should have the option to start fullscreen or autosense the small screen (Vassilis)
+	-Announcement on the Home page news should work (Vassilis)
