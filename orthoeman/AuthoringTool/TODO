@@ -43,7 +43,6 @@ Open issues:
 Meeting in Valencia:
 
 	Authoring Tool
-		* BUG: Don't allow to save ellipsis with zero size
 		* Wish: Allow to move areas
 		* Wish: Duplicate page / Use already loaded Image
 		* Doc: screencast for Auhoring Tool usage.  

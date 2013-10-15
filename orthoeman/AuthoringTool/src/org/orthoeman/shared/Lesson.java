@@ -168,6 +168,14 @@ public class Lesson extends ArrayList<Lesson.Page> {
 						}
 						intersection_point_lists
 								.add(new_intersection_point_list);
+					} else if (e.getType() == Drawing.Type.ELLIPSE) {
+						final Ellipse ellipse = (Ellipse) e;
+						if (ellipse.getHeight() == 0 || ellipse.getWidth() == 0)
+							return false;
+					} else if (e.getType() == Drawing.Type.RECTANGLE) {
+						final Rectangle rect = (Rectangle) e;
+						if (rect.getHeight() == 0 || rect.getWidth() == 0)
+							return false;
 					}
 					return super.add(e);
 				}
