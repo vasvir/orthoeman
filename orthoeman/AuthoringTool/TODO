@@ -50,8 +50,7 @@ Meeting in Valencia:
 		* Doc: Tutorial created with authoring Tool
 
 	Display Tool:
-		* video should be scaled. Scrollbars are difficult to work with 1280x960
-		* BUG:display of images with zoom in and out creates artifacts (firefox latest)
+		* BUG: display of images with zoom in and out creates artifacts (firefox latest)
 		* Style: It's not easy to see what is disabled (Stavros...)
 		* Doc: Tutorial created with authoring Tool
 
