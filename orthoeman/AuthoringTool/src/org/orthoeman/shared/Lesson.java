@@ -623,8 +623,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				final double value = Math.abs(Double.valueOf(grade_str));
 				if (value > 100)
 					grade = 100;
-				else if (value < 1)
-					grade = 1;
+				else if (value < 0)
+					grade = 0;
 				else
 					grade = (int) Math.rint(value);
 			} catch (Exception e) {
