@@ -52,21 +52,23 @@ Meeting in Valencia:
 	Display Tool:
 		* video should be scaled. Scrollbars are difficult to work with 1280x960
 		* BUG:display of images with zoom in and out creates artifacts (firefox latest)
-		* Wish: display number of current pages / total pages
-		* Wish: when you break out of the view page and return, it would be nice to return to the first unanswered page	
-		* BUG: Info areas should be immediately visible (Actually this is a required feature)
 		* Style: It's not easy to see what is disabled (Stavros...)
-		* Doc: screencast for Display Tool usage.
 		* Doc: Tutorial created with authoring Tool
 
 	moodle:
-		* BUG: enrollment key problem (when the account is created after the enrollment key. See if we can have enrollment to categories)
-		* BUG: Cannot find User Guide. Fixed in welcome page and rigth panel help
 		* Wish: Screen cast for moodle usage
-		* Doc: Better Welcome message with links and explanations
 		* Full screen mode when screen size is small
 
 	Discussion:
 		-In hotspots teacher decides if the correct answer is visible
-		-In quiz the correct answers are always visible
-		-In range quiz the correct value is never visible
+		-In quiz and range quiz the correct answers are always visible
+
+Meeting in Sinaia:
+	-A link that will point in questionaires (pending on Taina - Dorin)
+	-Links to glossaries (pending on Taina)
+	-Link to greek glossary (pending to Kostas)
+	-BUG?: Cruise mode functionality. Kosta we have to review the semantics. (Vassilis, Kwstas)
+	-BUG: Authoring Tool does not allow you to set Negative Grade == 0 (Vassilis)
+	-Search Tool? Proper solution requires upgrade to moodle 2.5 and write searc-index backend (Vassilis)
+	-Tools should have the option to start fullscreen or autosense the small screen (Vassilis)
+	-DisplayTool: Wish: Is it possible to state the timeout in the warning dialog?
