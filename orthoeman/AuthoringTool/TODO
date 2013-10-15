@@ -66,7 +66,6 @@ Meeting in Valencia:
 Meeting in Sinaia:
 	-A link that will point in questionaires (pending on Taina - Dorin)
 	-Links to glossaries (pending on Taina)
-	-Link to greek glossary (pending to Kostas)
 	-BUG?: Cruise mode functionality. Kosta we have to review the semantics. (Vassilis, Kwstas)
 	-BUG: Authoring Tool does not allow you to set Negative Grade == 0 (Vassilis)
 	-Search Tool? Proper solution requires upgrade to moodle 2.5 and write searc-index backend (Vassilis)
