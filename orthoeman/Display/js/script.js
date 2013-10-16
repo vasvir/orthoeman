@@ -219,6 +219,10 @@ function initializeOrthoeMAN() {
             }
 
         }
+        $('#counter_small').hide();
+        $('#counter').stop(true).fadeIn("slow").delay(5000).fadeOut(1000, function () {
+            $("#counter_small").show();
+        });
 
 
     });
@@ -1454,6 +1458,10 @@ function pageIsTurned(newPage) {
         CheckResizeLimits(OrthoVariables.lessonPage + 1);
     }
     $("#curPage").html(parseInt(OrthoVariables.CurPage / 2));
+    $('#counter_small').hide();
+    $('#counter').stop(true).fadeIn("slow").delay(5000).fadeOut(1000, function () {
+        $("#counter_small").show();
+    });
 
 }
 
