@@ -79,8 +79,17 @@ switch ($action) {
         echo getTimeout();
         break;
     case "4":
-        echo count(get_answers($my_orthoeman, $my_context, -1));
+        //$myanswer = new stdClass();
+        $myanswer["countAnswers"] = count(get_answers($my_orthoeman, $my_context, -1));
+        $myanswer["timeout"] = getInitialTimeout();
+        echo json_encode($myanswer);
         break;
+}
+
+function getInitialTimeout()
+{
+    global $my_orthoeman, $my_context;
+    return get_duration($my_orthoeman, $my_context);
 }
 
 function getTimeout()

@@ -83,14 +83,44 @@ $(document).ready(function () {
     $.getJSON(OrthoVariables.JsonUrl, {
         "action": 4, "orthoeman_id": OrthoVariables.InitialQueryString.id, "name": OrthoVariables.InitialQueryString.name
     }, function (data) {
-        var count = parseInt(data);
+        var count = parseInt(data.countAnswers);
         if (count > 0) {
             initializeOrthoeMAN();
         }
         else {
+            var timeLeft = data.timeout;
+            var getTimeLeftString = function (left) {
+                var days = 24 * 60 * 60,
+                    hours = 60 * 60,
+                    minutes = 60;
+                var pad  = function(a, b) {
+                    return(1e15 + a + "").slice(-b)
+                };
+                if (left < 0) {
+                    left = 0;
+                }
+
+                // Number of days left
+                var d = Math.floor(left / days);
+                left -= d * days;
+
+                // Number of hours left
+                var h = Math.floor(left / hours);
+                left -= h * hours;
+
+                // Number of minutes left
+                var m = Math.floor(left / minutes);
+                left -= m * minutes;
+
+                return pad(d, 1) + "d " + pad(h, 2) + "h " + pad(m, 2) + "m";
+            };
+
+            $("#dialogRemainingTime").html(getTimeLeftString(timeLeft));
+
             $("#dialog").dialog({
-                resizable: false,
+                resizable: true,
                 height: 235,
+                width: 400,
                 modal: true,
                 buttons: {
                     "Start Lesson": function () {
