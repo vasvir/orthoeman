@@ -112,7 +112,7 @@ $(document).ready(function () {
                 var m = Math.floor(left / minutes);
                 left -= m * minutes;
 
-                return pad(d, 1) + "d " + pad(h, 2) + "h " + pad(m, 2) + "m";
+                return d + "d " + pad(h, 2) + "h " + pad(m, 2) + "m";
             };
 
             $("#dialogRemainingTime").html(getTimeLeftString(timeLeft));
