@@ -244,6 +244,19 @@ function xmldb_orthoeman_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2013031000, 'orthoeman');
     }
 
+
+    if ($oldversion < 2013120500) {
+	// Changing type of field answer on table orthoeman_answer to text
+	$table = new xmldb_table('orthoeman_answer');
+	$field = new xmldb_field('answer', XMLDB_TYPE_TEXT, 'big', null, null, null, null, 'type');
+
+	// Launch change of type for field answer
+	$dbman->change_field_type($table, $field);
+
+	// orthoeman savepoint reached
+	upgrade_mod_savepoint(true, 2013120500, 'orthoeman');
+    }
+
     // And that's all. Please, examine and understand the 3 example blocks above. Also
     // it's interesting to look how other modules are using this script. Remember that
     // the basic idea is to have "blocks" of code (each one being executed only once,
