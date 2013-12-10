@@ -618,10 +618,10 @@ div[id^="quiz_"]>ul>li:hover {
 
 #stamp>img {
     -webkit-transform:rotate(-45deg);
-    tranform:rotate(-45deg);
-    -ms-tranform:rotate(-45deg);
-    -moz-tranform:rotate(-45deg);
-    -o-tranform:rotate(-45deg);
+    transform:rotate(-45deg);
+    -ms-transform:rotate(-45deg);
+    -moz-transform:rotate(-45deg);
+    -o-transform:rotate(-45deg);
     position: absolute;
     top:0;
     bottom: 0;
