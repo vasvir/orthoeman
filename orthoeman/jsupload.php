@@ -204,19 +204,21 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
   $cnt = 0;
   $fld = str_replace("[]", "", $key);
   $msg = "<message>jsupload.php $version</message>\n<files>\n";
-  foreach ($_FILES[$key]['tmp_name'] as $tmpfile) {
-    $size = $_FILES[$key]['size'][$cnt];
-    $type = $_FILES[$key]['type'][$cnt];
-    $name = $_FILES[$key]['name'][$cnt];
-    $field = $fld .  '-' . $cnt++;
-    $uploadfile = $uploaddir . $field . ".bin";
-    $uploadinfo = $uploaddir . $field . ".info";
-    if (move_uploaded_file($tmpfile, $uploadfile)) {
-      $msg  .= " <file>\n  <field>$field</field>\n  <name>$name</name> \n  <ctype>$type</ctype>\n  <size>$size</size>\n </file>";
-      $fh = fopen($uploadinfo, 'w');
-      fwrite($fh, $name . "\n" . $type . "\n" . $size . "\n");
-      fclose($fh);
-    }
+  #error_log("FILES_KEY: " . print_r($_FILES, true));
+  #error_log("key: $key");
+  #error_log("FILES_KEY[$key]: " . print_r($_FILES[$key], true));
+  $tmpfile = $_FILES[$key]['tmp_name'];
+  $size = $_FILES[$key]['size'];
+  $type = $_FILES[$key]['type'];
+  $name = $_FILES[$key]['name'];
+  $field = $fld .  '-' . $cnt++;
+  $uploadfile = $uploaddir . $field . ".bin";
+  $uploadinfo = $uploaddir . $field . ".info";
+  if (move_uploaded_file($tmpfile, $uploadfile)) {
+    $msg  .= " <file>\n  <field>$field</field>\n  <name>$name</name> \n  <ctype>$type</ctype>\n  <size>$size</size>\n </file>";
+    $fh = fopen($uploadinfo, 'w');
+    fwrite($fh, $name . "\n" . $type . "\n" . $size . "\n");
+    fclose($fh);
   }
   $msg .= "</files>\n<finished>ok</finished>";
   writeResponse($msg, 1);
