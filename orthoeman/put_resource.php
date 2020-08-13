@@ -45,12 +45,12 @@ function get_url_data($url) {
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     //curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-    $result = new Object();
-    
+    $result = new stdClass();
+
     $result->data = curl_exec($ch);
     $info = curl_getinfo($ch);
     $result->content_type = $info['content_type'];
-    
+
     curl_close($ch);
     return $result;
 }
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->md5 = md5($xml);
             $DB->update_record('orthoeman_resource', $resource_rec);
         } else {
-            $resource_rec = new Object();
+            $resource_rec = new stdClass();
             $resource_rec->orthoeman_id = $orthoeman->id;
             $resource_rec->type = $TYPE_XML_VALUE;
             $resource_rec->data = $xml;
@@ -100,18 +100,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $DB->delete_records_select($RESOURCE_TABLE, "orthoeman_id = $orthoeman->id AND type <> 0 $valid_resource_ids_sql");
    } else if ($type == $TYPE_IMAGE) {
         $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
-        //echo "url $url<BR>";
+        //error_log("url $url");
         $current_url = get_current_url();
-        //echo "current_url $current_url<BR>";
+        //error_log("current_url $current_url");
         $img_url = preg_replace('/\/put_resource.php.*$/', '', $current_url) . $url;
-        //echo "img_url $img_url<BR>";
+        //error_log("img_url $img_url");
         $result = get_url_data($img_url);
         $img = $result->data;
-        //echo "img XXX $img XXX<BR>";
+        //error_log("img XXX $img XXX");
+        //error_log("here.... img");
         $md5 = md5($img);
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_IMAGE_VALUE, 'md5' => $md5));
         if (!$resource_rec) {
-            $resource_rec = new Object();
+            $resource_rec = new stdClass();
             $resource_rec->orthoeman_id = $orthoeman->id;
             $resource_rec->type = $TYPE_IMAGE_VALUE;
             $resource_rec->data = $img;
@@ -136,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_VIDEO_VALUE, 'md5' => $md5));
         $id_map = array();
         if (!$resource_rec) {
-            $resource_rec = new Object();
+            $resource_rec = new stdClass();
             $resource_rec->orthoeman_id = $orthoeman->id;
             $resource_rec->type = $TYPE_VIDEO_VALUE;
             $resource_rec->data = $video;
@@ -161,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 "webm" => 'vp8.0, vorbis'
             );
             foreach ($formats as $format) {
-                $resource_rec = new Object();
+                $resource_rec = new stdClass();
                 $resource_rec->orthoeman_id = $orthoeman->id;
                 $resource_rec->type = $TYPE_VIDEO_VALUE;
                 $ffmpeg = preg_replace('/&/', '\\&', "./video_convert.sh $video_url $format");
