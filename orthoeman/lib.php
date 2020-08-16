@@ -505,7 +505,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                          3) firefox 79 does not take into account html.margin-bottom in order to bring scrollbars
                          4) If there is no need for vertical scrollbar the html.scrollHeight == window.innerHeight. WTF?
                          5) For some reason body.border is already counted. WTF?
-                         6) margin-bottoms for both body and html do not count
+                         7) When the available screen size is smaller than the absolute minimal required resize cannot be perfect
                         */
                             var viewportHeight = window.innerHeight;
                             if (lastHeight !== viewportHeight) {
