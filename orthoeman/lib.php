@@ -467,7 +467,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     $frame_id = md5($url);
     $parent_id = "parent_$frame_id";
     $toggle_link_id = "toggle_link_$frame_id";
-    $show_text = "Edit OrthoEMan Case...";
+    $show_text = "Edit OrthoEMan Case";
     $hide_text = "Hide OrthoEMan Case";
     //Output script to make the object tag be as large as possible
     $scroll_handler = $toggle_link ? "" : "onscroll = function() { scrollTo(0, 0); }";
@@ -477,8 +477,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                 var orthoeman_display = "'.$display .'";
                 var orthoeman_frame_id = "'.$frame_id.'";
                 var orthoeman_toggle_link = '.($toggle_link ? "true" : "false").';
-                var orthoeman_toggle_link_html = orthoeman_toggle_link ? "<a id=\"'.$toggle_link_id.'\" href=\"#\" onclick=\"toggle_orthoeman();\"></a>" : "";
-                var orthoeman_frame = orthoeman_toggle_link_html + "<iframe id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" src=\"' . $url . '\" frameborder=\"0\"></iframe>";
+                var orthoeman_frame = "<iframe id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" src=\"' . $url . '\" frameborder=\"0\"></iframe>";
 
                 function init_orthoeman() {
                         if (orthoeman_initialized) {
@@ -558,7 +557,6 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                 (function() {
                     if (orthoeman_toggle_link) {
                         var parent = document.getElementById("'.$parent_id.'");
-                        parent.innerHTML = orthoeman_toggle_link_html;
                         var toggle_link = document.getElementById("'.$toggle_link_id.'");
                         toggle_link.innerHTML = "'.$show_text.'";
                     }
@@ -569,6 +567,9 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                 })();
             //]]
         </script></div>';
+    if ($toggle_link) {
+        $orthoeman_html = '<fieldset id="id_orthoeman" class="clearfix collapsible"><legend class="ftoggler"><a id="'.$toggle_link_id.'" href="#" onclick="toggle_orthoeman();"></a></legend>' . $orthoeman_html . '</fieldset>';
+    }
     return $orthoeman_html;
 }
 
