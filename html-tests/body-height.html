@@ -1,0 +1,71 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Document Body vs Window Height Info</title>
+  <meta name="description" content="Document Body vs Window Height Info">
+  <meta name="author" content="Vassilis Virvilis">
+
+ <style>
+	html {
+		/*height: 100%;*/
+		background: green;
+		padding: 5px;
+		border: 20px yellow solid;
+		margin: 17px;
+	}
+
+	body {
+		/*height: 100%;*/
+		background: red;
+		border: 10px gray solid;
+		padding: 35px;
+		margin: 8px; /* this is the default */
+	}
+	
+	body div {
+		border: 1px black solid;
+	}
+ </style>
+
+ <script>
+ function getInfo() {
+  var hch = document.body.parentElement.clientHeight;
+  var hoh = document.body.parentElement.offsetHeight;
+  var hsh = document.body.parentElement.scrollHeight
+  var bch = document.body.clientHeight;
+  var boh = document.body.offsetHeight;
+  var bsh = document.body.scrollHeight;
+  var wih = window.innerHeight;
+
+  document.getElementById('id1').innerText = "document.html.clientHeight: " + hch;
+  document.getElementById('id2').innerText = "document.html.offsetHeight: " + hoh;
+  document.getElementById('id3').innerText = "document.html.scrollHeight: " + hsh;
+  document.getElementById('id4').innerText = "document.body.clientHeight: " + bch;
+  document.getElementById('id5').innerText = "document.body.offsetHeight: " + boh;
+  document.getElementById('id6').innerText = "document.body.scrollHeight: " + bsh;
+  document.getElementById('id7').innerText = "window.innerHeight: " + wih;
+}
+
+ window.onresize = function() {
+  document.getElementById('id7').innerText = "window.innerHeight: " + window.innerHeight;
+ }
+ </script> 
+</head>
+
+<body>
+  <div>
+  <p>Info</p>
+  <p id='id1'></p>
+  <p id='id2'></p>
+  <p id='id3'></p>
+  <p id='id4'></p>
+  <p id='id5'></p>
+  <p id='id6'></p>
+  <p id='id7'></p>
+  <button onclick="getInfo();">Get Info</button>
+  </div>
+</body>
+</html>

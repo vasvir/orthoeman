@@ -469,7 +469,6 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
     $toggle_link_id = "toggle_link_$frame_id";
     $show_text = "Edit OrthoEMan Case...";
     $hide_text = "Hide OrthoEMan Case";
-    $addHeight = 0; //(substr($url, 0,7) === "Display") ? 140 : 0;
     //Output script to make the object tag be as large as possible
     $scroll_handler = $toggle_link ? "" : "onscroll = function() { scrollTo(0, 0); }";
     $orthoeman_html = '<div id="'.$parent_id.'"><script type="text/javascript">
@@ -495,17 +494,34 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
 
                         //Take scrollbars off the outer document to prevent double scroll bar effect
                         document.body.style.overflow = "hidden";
-                        var dom = YAHOO.util.Dom;
                         var frame = document.getElementById(orthoeman_frame_id);
-                        var padding = 15; //The bottom of the iframe wasn\'t visible on some themes. Probably because of border widths, etc.
                         var lastHeight;
                         var resize = function() {
-                            var viewportHeight = dom.getViewportHeight();
-                            if (lastHeight !== Math.min(dom.getDocumentHeight(), viewportHeight)) {
-                                //console.log(viewportHeight, lastHeight, dom.getY(frame));
-                                frame.style.height = viewportHeight -'.$addHeight.' - dom.getY(frame) - padding + "px";
-                                lastHeight = Math.min(dom.getDocumentHeight(), dom.getViewportHeight());
-
+                        /*
+                         I hate the web html/js/css
+                         Notes:
+                         1) There is no document.html. We go through body like this document.body.parentElement
+                         2) html.scrollHeight > window.innerHeight there is vertibal scrollbars
+                         3) firefox 79 does not take into account html.margin-bottom in order to bring scrollbars
+                         4) If there is no need for vertical scrollbar the html.scrollHeight == window.innerHeight. WTF?
+                         5) For some reason body.border is already counted. WTF?
+                         6) margin-bottoms for both body and html do not count
+                        */
+                            var viewportHeight = window.innerHeight;
+                            if (lastHeight !== viewportHeight) {
+                                var bodyRect = document.body.getBoundingClientRect();
+                                var frameRect = frame.getBoundingClientRect();
+                                var frameOffset = frameRect.top - bodyRect.top;
+                                var body_style = getComputedStyle(document.body);
+                                var html_style = getComputedStyle(document.body.parentElement);
+                                var others = //parseFloat(body_style.borderTopWidth) + parseFloat(body_style.borderBottomWidth)
+                                + parseFloat(body_style.marginTop) //+ parseFloat(body_style.marginBottom)
+                                + parseFloat(html_style.paddingTop) //+ parseFloat(html_style.paddingBottom)
+                                + parseFloat(html_style.borderTopWidth) //+ parseFloat(html_style.borderBottomWidth)
+                                + parseFloat(html_style.marginTop); // + parseFloat(html_style.marginBottom);
+                                console.log("page: resizeHanler: ", viewportHeight, lastHeight, frameOffset, others);
+                                frame.style.height = viewportHeight - frameOffset - others + "px";
+                                lastHeight = viewportHeight;
                             }
                             // chrome needs to scrollTo top
                             scrollTo(0, 0);

@@ -36,3 +36,31 @@ TODO
 
 security documentation
 
+
+BUG: if the orthoeman module is hidden and the user resizes its window - it does not getting notified.
+Steps to reproduce
+	-Go to the case that it includes an orthoeman case
+	-Show the Authoring Tool (Note that correctly expands to the whole screen)
+	-Hide the Authoring Tool
+	-Resize the window slightly
+	-Show the Authoring Tool (Note that is not correctly filling up the available vertical space)
+Looks like there is code to handle the resize after the wake up (show). It
+just gets the vertical height wrong.
+See below:
+	When hidden (sleep)
+page: resizeHanler:  701 697 0 0 modedit.php:479:41
+(-:-) 2020-08-16 11:07:14,780 [TRACE] Browser resized 1249 x 701
+	Wehn showing (awake)
+page: resizeHanler:  702 701 310.25 0 modedit.php:479:41
+(-:-) 2020-08-16 11:07:40,624 [TRACE] Browser resized 1249 x 392
+
+Note the 701 vs 392. That is wrong
+
+--------
+
+We need to test on
+	-Safari
+	-Chrome
+	-IE
+
+
