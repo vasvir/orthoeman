@@ -1,6 +1,6 @@
 package org.orthoeman.client;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 public class ComputedStyle {
 	/**

@@ -1,12 +1,15 @@
 package org.orthoeman.shared;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class Ellipse extends Drawing {
 	private int x;
 	private int y;
 	private int width;
 	private int height;
+
+	private final Log log = LogFactory.getLog(getClass());
 
 	public Ellipse(Kind kind, int x, int y, int width, int height) {
 		super(Type.ELLIPSE, kind);
@@ -68,7 +71,7 @@ public class Ellipse extends Drawing {
 		final Ellipse ellipse = new Ellipse(getKind(), (int) (x / level)
 				+ rect.getX(), (int) (y / level) + rect.getY(),
 				(int) (width / level), (int) (height / level));
-		Log.trace("toImage: level " + level + " target " + rect + " from "
+		log.trace("toImage: level " + level + " target " + rect + " from "
 				+ this + " to " + ellipse);
 		return ellipse;
 	}
@@ -81,7 +84,7 @@ public class Ellipse extends Drawing {
 				(int) ((x - rect.getX()) * level),
 				(int) ((y - rect.getY()) * level), (int) (width * level),
 				(int) (height * level));
-		Log.trace("toCanvas: level " + level + " target " + rect + " from "
+		log.trace("toCanvas: level " + level + " target " + rect + " from "
 				+ this + " to " + ellipse);
 		return ellipse;
 	}
@@ -101,7 +104,7 @@ public class Ellipse extends Drawing {
 				* a2))
 				- Math.sqrt(a * b));
 
-		Log.trace("Distance " + this + " from point " + point + " distance = "
+		log.trace("Distance " + this + " from point " + point + " distance = "
 				+ distance + " a = " + a + " b = " + b + " dx = " + dx
 				+ " dy = " + dy);
 		return distance;

@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.orthoeman.client.log.DivLogger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.orthoeman.shared.Cross;
 import org.orthoeman.shared.Drawing;
 import org.orthoeman.shared.Ellipse;
@@ -18,19 +20,13 @@ import org.orthoeman.shared.Lesson;
 import org.orthoeman.shared.Line;
 import org.orthoeman.shared.Point;
 import org.orthoeman.shared.Polygon;
+import org.orthoeman.shared.PreloadedImage;
+import org.orthoeman.shared.PreloadedImage.OnLoadPreloadedImageHandler;
 import org.orthoeman.shared.Rectangle;
 import org.orthoeman.shared.Drawing.Type;
 import org.orthoeman.shared.Lesson.Page;
 import org.orthoeman.shared.Zoom;
 
-import gwtupload.client.IUploadStatus.Status;
-import gwtupload.client.IUploader;
-import gwtupload.client.PreloadedImage;
-import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
-import gwtupload.client.SingleUploader;
-import gwtupload.client.SingleUploaderModal;
-
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -40,6 +36,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.ParagraphElement;
@@ -67,7 +64,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -94,6 +90,8 @@ public class AuthoringTool implements EntryPoint {
 	private static final double angleBulletRadius = 5;
 	private static final double angleDistanceThreshold = 30;
 	private static final double eraseDistanceThreshold = 5;
+
+	private static final Log log = LogFactory.getLog(AuthoringTool.class);
 
 	private Lesson lesson = null;
 	private Page currentPage = null;
@@ -167,13 +165,11 @@ public class AuthoringTool implements EntryPoint {
 		XML, IMAGE, VIDEO;
 	}
 
-	public class ImageItemOnLoadPreloadedImageHandler implements
-			OnLoadPreloadedImageHandler {
+	public class ImageItemOnLoadPreloadedImageHandler implements OnLoadPreloadedImageHandler {
 		private final Page.ImageItem image_item;
 		private final boolean clear_drawings;
 
-		public ImageItemOnLoadPreloadedImageHandler(Page.ImageItem image_item,
-				boolean clear_drawings) {
+		public ImageItemOnLoadPreloadedImageHandler(Page.ImageItem image_item, boolean clear_drawings) {
 			this.image_item = image_item;
 			this.clear_drawings = clear_drawings;
 		}
@@ -182,19 +178,15 @@ public class AuthoringTool implements EntryPoint {
 		public void onLoad(PreloadedImage img) {
 			img.setVisible(false);
 			final Zoom zoom = image_item.getZoom();
-			Log.debug("Got image " + img.getRealWidth() + " x "
-					+ img.getRealHeight());
+			log.debug("Got image " + img.getRealWidth() + " x " + img.getRealHeight());
 			zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
-			zoom.setLevel(((double) canvas.getOffsetWidth())
-					/ ((double) img.getRealWidth()));
+			zoom.setLevel(((double) canvas.getOffsetWidth()) / ((double) img.getRealWidth()));
 			zoom.getTarget().set(0, 0, img.getRealWidth(), img.getRealHeight());
 			if (clear_drawings)
 				image_item.getDrawings().clear();
 			final Page current_page = getCurrentPage();
-			if (current_page != null
-					&& current_page.getImageItem() == image_item) {
-				Log.debug("CurrentPage: " + current_page
-						+ " with imageItem(): " + current_page.getImageItem()
+			if (current_page != null && current_page.getImageItem() == image_item) {
+				log.debug("CurrentPage: " + current_page + " with imageItem(): " + current_page.getImageItem()
 						+ " image_item: " + image_item);
 				redrawCanvas();
 			}
@@ -208,36 +200,9 @@ public class AuthoringTool implements EntryPoint {
 		}
 	};
 
-	/**
-	 * Note, we defer all application initialization code to
-	 * {@link #onModuleLoad2()} so that the UncaughtExceptionHandler can catch
-	 * any unexpected exceptions.
-	 */
-	@Override
-	public void onModuleLoad() {
-		final DivLogger div_logger = new DivLogger();
-		div_logger.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
-		Log.addLogger(div_logger);
-		/*
-		 * Install an UncaughtExceptionHandler which will produce
-		 * <code>FATAL</code> log messages
-		 */
-		Log.setUncaughtExceptionHandler();
-
-		// use deferred command to catch initialization exceptions in
-		// onModuleLoad2
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				onModuleLoad2();
-			}
-		});
-	}
-
 	private void onResize(ResizeEvent event) {
 		for (final Collection<? extends Widget> equal_width_widget_group : equal_width_widget_groups) {
-			Log.trace("Browser resized " + event.getWidth() + " x "
-					+ event.getHeight());
+			log.trace("Browser resized " + event.getWidth() + " x " + event.getHeight());
 
 			// find the maximum width
 			// assumes sane layout info
@@ -270,19 +235,15 @@ public class AuthoringTool implements EntryPoint {
 		final int menubar_height = getHeight(getMenuBarContainer());
 		final int page_height = window_height - menubar_height;
 		final int pageTitleContainerHeight = getHeight("pageTitleContainer");
-		final List<Page.Item.Type> itemTypeCombinationList = Arrays
-				.asList(getCurrentPage().getItemTypeCombination());
-		final boolean image = itemTypeCombinationList
-				.contains(Page.Item.Type.IMAGE);
-		final boolean text_quiz = itemTypeCombinationList
-				.contains(Page.Item.Type.TEXT)
+		final List<Page.Item.Type> itemTypeCombinationList = Arrays.asList(getCurrentPage().getItemTypeCombination());
+		final boolean image = itemTypeCombinationList.contains(Page.Item.Type.IMAGE);
+		final boolean text_quiz = itemTypeCombinationList.contains(Page.Item.Type.TEXT)
 				&& itemTypeCombinationList.contains(Page.Item.Type.QUIZ);
 		if (text_quiz) {
 			final int textTitleContainerHeight = getHeight("textTitleContainer");
 			final int quizTitleContainerHeight = getHeight("quizTitleContainer");
-			final int height_left = page_height - pageTitleContainerHeight
-					- textTitleContainerHeight - quizTitleContainerHeight
-					- getDecorationHeight("textContainer")
+			final int height_left = page_height - pageTitleContainerHeight - textTitleContainerHeight
+					- quizTitleContainerHeight - getDecorationHeight("textContainer")
 					- getDecorationHeight("quizContainer");
 			return height_left / 2;
 		}
@@ -291,61 +252,45 @@ public class AuthoringTool implements EntryPoint {
 				: getHeight("videoTitleContainer");
 		final int mediaUploaderContainerHeight = image ? getHeight("imageUploaderContainer")
 				: getHeight("videoUploaderContainer");
-		final int mediaButtonContainerHeight = image ? getHeight("imageButtonContainer")
-				: 0;
+		final int mediaButtonContainerHeight = image ? getHeight("imageButtonContainer") : 0;
 		final int mediaContainerDecorationHeight = image ? getDecorationHeight("imageContainer")
 				: getDecorationHeight("videoContainer");
-		final int height_left = page_height - pageTitleContainerHeight
-				- mediaTitleContainerHeight - mediaUploaderContainerHeight
-				- mediaButtonContainerHeight - mediaContainerDecorationHeight;
-		Log.trace("page_height = " + page_height + " pageTitleContainerHeight="
-				+ pageTitleContainerHeight + " mediaTitleContainerHeight ="
-				+ mediaTitleContainerHeight + " mediaUploaderContainerHeight="
-				+ mediaUploaderContainerHeight + " mediaButtonContainerHeight="
-				+ mediaButtonContainerHeight + " height_left=" + height_left);
+		final int height_left = page_height - pageTitleContainerHeight - mediaTitleContainerHeight
+				- mediaUploaderContainerHeight - mediaButtonContainerHeight - mediaContainerDecorationHeight;
+		log.trace("page_height = " + page_height + " pageTitleContainerHeight=" + pageTitleContainerHeight
+				+ " mediaTitleContainerHeight =" + mediaTitleContainerHeight + " mediaUploaderContainerHeight="
+				+ mediaUploaderContainerHeight + " mediaButtonContainerHeight=" + mediaButtonContainerHeight
+				+ " height_left=" + height_left);
 		return height_left;
 	}
 
 	private void resizeSecondaryContainers(int width_left, int height_left) {
-		RootPanel.get("nonMediaContainer").setWidth(
-				(width_left * 7 / 20) + "px");
-		String uploaderContainerPX = RootPanel.get("imageUploaderContainer")
-				.getOffsetHeight() + "px";
+		RootPanel.get("nonMediaContainer").setWidth((width_left * 7 / 20) + "px");
+		String uploaderContainerPX = RootPanel.get("imageUploaderContainer").getOffsetHeight() + "px";
 
-		final Page.Item.Type[] itemTypeCombination = getCurrentPage()
-				.getItemTypeCombination();
+		final Page.Item.Type[] itemTypeCombination = getCurrentPage().getItemTypeCombination();
 
 		for (final Page.Item.Type type : itemTypeCombination) {
 			switch (type) {
 			case IMAGE:
-				uploaderContainerPX = RootPanel.get("imageUploaderContainer")
-						.getOffsetHeight() + "px";
+				uploaderContainerPX = RootPanel.get("imageUploaderContainer").getOffsetHeight() + "px";
 				break;
 			case VIDEO:
-				uploaderContainerPX = RootPanel.get("videoUploaderContainer")
-						.getOffsetHeight() + "px";
-				RootPanel.get("videoPlayerContainer").setHeight(
-						height_left + "px");
+				uploaderContainerPX = RootPanel.get("videoUploaderContainer").getOffsetHeight() + "px";
+				RootPanel.get("videoPlayerContainer").setHeight(height_left + "px");
 				break;
 			case TEXT:
-				RootPanel.get("textUploadAlignmentContainer").setHeight(
-						uploaderContainerPX);
-				RootPanel.get("textTextAreaContainer").setHeight(
-						(height_left) + "px");
+				RootPanel.get("textUploadAlignmentContainer").setHeight(uploaderContainerPX);
+				RootPanel.get("textTextAreaContainer").setHeight((height_left) + "px");
 				break;
 			case QUIZ:
-				RootPanel.get("quizUploadAlignmentContainer").setHeight(
-						uploaderContainerPX);
-				RootPanel.get("quizQuizAreaContainer").setHeight(
-						(height_left) + "px");
-				RootPanel.get("quizAnswerScrollContainer").setHeight(
-						(height_left * 5 / 10) + "px");
+				RootPanel.get("quizUploadAlignmentContainer").setHeight(uploaderContainerPX);
+				RootPanel.get("quizQuizAreaContainer").setHeight((height_left) + "px");
+				RootPanel.get("quizAnswerScrollContainer").setHeight((height_left * 5 / 10) + "px");
 				break;
 			case RANGE_QUIZ:
-				RootPanel.get("rangeQuizUploadAlignmentContainer").setHeight(
-						uploaderContainerPX);
-				RootPanel.get("rangeQuizRangeQuizAreaContainer").setHeight(
-						(height_left) + "px");
+				RootPanel.get("rangeQuizUploadAlignmentContainer").setHeight(uploaderContainerPX);
+				RootPanel.get("rangeQuizRangeQuizAreaContainer").setHeight((height_left) + "px");
 				break;
 			}
 		}
@@ -356,56 +301,40 @@ public class AuthoringTool implements EntryPoint {
 		final int window_height = event.getHeight();
 		final int menubar_height = getHeight(getMenuBarContainer());
 
-		final RootPanel pageLabelContainer = RootPanel
-				.get("pageLabelContainer");
-		final RootPanel upDownButtonlContainer = RootPanel
-				.get("upDownButtonlContainer");
-		final RootPanel addRemoveButtonContainer = RootPanel
-				.get("addRemoveButtonContainer");
+		final RootPanel pageLabelContainer = RootPanel.get("pageLabelContainer");
+		final RootPanel upDownButtonlContainer = RootPanel.get("upDownButtonlContainer");
+		final RootPanel addRemoveButtonContainer = RootPanel.get("addRemoveButtonContainer");
 
 		final RootPanel pageContainer = getPageContainer();
 		if (scrollbar_width == 0) {
 			scrollbar_width = getScrollBarWidth();
-			Log.debug("Setting scrollbar width to " + scrollbar_width);
+			log.debug("Setting scrollbar width to " + scrollbar_width);
 		}
 		final int page_width = window_width - getWidth(getLeftPanelContainer());
 		final int page_height = window_height - menubar_height;
-		Log.trace("Browser resized page container (offset size) " + page_width
-				+ " x " + page_height + " style "
+		log.trace("Browser resized page container (offset size) " + page_width + " x " + page_height + " style "
 				+ pageContainer.getStyleName());
 		pageContainer.setSize(page_width + "px", page_height + "px");
 
 		// page button container
 		final RootPanel pageButtonContainer = getPageButtonContainer();
-		Log.trace("Chrome weird behavior: label_cnt_height: "
-				+ pageLabelContainer.getOffsetHeight()
-				+ " up_down_cnt_height: "
-				+ upDownButtonlContainer.getOffsetHeight()
-				+ " add_remove_cnt_heigth: "
+		log.trace("Chrome weird behavior: label_cnt_height: " + pageLabelContainer.getOffsetHeight()
+				+ " up_down_cnt_height: " + upDownButtonlContainer.getOffsetHeight() + " add_remove_cnt_heigth: "
 				+ addRemoveButtonContainer.getOffsetHeight());
-		final int page_button_cnt_height = window_height - menubar_height
-				- getHeight(pageLabelContainer)
-				- getHeight(upDownButtonlContainer)
-				- getHeight(addRemoveButtonContainer)
+		final int page_button_cnt_height = window_height - menubar_height - getHeight(pageLabelContainer)
+				- getHeight(upDownButtonlContainer) - getHeight(addRemoveButtonContainer)
 				- getDecorationHeight("leftPanelContainerParent");
 		pageButtonContainer.setHeight(page_button_cnt_height + "px");
-		Log.trace("Browser resized button container (offset size) "
-				+ pageButtonContainer.getOffsetWidth() + " x "
-				+ page_button_cnt_height + " style "
-				+ pageButtonContainer.getStyleName());
-		final double ratio = ((double) (window_width))
-				/ ((double) (window_height));
+		log.trace("Browser resized button container (offset size) " + pageButtonContainer.getOffsetWidth() + " x "
+				+ page_button_cnt_height + " style " + pageButtonContainer.getStyleName());
+		final double ratio = ((double) (window_width)) / ((double) (window_height));
 		for (final Button page_button : page_button_map.values()) {
-			page_button
-					.setHeight((page_button.getElement().getClientWidth() / ratio)
-							+ "px");
+			page_button.setHeight((page_button.getElement().getClientWidth() / ratio) + "px");
 		}
 
 		final Page page = getCurrentPage();
-		if (page == null
-				|| !Arrays.asList(page.getItemTypeCombination()).contains(
-						Page.Item.Type.IMAGE)) {
-			Log.trace("Image does not exist. Nothing to redraw. Exiting...");
+		if (page == null || !Arrays.asList(page.getItemTypeCombination()).contains(Page.Item.Type.IMAGE)) {
+			log.trace("Image does not exist. Nothing to redraw. Exiting...");
 			return;
 		}
 
@@ -419,16 +348,13 @@ public class AuthoringTool implements EntryPoint {
 		old_point.valid = false;
 
 		final Element cnt_e = canvasContainer.getElement();
-		final int border_horizontal = getPixels(ComputedStyle.getStyleProperty(
-				cnt_e, "borderLeftWidth"))
-				+ getPixels(ComputedStyle.getStyleProperty(cnt_e,
-						"borderRightWidth"));
-		Log.trace("Borders horizontal = " + border_horizontal);
+		final int border_horizontal = getPixels(ComputedStyle.getStyleProperty(cnt_e, "borderLeftWidth"))
+				+ getPixels(ComputedStyle.getStyleProperty(cnt_e, "borderRightWidth"));
+		log.trace("Borders horizontal = " + border_horizontal);
 		canvasContainer.setSize("auto", (height_left) + "px");
-		Log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth()
-				+ " getWidth(canvasContainer) = " + getWidth(canvasContainer));
-		final int canvas_100 = cnt_e.getOffsetWidth() - border_horizontal
-				- scrollbar_width;
+		log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth() + " getWidth(canvasContainer) = "
+				+ getWidth(canvasContainer));
+		final int canvas_100 = cnt_e.getOffsetWidth() - border_horizontal - scrollbar_width;
 		int canvas_width = 0;
 		int canvas_height = 0;
 
@@ -440,29 +366,24 @@ public class AuthoringTool implements EntryPoint {
 			case ZOOM_121:
 			case ZOOM_LEVEL:
 			case ZOOM_TARGET:
-				canvas_width = (int) (zoom.getLevel() * zoom.getTarget()
-						.getWidth());
-				canvas_height = (int) (zoom.getLevel() * zoom.getTarget()
-						.getHeight());
+				canvas_width = (int) (zoom.getLevel() * zoom.getTarget().getWidth());
+				canvas_height = (int) (zoom.getLevel() * zoom.getTarget().getHeight());
 				break;
 			case ZOOM_TO_FIT_WIDTH:
 				// keep aspect ratio
 				canvas_width = canvas_100;
-				canvas_height = img.getRealHeight() * canvas_width
-						/ img.getRealWidth();
-				zoom.setLevel(((double) canvas_width)
-						/ ((double) img.getRealWidth()));
+				canvas_height = img.getRealHeight() * canvas_width / img.getRealWidth();
+				zoom.setLevel(((double) canvas_width) / ((double) img.getRealWidth()));
 				break;
 			}
 		}
 
-		canvasContainer.setSize(cnt_e.getOffsetWidth() + "px", (height_left)
-				+ "px");
+		canvasContainer.setSize(cnt_e.getOffsetWidth() + "px", (height_left) + "px");
 		canvas.setSize(canvas_width + "px", canvas_height + "px");
-		Log.trace("Zoom resized canvas (offset size) " + canvas_width + " x "
-				+ canvas_height + " style " + canvas.getStyleName());
-		Log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth()
-				+ " getWidth(canvasContainer) = " + getWidth(canvasContainer));
+		log.trace("Zoom resized canvas (offset size) " + canvas_width + " x " + canvas_height + " style "
+				+ canvas.getStyleName());
+		log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth() + " getWidth(canvasContainer) = "
+				+ getWidth(canvasContainer));
 
 		canvas.setCoordinateSpaceWidth(canvas_width);
 		canvas.setCoordinateSpaceHeight(canvas_height);
@@ -479,22 +400,18 @@ public class AuthoringTool implements EntryPoint {
 			context.fillRect(0, 0, canvas_width, canvas_height);
 		} else {
 			img.setVisible(false);
-			Log.trace("Zoom Level: " + zoom.getLevel()
-					+ " Target (src) rectangle " + zoom.getTarget());
-			context.drawImage((ImageElement) (Object) img.getElement(), zoom
-					.getTarget().getX(), zoom.getTarget().getY(), zoom
-					.getTarget().getWidth(), zoom.getTarget().getHeight(), 0,
-					0, canvas_width, canvas_height);
+			log.trace("Zoom Level: " + zoom.getLevel() + " Target (src) rectangle " + zoom.getTarget());
+			context.drawImage((ImageElement) (Object) img.getElement(), zoom.getTarget().getX(),
+					zoom.getTarget().getY(), zoom.getTarget().getWidth(), zoom.getTarget().getHeight(), 0, 0,
+					canvas_width, canvas_height);
 			// apply image processing filters
 			final double brightness = brightness_sl.getValue();
 			final double contrast = contrast_sl.getValue();
 			final boolean invert = invert_cb.getValue();
 			if ((brightness != 0 || contrast != 0 || invert)) {
-				final ImageData imgData = context.getImageData(0, 0,
-						canvas_width, canvas_height);
+				final ImageData imgData = context.getImageData(0, 0, canvas_width, canvas_height);
 				final CanvasPixelArray data = imgData.getData();
-				final double contrast_factor = 259. * (contrast + 255)
-						/ (255 * (259 - contrast));
+				final double contrast_factor = 259. * (contrast + 255) / (255 * (259 - contrast));
 				final int length = data.getLength();
 
 				for (int i = 0; i < length; i += 4) {
@@ -517,19 +434,15 @@ public class AuthoringTool implements EntryPoint {
 				context.putImageData(imgData, 0, 0);
 			}
 			for (final Drawing drawing : page.getImageItem().getDrawings()) {
-				draw(context, drawing.toCanvas(page.getImageItem().getZoom()),
-						false);
+				draw(context, drawing.toCanvas(page.getImageItem().getZoom()), false);
 			}
 			if (angleBulletRadius > 0) {
-				for (final Point point : page.getImageItem().getDrawings()
-						.getIntersectionPoints()) {
-					final Point draw_point = point.toCanvas(page.getImageItem()
-							.getZoom());
+				for (final Point point : page.getImageItem().getDrawings().getIntersectionPoints()) {
+					final Point draw_point = point.toCanvas(page.getImageItem().getZoom());
 					context.beginPath();
 					context.setStrokeStyle("yellow");
 					context.setFillStyle(point.getColor());
-					context.arc(draw_point.x, draw_point.y, angleBulletRadius,
-							0, Math.PI * 2, true);
+					context.arc(draw_point.x, draw_point.y, angleBulletRadius, 0, Math.PI * 2, true);
 					context.fill();
 					context.closePath();
 					context.stroke();
@@ -537,7 +450,7 @@ public class AuthoringTool implements EntryPoint {
 			}
 		}
 		back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
-		Log.trace("-----------------------------------------");
+		log.trace("-----------------------------------------");
 	}
 
 	private static int truncate(double value) {
@@ -551,14 +464,13 @@ public class AuthoringTool implements EntryPoint {
 	/**
 	 * This is the entry point method.
 	 */
-	public void onModuleLoad2() {
-		if (Log.isDebugEnabled()) {
+	@Override
+	public void onModuleLoad() {
+		if (log.isDebugEnabled()) {
 			startTimeMillis = System.currentTimeMillis();
 		}
-		final Widget divLogger = Log.getLogger(DivLogger.class).getWidget();
-
 		cm_id = Window.Location.getParameter("id");
-		Log.info("Starting Authoring Tool with orthoeman_id " + cm_id);
+		log.info("Starting Authoring Tool with orthoeman_id " + cm_id);
 
 		final Label splashScreenLabel = getLabel("splashScreenLabel");
 
@@ -568,22 +480,17 @@ public class AuthoringTool implements EntryPoint {
 			public void onChange(ChangeEvent event) {
 				final Page page = getCurrentPage();
 				final Page.Item.Type[] current_item_combination = getCurrentItemTypeCombination();
-				final int old_item_combination_index = getComboboxOptionIndex(page
-						.getItemTypeCombination());
+				final int old_item_combination_index = getComboboxOptionIndex(page.getItemTypeCombination());
 
 				final boolean contains_image_quiz = containsImageQuiz(current_item_combination);
 				if (contains_image_quiz) {
 					final Page current_page = getCurrentPage();
-					final Page.ImageItem.DrawingList drawings = current_page
-							.getImageItem().getDrawings();
+					final Page.ImageItem.DrawingList drawings = current_page.getImageItem().getDrawings();
 					final int hotspots = drawings.getHotSpotCount();
 					if (hotspots > 0) {
 						final boolean convert_hotspots = Window
-								.confirm("You are trying to introduce a quiz in a "
-										+ "page with hotspots. Convert "
-										+ hotspots
-										+ " hotspots of this page to plain "
-										+ "informational areas.");
+								.confirm("You are trying to introduce a quiz in a " + "page with hotspots. Convert "
+										+ hotspots + " hotspots of this page to plain " + "informational areas.");
 						if (convert_hotspots) {
 							for (final Drawing drawing : drawings) {
 								drawing.setKind(Drawing.Kind.INFO);
@@ -608,11 +515,9 @@ public class AuthoringTool implements EntryPoint {
 		saveButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				final ProgressDialogBox pd = new ProgressDialogBox(
-						"Saving Lesson...");
+				final ProgressDialogBox pd = new ProgressDialogBox("Saving Lesson...");
 				pd.show();
-				putResource(ResourceType.XML, Lesson.writeXML(lesson),
-						lesson.getResourceIds(), pd);
+				putResource(ResourceType.XML, Lesson.writeXML(lesson), lesson.getResourceIds(), pd);
 			}
 		});
 
@@ -620,27 +525,15 @@ public class AuthoringTool implements EntryPoint {
 		previewButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				final String iframe_display_tool_url = "view.php?id="
-						+ cm_id;
-				final String full_display_tool_url = "Display/index.html?id="
-						+ cm_id;
+				final String iframe_display_tool_url = "view.php?id=" + cm_id;
+				final String full_display_tool_url = "Display/index.html?id=" + cm_id;
 				final boolean fullscreen_display_tool = false;
 				final String display_tool_url = fullscreen_display_tool ? full_display_tool_url
 						: iframe_display_tool_url;
 				Window.open(
 						// weird: IE cannot stand space in context name
-						Window.Location.getPath().replaceAll(
-								"AuthoringTool/AuthoringTool.html.*$",
-								display_tool_url),
+						Window.Location.getPath().replaceAll("AuthoringTool/AuthoringTool.html.*$", display_tool_url),
 						"AuthoringTool_Preview_DisplayTool_" + cm_id, "");
-			}
-		});
-
-		final Button debugButton = getButton("debugButton");
-		debugButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				divLogger.setVisible(!divLogger.isVisible());
 			}
 		});
 
@@ -663,51 +556,36 @@ public class AuthoringTool implements EntryPoint {
 		bugReportSendButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				final RequestBuilder rb = new RequestBuilder(
-						RequestBuilder.POST, "../report_bug.php?id="
-								+ cm_id + "&subject="
-								+ bugReportSubjectTextBox.getText());
-				rb.setHeader("Content-Type",
-						"application/x-www-form-urlencoded");
+				final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
+						"../report_bug.php?id=" + cm_id + "&subject=" + bugReportSubjectTextBox.getText());
+				rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
 				try {
-					rb.sendRequest(
-							URL.encodeQueryString(bugReportBodyTextArea
-									.getText())
-									+ "\n\nAuthoring Tool Log\n\n"
-									+ getLoggedText(), new RequestCallback() {
+					rb.sendRequest(URL.encodeQueryString(bugReportBodyTextArea.getText()) + "\n\nAuthoring Tool Log\n\n"
+							+ getLoggedText(), new RequestCallback() {
 								@Override
-								public void onResponseReceived(Request request,
-										Response response) {
+								public void onResponseReceived(Request request, Response response) {
 									if (response.getStatusCode() != Response.SC_OK) {
-										final String error_msg = "HTTP Error for request: "
-												+ request
-												+ " Response: "
-												+ response
-												+ " status code: "
-												+ response.getStatusCode();
-										Log.error(error_msg);
+										final String error_msg = "HTTP Error for request: " + request + " Response: "
+												+ response + " status code: " + response.getStatusCode();
+										log.error(error_msg);
 										Window.alert(error_msg);
 										return;
 									}
-									final String response_text = response
-											.getText();
-									Log.debug("Successfull request: " + request
-											+ " response: " + response_text);
+									final String response_text = response.getText();
+									log.debug("Successfull request: " + request + " response: " + response_text);
 								}
 
 								@Override
-								public void onError(Request request,
-										Throwable exception) {
-									final String error_msg = "RequestError for request: "
-											+ request;
-									Log.error(error_msg, exception);
+								public void onError(Request request, Throwable exception) {
+									final String error_msg = "RequestError for request: " + request;
+									log.error(error_msg, exception);
 									Window.alert(error_msg);
 								}
 							});
 				} catch (RequestException e) {
 					final String error_msg = "Cannot save lesson. Please wait for server "
 							+ "communication to be restored and retry later.";
-					Log.error(error_msg, e);
+					log.error(error_msg, e);
 					Window.alert(error_msg);
 				}
 				bugReportPopup.setVisible(false);
@@ -762,8 +640,7 @@ public class AuthoringTool implements EntryPoint {
 				onUpDownClick(false);
 			}
 		});
-		equal_width_widget_groups.add(Arrays.asList(add_b, remove_b, up_b,
-				down_b));
+		equal_width_widget_groups.add(Arrays.asList(add_b, remove_b, up_b, down_b));
 
 		// BUG: workaround of GWT weird behaviour
 		// A widget that has an existing parent widget may not be added to the
@@ -795,10 +672,8 @@ public class AuthoringTool implements EntryPoint {
 		areaTypeCombobox.addItem(Drawing.Kind.HOTSPOT.getDisplayName());
 		areaTypeCombobox.addItem(Drawing.Kind.INFO.getDisplayName());
 
-		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b,
-				zoom_fit_b, zoom_target_b, rect_hsp_b, ellipse_hsp_b,
-				polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b,
-				showRegions_cb);
+		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b, zoom_fit_b, zoom_target_b, rect_hsp_b,
+				ellipse_hsp_b, polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b, showRegions_cb);
 
 		if (work_around_bug) {
 			getTextContainer();
@@ -836,8 +711,7 @@ public class AuthoringTool implements EntryPoint {
 
 		canvas = Canvas.createIfSupported();
 		if (canvas == null) {
-			getErrorLabelContainer().add(
-					new Label("No canvas, get a proper browser!"));
+			getErrorLabelContainer().add(new Label("No canvas, get a proper browser!"));
 			return;
 		}
 		canvas.addStyleName("block");
@@ -853,13 +727,12 @@ public class AuthoringTool implements EntryPoint {
 		class MyResizeHandler implements ResizeHandler {
 			@Override
 			public void onResize(final ResizeEvent event) {
-				Scheduler.get().scheduleDeferred(
-						new Scheduler.ScheduledCommand() {
-							@Override
-							public void execute() {
-								AuthoringTool.this.onResize(event);
-							}
-						});
+				Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+					@Override
+					public void execute() {
+						AuthoringTool.this.onResize(event);
+					}
+				});
 			}
 		}
 		final MyResizeHandler rh = new MyResizeHandler();
@@ -873,8 +746,7 @@ public class AuthoringTool implements EntryPoint {
 				start_point.valid = false;
 				old_point.valid = false;
 
-				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(),
-						0, 0);
+				back_canvas.getContext2d().drawImage(canvas.getCanvasElement(), 0, 0);
 
 				// pop the request and run the handler that returns the
 				// information
@@ -882,28 +754,22 @@ public class AuthoringTool implements EntryPoint {
 				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				switch (udr.type) {
 				case ELLIPSE:
-					udr.handler.onUserDrawingFinishedEventHandler(ellipse
-							.toImage(zoom));
+					udr.handler.onUserDrawingFinishedEventHandler(ellipse.toImage(zoom));
 					break;
 				case LINE:
-					udr.handler.onUserDrawingFinishedEventHandler(line
-							.toImage(zoom));
+					udr.handler.onUserDrawingFinishedEventHandler(line.toImage(zoom));
 					break;
 				case POLYGON:
-					udr.handler.onUserDrawingFinishedEventHandler(polygon
-							.toImage(zoom));
+					udr.handler.onUserDrawingFinishedEventHandler(polygon.toImage(zoom));
 					break;
 				case RECTANGLE:
-					udr.handler.onUserDrawingFinishedEventHandler(rect
-							.toImage(zoom));
+					udr.handler.onUserDrawingFinishedEventHandler(rect.toImage(zoom));
 					break;
 				case CROSS:
-					udr.handler.onUserDrawingFinishedEventHandler(cross
-							.toImage(zoom));
+					udr.handler.onUserDrawingFinishedEventHandler(cross.toImage(zoom));
 					break;
 				case ERASER:
-					udr.handler
-							.onUserDrawingFinishedEventHandler(erase_drawing);
+					udr.handler.onUserDrawingFinishedEventHandler(erase_drawing);
 					break;
 				}
 				setButtonsEnabled(image_edit_buttons, true);
@@ -914,15 +780,14 @@ public class AuthoringTool implements EntryPoint {
 				final UserDrawingRequest udr = udr_queue.peek();
 				if (udr == null) {
 					if (start_point.valid)
-						Log.error("Valid starting point without a drawing request. Please report");
+						log.error("Valid starting point without a drawing request. Please report");
 					return;
 				}
 
 				if (udr.type != Drawing.Type.POLYGON) {
 					/*
-					 * This is the end of the drawing operation. Click ends the
-					 * operation in all cases except polygon which is multi
-					 * click operation
+					 * This is the end of the drawing operation. Click ends the operation in all
+					 * cases except polygon which is multi click operation
 					 */
 					if (start_point.valid) {
 						finishDrawingOperation();
@@ -938,8 +803,7 @@ public class AuthoringTool implements EntryPoint {
 
 					if (start_point.valid) {
 						final double distance = getDistance(start_point, x, y);
-						if (polygon.getPoints().size() > 1 && distance >= 0
-								&& distance < polygonDistanceThreshold) {
+						if (polygon.getPoints().size() > 1 && distance >= 0 && distance < polygonDistanceThreshold) {
 							polygon.getPoints().add(new Point(start_point));
 							finishDrawingOperation();
 						} else {
@@ -968,11 +832,9 @@ public class AuthoringTool implements EntryPoint {
 					// here we display angles
 					final Page page = getCurrentPage();
 
-					final Point query_point = (new Point(x, y)).toImage(page
-							.getImageItem().getZoom());
-					final Point min_distance_point = Point.getNearestPoint(page
-							.getImageItem().getDrawings()
-							.getIntersectionPoints(), query_point);
+					final Point query_point = (new Point(x, y)).toImage(page.getImageItem().getZoom());
+					final Point min_distance_point = Point
+							.getNearestPoint(page.getImageItem().getDrawings().getIntersectionPoints(), query_point);
 
 					// maybe we are out
 					old_point.valid = false;
@@ -980,19 +842,16 @@ public class AuthoringTool implements EntryPoint {
 					if (min_distance_point == null)
 						return;
 
-					double min_distance = query_point
-							.distance(min_distance_point);
+					double min_distance = query_point.distance(min_distance_point);
 
 					if (min_distance > angleDistanceThreshold)
 						return;
 
-					final Line[] intersection_lines = page.getImageItem()
-							.getDrawings()
+					final Line[] intersection_lines = page.getImageItem().getDrawings()
 							.getInterSectionLines(min_distance_point);
 
 					final String angle_str = NumberFormat.getFormat("0.0")
-							.format(getAngle(intersection_lines[0],
-									intersection_lines[1], query_point));
+							.format(getAngle(intersection_lines[0], intersection_lines[1], query_point));
 
 					context.fillText(angle_str, x, y);
 				} else {
@@ -1004,10 +863,8 @@ public class AuthoringTool implements EntryPoint {
 					switch (udr.type) {
 					case ELLIPSE:
 						// find the bounding box
-						final int w = 2 * (x > start_point.x ? x
-								- start_point.x : start_point.x - x);
-						final int h = 2 * (y > start_point.y ? y
-								- start_point.y : start_point.y - y);
+						final int w = 2 * (x > start_point.x ? x - start_point.x : start_point.x - x);
+						final int h = 2 * (y > start_point.y ? y - start_point.y : start_point.y - y);
 						ellipse.set(start_point.x, start_point.y, w, h);
 						draw(context, ellipse, false);
 						break;
@@ -1018,26 +875,20 @@ public class AuthoringTool implements EntryPoint {
 					case POLYGON:
 						polygon.getPoints().add(new Point(x, y));
 						draw(context, polygon, false);
-						polygon.getPoints().remove(
-								polygon.getPoints().size() - 1);
+						polygon.getPoints().remove(polygon.getPoints().size() - 1);
 
 						final double distance = getDistance(start_point, x, y);
-						if (polygon.getPoints().size() > 1 && distance > 0
-								&& distance < polygonDistanceThreshold) {
+						if (polygon.getPoints().size() > 1 && distance > 0 && distance < polygonDistanceThreshold) {
 							context.beginPath();
-							context.arc(start_point.x, start_point.y,
-									polygonDistanceThreshold, 0, Math.PI * 2,
-									true);
+							context.arc(start_point.x, start_point.y, polygonDistanceThreshold, 0, Math.PI * 2, true);
 							context.closePath();
 							context.stroke();
 						}
 
 						break;
 					case RECTANGLE:
-						final int wr = x > start_point.x ? x - start_point.x
-								: start_point.x - x;
-						final int hr = y > start_point.y ? y - start_point.y
-								: start_point.y - y;
+						final int wr = x > start_point.x ? x - start_point.x : start_point.x - x;
+						final int hr = y > start_point.y ? y - start_point.y : start_point.y - y;
 						final int xlr = x > start_point.x ? start_point.x : x;
 						final int ytr = y > start_point.y ? start_point.y : y;
 
@@ -1049,12 +900,10 @@ public class AuthoringTool implements EntryPoint {
 						draw(context, cross, false);
 						break;
 					case ERASER:
-						final Zoom zoom = getCurrentPage().getImageItem()
-								.getZoom();
+						final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 						erase_point.set(x, y);
-						erase_drawing = getNearestDrawing(getCurrentPage()
-								.getImageItem().getDrawings(), erase_point
-								.toImage(zoom));
+						erase_drawing = getNearestDrawing(getCurrentPage().getImageItem().getDrawings(),
+								erase_point.toImage(zoom));
 						if (erase_drawing != null)
 							draw(context, erase_drawing.toCanvas(zoom), true);
 						break;
@@ -1068,53 +917,45 @@ public class AuthoringTool implements EntryPoint {
 
 		final String php_session_id = "PHPSESSID";
 
-		final IUploader.OnFinishUploaderHandler onImageFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
-			@Override
-			public void onFinish(IUploader uploader) {
-				final Page.ImageItem image_item = getCurrentPage()
-						.getImageItem();
-				final PreloadedImage img = image_item.getImage();
-				if (img != null) {
-					setButtonsEnabled(image_edit_buttons, false);
-					img.removeFromParent();
-					image_item.setImage(null);
-				}
-				if (uploader.getStatus() != Status.SUCCESS)
-					return;
-				final ProgressDialogBox pd = new ProgressDialogBox(
-						"Saving Image...");
-				pd.show();
-				putResource(ResourceType.IMAGE, uploader.fileUrl()
-						+ "&session_id=" + Cookies.getCookie(php_session_id),
-						image_item, pd);
-			}
-		};
+//		final IUploader.OnFinishUploaderHandler onImageFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
+//			@Override
+//			public void onFinish(IUploader uploader) {
+//				final Page.ImageItem image_item = getCurrentPage().getImageItem();
+//				final PreloadedImage img = image_item.getImage();
+//				if (img != null) {
+//					setButtonsEnabled(image_edit_buttons, false);
+//					img.removeFromParent();
+//					image_item.setImage(null);
+//				}
+//				if (uploader.getStatus() != Status.SUCCESS)
+//					return;
+//				final ProgressDialogBox pd = new ProgressDialogBox("Saving Image...");
+//				pd.show();
+//				putResource(ResourceType.IMAGE, uploader.fileUrl() + "&session_id=" + Cookies.getCookie(php_session_id),
+//						image_item, pd);
+//			}
+//		};
 
-		final IUploader.OnFinishUploaderHandler onVideoFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
-			@Override
-			public void onFinish(IUploader uploader) {
-				if (uploader.getStatus() != Status.SUCCESS)
-					return;
-				final ProgressDialogBox pd = new ProgressDialogBox(
-						"Saving & Converting video. Please wait...");
-				pd.show();
-				putResource(ResourceType.VIDEO, uploader.fileUrl()
-						+ "&session_id=" + Cookies.getCookie(php_session_id),
-						getCurrentPage().getVideoItem(), pd);
-			}
-		};
+//		final IUploader.OnFinishUploaderHandler onVideoFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
+//			@Override
+//			public void onFinish(IUploader uploader) {
+//				if (uploader.getStatus() != Status.SUCCESS)
+//					return;
+//				final ProgressDialogBox pd = new ProgressDialogBox("Saving & Converting video. Please wait...");
+//				pd.show();
+//				putResource(ResourceType.VIDEO, uploader.fileUrl() + "&session_id=" + Cookies.getCookie(php_session_id),
+//						getCurrentPage().getVideoItem(), pd);
+//			}
+//		};
 
 		// image
-		final SingleUploader image_uploader = new SingleUploaderModal();
-		image_uploader
-				.add(new Hidden("APC_UPLOAD_PROGRESS", image_uploader
-						.getInputName()), 0);
-		image_uploader.setServletPath("../jsupload.php");
-		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff",
-				".gif");
-		image_uploader.setAutoSubmit(true);
-		image_uploader.addOnFinishUploadHandler(onImageFinishUploaderHandler);
-		getImageUploaderContainer().add(image_uploader);
+//		final SingleUploader image_uploader = new SingleUploaderModal();
+//		image_uploader.add(new Hidden("APC_UPLOAD_PROGRESS", image_uploader.getInputName()), 0);
+//		image_uploader.setServletPath("../jsupload.php");
+//		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff", ".gif");
+//		image_uploader.setAutoSubmit(true);
+//		image_uploader.addOnFinishUploadHandler(onImageFinishUploaderHandler);
+//		getImageUploaderContainer().add(image_uploader);
 
 		zoom_121_b.addClickHandler(new ClickHandler() {
 			@Override
@@ -1122,11 +963,9 @@ public class AuthoringTool implements EntryPoint {
 				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_121);
 				zoom.setLevel(1);
-				final PreloadedImage img = getCurrentPage().getImageItem()
-						.getImage();
+				final PreloadedImage img = getCurrentPage().getImageItem().getImage();
 				if (isImageLoaded(img)) {
-					zoom.getTarget().set(0, 0, img.getRealWidth(),
-							img.getRealHeight());
+					zoom.getTarget().set(0, 0, img.getRealWidth(), img.getRealHeight());
 				}
 				redrawCanvas();
 			}
@@ -1157,13 +996,10 @@ public class AuthoringTool implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_TO_FIT_WIDTH);
-				final PreloadedImage img = getCurrentPage().getImageItem()
-						.getImage();
+				final PreloadedImage img = getCurrentPage().getImageItem().getImage();
 				if (isImageLoaded(img)) {
-					zoom.setLevel(((double) canvas.getOffsetWidth())
-							/ ((double) img.getRealWidth()));
-					zoom.getTarget().set(0, 0, img.getRealWidth(),
-							img.getRealHeight());
+					zoom.setLevel(((double) canvas.getOffsetWidth()) / ((double) img.getRealWidth()));
+					zoom.getTarget().set(0, 0, img.getRealWidth(), img.getRealHeight());
 				}
 				redrawCanvas();
 			}
@@ -1174,34 +1010,28 @@ public class AuthoringTool implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				final Zoom zoom = getCurrentPage().getImageItem().getZoom();
 				zoom.setType(Zoom.Type.ZOOM_TARGET);
-				waitUserDrawing(Drawing.Type.RECTANGLE, Drawing.Kind.ZOOM,
-						new UserDrawingFinishedEventHandler() {
-							@Override
-							public void onUserDrawingFinishedEventHandler(
-									Drawing drawing) {
-								final Rectangle rect = (Rectangle) drawing;
-								zoom.getTarget().set(rect);
-								zoom.setLevel(((double) canvas.getOffsetWidth())
-										/ ((double) rect.getWidth()));
-								redrawCanvas();
-							}
-						});
+				waitUserDrawing(Drawing.Type.RECTANGLE, Drawing.Kind.ZOOM, new UserDrawingFinishedEventHandler() {
+					@Override
+					public void onUserDrawingFinishedEventHandler(Drawing drawing) {
+						final Rectangle rect = (Rectangle) drawing;
+						zoom.getTarget().set(rect);
+						zoom.setLevel(((double) canvas.getOffsetWidth()) / ((double) rect.getWidth()));
+						redrawCanvas();
+					}
+				});
 			}
 		});
 
 		rect_hsp_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.RECTANGLE, Drawing.Kind
-						.getByDisplayName(areaTypeCombobox
-								.getItemText(areaTypeCombobox
-										.getSelectedIndex())),
+				waitUserDrawing(Drawing.Type.RECTANGLE,
+						Drawing.Kind
+								.getByDisplayName(areaTypeCombobox.getItemText(areaTypeCombobox.getSelectedIndex())),
 						new UserDrawingFinishedEventHandler() {
 							@Override
-							public void onUserDrawingFinishedEventHandler(
-									Drawing drawing) {
-								getCurrentPage().getImageItem().getDrawings()
-										.add(drawing);
+							public void onUserDrawingFinishedEventHandler(Drawing drawing) {
+								getCurrentPage().getImageItem().getDrawings().add(drawing);
 								redrawCanvas();
 							}
 						});
@@ -1211,16 +1041,13 @@ public class AuthoringTool implements EntryPoint {
 		ellipse_hsp_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.ELLIPSE, Drawing.Kind
-						.getByDisplayName(areaTypeCombobox
-								.getItemText(areaTypeCombobox
-										.getSelectedIndex())),
+				waitUserDrawing(Drawing.Type.ELLIPSE,
+						Drawing.Kind
+								.getByDisplayName(areaTypeCombobox.getItemText(areaTypeCombobox.getSelectedIndex())),
 						new UserDrawingFinishedEventHandler() {
 							@Override
-							public void onUserDrawingFinishedEventHandler(
-									Drawing drawing) {
-								getCurrentPage().getImageItem().getDrawings()
-										.add(drawing);
+							public void onUserDrawingFinishedEventHandler(Drawing drawing) {
+								getCurrentPage().getImageItem().getDrawings().add(drawing);
 								redrawCanvas();
 							}
 						});
@@ -1230,16 +1057,13 @@ public class AuthoringTool implements EntryPoint {
 		polygon_hsp_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.POLYGON, Drawing.Kind
-						.getByDisplayName(areaTypeCombobox
-								.getItemText(areaTypeCombobox
-										.getSelectedIndex())),
+				waitUserDrawing(Drawing.Type.POLYGON,
+						Drawing.Kind
+								.getByDisplayName(areaTypeCombobox.getItemText(areaTypeCombobox.getSelectedIndex())),
 						new UserDrawingFinishedEventHandler() {
 							@Override
-							public void onUserDrawingFinishedEventHandler(
-									Drawing drawing) {
-								getCurrentPage().getImageItem().getDrawings()
-										.add(drawing);
+							public void onUserDrawingFinishedEventHandler(Drawing drawing) {
+								getCurrentPage().getImageItem().getDrawings().add(drawing);
 								redrawCanvas();
 							}
 						});
@@ -1249,50 +1073,41 @@ public class AuthoringTool implements EntryPoint {
 		line_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.LINE, Drawing.Kind.HELPER,
-						new UserDrawingFinishedEventHandler() {
-							@Override
-							public void onUserDrawingFinishedEventHandler(
-									Drawing drawing) {
-								getCurrentPage().getImageItem().getDrawings()
-										.add(drawing);
-								redrawCanvas();
-							}
-						});
+				waitUserDrawing(Drawing.Type.LINE, Drawing.Kind.HELPER, new UserDrawingFinishedEventHandler() {
+					@Override
+					public void onUserDrawingFinishedEventHandler(Drawing drawing) {
+						getCurrentPage().getImageItem().getDrawings().add(drawing);
+						redrawCanvas();
+					}
+				});
 			}
 		});
 
 		cross_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.CROSS, Drawing.Kind.HELPER,
-						new UserDrawingFinishedEventHandler() {
-							@Override
-							public void onUserDrawingFinishedEventHandler(
-									Drawing drawing) {
-								getCurrentPage().getImageItem().getDrawings()
-										.add(drawing);
-								redrawCanvas();
-							}
-						});
+				waitUserDrawing(Drawing.Type.CROSS, Drawing.Kind.HELPER, new UserDrawingFinishedEventHandler() {
+					@Override
+					public void onUserDrawingFinishedEventHandler(Drawing drawing) {
+						getCurrentPage().getImageItem().getDrawings().add(drawing);
+						redrawCanvas();
+					}
+				});
 			}
 		});
 
 		erase_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				waitUserDrawing(Drawing.Type.ERASER, Drawing.Kind.HELPER,
-						new UserDrawingFinishedEventHandler() {
-							@Override
-							public void onUserDrawingFinishedEventHandler(
-									Drawing drawing) {
-								if (drawing == null)
-									return;
-								getCurrentPage().getImageItem().getDrawings()
-										.remove(drawing);
-								redrawCanvas();
-							}
-						});
+				waitUserDrawing(Drawing.Type.ERASER, Drawing.Kind.HELPER, new UserDrawingFinishedEventHandler() {
+					@Override
+					public void onUserDrawingFinishedEventHandler(Drawing drawing) {
+						if (drawing == null)
+							return;
+						getCurrentPage().getImageItem().getDrawings().remove(drawing);
+						redrawCanvas();
+					}
+				});
 			}
 		});
 
@@ -1314,13 +1129,11 @@ public class AuthoringTool implements EntryPoint {
 					format = NumberFormat.getFormat("#.##");
 
 					brightness_l = new Label();
-					brightness_l
-							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+					brightness_l.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 					setBrightnessLabel(brightness_sl.getValue());
 
 					contrast_l = new Label();
-					contrast_l
-							.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+					contrast_l.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 					setContrastLabel(brightness_sl.getValue());
 
 					final Label invert_l = new Label("Invert: ");
@@ -1345,25 +1158,21 @@ public class AuthoringTool implements EntryPoint {
 
 					pp.setWidget(panel);
 
-					brightness_sl
-							.addValueChangeHandler(new ValueChangeHandler<Double>() {
-								@Override
-								public void onValueChange(
-										ValueChangeEvent<Double> event) {
-									setBrightnessLabel(brightness_sl.getValue());
-									redrawCanvas();
-								}
-							});
+					brightness_sl.addValueChangeHandler(new ValueChangeHandler<Double>() {
+						@Override
+						public void onValueChange(ValueChangeEvent<Double> event) {
+							setBrightnessLabel(brightness_sl.getValue());
+							redrawCanvas();
+						}
+					});
 
-					contrast_sl
-							.addValueChangeHandler(new ValueChangeHandler<Double>() {
-								@Override
-								public void onValueChange(
-										ValueChangeEvent<Double> event) {
-									setContrastLabel(contrast_sl.getValue());
-									redrawCanvas();
-								}
-							});
+					contrast_sl.addValueChangeHandler(new ValueChangeHandler<Double>() {
+						@Override
+						public void onValueChange(ValueChangeEvent<Double> event) {
+							setContrastLabel(contrast_sl.getValue());
+							redrawCanvas();
+						}
+					});
 
 					invert_cb.addClickHandler(new ClickHandler() {
 						@Override
@@ -1420,22 +1229,18 @@ public class AuthoringTool implements EntryPoint {
 		showRegions_cb.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				getCurrentPage().getImageItem().setShowRegions(
-						showRegions_cb.getValue());
+				getCurrentPage().getImageItem().setShowRegions(showRegions_cb.getValue());
 			}
 		});
 
 		// video
-		final SingleUploader video_uploader = new SingleUploaderModal();
-		video_uploader
-				.add(new Hidden("APC_UPLOAD_PROGRESS", video_uploader
-						.getInputName()), 0);
-		video_uploader.setServletPath("../jsupload.php");
-		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi",
-				".mov");
-		video_uploader.setAutoSubmit(true);
-		video_uploader.addOnFinishUploadHandler(onVideoFinishUploaderHandler);
-		getVideoUploaderContainer().add(video_uploader);
+//		final SingleUploader video_uploader = new SingleUploaderModal();
+//		video_uploader.add(new Hidden("APC_UPLOAD_PROGRESS", video_uploader.getInputName()), 0);
+//		video_uploader.setServletPath("../jsupload.php");
+//		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi", ".mov");
+//		video_uploader.setAutoSubmit(true);
+//		video_uploader.addOnFinishUploadHandler(onVideoFinishUploaderHandler);
+//		getVideoUploaderContainer().add(video_uploader);
 
 		// quiz
 		quiz_text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -1449,73 +1254,62 @@ public class AuthoringTool implements EntryPoint {
 		add_answer_b.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				final QuizAnswer quiz_question = new QuizAnswer(
-						getCurrentPage().getQuizItem());
+				final QuizAnswer quiz_question = new QuizAnswer(getCurrentPage().getQuizItem());
 				getQuizAnswerContainer().add(quiz_question);
 			}
 		});
 
 		// range quiz
-		range_quiz_text_area
-				.addValueChangeHandler(new ValueChangeHandler<String>() {
-					@Override
-					public void onValueChange(ValueChangeEvent<String> event) {
-						getCurrentPage().getRangeQuizItem().setText(
-								event.getValue());
-					}
-				});
+		range_quiz_text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				getCurrentPage().getRangeQuizItem().setText(event.getValue());
+			}
+		});
 
-		range_quiz_min_tb
-				.addValueChangeHandler(new ValueChangeHandler<String>() {
-					@Override
-					public void onValueChange(ValueChangeEvent<String> event) {
-						final Page.RangeQuizItem range_quiz_item = getCurrentPage()
-								.getRangeQuizItem();
-						double min = range_quiz_item.getMin();
-						try {
-							min = Double.valueOf(event.getValue());
-						} catch (Exception e) {
-							Log.warn("Invalid Range Quiz min value "
-									+ event.getValue());
-							range_quiz_min_tb.setText(min + "");
-						}
-						range_quiz_item.setMin(min);
-					}
-				});
+		range_quiz_min_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				final Page.RangeQuizItem range_quiz_item = getCurrentPage().getRangeQuizItem();
+				double min = range_quiz_item.getMin();
+				try {
+					min = Double.valueOf(event.getValue());
+				} catch (Exception e) {
+					log.warn("Invalid Range Quiz min value " + event.getValue());
+					range_quiz_min_tb.setText(min + "");
+				}
+				range_quiz_item.setMin(min);
+			}
+		});
 
-		range_quiz_max_tb
-				.addValueChangeHandler(new ValueChangeHandler<String>() {
-					@Override
-					public void onValueChange(ValueChangeEvent<String> event) {
-						final Page.RangeQuizItem range_quiz_item = getCurrentPage()
-								.getRangeQuizItem();
-						double max = range_quiz_item.getMax();
-						try {
-							max = Double.valueOf(event.getValue());
-						} catch (Exception e) {
-							Log.warn("Invalid Range Quiz max value "
-									+ event.getValue());
-							range_quiz_max_tb.setText(max + "");
-						}
-						range_quiz_item.setMax(max);
-					}
-				});
+		range_quiz_max_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				final Page.RangeQuizItem range_quiz_item = getCurrentPage().getRangeQuizItem();
+				double max = range_quiz_item.getMax();
+				try {
+					max = Double.valueOf(event.getValue());
+				} catch (Exception e) {
+					log.warn("Invalid Range Quiz max value " + event.getValue());
+					range_quiz_max_tb.setText(max + "");
+				}
+				range_quiz_item.setMax(max);
+			}
+		});
 
-		positive_grade_tb
-				.addValueChangeHandler(new ValueChangeHandler<String>() {
-					@Override
-					public void onValueChange(ValueChangeEvent<String> event) {
-						setGrade(event, true);
-					}
-				});
+		positive_grade_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				setGrade(event, true);
+			}
+		});
 
-		negative_grade_tb
-				.addValueChangeHandler(new ValueChangeHandler<String>() {
-					@Override
-					public void onValueChange(ValueChangeEvent<String> event) {
-						setGrade(event, false);
-					}
-				});
+		negative_grade_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				setGrade(event, false);
+			}
+		});
 
 		splashScreenLabel.setText("Reading Lesson...");
 
@@ -1525,14 +1319,12 @@ public class AuthoringTool implements EntryPoint {
 			rb.sendRequest(null, new RequestCallback() {
 				@Override
 				public void onError(final Request request, final Throwable e) {
-					Log.error(e.getMessage(), e);
+					log.error(e.getMessage(), e);
 				}
 
 				@Override
-				public void onResponseReceived(final Request request,
-						final Response response) {
-					lesson = Lesson.readXML(response.getText(), cm_id,
-							AuthoringTool.this);
+				public void onResponseReceived(final Request request, final Response response) {
+					lesson = Lesson.readXML(response.getText(), cm_id, AuthoringTool.this);
 
 					lesson.addPageListener(new Lesson.PageListener() {
 						@Override
@@ -1558,39 +1350,34 @@ public class AuthoringTool implements EntryPoint {
 
 					getSplashPopup().setVisible(false);
 
-					if (Log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						long endTimeMillis = System.currentTimeMillis();
 						float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
-						Log.debug("Lesson loading finished in: "
-								+ durationSeconds + " seconds");
+						log.debug("Lesson loading finished in: " + durationSeconds + " seconds");
 					}
 				}
 			});
 		} catch (final Exception e) {
-			Log.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 
 		/*
-		 * Again, we need a guard here, otherwise <code>log_level=OFF</code>
-		 * would still produce the following useless JavaScript: <pre> var
-		 * durationSeconds, endTimeMillis; endTimeMillis =
-		 * currentTimeMillis_0(); durationSeconds = (endTimeMillis -
-		 * this$static.startTimeMillis) / 1000.0; </pre>
+		 * Again, we need a guard here, otherwise <code>log_level=OFF</code> would still
+		 * produce the following useless JavaScript: <pre> var durationSeconds,
+		 * endTimeMillis; endTimeMillis = currentTimeMillis_0(); durationSeconds =
+		 * (endTimeMillis - this$static.startTimeMillis) / 1000.0; </pre>
 		 */
-		if (Log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			long endTimeMillis = System.currentTimeMillis();
 			float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
-			Log.debug("Duration: " + durationSeconds + " seconds");
+			log.debug("Duration: " + durationSeconds + " seconds");
 		}
-		divLogger.setVisible(false);
 	}
 
 	private void setGrade(ValueChangeEvent<String> event, boolean positive) {
 		final Page page = getCurrentPage();
-		final TextBox grade_tb = positive ? positive_grade_tb
-				: negative_grade_tb;
-		final int grade_default = positive ? page.getPositiveGrade() : page
-				.getNegativeGrade();
+		final TextBox grade_tb = positive ? positive_grade_tb : negative_grade_tb;
+		final int grade_default = positive ? page.getPositiveGrade() : page.getNegativeGrade();
 		final int grade = Page.parseGrade(event.getValue(), grade_default);
 		grade_tb.setText(grade + "");
 		if (positive)
@@ -1747,7 +1534,7 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private void updateUpDownButtons(int index, int count) {
-		Log.debug("Checking index " + index + " vs. count " + count);
+		log.debug("Checking index " + index + " vs. count " + count);
 		up_b.setEnabled(index != 0);
 		down_b.setEnabled(index != count - 1);
 	}
@@ -1759,9 +1546,8 @@ public class AuthoringTool implements EntryPoint {
 			return;
 		}
 		final RootPanel page_button_container = getPageButtonContainer();
-		updateUpDownButtons(
-				page_button_container.getWidgetIndex(page_button_map.get(page)
-						.getParent()), page_button_container.getWidgetCount());
+		updateUpDownButtons(page_button_container.getWidgetIndex(page_button_map.get(page).getParent()),
+				page_button_container.getWidgetCount());
 	}
 
 	private void setCurrentPage(Page page) {
@@ -1785,11 +1571,10 @@ public class AuthoringTool implements EntryPoint {
 		imageContainer.setVisible(false);
 		getVideoContainer().setVisible(false);
 
-		final Page.Item.Type[] itemTypeCombination = page
-				.getItemTypeCombination();
+		final Page.Item.Type[] itemTypeCombination = page.getItemTypeCombination();
 		combobox.setSelectedIndex(getComboboxOptionIndex(itemTypeCombination));
 
-		// Log.trace("Where am I: ", new Exception("Stacktrace"));
+		// log.trace("Where am I: ", new Exception("Stacktrace"));
 		title_tb.setText(page.getTitle());
 		for (final Page.Item.Type type : itemTypeCombination) {
 			switch (type) {
@@ -1818,8 +1603,7 @@ public class AuthoringTool implements EntryPoint {
 				break;
 			case RANGE_QUIZ:
 				rangeQuizContainer.setVisible(true);
-				final Page.RangeQuizItem range_quiz_item = page
-						.getRangeQuizItem();
+				final Page.RangeQuizItem range_quiz_item = page.getRangeQuizItem();
 				range_quiz_text_area.setText(range_quiz_item.getText());
 				range_quiz_min_tb.setText(range_quiz_item.getMin() + "");
 				range_quiz_max_tb.setText(range_quiz_item.getMax() + "");
@@ -1828,13 +1612,11 @@ public class AuthoringTool implements EntryPoint {
 		}
 		positive_grade_tb.setText(page.getPositiveGrade() + "");
 		negative_grade_tb.setText(page.getNegativeGrade() + "");
-		setButtonsEnabled(image_edit_buttons,
-				page.getImageItem().getImage() != null);
+		setButtonsEnabled(image_edit_buttons, page.getImageItem().getImage() != null);
 		resizeSecondaryContainers(getWidthLeft(), getHeightLeft());
 	}
 
-	private static <T> T findCurrentItemAfterRemove(Collection<T> collection,
-			T remove_item) {
+	private static <T> T findCurrentItemAfterRemove(Collection<T> collection, T remove_item) {
 		boolean found = false;
 		T previous_item = null;
 
@@ -1856,10 +1638,8 @@ public class AuthoringTool implements EntryPoint {
 		return null;
 	}
 
-	private static String getComboboxOptionText(
-			Page.Item.Type[] itemTypeCombination) {
-		return itemTypeCombination[0].getName() + itemTypeSeparator
-				+ itemTypeCombination[1].getName();
+	private static String getComboboxOptionText(Page.Item.Type[] itemTypeCombination) {
+		return itemTypeCombination[0].getName() + itemTypeSeparator + itemTypeCombination[1].getName();
 	}
 
 	private int getComboboxOptionIndex(Page.Item.Type[] itemTypeCombination) {
@@ -1874,10 +1654,8 @@ public class AuthoringTool implements EntryPoint {
 	private Page.Item.Type[] getCurrentItemTypeCombination() {
 		final String value = combobox.getItemText(combobox.getSelectedIndex());
 		final String[] type_names_a = value.split(itemTypeSeparator);
-		final Page.Item.Type item1_type = Page.Item.Type
-				.getTypeByName(type_names_a[0]);
-		final Page.Item.Type item2_type = Page.Item.Type
-				.getTypeByName(type_names_a[1]);
+		final Page.Item.Type item1_type = Page.Item.Type.getTypeByName(type_names_a[0]);
+		final Page.Item.Type item2_type = Page.Item.Type.getTypeByName(type_names_a[1]);
 		return new Page.Item.Type[] { item1_type, item2_type };
 	}
 
@@ -1885,22 +1663,18 @@ public class AuthoringTool implements EntryPoint {
 		final Page current_page = getCurrentPage();
 		final Button current_button = page_button_map.get(current_page);
 		final RootPanel page_button_container = getPageButtonContainer();
-		final int current_index = page_button_container
-				.getWidgetIndex(current_button.getParent());
+		final int current_index = page_button_container.getWidgetIndex(current_button.getParent());
 		final int next_index = current_index + ((up) ? (-1) : 2);
 		final int check_index = current_index + ((up) ? (-1) : 1);
-		Log.debug("Up " + up + " next_index " + next_index + " check_index "
-				+ check_index);
+		log.debug("Up " + up + " next_index " + next_index + " check_index " + check_index);
 		page_button_container.insert(current_button.getParent(), next_index);
 		lesson.remove(current_index);
 		lesson.add(check_index, current_page);
 		updateUpDownButtons(check_index, page_button_container.getWidgetCount());
 	}
 
-	private void waitUserDrawing(Drawing.Type type, Drawing.Kind kind,
-			UserDrawingFinishedEventHandler handler) {
-		final UserDrawingRequest udr = new UserDrawingRequest(type, kind,
-				handler);
+	private void waitUserDrawing(Drawing.Type type, Drawing.Kind kind, UserDrawingFinishedEventHandler handler) {
+		final UserDrawingRequest udr = new UserDrawingRequest(type, kind, handler);
 		udr_queue.add(udr);
 		if (type == Type.ERASER || type == Type.CROSS) {
 			startDrawingOperation(udr, -1, -1);
@@ -1908,16 +1682,14 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static double getDistance(Point start_point, double x, double y) {
-		return start_point.valid ? Math.sqrt((start_point.x - x)
-				* (start_point.x - x) + (start_point.y - y)
-				* (start_point.y - y)) : -1;
+		return start_point.valid
+				? Math.sqrt((start_point.x - x) * (start_point.x - x) + (start_point.y - y) * (start_point.y - y))
+				: -1;
 	}
 
-	private static void draw(Context2d context, Drawing drawing,
-			boolean erase_color) {
+	private static void draw(Context2d context, Drawing drawing, boolean erase_color) {
 		context.beginPath();
-		context.setStrokeStyle(erase_color ? Drawing.getEraserColor() : drawing
-				.getColor());
+		context.setStrokeStyle(erase_color ? Drawing.getEraserColor() : drawing.getColor());
 		context.setLineWidth(3);
 
 		switch (drawing.getType()) {
@@ -1965,8 +1737,7 @@ public class AuthoringTool implements EntryPoint {
 			final Rectangle rect = (Rectangle) drawing;
 
 			context.moveTo(rect.getX(), rect.getY());
-			context.rect(rect.getX(), rect.getY(), rect.getWidth(),
-					rect.getHeight());
+			context.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 			break;
 		case CROSS:
 			final Cross cross = (Cross) drawing;
@@ -1982,8 +1753,7 @@ public class AuthoringTool implements EntryPoint {
 		context.stroke();
 	}
 
-	private void setButtonsEnabled(Collection<FocusWidget> buttons,
-			boolean enable) {
+	private void setButtonsEnabled(Collection<FocusWidget> buttons, boolean enable) {
 		for (final FocusWidget button : buttons)
 			button.setEnabled(enable);
 		setAreaTypeComboboxEnabled(enable);
@@ -1991,7 +1761,7 @@ public class AuthoringTool implements EntryPoint {
 
 	private void startDrawingOperation(UserDrawingRequest udr, int x, int y) {
 		AuthoringTool.this.udr = udr;
-		Log.trace(udr.type + " Starting Point " + x + " " + y);
+		log.trace(udr.type + " Starting Point " + x + " " + y);
 		start_point.x = x;
 		start_point.y = y;
 		start_point.valid = true;
@@ -2056,8 +1826,7 @@ public class AuthoringTool implements EntryPoint {
 		final double B2 = line2_eq[1];
 		final double C2 = line2_eq[2];
 
-		final double angle_cos = (A1 * A2 + B1 * B2)
-				/ (Math.sqrt(A1 * A1 + B1 * B1) * Math.sqrt(A2 * A2 + B2 * B2));
+		final double angle_cos = (A1 * A2 + B1 * B2) / (Math.sqrt(A1 * A1 + B1 * B1) * Math.sqrt(A2 * A2 + B2 * B2));
 		double angle = Math.acos(angle_cos);
 
 		// In which quadrant are we?
@@ -2082,8 +1851,7 @@ public class AuthoringTool implements EntryPoint {
 		return true;
 	}
 
-	private static String getResourceIdsArgument(
-			final ResourceType resource_type, final Object extra_info) {
+	private static String getResourceIdsArgument(final ResourceType resource_type, final Object extra_info) {
 		if (resource_type != ResourceType.XML)
 			return "";
 		@SuppressWarnings("unchecked")
@@ -2095,45 +1863,35 @@ public class AuthoringTool implements EntryPoint {
 		return sb.substring(0, sb.length() - 1);
 	}
 
-	private void putResource(final ResourceType resource_type,
-			final String data, final Object extra_info,
+	private void putResource(final ResourceType resource_type, final String data, final Object extra_info,
 			final ProgressDialogBox pd) {
-		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST,
-				"../put_resource.php?id=" + cm_id + "&type="
-						+ resource_type
-						+ getResourceIdsArgument(resource_type, extra_info));
+		final RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, "../put_resource.php?id=" + cm_id + "&type="
+				+ resource_type + getResourceIdsArgument(resource_type, extra_info));
 		rb.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		try {
 			rb.sendRequest(URL.encodeQueryString(data), new RequestCallback() {
 				@Override
-				public void onResponseReceived(Request request,
-						Response response) {
+				public void onResponseReceived(Request request, Response response) {
 					if (response.getStatusCode() != Response.SC_OK) {
-						final String error_msg = "HTTP Error for request: "
-								+ request + " Response: " + response
+						final String error_msg = "HTTP Error for request: " + request + " Response: " + response
 								+ " status code: " + response.getStatusCode();
 						pd.hide();
-						Log.error(error_msg);
+						log.error(error_msg);
 						Window.alert(error_msg);
 						return;
 					}
 					final String response_text = response.getText();
-					Log.debug("Successfull request: " + request + " response: "
-							+ response_text);
+					log.debug("Successfull request: " + request + " response: " + response_text);
 					if (resource_type == ResourceType.IMAGE) {
 						final Page.ImageItem image_item = (Page.ImageItem) extra_info;
-						final String id = Page.ImageItem
-								.getImageIdString(response_text);
+						final String id = Page.ImageItem.getImageIdString(response_text);
 						image_item.setId(id);
-						image_item.setImage(new PreloadedImage(Lesson
-								.getResourceURL(cm_id, id),
-								new ImageItemOnLoadPreloadedImageHandler(
-										image_item, true)));
+						image_item.setImage(new PreloadedImage(Lesson.getResourceURL(cm_id, id),
+								new ImageItemOnLoadPreloadedImageHandler(image_item, true)));
 						setButtonsEnabled(image_edit_buttons, true);
 					} else if (resource_type == ResourceType.VIDEO) {
 						final Page.VideoItem video_item = (Page.VideoItem) extra_info;
-						video_item.setSources(
-								Page.VideoItem.parseSources(response_text),
+						video_item.setSources(Page.VideoItem.parseSources(response_text),
 								new SetupVideoPlayerHandler());
 					}
 					pd.hide();
@@ -2141,17 +1899,16 @@ public class AuthoringTool implements EntryPoint {
 
 				@Override
 				public void onError(Request request, Throwable exception) {
-					final String error_msg = "RequestError for request: "
-							+ request;
+					final String error_msg = "RequestError for request: " + request;
 					pd.hide();
-					Log.error(error_msg, exception);
+					log.error(error_msg, exception);
 					Window.alert(error_msg);
 				}
 			});
 		} catch (RequestException e) {
 			final String error_msg = "Cannot save lesson. Please wait for server "
 					+ "communication to be restored and retry later.";
-			Log.error(error_msg, e);
+			log.error(error_msg, e);
 			pd.hide();
 			Window.alert(error_msg);
 		}
@@ -2159,21 +1916,18 @@ public class AuthoringTool implements EntryPoint {
 
 	private void updateVideoPlayerContainer(Page.VideoItem video_item) {
 		final Page current_page = getCurrentPage();
-		Log.debug("CurrentPage: " + current_page);
+		log.debug("CurrentPage: " + current_page);
 		if (current_page == null)
 			return;
-		Log.debug("Current videoItem(): " + current_page.getVideoItem()
-				+ " video_item: " + video_item);
+		log.debug("Current videoItem(): " + current_page.getVideoItem() + " video_item: " + video_item);
 		if (current_page.getVideoItem() != video_item)
 			return;
-		final RootPanel videoPlayerContainer = RootPanel
-				.get("videoPlayerContainer");
+		final RootPanel videoPlayerContainer = RootPanel.get("videoPlayerContainer");
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<video class=\"fill_x\" controls preload=\"none\">"); // poster="image_url
 		for (final Page.VideoItem.Source source : video_item.getSources()) {
 			final String url = Lesson.getResourceURL(cm_id, source.id);
-			sb.append("<source src='" + url + "' type='" + source.content_type
-					+ "'/>");
+			sb.append("<source src='" + url + "' type='" + source.content_type + "'/>");
 			// sb.append("<source src='" + url + "' type='" +
 			// source.content_type
 			// + "; codecs=\"" + source.codecs + "\"'/>");
@@ -2183,44 +1937,34 @@ public class AuthoringTool implements EntryPoint {
 		videoPlayerContainer.getElement().setInnerHTML(sb.toString());
 	}
 
-	private static boolean containsType(
-			Page.Item.Type[] current_item_combination, Page.Item.Type type) {
-		return current_item_combination[0] == type
-				|| current_item_combination[1] == type;
+	private static boolean containsType(Page.Item.Type[] current_item_combination, Page.Item.Type type) {
+		return current_item_combination[0] == type || current_item_combination[1] == type;
 	}
 
-	private static boolean containsQuiz(
-			Page.Item.Type[] current_item_combination) {
+	private static boolean containsQuiz(Page.Item.Type[] current_item_combination) {
 		return containsType(current_item_combination, Page.Item.Type.QUIZ)
-				|| containsType(current_item_combination,
-						Page.Item.Type.RANGE_QUIZ);
+				|| containsType(current_item_combination, Page.Item.Type.RANGE_QUIZ);
 	}
 
-	private static boolean containsImage(
-			Page.Item.Type[] current_item_combination) {
+	private static boolean containsImage(Page.Item.Type[] current_item_combination) {
 		return containsType(current_item_combination, Page.Item.Type.IMAGE);
 	}
 
-	private static boolean containsImageQuiz(
-			Page.Item.Type[] current_item_combination) {
-		return containsImage(current_item_combination)
-				&& containsQuiz(current_item_combination);
+	private static boolean containsImageQuiz(Page.Item.Type[] current_item_combination) {
+		return containsImage(current_item_combination) && containsQuiz(current_item_combination);
 	}
 
 	private int getAreaTypeComboboxKindValueIndex(Drawing.Kind kind) {
 		final int total = areaTypeCombobox.getItemCount();
 		for (int i = 0; i < total; i++)
-			if (kind.equals(Drawing.Kind.getByDisplayName(areaTypeCombobox
-					.getItemText(i))))
+			if (kind.equals(Drawing.Kind.getByDisplayName(areaTypeCombobox.getItemText(i))))
 				return i;
 		return -1;
 	}
 
-	private void setAreaTypeComboboxEnabled(boolean enable,
-			boolean contains_image_quiz) {
+	private void setAreaTypeComboboxEnabled(boolean enable, boolean contains_image_quiz) {
 		if (contains_image_quiz)
-			areaTypeCombobox
-					.setSelectedIndex(getAreaTypeComboboxKindValueIndex(Drawing.Kind.INFO));
+			areaTypeCombobox.setSelectedIndex(getAreaTypeComboboxKindValueIndex(Drawing.Kind.INFO));
 		areaTypeCombobox.setEnabled(enable && !contains_image_quiz);
 	}
 
@@ -2261,7 +2005,7 @@ public class AuthoringTool implements EntryPoint {
 	private static void getNodeTextRecursively(Node n, StringBuilder sb) {
 		if (n.getNodeType() == Node.TEXT_NODE) {
 			final Text text_node = (Text) n;
-			// Log.trace("Got text node: " + text_node + " value: "
+			// log.trace("Got text node: " + text_node + " value: "
 			// + text_node.getNodeValue() + " data: "
 			// + text_node.getData());
 			sb.append(text_node.getData() + "\n");
@@ -2269,7 +2013,7 @@ public class AuthoringTool implements EntryPoint {
 		}
 
 		for (final Node node : new DOMNodeListWrapperList(n.getChildNodes())) {
-			// Log.trace("Got child node: " + node);
+			// log.trace("Got child node: " + node);
 			getNodeTextRecursively(node, sb);
 		}
 	}
@@ -2277,7 +2021,7 @@ public class AuthoringTool implements EntryPoint {
 	private static String getLoggedText() {
 		final StringBuilder sb = new StringBuilder();
 		final Element logTextArea = DOM.getElementById("logTextArea");
-		// Log.debug("Got logTextArea " + logTextArea);
+		// log.debug("Got logTextArea " + logTextArea);
 		getNodeTextRecursively(logTextArea, sb);
 		return sb.toString();
 	}
@@ -2285,16 +2029,13 @@ public class AuthoringTool implements EntryPoint {
 	private static int getPixels(String str) {
 		if (str == null || str.isEmpty())
 			return 0;
-		return Math.round(Float.valueOf(str.replaceAll("\\s.*$", "")
-				.replaceAll("px", "")));
+		return Math.round(Float.valueOf(str.replaceAll("\\s.*$", "").replaceAll("px", "")));
 	}
 
 	private static int getHeight(Element el) {
-		Log.trace("el.getOffsetHeight() = " + el.getOffsetHeight()
-				+ " marginTop: "
+		log.trace("el.getOffsetHeight() = " + el.getOffsetHeight() + " marginTop: "
 				+ ComputedStyle.getStyleProperty(el, "marginTop"));
-		return el.getOffsetHeight()
-				+ getPixels(ComputedStyle.getStyleProperty(el, "marginTop"))
+		return el.getOffsetHeight() + getPixels(ComputedStyle.getStyleProperty(el, "marginTop"))
 				+ getPixels(ComputedStyle.getStyleProperty(el, "marginBottom"));
 	}
 
@@ -2311,10 +2052,8 @@ public class AuthoringTool implements EntryPoint {
 				+ getPixels(ComputedStyle.getStyleProperty(el, "marginBottom"))
 				+ getPixels(ComputedStyle.getStyleProperty(el, "paddingTop"))
 				+ getPixels(ComputedStyle.getStyleProperty(el, "paddingBottom"))
-				+ getPixels(ComputedStyle
-						.getStyleProperty(el, "borderTopWidth"))
-				+ getPixels(ComputedStyle.getStyleProperty(el,
-						"borderBottomWidth"));
+				+ getPixels(ComputedStyle.getStyleProperty(el, "borderTopWidth"))
+				+ getPixels(ComputedStyle.getStyleProperty(el, "borderBottomWidth"));
 	}
 
 	private static int getDecorationHeight(RootPanel rp) {
@@ -2326,8 +2065,7 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static int getWidth(Element el) {
-		return el.getOffsetWidth()
-				+ getPixels(ComputedStyle.getStyleProperty(el, "marginLeft"))
+		return el.getOffsetWidth() + getPixels(ComputedStyle.getStyleProperty(el, "marginLeft"))
 				+ getPixels(ComputedStyle.getStyleProperty(el, "marginRight"));
 	}
 

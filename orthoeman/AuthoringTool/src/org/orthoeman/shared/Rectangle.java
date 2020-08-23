@@ -1,12 +1,15 @@
 package org.orthoeman.shared;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class Rectangle extends Drawing {
 	private int x;
 	private int y;
 	private int width;
 	private int height;
+
+	private final Log log = LogFactory.getLog(getClass());
 
 	public Rectangle(Kind kind, int x, int y, int width, int height) {
 		super(Type.RECTANGLE, kind);
@@ -72,7 +75,7 @@ public class Rectangle extends Drawing {
 		final Rectangle rectangle = new Rectangle(getKind(), (int) (x / level)
 				+ rect.getX(), (int) (y / level) + rect.getY(),
 				(int) (width / level), (int) (height / level));
-		Log.trace("toImage: level " + level + " target " + rect + " from "
+		log.trace("toImage: level " + level + " target " + rect + " from "
 				+ this + " to " + rectangle);
 		return rectangle;
 	}
@@ -85,7 +88,7 @@ public class Rectangle extends Drawing {
 				(int) ((x - rect.getX()) * level),
 				(int) ((y - rect.getY()) * level), (int) (width * level),
 				(int) (height * level));
-		Log.trace("toCanvas: level " + level + " target " + rect + " from "
+		log.trace("toCanvas: level " + level + " target " + rect + " from "
 				+ this + " to " + rectangle);
 		return rectangle;
 	}

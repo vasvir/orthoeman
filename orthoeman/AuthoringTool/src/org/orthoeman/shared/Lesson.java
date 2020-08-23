@@ -1,7 +1,5 @@
 package org.orthoeman.shared;
 
-import gwtupload.client.PreloadedImage;
-
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.orthoeman.client.AuthoringTool;
 import org.orthoeman.client.NodeListWrapperList;
 import org.orthoeman.shared.Drawing.Kind;
@@ -23,7 +24,6 @@ import org.orthoeman.shared.Lesson.Page.QuizItem.Answer;
 import org.orthoeman.shared.Lesson.Page.RangeQuizItem;
 import org.orthoeman.shared.Lesson.Page.VideoItem;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
@@ -37,6 +37,8 @@ public class Lesson extends ArrayList<Lesson.Page> {
 	private static final long serialVersionUID = 1L;
 	private static final String namespace = "http://orthoeman.org/";
 	private static final String schemaLocation = namespace + "orthoeman.xsd";
+
+	private static final Log log = LogFactory.getLog(Lesson.class);
 
 	public interface PageListener {
 		public void pageAdded(Page page);
@@ -375,7 +377,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 			public void setSources(Collection<Source> sources,
 					AuthoringTool.SetupVideoPlayerHandler video_player_handler) {
 				this.sources = sources;
-				Log.debug("Setting " + this + " sources: " + sources);
+				log.debug("Setting " + this + " sources: " + sources);
 				video_player_handler.setupVideoPlayer(this);
 			}
 
@@ -636,7 +638,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 				else
 					grade = (int) Math.rint(value);
 			} catch (Exception e) {
-				Log.warn("Invalid grade " + grade_str);
+				log.warn("Invalid grade " + grade_str);
 			}
 			return grade;
 		}
@@ -669,7 +671,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 
 	public static Lesson readXML(String contents, String orthoeman_id,
 			AuthoringTool authoring_tool) {
-		// Log.trace("Parsing: " + contents);
+		// log.trace("Parsing: " + contents);
 		final Lesson lesson = new Lesson();
 
 		if (contents == null || contents.trim().isEmpty())
@@ -788,7 +790,7 @@ public class Lesson extends ArrayList<Lesson.Page> {
 									.getAttribute("y"));
 							drawing = new Rectangle(kind, x, y, width, height);
 						} else {
-							Log.error("Unknown drawing type " + tagname);
+							log.error("Unknown drawing type " + tagname);
 							continue;
 						}
 						page.getImageItem().getDrawings().add(drawing);

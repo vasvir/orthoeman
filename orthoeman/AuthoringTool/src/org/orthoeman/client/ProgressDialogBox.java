@@ -1,6 +1,5 @@
 package org.orthoeman.client;
 
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -29,10 +28,10 @@ public class ProgressDialogBox extends DialogBox {
     }
 
     public static void showWaitCursor() {
-        DOM.setStyleAttribute(RootPanel.getBodyElement(), "cursor", "wait");
+    	RootPanel.getBodyElement().getStyle().setProperty("cursor", "wait");
     }
 
     public static void showDefaultCursor() {
-        DOM.setStyleAttribute(RootPanel.getBodyElement(), "cursor", "default");
+    	RootPanel.getBodyElement().getStyle().setProperty("cursor", "default");
     }
 }
