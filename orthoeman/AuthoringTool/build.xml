@@ -3,38 +3,40 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="AuthoringTool">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="AuthoringTool">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../../eclipse/eclipse-jee-2020-06"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.7"/>
-    <property name="source" value="1.7"/>
+    <property name="target" value="11"/>
+    <property name="source" value="11"/>
     <import file="dist.xml"/>
-    <path id="GWT SDK [GWT - 2.5.0].libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/gwt-user.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/gwt-dev.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/validation-api-1.0.0.GA-sources.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.gwt.eclipse.sdkbundle_2.5.0.v201211121240-rel-r42/gwt-2.5.0/validation-api-1.0.0.GA.jar"/>
-    </path>
     <path id="Authoring Tool Libraries.userclasspath">
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/commons-io-2.2.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwt-log-3.1.8.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwt-servlet.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/gwtupload-0.6.4.jar"/>
-        <pathelement location="../AuthoringTool/war/WEB-INF/lib/log4j-1.2.16.jar"/>
+        <pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
+        <pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/commons-io-2.2.jar"/>
+        <pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/gwt-log-3.1.8.jar"/>
+        <pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/gwt-servlet.jar"/>
+        <pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/gwtupload-0.6.4.jar"/>
+        <pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/log4j-1.2.16.jar"/>
+    </path>
+    <path id="GWT SDK [gwt-2.9.0 - 2.9.0].libraryclasspath">
+        <pathelement location="../../../gwt/gwt-2.9.0/gwt-user.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/gwt-codeserver.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/gwt-dev.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/validation-api-1.0.0.GA.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/validation-api-1.0.0.GA-sources.jar"/>
     </path>
     <path id="AuthoringTool.classpath">
         <pathelement location="war/WEB-INF/classes"/>
-        <path refid="GWT SDK [GWT - 2.5.0].libraryclasspath"/>
         <path refid="Authoring Tool Libraries.userclasspath"/>
+        <path refid="GWT SDK [gwt-2.9.0 - 2.9.0].libraryclasspath"/>
     </path>
     <target name="init">
         <mkdir dir="war/WEB-INF/classes"/>
         <copy includeemptydirs="false" todir="war/WEB-INF/classes">
             <fileset dir="src">
+                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
+                <exclude name="com/google/gwt/dev/shell/jetty/JettyLauncher.java"/>
             </fileset>
         </copy>
     </target>
@@ -48,6 +50,7 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="war/WEB-INF/classes" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
+            <exclude name="com/google/gwt/dev/shell/jetty/JettyLauncher.java"/>
             <classpath refid="AuthoringTool.classpath"/>
         </javac>
     </target>
