@@ -2,8 +2,6 @@ package org.orthoeman.shared;
 
 import java.util.Collection;
 
-//import com.allen_sauer.gwt.log.client.Log;
-
 public class Point extends Drawing {
 	public int x;
 	public int y;
