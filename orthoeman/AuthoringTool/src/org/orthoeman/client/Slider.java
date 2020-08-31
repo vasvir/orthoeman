@@ -12,8 +12,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Slider extends ScrollPanel implements
-		HasValueChangeHandlers<Double> {
+public class Slider extends ScrollPanel implements HasValueChangeHandlers<Double> {
 	private final int total_ticks;
 	private final double min;
 	private final double max;
@@ -34,14 +33,12 @@ public class Slider extends ScrollPanel implements
 			@Override
 			public void onScroll(ScrollEvent event) {
 				/*
-				 * Log.trace("scroll event " + event + " value " +
-				 * getHorizontalScrollPosition() + " min " +
-				 * getMinimumHorizontalScrollPosition() + " max " +
+				 * Log.trace("scroll event " + event + " value " + getHorizontalScrollPosition()
+				 * + " min " + getMinimumHorizontalScrollPosition() + " max " +
 				 * getMaximumHorizontalScrollPosition());
 				 */
-				value = Slider.this.min + (Slider.this.max - Slider.this.min)
-						* getHorizontalScrollPosition()
-						/ Slider.this.total_ticks;
+				value = Slider.this.min
+						+ (Slider.this.max - Slider.this.min) * getHorizontalScrollPosition() / Slider.this.total_ticks;
 				ValueChangeEvent.fire(Slider.this, value);
 			}
 		});
@@ -74,8 +71,7 @@ public class Slider extends ScrollPanel implements
 	}
 
 	public void setAlwaysShowHorizontalScrollbar(boolean alwaysShow) {
-		getScrollableElement().getStyle().setOverflowX(
-				alwaysShow ? Overflow.SCROLL : Overflow.AUTO);
+		getScrollableElement().getStyle().setOverflowX(alwaysShow ? Overflow.SCROLL : Overflow.AUTO);
 	}
 
 	public void setWidth(int width) {
@@ -87,8 +83,7 @@ public class Slider extends ScrollPanel implements
 	}
 
 	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<Double> handler) {
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Double> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 }

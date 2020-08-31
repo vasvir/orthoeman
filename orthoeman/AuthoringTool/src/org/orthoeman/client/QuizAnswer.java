@@ -15,8 +15,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class QuizAnswer extends FlowPanel {
 	public QuizAnswer(final QuizItem quiz_item, final int id) {
-		final Map<Integer, QuizItem.Answer> answer_map = quiz_item
-				.getAnswerMap();
+		final Map<Integer, QuizItem.Answer> answer_map = quiz_item.getAnswerMap();
 		final QuizItem.Answer answer = answer_map.get(id);
 		final String answer_text = answer.getText();
 		final boolean correct = answer.isCorrect();

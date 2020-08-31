@@ -68,11 +68,9 @@ public class Ellipse extends Drawing {
 	public Drawing toImage(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Ellipse ellipse = new Ellipse(getKind(), (int) (x / level)
-				+ rect.getX(), (int) (y / level) + rect.getY(),
+		final Ellipse ellipse = new Ellipse(getKind(), (int) (x / level) + rect.getX(), (int) (y / level) + rect.getY(),
 				(int) (width / level), (int) (height / level));
-		log.trace("toImage: level " + level + " target " + rect + " from "
-				+ this + " to " + ellipse);
+		log.trace("toImage: level " + level + " target " + rect + " from " + this + " to " + ellipse);
 		return ellipse;
 	}
 
@@ -80,12 +78,9 @@ public class Ellipse extends Drawing {
 	public Drawing toCanvas(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Ellipse ellipse = new Ellipse(getKind(),
-				(int) ((x - rect.getX()) * level),
-				(int) ((y - rect.getY()) * level), (int) (width * level),
-				(int) (height * level));
-		log.trace("toCanvas: level " + level + " target " + rect + " from "
-				+ this + " to " + ellipse);
+		final Ellipse ellipse = new Ellipse(getKind(), (int) ((x - rect.getX()) * level),
+				(int) ((y - rect.getY()) * level), (int) (width * level), (int) (height * level));
+		log.trace("toCanvas: level " + level + " target " + rect + " from " + this + " to " + ellipse);
 		return ellipse;
 	}
 
@@ -100,13 +95,10 @@ public class Ellipse extends Drawing {
 		final double dx2 = dx * dx;
 		final double dy2 = dy * dy;
 
-		final double distance = Math.abs(Math.sqrt(Math.sqrt(dx2 * b2 + dy2
-				* a2))
-				- Math.sqrt(a * b));
+		final double distance = Math.abs(Math.sqrt(Math.sqrt(dx2 * b2 + dy2 * a2)) - Math.sqrt(a * b));
 
-		log.trace("Distance " + this + " from point " + point + " distance = "
-				+ distance + " a = " + a + " b = " + b + " dx = " + dx
-				+ " dy = " + dy);
+		log.trace("Distance " + this + " from point " + point + " distance = " + distance + " a = " + a + " b = " + b
+				+ " dx = " + dx + " dy = " + dy);
 		return distance;
 	}
 }

@@ -72,11 +72,9 @@ public class Rectangle extends Drawing {
 	public Drawing toImage(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Rectangle rectangle = new Rectangle(getKind(), (int) (x / level)
-				+ rect.getX(), (int) (y / level) + rect.getY(),
-				(int) (width / level), (int) (height / level));
-		log.trace("toImage: level " + level + " target " + rect + " from "
-				+ this + " to " + rectangle);
+		final Rectangle rectangle = new Rectangle(getKind(), (int) (x / level) + rect.getX(),
+				(int) (y / level) + rect.getY(), (int) (width / level), (int) (height / level));
+		log.trace("toImage: level " + level + " target " + rect + " from " + this + " to " + rectangle);
 		return rectangle;
 	}
 
@@ -84,12 +82,9 @@ public class Rectangle extends Drawing {
 	public Drawing toCanvas(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Rectangle rectangle = new Rectangle(getKind(),
-				(int) ((x - rect.getX()) * level),
-				(int) ((y - rect.getY()) * level), (int) (width * level),
-				(int) (height * level));
-		log.trace("toCanvas: level " + level + " target " + rect + " from "
-				+ this + " to " + rectangle);
+		final Rectangle rectangle = new Rectangle(getKind(), (int) ((x - rect.getX()) * level),
+				(int) ((y - rect.getY()) * level), (int) (width * level), (int) (height * level));
+		log.trace("toCanvas: level " + level + " target " + rect + " from " + this + " to " + rectangle);
 		return rectangle;
 	}
 

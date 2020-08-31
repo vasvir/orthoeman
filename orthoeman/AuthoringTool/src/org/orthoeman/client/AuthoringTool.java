@@ -679,7 +679,7 @@ public class AuthoringTool implements EntryPoint {
 			getRangeQuizRangeQuizAreaContainer();
 			getRangeQuizContainer();
 			getQuizAnswerContainer();
-		    getQuizAnswerScrollContainer();
+			getQuizAnswerScrollContainer();
 			getQuizQuizAreaContainer();
 			getQuizUploadAlignmentContainer();
 			getQuizContainer();
@@ -1578,7 +1578,7 @@ public class AuthoringTool implements EntryPoint {
 	private static RootPanel getAddRemoveButtonContainer() {
 		return RootPanel.get("addRemoveButtonContainer");
 	}
-	
+
 	private static RootPanel getLeftPanelContainerParent() {
 		return RootPanel.get("leftPanelContainerParent");
 	}

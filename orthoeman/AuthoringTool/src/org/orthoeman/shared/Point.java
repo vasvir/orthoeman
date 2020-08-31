@@ -43,10 +43,9 @@ public class Point extends Drawing {
 	public Point toImage(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Point point = new Point((int) (x / level) + rect.getX(),
-				(int) (y / level) + rect.getY());
-		//Log.trace("toImage: level " + level + " target " + rect + " from "
-		//		+ this + " to " + point);
+		final Point point = new Point((int) (x / level) + rect.getX(), (int) (y / level) + rect.getY());
+		// Log.trace("toImage: level " + level + " target " + rect + " from "
+		// + this + " to " + point);
 		return point;
 	}
 
@@ -54,21 +53,18 @@ public class Point extends Drawing {
 	public Point toCanvas(Zoom zoom) {
 		final double level = zoom.getLevel();
 		final Rectangle rect = zoom.getTarget();
-		final Point point = new Point((int) ((x - rect.getX()) * level),
-				(int) ((y - rect.getY()) * level));
-		//Log.trace("toCanvas: level " + level + " target " + rect + " from "
-		//		+ this + " to " + point);
+		final Point point = new Point((int) ((x - rect.getX()) * level), (int) ((y - rect.getY()) * level));
+		// Log.trace("toCanvas: level " + level + " target " + rect + " from "
+		// + this + " to " + point);
 		return point;
 	}
 
 	@Override
 	public double distance(Point point) {
-		return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y)
-				* (y - point.y));
+		return Math.sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y));
 	}
 
-	public static Point getNearestPoint(Collection<Point> points,
-			Point query_point) {
+	public static Point getNearestPoint(Collection<Point> points, Point query_point) {
 		Point min_distance_point = null;
 		double min_distance = Double.MAX_VALUE;
 

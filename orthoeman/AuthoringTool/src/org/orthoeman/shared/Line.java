@@ -88,8 +88,7 @@ public class Line extends Drawing {
 		final Point p3 = line2.a;
 		final Point p4 = line2.b;
 
-		final double det = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y)
-				* (p3.x - p4.x);
+		final double det = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
 		if (det == 0)
 			return new Point();
 
