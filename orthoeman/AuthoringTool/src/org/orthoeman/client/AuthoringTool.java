@@ -33,7 +33,6 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -62,14 +61,12 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
@@ -234,27 +231,27 @@ public class AuthoringTool implements EntryPoint {
 		final int window_height = Window.getClientHeight();
 		final int menubar_height = getHeight(getMenuBarContainer());
 		final int page_height = window_height - menubar_height;
-		final int pageTitleContainerHeight = getHeight("pageTitleContainer");
+		final int pageTitleContainerHeight = getHeight(getPageTitleContainer());
 		final List<Page.Item.Type> itemTypeCombinationList = Arrays.asList(getCurrentPage().getItemTypeCombination());
 		final boolean image = itemTypeCombinationList.contains(Page.Item.Type.IMAGE);
 		final boolean text_quiz = itemTypeCombinationList.contains(Page.Item.Type.TEXT)
 				&& itemTypeCombinationList.contains(Page.Item.Type.QUIZ);
 		if (text_quiz) {
-			final int textTitleContainerHeight = getHeight("textTitleContainer");
-			final int quizTitleContainerHeight = getHeight("quizTitleContainer");
+			final int textTitleContainerHeight = getHeight(getTextTitleContainer());
+			final int quizTitleContainerHeight = getHeight(getQuizTitleContainer());
 			final int height_left = page_height - pageTitleContainerHeight - textTitleContainerHeight
-					- quizTitleContainerHeight - getDecorationHeight("textContainer")
-					- getDecorationHeight("quizContainer");
+					- quizTitleContainerHeight - getDecorationHeight(getTextContainer())
+					- getDecorationHeight(getQuizContainer());
 			return height_left / 2;
 		}
 
-		final int mediaTitleContainerHeight = image ? getHeight("imageTitleContainer")
-				: getHeight("videoTitleContainer");
-		final int mediaUploaderContainerHeight = image ? getHeight("imageUploaderContainer")
-				: getHeight("videoUploaderContainer");
-		final int mediaButtonContainerHeight = image ? getHeight("imageButtonContainer") : 0;
-		final int mediaContainerDecorationHeight = image ? getDecorationHeight("imageContainer")
-				: getDecorationHeight("videoContainer");
+		final int mediaTitleContainerHeight = image ? getHeight(getImageTitleContainer())
+				: getHeight(getVideoTitleContainer());
+		final int mediaUploaderContainerHeight = image ? getHeight(getImageUploaderContainer())
+				: getHeight(getVideoUploaderContainer());
+		final int mediaButtonContainerHeight = image ? getHeight(getImageButtonContainer()) : 0;
+		final int mediaContainerDecorationHeight = image ? getDecorationHeight(getImageContainer())
+				: getDecorationHeight(getVideoContainer());
 		final int height_left = page_height - pageTitleContainerHeight - mediaTitleContainerHeight
 				- mediaUploaderContainerHeight - mediaButtonContainerHeight - mediaContainerDecorationHeight;
 		log.trace("page_height = " + page_height + " pageTitleContainerHeight=" + pageTitleContainerHeight
@@ -265,32 +262,32 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private void resizeSecondaryContainers(int width_left, int height_left) {
-		RootPanel.get("nonMediaContainer").setWidth((width_left * 7 / 20) + "px");
-		String uploaderContainerPX = RootPanel.get("imageUploaderContainer").getOffsetHeight() + "px";
+		getNonMediaContainer().setWidth((width_left * 7 / 20) + "px");
+		String uploaderContainerPX = getImageUploaderContainer().getOffsetHeight() + "px";
 
 		final Page.Item.Type[] itemTypeCombination = getCurrentPage().getItemTypeCombination();
 
 		for (final Page.Item.Type type : itemTypeCombination) {
 			switch (type) {
 			case IMAGE:
-				uploaderContainerPX = RootPanel.get("imageUploaderContainer").getOffsetHeight() + "px";
+				uploaderContainerPX = getImageUploaderContainer().getOffsetHeight() + "px";
 				break;
 			case VIDEO:
-				uploaderContainerPX = RootPanel.get("videoUploaderContainer").getOffsetHeight() + "px";
-				RootPanel.get("videoPlayerContainer").setHeight(height_left + "px");
+				uploaderContainerPX = getVideoUploaderContainer().getOffsetHeight() + "px";
+				getVideoPlayerContainer().setHeight(height_left + "px");
 				break;
 			case TEXT:
-				RootPanel.get("textUploadAlignmentContainer").setHeight(uploaderContainerPX);
-				RootPanel.get("textTextAreaContainer").setHeight((height_left) + "px");
+				getTextUploadAlignmentContainer().setHeight(uploaderContainerPX);
+				getTextTextAreaContainer().setHeight((height_left) + "px");
 				break;
 			case QUIZ:
-				RootPanel.get("quizUploadAlignmentContainer").setHeight(uploaderContainerPX);
-				RootPanel.get("quizQuizAreaContainer").setHeight((height_left) + "px");
-				RootPanel.get("quizAnswerScrollContainer").setHeight((height_left * 5 / 10) + "px");
+				getQuizUploadAlignmentContainer().setHeight(uploaderContainerPX);
+				getQuizQuizAreaContainer().setHeight((height_left) + "px");
+				getQuizAnswerScrollContainer().setHeight((height_left * 5 / 10) + "px");
 				break;
 			case RANGE_QUIZ:
-				RootPanel.get("rangeQuizUploadAlignmentContainer").setHeight(uploaderContainerPX);
-				RootPanel.get("rangeQuizRangeQuizAreaContainer").setHeight((height_left) + "px");
+				getRangeQuizUploadAlignmentContainer().setHeight(uploaderContainerPX);
+				getRangeQuizRangeQuizAreaContainer().setHeight((height_left) + "px");
 				break;
 			}
 		}
@@ -301,9 +298,9 @@ public class AuthoringTool implements EntryPoint {
 		final int window_height = event.getHeight();
 		final int menubar_height = getHeight(getMenuBarContainer());
 
-		final RootPanel pageLabelContainer = RootPanel.get("pageLabelContainer");
-		final RootPanel upDownButtonlContainer = RootPanel.get("upDownButtonlContainer");
-		final RootPanel addRemoveButtonContainer = RootPanel.get("addRemoveButtonContainer");
+		final RootPanel pageLabelContainer = getPageLabelContainer();
+		final RootPanel upDownButtonlContainer = getUpDownButtonlContainer();
+		final RootPanel addRemoveButtonContainer = getAddRemoveButtonContainer();
 
 		final RootPanel pageContainer = getPageContainer();
 		if (scrollbar_width == 0) {
@@ -323,7 +320,7 @@ public class AuthoringTool implements EntryPoint {
 				+ addRemoveButtonContainer.getOffsetHeight());
 		final int page_button_cnt_height = window_height - menubar_height - getHeight(pageLabelContainer)
 				- getHeight(upDownButtonlContainer) - getHeight(addRemoveButtonContainer)
-				- getDecorationHeight("leftPanelContainerParent");
+				- getDecorationHeight(getLeftPanelContainerParent());
 		pageButtonContainer.setHeight(page_button_cnt_height + "px");
 		log.trace("Browser resized button container (offset size) " + pageButtonContainer.getOffsetWidth() + " x "
 				+ page_button_cnt_height + " style " + pageButtonContainer.getStyleName());
@@ -537,11 +534,11 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		final RootPanel bugReportPopup = getBugReportPopup();
 		final TextBox bugReportSubjectTextBox = getTextBox("bugReportSubjectTextBox");
 		final TextArea bugReportBodyTextArea = getTextArea("bugReportBodyTextArea");
 		final Button bugReportSendButton = getButton("bugReportSendButton");
 		final Button bugReportCancelButton = getButton("bugReportCancelButton");
+		final RootPanel bugReportPopup = getBugReportPopup();
 
 		final Button reportBugButton = getButton("reportBugButton");
 		reportBugButton.addClickHandler(new ClickHandler() {
@@ -642,7 +639,7 @@ public class AuthoringTool implements EntryPoint {
 		});
 		equal_width_widget_groups.add(Arrays.asList(add_b, remove_b, up_b, down_b));
 
-		// BUG: workaround of GWT weird behaviour
+		// BUG: workaround of GWT weird behavior
 		// A widget that has an existing parent widget may not be added to the
 		// detach list
 		final boolean work_around_bug = true;
@@ -675,21 +672,45 @@ public class AuthoringTool implements EntryPoint {
 		image_edit_buttons = Arrays.asList(zoom_121_b, zoom_in_b, zoom_out_b, zoom_fit_b, zoom_target_b, rect_hsp_b,
 				ellipse_hsp_b, polygon_hsp_b, line_b, cross_b, erase_b, edit_image_b, showRegions_cb);
 
+		title_tb = getTextBox("titleTextBox");
+
 		if (work_around_bug) {
-			getTextContainer();
-			getImageUploaderContainer();
-			getCanvasContainer();
-			getVideoUploaderContainer();
-			getVideoContainer();
+			getRangeQuizUploadAlignmentContainer();
+			getRangeQuizRangeQuizAreaContainer();
+			getRangeQuizContainer();
 			getQuizAnswerContainer();
+		    getQuizAnswerScrollContainer();
+			getQuizQuizAreaContainer();
+			getQuizUploadAlignmentContainer();
+			getQuizContainer();
+			getTextTextAreaContainer();
+			getTextUploadAlignmentContainer();
+			getTextContainer();
+			getNonMediaContainer();
+			getVideoPlayerContainer();
+			getVideoUploaderContainer();
+			getVideoTitleContainer();
+			getVideoContainer();
+			getImageButtonContainer();
+			getCanvasContainer();
+			getImageUploaderContainer();
+			getImageTitleContainer();
+			getImageContainer();
+			getPageTitleContainer();
+			getPageContainer();
+			getAddRemoveButtonContainer();
 			getPageButtonContainer();
+			getUpDownButtonlContainer();
+			getPageLabelContainer();
+			getLeftPanelContainer();
+			getLeftPanelContainerParent();
+			getMenuBarContainer();
 		}
 
 		brightness_sl = new Slider(1024, -255, 255, 0);
 		contrast_sl = new Slider(1024, -255, 255, 0);
 		invert_cb = new SimpleCheckBox();
 
-		title_tb = getTextBox("titleTextBox");
 		title_tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -1430,12 +1451,48 @@ public class AuthoringTool implements EntryPoint {
 		return RootPanel.get("pageButtonContainer");
 	}
 
+	private static RootPanel getPageTitleContainer() {
+		return RootPanel.get("pageTitleContainer");
+	}
+
+	private static RootPanel getImageTitleContainer() {
+		return RootPanel.get("imageTitleContainer");
+	}
+
+	private static RootPanel getVideoTitleContainer() {
+		return RootPanel.get("videoTitleContainer");
+	}
+
+	private static RootPanel getTextUploadAlignmentContainer() {
+		return RootPanel.get("textUploadAlignmentContainer");
+	}
+
+	private static RootPanel getTextTextAreaContainer() {
+		return RootPanel.get("textTextAreaContainer");
+	}
+
 	private static RootPanel getTextContainer() {
 		return RootPanel.get("textContainer");
 	}
 
+	private static RootPanel getTextTitleContainer() {
+		return RootPanel.get("textTitleContainer");
+	}
+
+	private static RootPanel getQuizTitleContainer() {
+		return RootPanel.get("quizTitleContainer");
+	}
+
+	private static RootPanel getNonMediaContainer() {
+		return RootPanel.get("nonMediaContainer");
+	}
+
 	private static RootPanel getImageUploaderContainer() {
 		return RootPanel.get("imageUploaderContainer");
+	}
+
+	private static RootPanel getImageButtonContainer() {
+		return RootPanel.get("imageButtonContainer");
 	}
 
 	private static RootPanel getCanvasContainer() {
@@ -1444,6 +1501,10 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getImageContainer() {
 		return RootPanel.get("imageContainer");
+	}
+
+	private static RootPanel getVideoPlayerContainer() {
+		return RootPanel.get("videoPlayerContainer");
 	}
 
 	private static RootPanel getVideoContainer() {
@@ -1484,6 +1545,42 @@ public class AuthoringTool implements EntryPoint {
 
 	private static RootPanel getBugReportPopup() {
 		return RootPanel.get("bugReportPopup");
+	}
+
+	private static RootPanel getQuizUploadAlignmentContainer() {
+		return RootPanel.get("quizUploadAlignmentContainer");
+	}
+
+	private static RootPanel getQuizQuizAreaContainer() {
+		return RootPanel.get("quizQuizAreaContainer");
+	}
+
+	private static RootPanel getQuizAnswerScrollContainer() {
+		return RootPanel.get("quizAnswerScrollContainer");
+	}
+
+	private static RootPanel getRangeQuizUploadAlignmentContainer() {
+		return RootPanel.get("rangeQuizUploadAlignmentContainer");
+	}
+
+	private static RootPanel getRangeQuizRangeQuizAreaContainer() {
+		return RootPanel.get("rangeQuizRangeQuizAreaContainer");
+	}
+
+	private static RootPanel getPageLabelContainer() {
+		return RootPanel.get("pageLabelContainer");
+	}
+
+	private static RootPanel getUpDownButtonlContainer() {
+		return RootPanel.get("upDownButtonlContainer");
+	}
+
+	private static RootPanel getAddRemoveButtonContainer() {
+		return RootPanel.get("addRemoveButtonContainer");
+	}
+	
+	private static RootPanel getLeftPanelContainerParent() {
+		return RootPanel.get("leftPanelContainerParent");
 	}
 
 	private void addPageButton(final Page page) {
@@ -1922,7 +2019,7 @@ public class AuthoringTool implements EntryPoint {
 		log.debug("Current videoItem(): " + current_page.getVideoItem() + " video_item: " + video_item);
 		if (current_page.getVideoItem() != video_item)
 			return;
-		final RootPanel videoPlayerContainer = RootPanel.get("videoPlayerContainer");
+		final RootPanel videoPlayerContainer = getVideoPlayerContainer();
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<video class=\"fill_x\" controls preload=\"none\">"); // poster="image_url
 		for (final Page.VideoItem.Source source : video_item.getSources()) {
@@ -2043,10 +2140,6 @@ public class AuthoringTool implements EntryPoint {
 		return getHeight(rp.getElement());
 	}
 
-	private static int getHeight(String id) {
-		return getHeight(RootPanel.get(id));
-	}
-
 	private static int getDecorationHeight(Element el) {
 		return getPixels(ComputedStyle.getStyleProperty(el, "marginTop"))
 				+ getPixels(ComputedStyle.getStyleProperty(el, "marginBottom"))
@@ -2058,10 +2151,6 @@ public class AuthoringTool implements EntryPoint {
 
 	private static int getDecorationHeight(RootPanel rp) {
 		return getDecorationHeight(rp.getElement());
-	}
-
-	private static int getDecorationHeight(String id) {
-		return getDecorationHeight(RootPanel.get(id));
 	}
 
 	private static int getWidth(Element el) {
