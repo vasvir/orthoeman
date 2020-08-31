@@ -16,6 +16,6 @@ wwwdir="$rootdir/www";
 EXCLUDE_DISPLAY='--exclude Display';
 
 $RSYNC --exclude AuthoringTool $EXCLUDE_DISPLAY "$plugindir" $REMOTE:$REMOTE_DIR;
-#echo $RSYNC --exclude WEB-INF "$authoringtooldir" $REMOTE:$REMOTE_DIR/orthoeman/AuthoringTool;
+$RSYNC --exclude WEB-INF "$authoringtooldir" $REMOTE:$REMOTE_DIR/orthoeman/AuthoringTool;
 #echo $RSYNC "$wwwdir" $REMOTE:/var;
 #echo $RSYNC "$plugindir/orthoeman.xsd" $REMOTE:/var/www;
