@@ -682,9 +682,11 @@ public class AuthoringTool implements EntryPoint {
 			getQuizAnswerScrollContainer();
 			getQuizQuizAreaContainer();
 			getQuizUploadAlignmentContainer();
+			getQuizTitleContainer();
 			getQuizContainer();
 			getTextTextAreaContainer();
 			getTextUploadAlignmentContainer();
+			getTextTitleContainer();
 			getTextContainer();
 			getNonMediaContainer();
 			getVideoPlayerContainer();
