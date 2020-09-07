@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -64,9 +66,14 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
@@ -87,6 +94,7 @@ public class AuthoringTool implements EntryPoint {
 	private static final double angleBulletRadius = 5;
 	private static final double angleDistanceThreshold = 30;
 	private static final double eraseDistanceThreshold = 5;
+	private static final Set<String> allowedImageTypes = new HashSet<String>(Arrays.asList("jpeg", "jpg", "png"));
 
 	private static final Log log = LogFactory.getLog(AuthoringTool.class);
 
@@ -727,6 +735,69 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
+		final RootPanel imageUploaderContainer = getImageUploaderContainer();
+		// Create a FormPanel and point it at a service.
+		final FormPanel form = new FormPanel();
+		form.setAction("../put_resource.php?id=" + cm_id + "&type=" + ResourceType.IMAGE);
+
+		// Because we're going to add a FileUpload widget, we'll need to set the
+		// form to use the POST method, and multipart MIME encoding.
+		form.setEncoding(FormPanel.ENCODING_MULTIPART);
+		form.setMethod(FormPanel.METHOD_POST);
+
+		// Create a panel to hold all of the form widgets.
+		final HorizontalPanel panel = new HorizontalPanel();
+		form.setWidget(panel);
+		// Create a FileUpload widget.
+		final FileUpload upload = new FileUpload();
+
+		upload.setName("uploadImage");
+		// upload.getElement().setAttribute("type", "image");
+		upload.getElement().setAttribute("accept", "image/png, image/jpeg");
+		upload.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				form.submit();
+			}
+		});
+		panel.add(upload);
+
+		// Add an event handler to the form.
+		form.addSubmitHandler(new FormPanel.SubmitHandler() {
+			public void onSubmit(SubmitEvent event) {
+				log.debug("Trying to upload " + event.toDebugString());
+				log.debug(upload.getFilename());
+				final String ext = getFileExtension(upload.getFilename()).toLowerCase();
+				if (!allowedImageTypes.contains(ext)) {
+					Window.alert("Invalid file type (" + ext + "). Only png and jpeg images are allowed.");
+					final InputElement ie =  upload.getElement().cast();
+					ie.setValue(null);
+					event.cancel();
+				}
+			}
+		});
+		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				// image submitted now loaded it back
+				final String response_text = event.getResults(); 
+				log.debug("response_text: " + response_text);
+
+				final Page.ImageItem image_item = getCurrentPage().getImageItem();
+				final PreloadedImage img = image_item.getImage();
+				if (img != null) {
+					setButtonsEnabled(image_edit_buttons, false);
+					img.removeFromParent();
+					image_item.setImage(null);
+				}
+				final String id = Page.ImageItem.getImageIdString(response_text);
+				image_item.setId(id);
+				image_item.setImage(new PreloadedImage(Lesson.getResourceURL(cm_id, id),
+						new ImageItemOnLoadPreloadedImageHandler(image_item, true)));
+				setButtonsEnabled(image_edit_buttons, true);
+			}
+		});
+		imageUploaderContainer.add(form);
+
 		imageContainer = getImageContainer();
 		quizContainer = getQuizContainer();
 
@@ -938,27 +1009,6 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		final String php_session_id = "PHPSESSID";
-
-//		final IUploader.OnFinishUploaderHandler onImageFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
-//			@Override
-//			public void onFinish(IUploader uploader) {
-//				final Page.ImageItem image_item = getCurrentPage().getImageItem();
-//				final PreloadedImage img = image_item.getImage();
-//				if (img != null) {
-//					setButtonsEnabled(image_edit_buttons, false);
-//					img.removeFromParent();
-//					image_item.setImage(null);
-//				}
-//				if (uploader.getStatus() != Status.SUCCESS)
-//					return;
-//				final ProgressDialogBox pd = new ProgressDialogBox("Saving Image...");
-//				pd.show();
-//				putResource(ResourceType.IMAGE, uploader.fileUrl() + "&session_id=" + Cookies.getCookie(php_session_id),
-//						image_item, pd);
-//			}
-//		};
-
 //		final IUploader.OnFinishUploaderHandler onVideoFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
 //			@Override
 //			public void onFinish(IUploader uploader) {
@@ -970,15 +1020,6 @@ public class AuthoringTool implements EntryPoint {
 //						getCurrentPage().getVideoItem(), pd);
 //			}
 //		};
-
-		// image
-//		final SingleUploader image_uploader = new SingleUploaderModal();
-//		image_uploader.add(new Hidden("APC_UPLOAD_PROGRESS", image_uploader.getInputName()), 0);
-//		image_uploader.setServletPath("../jsupload.php");
-//		image_uploader.setValidExtensions(".png", ".jpg", ".jpeg", ".tiff", ".gif");
-//		image_uploader.setAutoSubmit(true);
-//		image_uploader.addOnFinishUploadHandler(onImageFinishUploaderHandler);
-//		getImageUploaderContainer().add(image_uploader);
 
 		zoom_121_b.addClickHandler(new ClickHandler() {
 			@Override
@@ -1395,6 +1436,15 @@ public class AuthoringTool implements EntryPoint {
 			float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
 			log.debug("Duration: " + durationSeconds + " seconds");
 		}
+	}
+
+	private String getFileExtension(String filename) {
+		final int i = filename.lastIndexOf(".");
+		final int l = filename.length();
+		if (i == -1 || i >= l -1) {
+			return ""; // empty extension
+		}
+		return filename.substring(i + 1);
 	}
 
 	private void setGrade(ValueChangeEvent<String> event, boolean positive) {

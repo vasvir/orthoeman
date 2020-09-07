@@ -99,16 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $valid_resource_ids_sql = $valid_resource_ids ? "AND id NOT IN ($valid_resource_ids)" : "";
         $DB->delete_records_select($RESOURCE_TABLE, "orthoeman_id = $orthoeman->id AND type <> 0 $valid_resource_ids_sql");
    } else if ($type == $TYPE_IMAGE) {
-        $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
-        //error_log("url $url");
-        $current_url = get_current_url();
-        //error_log("current_url $current_url");
-        $img_url = preg_replace('/\/put_resource.php.*$/', '', $current_url) . $url;
-        //error_log("img_url $img_url");
-        $result = get_url_data($img_url);
-        $img = $result->data;
-        //error_log("img XXX $img XXX");
-        //error_log("here.... img");
+        $content_type = $_FILES['uploadImage']['type'];
+        $img = file_get_contents($_FILES['uploadImage']['tmp_name']);
+        #error_log("img XXX " . $content_type . ":" . substr($img, 0, 3) . " XXX");
         $md5 = md5($img);
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_IMAGE_VALUE, 'md5' => $md5));
         if (!$resource_rec) {
@@ -117,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->type = $TYPE_IMAGE_VALUE;
             $resource_rec->data = $img;
             $resource_rec->md5 = $md5;
-            $resource_rec->content_type = $result->content_type;
+            $resource_rec->content_type = $content_type;
             $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
             $resource_rec->id = $resource_id;
