@@ -10,6 +10,10 @@
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.xml.XML" />
 
+	<!--  elemental -->
+	<inherits name="elemental2.core.Core" />
+	<inherits name="elemental2.dom.Dom" />
+
 	<!-- Inherit the default GWT style sheet. You can change -->
 	<!-- the theme of your GWT application by uncommenting -->
 	<!-- any one of the following lines. -->

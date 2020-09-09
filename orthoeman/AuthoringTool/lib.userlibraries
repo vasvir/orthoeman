@@ -2,14 +2,9 @@
 <eclipse-userlibraries version="2">
 	<library name="gwt-jsinterop-libraries" systemlibrary="false">
 		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/base-1.0.0.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-core-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-dom-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-indexeddb-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-media-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-promise-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-svg-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-webgl-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-webstorage-2.27.jar" />
-		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/jsinterop-annotations-1.0.2.jar" />
+		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-core-1.1.0.jar" />
+		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-dom-1.1.0.jar" />
+		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-promise-1.1.0.jar" />
+		<archive path="/AuthoringTool/lib/gwt-jsinterop-libraries/jsinterop-annotations-2.0.0.jar" />
 	</library>
 </eclipse-userlibraries>
