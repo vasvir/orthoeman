@@ -1,0 +1,56 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="lib" default="setup">
+
+    <target name="check-config">
+	<uptodate targetfile="ivy.xml" property="build-ivy-config">
+		<srcfiles dir= "./" includes="scripts/lib.ini, scripts/build-ivy-config.sh, build.xml"/>
+	</uptodate>
+    </target>
+
+    <target name="ivy-config" depends="check-config" unless="build-ivy-config" description="build ivy config files">
+	<echo message="Building ivy-config"/>
+	<exec executable="scripts/build-ivy-config.sh" failonerror="true">
+		<arg value="scripts/lib.ini"/>
+	</exec>
+	<echo message="You need to rerun ant beacuse ivy configuration has been changed."/>
+    </target>
+    
+    <target name="upgrade" depends="ivy-config" description="retrieve dependencies with ivy">
+	<ant dir="." antfile="lib.xml" target="ivybuild.resolve"/>
+    </target>
+
+    <fileset id="ivy.module" dir=".">
+	<include name="*ivybuild.xml" />
+    </fileset>
+    <include>
+	<fileset refid="ivy.module" />
+    </include>
+
+    <target name="setup" description="update lib.userlibraries and dist.xml">
+	<echo message="Updating lib.userlibraries"/>
+	<exec executable="scripts/update.sh" failonerror="true">
+		<arg value="eclipse_libraries"/>
+		<arg value="lib.userlibraries"/>
+	</exec>
+	<echo message="Updating ant libraries"/>
+	<exec executable="scripts/update.sh" failonerror="true">
+		<arg value="ant_libraries"/>
+		<arg value="build-lib.xml"/>
+	</exec>
+    </target>
+
+    <target name="clean" description="Remove build directories">
+        <delete file="ivy.xml"/>
+        <delete file="ivybuild.xml"/>
+        <delete file="ivysettings.xml"/>
+        <delete file="DEADJOE"/>
+	<delete>
+		<fileset dir="." includes="**/*~"/>
+		<fileset dir="lib" includes="**/*.jar"/>
+	</delete>
+    </target>
+
+    <target name="clean2" depends="clean" description="clean ivy cache">
+        <ivy:cleancache />
+    </target>
+
+</project>

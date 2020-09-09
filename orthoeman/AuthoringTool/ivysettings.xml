@@ -1,0 +1,16 @@
+<ivysettings>
+	<settings defaultResolver="central"/>
+	<resolvers>
+		<ibiblio name="murray-rust" m2compatible="true" root="https://maven.ch.cam.ac.uk/content/groups/ucc/"/>
+		<ibiblio name="central" m2compatible="true"/>
+		<ibiblio name="jarvana" m2compatible="true" root="http://www.jarvana.com/jarvana/browse"/>
+		<ibiblio name="geomajas" m2compatible="true" root="http://maven.geomajas.org/"/>
+	</resolvers>
+	<modules>
+		<module organisation="com.google.jsinterop" name="base" resolver="central"/>
+		<module organisation="com.google.elemental2" name="elemental2-core" resolver="central"/>
+		<module organisation="com.google.elemental2" name="elemental2-promise" resolver="central"/>
+		<module organisation="com.google.elemental2" name="elemental2-dom" resolver="central"/>
+		<module organisation="com.google.jsinterop" name="jsinterop-annotations" resolver="central"/>
+	</modules>
+</ivysettings>

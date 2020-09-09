@@ -1,0 +1,31 @@
+<ivy-module version="2.0">
+	<info organisation="com.biovista" module="biovista-lib"/>
+	<configurations>
+		<conf name="gwt-jsinterop-libraries-src"  description="gwt-jsinterop-libraries source jars"/>
+		<conf name="gwt-jsinterop-libraries-bin" description="gwt-jsinterop-libraries binary jars"/>
+	</configurations>
+	<dependencies>
+		<dependency org="com.google.jsinterop" name="base" rev="latest.integration" conf="gwt-jsinterop-libraries-bin->default">
+		</dependency>
+		<dependency org="com.google.jsinterop" name="base" rev="latest.integration" conf="gwt-jsinterop-libraries-src->sources">
+		</dependency>
+		<dependency org="com.google.jsinterop" name="jsinterop-annotations" rev="latest.integration" conf="gwt-jsinterop-libraries-bin->default">
+		</dependency>
+		<dependency org="com.google.jsinterop" name="jsinterop-annotations" rev="latest.integration" conf="gwt-jsinterop-libraries-src->sources">
+		</dependency>
+		<dependency org="com.google.elemental2" name="elemental2-core" rev="latest.integration" conf="gwt-jsinterop-libraries-bin->default">
+		</dependency>
+		<dependency org="com.google.elemental2" name="elemental2-core" rev="latest.integration" conf="gwt-jsinterop-libraries-src->sources">
+		</dependency>
+		<dependency org="com.google.elemental2" name="elemental2-dom" rev="latest.integration" conf="gwt-jsinterop-libraries-bin->default">
+		</dependency>
+		<dependency org="com.google.elemental2" name="elemental2-dom" rev="latest.integration" conf="gwt-jsinterop-libraries-src->sources">
+		</dependency>
+		<dependency org="com.google.elemental2" name="elemental2-promise" rev="latest.integration" conf="gwt-jsinterop-libraries-bin->default">
+		</dependency>
+		<dependency org="com.google.elemental2" name="elemental2-promise" rev="latest.integration" conf="gwt-jsinterop-libraries-src->sources">
+		</dependency>
+		<override module="txw2" rev="2.4.0-b180830.0438"/>
+		<override module="commonj.sdo" rev="2.1.1"/>
+	</dependencies>
+</ivy-module>

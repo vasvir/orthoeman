@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<property name="biovista-lib.location" value="../biovista-lib" />
+	<property name="basename" value="${ant.project.name}" />
+	<property name="jarfile" value="${basename}.jar" />
+	<property name="onejarfile" value="${basename}-one-jar.jar" />
+	<property name="jnlp" value="${basename}.jnlp" />
+	<property name="www" location="www" />
+	<property name="postd_codebase" value="https://beasite.biovista.com/${basename}-devel/" />
+	<property name="postd_location" value="root@haros:/var/www-ssl/${basename}-devel" />
+	<property name="postd_port" value="22" />
+	<property name="postr_codebase" value="https://www.biovista.com/wp-content/webstart/${basename_small}/" />
+	<property name="postr_location" value="vasvir@biovista.com:/home/vasvir/public_html/wp-content/webstart/${basename_small}/" />
+	<property name="postr_port" value="7822" />
+	<!--<property name="postr_location" value="root@biovista.com:/var/www/wp-content/webstart/${basename_small}/" />
+	<property name="postr_port" value="7220" />-->
+	<property name="alias" value="java_code_sign" />
+	<property name="storepass" value="Biostar123" />
+	<property name="doc" value="doc" />
+	<property name="manager_url" value="http://localhost/manager/text" />
+	<property name="manager_username" value="root" />
+	<property name="manager_password" value="xxdf4%%yr5" />
+	<property name="webapp" value="${basename}" />
+	<property name="war" location="${webapp}.war" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="source" value="1.8" />
+	<property name="target" value="1.8" />
+	<property name="keyfile" value="${user.home}/.ssh/id_rsa" />
+	<property name="sshpass" value="" />
+	<property name="doxytitle" value="${basename}" />
+	<property name="doxylatex" value="no" />
+	<property name="doxylatexheader" value="docsrc/doxygen/header.tex" />
+	<property name="doxyimagepath" value="docsrc/doxygen/images" />
+	<property name="version" value="${DSTAMP}" />
+
+	<target name="init">
+		<mkdir dir="${build_dir}" />
+		<copy includeemptydirs="false" todir="${build_dir}">
+			<fileset dir="${src_dir}" excludes="${excluded}">
+				<exclude name="**/*.java" />
+				<exclude name="doxygen/" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build_dir}" />
+	</target>
+
+	<target name="build" depends="build-subprojects,build-project" />
+
+	<target name="take_timestamp">
+		<tstamp/>
+	</target>
+
+	<macrodef name="find">
+		<attribute name="dir" />
+		<attribute name="name" />
+		<attribute name="property" />
+		<sequential>
+			<pathconvert property="@{property}.matches" pathsep="${line.separator}">
+				<fileset dir="@{dir}">
+					<include name="**/@{name}" />
+				</fileset>
+			</pathconvert>
+			<loadresource property="@{property}">
+				<string value="${@{property}.matches}" />
+				<filterchain>
+					<headfilter lines="1" />
+				</filterchain>
+			</loadresource>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="finddir">
+		<attribute name="dir" />
+		<attribute name="name" />
+		<attribute name="property" />
+		<sequential>
+			<pathconvert property="@{property}.matches" pathsep="${line.separator}">
+				<dirset dir="@{dir}">
+					<include name="**/@{name}" />
+				</dirset>
+			</pathconvert>
+			<loadresource property="@{property}">
+				<string value="${@{property}.matches}" />
+				<filterchain>
+					<headfilter lines="1" />
+				</filterchain>
+			</loadresource>
+		</sequential>
+	</macrodef>
+
+	<target name="j-timestamp" unless="gwt-entry-point" depends="take_timestamp">
+		<echo message="Creating TimeStamp ${DSTAMP}-${TSTAMP} on ${build_dir}/resources/version.txt" />
+		<mkdir dir="${build_dir}/resources" />
+		<echo message="${DSTAMP}-${TSTAMP}${line.separator}" file="${build_dir}/resources/version.txt" />
+	</target>
+
+	<target name="gwt-timestamp" if="gwt-entry-point" depends="take_timestamp">
+		<echo message="Creating TimeStamp ${DSTAMP}-${TSTAMP} on src/ and war/" />
+		<mkdir dir="war" />
+		<echo message="${DSTAMP}-${TSTAMP}${line.separator}" file="war/version.txt" />
+		<finddir dir="src" name="resources" property="resourcesdir" />
+		<echo message="${DSTAMP}-${TSTAMP}${line.separator}" file="${resourcesdir}/version.txt" />
+	</target>
+
+	<target name="timestamp" depends="j-timestamp,gwt-timestamp">
+	</target>
+
+	<target name="class_fileset">
+		<pathconvert targetos="unix" property="class_classpath" refid="${basename}.classpath" pathsep=" ">
+			<mapper>
+				<regexpmapper from="^/(.*)/build$$" to="\1/build/\*\*/\*" />
+			</mapper>
+		</pathconvert>
+		<condition property="class_fileset_dir" value=".">
+			<equals arg1="${class_classpath}" arg2="" />
+		</condition>
+		<property name="class_fileset_dir" value="/" />
+		<condition property="class_fileset_class_classpath" value="notexisting.file">
+			<equals arg1="${class_classpath}" arg2="" />
+		</condition>
+		<property name="class_fileset_class_classpath" value="${class_classpath}" />
+		<fileset id="class_fileset" dir="${class_fileset_dir}" includes="${class_fileset_class_classpath}">
+			<exclude name="**/test" />
+			<exclude name="**/test/*" />
+		</fileset>
+	</target>
+
+	<target name="jar" depends="build,timestamp,class_fileset">
+		<jar jarfile="${jarfile}" index="true">
+			<manifest>
+				<attribute name="Built-By" value="Biovista" />
+				<attribute name="Main-Class" value="${main}" />
+				<attribute name="Permissions" value="all-permissions" />
+			</manifest>
+			<mappedresources>
+				<restrict>
+					<fileset refid="class_fileset" />
+				</restrict>
+				<chainedmapper>
+					<regexpmapper from="^.*/${build_dir}/(.*)" to="\1" />
+				</chainedmapper>
+			</mappedresources>
+		</jar>
+	</target>
+
+	<target name="run" depends="one-jar" description="runs the currently built ONE-JAR file">
+		<java jar="${onejarfile}" failonerror="true" fork="yes">
+			<jvmarg line="-Xms512m -Xmx1024m ${jvmarg.args}" />
+			<arg line="${my.args}" />
+		</java>
+	</target>
+
+	<target name="icon" if="icon">
+		<copy file="${icon}" todir="${www}" />
+	</target>
+
+	<target name="www" depends="jar, icon">
+		<mkdir dir="${www}" />
+
+		<copy tofile="${www}/${jarfile}" file="${jarfile}" />
+		<copy todir="${www}" flatten="true">
+			<path refid="${basename}.classpath" />
+		</copy>
+		<delete dir="${www}/build" />
+		<delete>
+			<fileset dir="${www}" includes="junit*.jar" />
+		</delete>
+	</target>
+
+	<target name="sign" depends="www" description="signs the main executable jar file in the ${www} directory">
+		<signjar jar="${www}/${jarfile}" alias="${alias}" storepass="${storepass}" />
+	</target>
+
+	<target name="signall" depends="sign" description="signs all the required jars executable in the ${www} directory">
+		<signjar alias="${alias}" storepass="${storepass}">
+			<fileset dir="${www}" includes="*.jar" excludes="${jarfile}" />
+		</signjar>
+	</target>
+
+	<target name="select-devel">
+		<property name="post_codebase" value="${postd_codebase}" />
+		<property name="post_location" value="${postd_location}" />
+		<property name="post_port" value="${postd_port}" />
+	</target>
+
+	<target name="select-release">
+		<property name="post_codebase" value="${postr_codebase}" />
+		<property name="post_location" value="${postr_location}" />
+		<property name="post_port" value="${postr_port}" />
+	</target>
+
+	<target name="jnlp">
+		<pathconvert property="iconfile">
+			<path location="${icon}" />
+			<regexpmapper from=".*/(.*)" to="\1" />
+		</pathconvert>
+		<pathconvert targetos="unix" property="body_jnlp_resources" refid="${basename}.classpath" pathsep="&quot;/>${line.separator}&lt;jar href=&quot;">
+			<mapper>
+				<regexpmapper from="^.*/(((?!junit).)*\.jar)$" to="\1" />
+			</mapper>
+		</pathconvert>
+		<property name="jnlp_resources" value="&lt;jar href=&quot;${jarfile}&quot;/>${line.separator}&lt;jar href=&quot;${body_jnlp_resources}&quot;/>" />
+
+		<tempfile property="temp.file" />
+		<echo message="${my.args}" file="${temp.file}" />
+		<loadfile srcFile="${temp.file}" property="body_jnlp_arguments">
+			<filterchain>
+				<replaceregex pattern="(\s+)" replace="&lt;/argument>${line.separator}&lt;argument>" flags="g" />
+			</filterchain>
+		</loadfile>
+		<property name="jnlp_arguments" value="&lt;argument>${body_jnlp_arguments}&lt;/argument>" />
+		<delete file="${temp.file}" quiet="true" />
+
+		<delete file="${www}/${jnlp}" quiet="true" />
+		<copy file="${biovista-lib.location}/config/template.jnlp" tofile="${www}/${jnlp}">
+			<filterchain>
+				<replacetokens>
+					<token key="CODEBASE" value="${post_codebase}" />
+					<token key="TITLE" value="${basename}" />
+					<token key="DESCRIPTION" value="${description}" />
+					<token key="ICON" value="${iconfile}" />
+					<token key="RESOURCES" value="${jnlp_resources}" />
+					<token key="ARGUMENTS" value="${jnlp_arguments}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+
+	<target name="post" depends="jnlp, sign">
+		<echo message="Make sure you actually specify -Dsshpass=passphrase in the ant command line" />
+		<scp file="${www}/${jarfile}" port="${post_port}" todir="${post_location}" keyfile="${keyfile}" passphrase="${sshpass}" trust="true" />
+	</target>
+
+	<target name="postd" depends="select-devel, post" description="posts the main executable jar file in the apache directory of the development machine">
+	</target>
+
+	<target name="postr" depends="select-release, post" description="posts the main executable jar file in the apache directory of the production machine">
+	</target>
+
+	<target name="postall" depends="jnlp, signall">
+		<echo message="Make sure you actually specify -Dsshpass=passphrase in the ant command line" />
+		<scp port="${post_port}" todir="${post_location}" keyfile="${keyfile}" passphrase="${sshpass}" trust="true">
+			<fileset dir="${www}" includes="*" />
+		</scp>
+	</target>
+
+	<target name="postalld" depends="select-devel, postall" description="posts all the jars file in the apache directory of the development machine">
+	</target>
+
+	<target name="postallr" depends="select-release, postall" description="posts all the jars file in the apache directory of the production machine">
+	</target>
+
+	<target name="clean2" depends="gwt-clean,cleanall,doc-clean" description="cleans everything under the sun">
+		<delete dir="${www}" />
+		<delete file="${war}" />
+		<delete file="${jarfile}" />
+		<delete file="${onejarfile}" />
+	</target>
+
+	<target name="javadoc" description="builds the javadoc documentation">
+		<javadoc packagenames="com.biovista.*" sourcepath="${src_dir}" destdir="${doc}/javadoc" author="true" version="true" use="true" windowtitle="Biovista Documentation">
+			<bottom>
+				Copyright 2002-2015 Biovista Inc. All Rights Reserved
+			</bottom>
+		</javadoc>
+	</target>
+
+	<target name="doc" depends="javadoc, doxygen" description="builds all kind of documentation">
+	</target>
+
+	<target name="doc-clean">
+		<delete dir="${doc}" />
+	</target>
+
+	<!-- Arguments to gwtc and devmode targets -->
+	<!-- OBFUSCATED Javascript and INFO log level -->
+	<property name="gwt.args" value="-style OBF -logLevel INFO" />
+
+	<target name="gwtc" depends="build,timestamp" if="gwt-entry-point" unless="gwtc.skip" description="GWT compile to JavaScript (production mode)">
+
+		<java classname="com.google.gwt.dev.Compiler" failonerror="true" fork="true">
+
+			<classpath>
+				<path refid="${basename}.srcpath" />
+				<path refid="${basename}.classpath" />
+				<path refid="gwt.userclasspath" />
+			</classpath>
+
+			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+			<jvmarg line="-Xmx1024M" />
+			<arg line="-war" />
+			<arg value="war" />
+
+			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<arg line="${gwt.args}" />
+			<arg line="${gwt-entry-point}" />
+		</java>
+	</target>
+
+	<target name="gwt-clean" if="gwt-entry-point" description="GWT clean JavaScript (production mode)">
+		<delete dir="gwt-unitCache" />
+		<delete dir="war/${gwt-entry-point}" />
+		<delete dir="war/WEB-INF/deploy" />
+	</target>
+
+	<target name="tomwar.check">
+		<condition property="tomwar.run">
+			<and>
+				<not>
+					<isset property="war.skip" />
+				</not>
+				<or>
+					<not>
+						<isset property="gwt-entry-point" />
+					</not>
+					<and>
+						<isset property="gwt-entry-point" />
+						<isset property="oldgwt" />
+					</and>
+				</or>
+			</and>
+		</condition>
+	</target>
+
+	<target name="tomwar" depends="tomwar.check,build,gwtc,timestamp,class_fileset" description="builds the tomcat war file" if="tomwar.run">
+		<war destfile="${war}" webxml="war/WEB-INF/web.xml">
+			<webinf dir="war/WEB-INF" />
+			<metainf dir="war/META-INF" />
+			<mappedresources>
+				<restrict>
+					<fileset refid="class_fileset" />
+				</restrict>
+				<chainedmapper>
+					<regexpmapper from="^.*/build/(.*)" to="WEB-INF/classes/\1" />
+				</chainedmapper>
+			</mappedresources>
+			<mappedresources>
+				<restrict>
+					<path refid="${basename}.classpath" />
+					<type type="file" />
+					<not>
+						<name name="geronimo-servlet*.jar" />
+					</not>
+					<not>
+						<name name="*servlet-api*.jar" />
+					</not>
+					<not>
+						<name name="jsp-api*.jar" />
+					</not>
+					<not>
+						<name name="gwt-dev*.jar" />
+					</not>
+					<not>
+						<name name="gwt-user*.jar" />
+					</not>
+					<not>
+						<name name="validation-api-*.jar" />
+					</not>
+					<not>
+						<name name="junit*.jar" />
+					</not>
+					<!-- we remove slf4j-jcl because in 
+					server we have log4j bindings -->
+					<not>
+						<name name="slf4j-jcl*.jar" />
+					</not>
+				</restrict>
+				<chainedmapper>
+					<flattenmapper />
+					<globmapper from="*" to="WEB-INF/lib/*" />
+				</chainedmapper>
+			</mappedresources>
+			<fileset dir="war" excludes="META-INF/ WEB-INF/" />
+			<classes dir="${src_dir}">
+				<include name="log4j.properties" />
+			</classes>
+		</war>
+	</target>
+
+	<target name="gwtwar.check">
+		<condition property="gwtwar.run">
+			<and>
+				<not>
+					<isset property="war.skip" />
+				</not>
+				<isset property="gwt-entry-point" />
+			</and>
+		</condition>
+	</target>
+
+	<target name="gwtwar" depends="gwtwar.check,gwtc" description="builds the gwt war file" if="gwtwar.run">
+		<war destfile="${war}" webxml="war/WEB-INF/web.xml">
+			<webinf dir="war/WEB-INF" excludes="classes/**/ lib/**/" />
+			<metainf dir="war/META-INF" />
+			<fileset dir="war" excludes="META-INF/ WEB-INF/web.xml WEB-INF/classes/**/ WEB-INF/lib/**/" />
+		</war>
+	</target>
+
+	<target name="war" depends="tomwar,gwtwar" description="builds the war file">
+	</target>
+
+	<path id="tomcat.classpath">
+		<fileset dir="/usr/share/java">
+			<include name="catalina-ant.jar" />
+			<include name="tomcat-coyote.jar" />
+			<include name="tomcat-util.jar" />
+			<include name="tomcat-juli.jar" />
+		</fileset>
+	</path>
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+
+	<taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask">
+		<classpath refid="tomcat.classpath" />
+	</taskdef>
+
+	<target name="deploy" depends="war">
+		<deploy url="${manager_url}" username="${manager_username}" password="${manager_password}" path="/${webapp}" update="true" localWar="${war}" />
+	</target>
+
+	<target name="undeploy">
+		<undeploy url="${manager_url}" username="${manager_username}" password="${manager_password}" path="/${webapp}" />
+	</target>
+
+	<property environment="env" />
+
+	<condition property="port" value="8081">
+		<equals arg1="${env.USER}" arg2="bill" />
+	</condition>
+	<condition property="port" value="8082">
+		<equals arg1="${env.USER}" arg2="anuj" />
+	</condition>
+	<condition property="port" value="8083">
+		<equals arg1="${env.USER}" arg2="miltos" />
+	</condition>
+
+	<target name="pdeploy" depends="war">
+		<echo message="Deploying in port ${port}" />
+		<deploy url="http://localhost:${port}/manager/text" username="${manager_username}" password="${manager_password}" path="/${webapp}" update="true" localWar="${war}" />
+	</target>
+
+	<target name="pundeploy">
+		<echo message="Undeploying in port ${port}" />
+		<undeploy url="http://localhost:${port}/manager/text" username="${manager_username}" password="${manager_password}" path="/${webapp}" />
+	</target>
+
+	<target name="preload" depends="class_fileset" description="private reload: reload to private tomcat">
+		<echo message="Syncing classes..." />
+		<sync todir="${user.home}/tomcat/webapps/${webapp}/WEB-INF/classes" verbose="true">
+			<fileset dir="war/WEB-INF/classes" />
+			<mappedresources>
+				<restrict>
+					<fileset refid="class_fileset" />
+				</restrict>
+				<chainedmapper>
+					<regexpmapper from="^.*/build/(.*)" to="\1" />
+				</chainedmapper>
+			</mappedresources>
+		</sync>
+		<echo message="Reloading in port ${port}" />
+		<reload url="http://localhost:${port}/manager/text" username="${manager_username}" password="${manager_password}" path="/${webapp}" />
+	</target>
+
+	<target name="pbreload" depends="class_fileset" description="private reload: reload to public tomcat - sudo is required">
+		<echo message="Syncing classes..." />
+		<sync todir="/var/lib/tomcat8/webapps/${webapp}/WEB-INF/classes" verbose="true">
+			<fileset dir="build" />
+			<mappedresources>
+				<restrict>
+					<fileset refid="class_fileset" />
+				</restrict>
+				<chainedmapper>
+					<regexpmapper from="^.*/build/(.*)" to="\1" />
+				</chainedmapper>
+			</mappedresources>
+		</sync>
+		<echo message="Reloading" />
+		<reload url="http://localhost/manager/text" username="${manager_username}" password="${manager_password}" path="/${webapp}" />
+	</target>
+</project>

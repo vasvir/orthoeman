@@ -47,8 +47,7 @@ fi
 classpath="`get_build_dir .classpath`";
 libraries="`get_libraries .classpath`";
 for library in $libraries; do
-	libdir="$BASEDIR/../auto/$library/";
-	[ -d "$libdir" ] || libdir="$BASEDIR/../manual/$library/";
+	libdir="$BASEDIR/../lib/$library/";
 	classpath="$classpath:$libdir"'*';
 done;
 classpath="$classpath:$BASEDIR/../../../../gwt/gwt-2.9.0/"'*';

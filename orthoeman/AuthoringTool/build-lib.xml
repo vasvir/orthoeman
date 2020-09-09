@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<path id="gwt-jsinterop-libraries.userclasspath">
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/base-1.0.0.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-core-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-dom-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-indexeddb-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-media-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-promise-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-svg-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-webgl-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/elemental2-webstorage-2.27.jar"/>
+		<pathelement location="../AuthoringTool/lib/gwt-jsinterop-libraries/jsinterop-annotations-1.0.2.jar"/>
+	</path>
+</project>

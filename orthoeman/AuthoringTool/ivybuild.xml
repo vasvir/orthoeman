@@ -1,0 +1,6 @@
+<project name="ivybuild" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<target name="resolve">
+		<ivy:retrieve conf="gwt-jsinterop-libraries-src" pattern="lib/gwt-jsinterop-libraries/[artifact]-src-[revision].[ext]"/>
+		<ivy:retrieve conf="gwt-jsinterop-libraries-bin" pattern="lib/gwt-jsinterop-libraries/[artifact]-[revision].[ext]"/>
+	</target>
+</project>
