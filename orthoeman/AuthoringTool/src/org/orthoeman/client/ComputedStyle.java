@@ -1,34 +1,19 @@
 package org.orthoeman.client;
 
-import com.google.gwt.dom.client.Element;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.ViewCSS;
+import jsinterop.base.Js;
 
 public class ComputedStyle {
 	/**
-	 * 
-	 * https://developer.mozilla.org/En/DOM:window.getComputedStyle
-	 * http://help.dottoro.com/ljswreks.php
-	 * 
 	 * @param el   - dom element
 	 * @param prop - get the properties style, like width, fontFamily, fontSize,
-	 *             fontSizeAdjust. property must be camelCase
+	 *             fontSizeAdjust. property must be snake case: font-family
 	 * @return
 	 */
-	public static native String getStyleProperty(Element el, String prop) /*-{
-																			var computedStyle;
-																			if (document.defaultView && document.defaultView.getComputedStyle) { // standard (includes ie9)
-																			computedStyle = document.defaultView.getComputedStyle(el, null)[prop];
-																			
-																			} else if (el.currentStyle) { // IE older
-																			computedStyle = el.currentStyle[prop];
-																			
-																			} else { // inline style
-																			computedStyle = el.style[prop];
-																			}
-																			return computedStyle;
-																			}-*/;
-
-	public static native String getStyle(Element el, String prop) /*-{
-																	var style = el.style[prop];
-																	return style;
-																	}-*/;
+	public static String getStyleProperty(com.google.gwt.dom.client.Element el, String prop) {
+		final Element elem = Js.cast(el);
+		return Js.<ViewCSS>uncheckedCast(DomGlobal.window).getComputedStyle(elem, null).getPropertyValue(prop);
+	}
 }
