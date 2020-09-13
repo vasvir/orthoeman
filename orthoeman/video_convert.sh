@@ -1,10 +1,7 @@
 #!/bin/sh -e
 
-
-url="$1";
+ifile="$1";
 dst="$2";
-ifile=`tempfile -p mdl_ortho`;
-curl "$url" -o $ifile;
 
 case "$dst" in
   h264)
@@ -27,4 +24,4 @@ esac;
 
 ffmpeg -i $ifile $ffmpeg_args $ofile;
 cat $ofile;
-rm -rf $ifile $ofile;
+rm -rf $ofile;

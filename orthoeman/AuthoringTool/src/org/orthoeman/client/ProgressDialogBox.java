@@ -8,7 +8,6 @@ public class ProgressDialogBox extends DialogBox {
 		setText(text != null ? text : "Retrieving Data...");
 		setGlassEnabled(true);
 		setAnimationEnabled(true);
-		center();
 	}
 
 	public ProgressDialogBox() {
@@ -19,6 +18,10 @@ public class ProgressDialogBox extends DialogBox {
 	public void show() {
 		showWaitCursor();
 		super.show();
+	}
+	
+	public void showOnCenter() {
+		center();
 	}
 
 	@Override

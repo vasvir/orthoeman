@@ -95,6 +95,8 @@ public class AuthoringTool implements EntryPoint {
 	private static final double angleDistanceThreshold = 30;
 	private static final double eraseDistanceThreshold = 5;
 	private static final Set<String> allowedImageTypes = new HashSet<String>(Arrays.asList("jpeg", "jpg", "png"));
+	private static final Set<String> allowedVideoTypes = new HashSet<String>(
+			Arrays.asList("mp4", "avi", "wmv", "ogg", "webm", "mpeg", "mpg"));
 
 	private static final Log log = LogFactory.getLog(AuthoringTool.class);
 
@@ -521,7 +523,7 @@ public class AuthoringTool implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				final ProgressDialogBox pd = new ProgressDialogBox("Saving Lesson...");
-				pd.show();
+				pd.showOnCenter();
 				putResource(ResourceType.XML, Lesson.writeXML(lesson), lesson.getResourceIds(), pd);
 			}
 		});
@@ -737,49 +739,53 @@ public class AuthoringTool implements EntryPoint {
 
 		final RootPanel imageUploaderContainer = getImageUploaderContainer();
 		// Create a FormPanel and point it at a service.
-		final FormPanel form = new FormPanel();
-		form.setAction("../put_resource.php?id=" + cm_id + "&type=" + ResourceType.IMAGE);
+		final FormPanel imageForm = new FormPanel("_self");
+		imageForm.setAction("../put_resource.php?id=" + cm_id + "&type=" + ResourceType.IMAGE);
 
 		// Because we're going to add a FileUpload widget, we'll need to set the
 		// form to use the POST method, and multipart MIME encoding.
-		form.setEncoding(FormPanel.ENCODING_MULTIPART);
-		form.setMethod(FormPanel.METHOD_POST);
+		imageForm.setEncoding(FormPanel.ENCODING_MULTIPART);
+		imageForm.setMethod(FormPanel.METHOD_POST);
 
 		// Create a panel to hold all of the form widgets.
-		final HorizontalPanel panel = new HorizontalPanel();
-		form.setWidget(panel);
+		final HorizontalPanel imagePanel = new HorizontalPanel();
+		imageForm.setWidget(imagePanel);
 		// Create a FileUpload widget.
-		final FileUpload upload = new FileUpload();
+		final FileUpload imageUpload = new FileUpload();
 
-		upload.setName("uploadImage");
+		imageUpload.setName("uploadImage");
 		// upload.getElement().setAttribute("type", "image");
-		upload.getElement().setAttribute("accept", "image/png, image/jpeg");
-		upload.addChangeHandler(new ChangeHandler() {
+		imageUpload.getElement().setAttribute("accept", "image/png, image/jpeg");
+		imageUpload.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				form.submit();
+				imageForm.submit();
 			}
 		});
-		panel.add(upload);
+		imagePanel.add(imageUpload);
 
+		final ProgressDialogBox img_pd = new ProgressDialogBox();
 		// Add an event handler to the form.
-		form.addSubmitHandler(new FormPanel.SubmitHandler() {
+		imageForm.addSubmitHandler(new FormPanel.SubmitHandler() {
 			public void onSubmit(SubmitEvent event) {
-				log.debug("Trying to upload " + event.toDebugString());
-				log.debug(upload.getFilename());
-				final String ext = getFileExtension(upload.getFilename()).toLowerCase();
+				img_pd.showOnCenter();
+				img_pd.setText("Uploading Image " + imageUpload.getFilename());
+				log.debug("Trying to upload " + event.toDebugString() + " with name " + imageUpload.getFilename());
+				final String ext = getFileExtension(imageUpload.getFilename()).toLowerCase();
 				if (!allowedImageTypes.contains(ext)) {
 					Window.alert("Invalid file type (" + ext + "). Only png and jpeg images are allowed.");
-					final InputElement ie =  upload.getElement().cast();
+					final InputElement ie = imageUpload.getElement().cast();
 					ie.setValue(null);
 					event.cancel();
+					img_pd.hide();
 				}
 			}
 		});
-		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+		imageForm.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
+				log.debug("Image uploaded: " + event.getResults());
 				// image submitted now loaded it back
-				final String response_text = event.getResults(); 
+				final String response_text = event.getResults();
 				log.debug("response_text: " + response_text);
 
 				final Page.ImageItem image_item = getCurrentPage().getImageItem();
@@ -794,9 +800,10 @@ public class AuthoringTool implements EntryPoint {
 				image_item.setImage(new PreloadedImage(Lesson.getResourceURL(cm_id, id),
 						new ImageItemOnLoadPreloadedImageHandler(image_item, true)));
 				setButtonsEnabled(image_edit_buttons, true);
+				img_pd.hide();
 			}
 		});
-		imageUploaderContainer.add(form);
+		imageUploaderContainer.add(imageForm);
 
 		imageContainer = getImageContainer();
 		quizContainer = getQuizContainer();
@@ -1008,18 +1015,6 @@ public class AuthoringTool implements EntryPoint {
 				old_point.valid = true;
 			}
 		});
-
-//		final IUploader.OnFinishUploaderHandler onVideoFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
-//			@Override
-//			public void onFinish(IUploader uploader) {
-//				if (uploader.getStatus() != Status.SUCCESS)
-//					return;
-//				final ProgressDialogBox pd = new ProgressDialogBox("Saving & Converting video. Please wait...");
-//				pd.show();
-//				putResource(ResourceType.VIDEO, uploader.fileUrl() + "&session_id=" + Cookies.getCookie(php_session_id),
-//						getCurrentPage().getVideoItem(), pd);
-//			}
-//		};
 
 		zoom_121_b.addClickHandler(new ClickHandler() {
 			@Override
@@ -1297,14 +1292,65 @@ public class AuthoringTool implements EntryPoint {
 			}
 		});
 
-		// video
-//		final SingleUploader video_uploader = new SingleUploaderModal();
-//		video_uploader.add(new Hidden("APC_UPLOAD_PROGRESS", video_uploader.getInputName()), 0);
-//		video_uploader.setServletPath("../jsupload.php");
-//		video_uploader.setValidExtensions(".mp4", ".mpeg", ".mpg", ".avi", ".mov");
-//		video_uploader.setAutoSubmit(true);
-//		video_uploader.addOnFinishUploadHandler(onVideoFinishUploaderHandler);
-//		getVideoUploaderContainer().add(video_uploader);
+		// ---- video ---
+		final RootPanel videoUploaderContainer = getVideoUploaderContainer();
+		// Create a FormPanel and point it at a service.
+		final FormPanel videoForm = new FormPanel("_self");
+		videoForm.setAction("../put_resource.php?id=" + cm_id + "&type=" + ResourceType.VIDEO);
+
+		// Because we're going to add a FileUpload widget, we'll need to set the
+		// form to use the POST method, and multipart MIME encoding.
+		videoForm.setEncoding(FormPanel.ENCODING_MULTIPART);
+		videoForm.setMethod(FormPanel.METHOD_POST);
+
+		// Create a panel to hold all of the form widgets.
+		final HorizontalPanel videoPanel = new HorizontalPanel();
+		videoForm.setWidget(videoPanel);
+		// Create a FileUpload widget.
+		final FileUpload videoUpload = new FileUpload();
+
+		videoUpload.setName("uploadVideo");
+		videoUpload.getElement().setAttribute("accept",
+				"video/mp4, video/webm, video/avi, video/x-msvideo, video/quicktime, video/ogg");
+
+		videoUpload.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				videoForm.submit();
+			}
+		});
+		videoPanel.add(videoUpload);
+
+		// Add an event handler to the form.
+		final ProgressDialogBox video_pd = new ProgressDialogBox();
+		videoForm.addSubmitHandler(new FormPanel.SubmitHandler() {
+			public void onSubmit(SubmitEvent event) {
+				video_pd.showOnCenter();
+				video_pd.setText("Uploading Video " + videoUpload.getFilename());
+				log.debug("Trying to upload " + event.toDebugString() + " with filename " + videoUpload.getFilename());
+				final String ext = getFileExtension(videoUpload.getFilename()).toLowerCase();
+				if (!allowedVideoTypes.contains(ext)) {
+					Window.alert("Invalid file type (" + ext + "). Only valid video files are allowed.");
+					final InputElement ie = videoUpload.getElement().cast();
+					ie.setValue(null);
+					event.cancel();
+					video_pd.hide();
+				}
+			}
+		});
+		videoForm.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				log.debug("Video uploaded: " + event.getResults());
+				// video submitted now loaded it back
+				final String response_text = event.getResults();
+				log.debug("response_text: " + response_text);
+
+				final Page.VideoItem video_item = getCurrentPage().getVideoItem();
+				video_item.setSources(Page.VideoItem.parseSources(response_text), new SetupVideoPlayerHandler());
+				video_pd.hide();
+			}
+		});
+		videoUploaderContainer.add(videoForm);
 
 		// quiz
 		quiz_text_area.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -1441,7 +1487,7 @@ public class AuthoringTool implements EntryPoint {
 	private String getFileExtension(String filename) {
 		final int i = filename.lastIndexOf(".");
 		final int l = filename.length();
-		if (i == -1 || i >= l -1) {
+		if (i == -1 || i >= l - 1) {
 			return ""; // empty extension
 		}
 		return filename.substring(i + 1);
@@ -2031,18 +2077,6 @@ public class AuthoringTool implements EntryPoint {
 					}
 					final String response_text = response.getText();
 					log.debug("Successfull request: " + request + " response: " + response_text);
-					if (resource_type == ResourceType.IMAGE) {
-						final Page.ImageItem image_item = (Page.ImageItem) extra_info;
-						final String id = Page.ImageItem.getImageIdString(response_text);
-						image_item.setId(id);
-						image_item.setImage(new PreloadedImage(Lesson.getResourceURL(cm_id, id),
-								new ImageItemOnLoadPreloadedImageHandler(image_item, true)));
-						setButtonsEnabled(image_edit_buttons, true);
-					} else if (resource_type == ResourceType.VIDEO) {
-						final Page.VideoItem video_item = (Page.VideoItem) extra_info;
-						video_item.setSources(Page.VideoItem.parseSources(response_text),
-								new SetupVideoPlayerHandler());
-					}
 					pd.hide();
 				}
 

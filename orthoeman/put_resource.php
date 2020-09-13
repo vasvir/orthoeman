@@ -117,15 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         echo "$resource_rec->id:$resource_rec->content_type";
     } else if ($type == $TYPE_VIDEO) {
-        $url = preg_replace('/^\.\./', '', urldecode(file_get_contents('php://input')));
-        //echo "url $url<BR>";
-        $current_url = get_current_url();
-        //echo "current_url $current_url<BR>";
-        $video_url = preg_replace('/\/put_resource.php.*$/', '', $current_url) . $url;
-        //echo "img_url $img_url<BR>";
-        $result = get_url_data($video_url);
-        $video = $result->data;
-        //echo "img XXX $img XXX<BR>";
+        $video_tmp_file = $_FILES['uploadVideo']['tmp_name'];
+        $content_type = $_FILES['uploadVideo']['type'];
+        $video = file_get_contents($video_tmp_file);
+        error_log("video XXX " . $content_type . ":" . substr($video, 0, 3) . " XXX");
         $md5 = md5($video);
         $resource_rec = $DB->get_record($RESOURCE_TABLE, array('orthoeman_id' => $orthoeman->id, 'type' => $TYPE_VIDEO_VALUE, 'md5' => $md5));
         $id_map = array();
@@ -135,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $resource_rec->type = $TYPE_VIDEO_VALUE;
             $resource_rec->data = $video;
             $resource_rec->md5 = $md5;
-            $resource_rec->content_type = $result->content_type;
+            $resource_rec->content_type = $content_type;
             $resource_rec->codecs = "";
             $resource_rec->parent_id = 0;
             $resource_id = $DB->insert_record($RESOURCE_TABLE, $resource_rec);
@@ -158,8 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $resource_rec = new stdClass();
                 $resource_rec->orthoeman_id = $orthoeman->id;
                 $resource_rec->type = $TYPE_VIDEO_VALUE;
-                $ffmpeg = preg_replace('/&/', '\\&', "./video_convert.sh $video_url $format");
-                $resource_rec->data = `$ffmpeg`;
+                $ffmpeg = preg_replace('/&/', '\\&', "./video_convert.sh $video_tmp_file $format");
+                $resource_rec->data = `$ffmpeg 2>> /tmp/video_convert.log`;
                 $resource_rec->md5 = md5($resource_rec->data);
                 $resource_rec->content_type = $format_to_content_type[$format];
                 $resource_rec->codecs = $format_to_codecs[$format];
