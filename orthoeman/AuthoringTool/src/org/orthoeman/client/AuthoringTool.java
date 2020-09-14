@@ -2105,7 +2105,7 @@ public class AuthoringTool implements EntryPoint {
 			return;
 		final RootPanel videoPlayerContainer = getVideoPlayerContainer();
 		final StringBuilder sb = new StringBuilder();
-		sb.append("<video class=\"fill_x\" controls preload=\"none\">"); // poster="image_url
+		sb.append("<video class=\"fill_x\" controls preload=\"metadata\">"); // poster="image_url
 		for (final Page.VideoItem.Source source : video_item.getSources()) {
 			final String url = Lesson.getResourceURL(cm_id, source.id);
 			sb.append("<source src='" + url + "' type='" + source.content_type + "'/>");
