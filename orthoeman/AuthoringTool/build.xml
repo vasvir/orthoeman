@@ -3,70 +3,70 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="AuthoringTool">
-	<property environment="env" />
-	<property name="ECLIPSE_HOME" value="../../../../eclipse/eclipse-jee-2020-06" />
-	<property name="debuglevel" value="source,lines,vars" />
-	<property name="target" value="11" />
-	<property name="source" value="11" />
-	<import file="dist.xml" />
-	<path id="Authoring Tool Libraries.userclasspath">
-		<pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/commons-fileupload-1.2.2.jar" />
-		<pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/commons-io-2.2.jar" />
-		<pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/gwt-log-3.1.8.jar" />
-		<pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/gwt-servlet.jar" />
-		<pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/gwtupload-0.6.4.jar" />
-		<pathelement location="../../../../../../AuthoringTool/war/WEB-INF/lib/log4j-1.2.16.jar" />
-	</path>
-	<path id="GWT SDK [gwt-2.9.0 - 2.9.0].libraryclasspath">
-		<pathelement location="../../../gwt/gwt-2.9.0/gwt-user.jar" />
-		<pathelement location="../../../gwt/gwt-2.9.0/gwt-codeserver.jar" />
-		<pathelement location="../../../gwt/gwt-2.9.0/gwt-dev.jar" />
-		<pathelement location="../../../gwt/gwt-2.9.0/validation-api-1.0.0.GA.jar" />
-		<pathelement location="../../../gwt/gwt-2.9.0/validation-api-1.0.0.GA-sources.jar" />
-	</path>
-	<path id="AuthoringTool.classpath">
-		<pathelement location="war/WEB-INF/classes" />
-		<path refid="Authoring Tool Libraries.userclasspath" />
-		<path refid="GWT SDK [gwt-2.9.0 - 2.9.0].libraryclasspath" />
-	</path>
-	<target name="init">
-		<mkdir dir="war/WEB-INF/classes" />
-		<copy includeemptydirs="false" todir="war/WEB-INF/classes">
-			<fileset dir="src">
-				<exclude name="**/*.launch" />
-				<exclude name="**/*.java" />
-				<exclude name="com/google/gwt/dev/shell/jetty/JettyLauncher.java" />
-			</fileset>
-		</copy>
-	</target>
-	<target name="clean">
-		<delete dir="war/WEB-INF/classes" />
-	</target>
-	<target depends="clean" name="cleanall" />
-	<target depends="build-subprojects,build-project" name="build" />
-	<target name="build-subprojects" />
-	<target depends="init" name="build-project">
-		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" debuglevel="${debuglevel}" destdir="war/WEB-INF/classes" includeantruntime="false" source="${source}" target="${target}">
-			<src path="src" />
-			<exclude name="com/google/gwt/dev/shell/jetty/JettyLauncher.java" />
-			<classpath refid="AuthoringTool.classpath" />
-		</javac>
-	</target>
-	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects" />
-	<target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
-		<copy todir="${ant.library.dir}">
-			<fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar" />
-		</copy>
-		<unzip dest="${ant.library.dir}">
-			<patternset includes="jdtCompilerAdapter.jar" />
-			<fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar" />
-		</unzip>
-	</target>
-	<target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
-		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
-		<antcall target="build" />
-	</target>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="AuthoringTool">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../eclipse/eclipse-jee-2020-06"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="11"/>
+    <property name="source" value="11"/>
+    <import file="dist.xml"/>
+    <path id="Authoring Tool Libraries.userclasspath"/>
+    <path id="GWT SDK [gwt-2.9.0 - 2.9.0].libraryclasspath">
+        <pathelement location="../../../gwt/gwt-2.9.0/gwt-user.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/gwt-codeserver.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/gwt-dev.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/validation-api-1.0.0.GA.jar"/>
+        <pathelement location="../../../gwt/gwt-2.9.0/validation-api-1.0.0.GA-sources.jar"/>
+    </path>
+    <path id="gwt-jsinterop-libraries.userclasspath">
+        <pathelement location="lib/gwt-jsinterop-libraries/base-1.0.0.jar"/>
+        <pathelement location="lib/gwt-jsinterop-libraries/elemental2-core-1.1.0.jar"/>
+        <pathelement location="lib/gwt-jsinterop-libraries/elemental2-dom-1.1.0.jar"/>
+        <pathelement location="lib/gwt-jsinterop-libraries/elemental2-promise-1.1.0.jar"/>
+        <pathelement location="lib/gwt-jsinterop-libraries/jsinterop-annotations-2.0.0.jar"/>
+    </path>
+    <path id="AuthoringTool.classpath">
+        <pathelement location="war/WEB-INF/classes"/>
+        <path refid="Authoring Tool Libraries.userclasspath"/>
+        <path refid="GWT SDK [gwt-2.9.0 - 2.9.0].libraryclasspath"/>
+        <path refid="gwt-jsinterop-libraries.userclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="war/WEB-INF/classes"/>
+        <copy includeemptydirs="false" todir="war/WEB-INF/classes">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+                <exclude name="com/google/gwt/dev/shell/jetty/JettyLauncher.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="war/WEB-INF/classes"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="war/WEB-INF/classes" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <exclude name="com/google/gwt/dev/shell/jetty/JettyLauncher.java"/>
+            <classpath refid="AuthoringTool.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
 </project>

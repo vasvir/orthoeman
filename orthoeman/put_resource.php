@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+#Is any of these two really required to fire up SubmitCompletedEvent. WTF?
+# old form: deprecated
+#header("X-Frame-Options: SAMEORIGIN");
+# new form: gives warning
+#header("Content-Security-Policy: frame-ancestors 'self' https://moodle.e-trauma.org");
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 

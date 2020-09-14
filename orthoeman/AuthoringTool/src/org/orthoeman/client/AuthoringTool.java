@@ -739,7 +739,7 @@ public class AuthoringTool implements EntryPoint {
 
 		final RootPanel imageUploaderContainer = getImageUploaderContainer();
 		// Create a FormPanel and point it at a service.
-		final FormPanel imageForm = new FormPanel("_self");
+		final FormPanel imageForm = new FormPanel();
 		imageForm.setAction("../put_resource.php?id=" + cm_id + "&type=" + ResourceType.IMAGE);
 
 		// Because we're going to add a FileUpload widget, we'll need to set the
@@ -769,7 +769,7 @@ public class AuthoringTool implements EntryPoint {
 		imageForm.addSubmitHandler(new FormPanel.SubmitHandler() {
 			public void onSubmit(SubmitEvent event) {
 				img_pd.showOnCenter();
-				img_pd.setText("Uploading Image " + imageUpload.getFilename());
+				img_pd.setText("Uploading Image " + imageUpload.getFilename().replaceAll("C:\\\\fakepath\\\\", ""));
 				log.debug("Trying to upload " + event.toDebugString() + " with name " + imageUpload.getFilename());
 				final String ext = getFileExtension(imageUpload.getFilename()).toLowerCase();
 				if (!allowedImageTypes.contains(ext)) {
@@ -783,7 +783,6 @@ public class AuthoringTool implements EntryPoint {
 		});
 		imageForm.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				log.debug("Image uploaded: " + event.getResults());
 				// image submitted now loaded it back
 				final String response_text = event.getResults();
 				log.debug("response_text: " + response_text);
@@ -1295,7 +1294,7 @@ public class AuthoringTool implements EntryPoint {
 		// ---- video ---
 		final RootPanel videoUploaderContainer = getVideoUploaderContainer();
 		// Create a FormPanel and point it at a service.
-		final FormPanel videoForm = new FormPanel("_self");
+		final FormPanel videoForm = new FormPanel();
 		videoForm.setAction("../put_resource.php?id=" + cm_id + "&type=" + ResourceType.VIDEO);
 
 		// Because we're going to add a FileUpload widget, we'll need to set the
@@ -1326,7 +1325,7 @@ public class AuthoringTool implements EntryPoint {
 		videoForm.addSubmitHandler(new FormPanel.SubmitHandler() {
 			public void onSubmit(SubmitEvent event) {
 				video_pd.showOnCenter();
-				video_pd.setText("Uploading Video " + videoUpload.getFilename());
+				video_pd.setText("Uploading Video " + videoUpload.getFilename().replaceAll("C:\\\\fakepath\\\\", ""));
 				log.debug("Trying to upload " + event.toDebugString() + " with filename " + videoUpload.getFilename());
 				final String ext = getFileExtension(videoUpload.getFilename()).toLowerCase();
 				if (!allowedVideoTypes.contains(ext)) {
@@ -1340,7 +1339,6 @@ public class AuthoringTool implements EntryPoint {
 		});
 		videoForm.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				log.debug("Video uploaded: " + event.getResults());
 				// video submitted now loaded it back
 				final String response_text = event.getResults();
 				log.debug("response_text: " + response_text);
