@@ -85,6 +85,8 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import elemental2.dom.DomGlobal;
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -661,6 +663,7 @@ public class AuthoringTool implements EntryPoint {
 		positive_grade_tb = getTextBox("positiveGradeTextBox");
 		negative_grade_tb = getTextBox("negativeGradeTextBox");
 		final Button add_answer_b = getButton("quizAddAnswerButton");
+		final Button fullscreen_b = getButton("fullScreenButton");
 		final Button zoom_121_b = getButton("zoomOne2OneButton");
 		final Button zoom_in_b = getButton("zoomInButton");
 		final Button zoom_out_b = getButton("zoomOutButton");
@@ -1012,6 +1015,13 @@ public class AuthoringTool implements EntryPoint {
 				old_point.x = x;
 				old_point.y = y;
 				old_point.valid = true;
+			}
+		});
+
+		fullscreen_b.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				GUI.toggleFullScreen(DomGlobal.document.body);
 			}
 		});
 
