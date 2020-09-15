@@ -355,8 +355,8 @@ public class AuthoringTool implements EntryPoint {
 		old_point.valid = false;
 
 		final Element cnt_e = canvasContainer.getElement();
-		final int border_horizontal = getPixels(ComputedStyle.getStyleProperty(cnt_e, "border-left-width"))
-				+ getPixels(ComputedStyle.getStyleProperty(cnt_e, "border-right-width"));
+		final int border_horizontal = getPixels(GUI.getStyleProperty(cnt_e, "border-left-width"))
+				+ getPixels(GUI.getStyleProperty(cnt_e, "border-right-width"));
 		log.trace("Borders horizontal = " + border_horizontal);
 		canvasContainer.setSize("auto", (height_left) + "px");
 		log.trace("cnt_e.getOffsetWidth() = " + cnt_e.getOffsetWidth() + " getWidth(canvasContainer) = "
@@ -2215,9 +2215,9 @@ public class AuthoringTool implements EntryPoint {
 
 	private static int getHeight(Element el) {
 		log.trace("el.getOffsetHeight() = " + el.getOffsetHeight() + " marginTop: "
-				+ ComputedStyle.getStyleProperty(el, "margin-top"));
-		return el.getOffsetHeight() + getPixels(ComputedStyle.getStyleProperty(el, "margin-top"))
-				+ getPixels(ComputedStyle.getStyleProperty(el, "margin-bottom"));
+				+ GUI.getStyleProperty(el, "margin-top"));
+		return el.getOffsetHeight() + getPixels(GUI.getStyleProperty(el, "margin-top"))
+				+ getPixels(GUI.getStyleProperty(el, "margin-bottom"));
 	}
 
 	private static int getHeight(RootPanel rp) {
@@ -2225,12 +2225,12 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static int getDecorationHeight(Element el) {
-		return getPixels(ComputedStyle.getStyleProperty(el, "margin-top"))
-				+ getPixels(ComputedStyle.getStyleProperty(el, "margin-bottom"))
-				+ getPixels(ComputedStyle.getStyleProperty(el, "padding-top"))
-				+ getPixels(ComputedStyle.getStyleProperty(el, "padding-bottom"))
-				+ getPixels(ComputedStyle.getStyleProperty(el, "border-top-width"))
-				+ getPixels(ComputedStyle.getStyleProperty(el, "border-bottom-width"));
+		return getPixels(GUI.getStyleProperty(el, "margin-top"))
+				+ getPixels(GUI.getStyleProperty(el, "margin-bottom"))
+				+ getPixels(GUI.getStyleProperty(el, "padding-top"))
+				+ getPixels(GUI.getStyleProperty(el, "padding-bottom"))
+				+ getPixels(GUI.getStyleProperty(el, "border-top-width"))
+				+ getPixels(GUI.getStyleProperty(el, "border-bottom-width"));
 	}
 
 	private static int getDecorationHeight(RootPanel rp) {
@@ -2238,8 +2238,8 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static int getWidth(Element el) {
-		return el.getOffsetWidth() + getPixels(ComputedStyle.getStyleProperty(el, "margin-left"))
-				+ getPixels(ComputedStyle.getStyleProperty(el, "margin-right"));
+		return el.getOffsetWidth() + getPixels(GUI.getStyleProperty(el, "margin-left"))
+				+ getPixels(GUI.getStyleProperty(el, "margin-right"));
 	}
 
 	private static int getWidth(RootPanel rp) {

@@ -5,7 +5,7 @@ import elemental2.dom.Element;
 import elemental2.dom.ViewCSS;
 import jsinterop.base.Js;
 
-public class ComputedStyle {
+public class GUI {
 	/**
 	 * @param el   - dom element
 	 * @param prop - get the properties style, like width, fontFamily, fontSize,
