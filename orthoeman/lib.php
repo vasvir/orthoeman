@@ -478,6 +478,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                 var orthoeman_frame_id = "'.$frame_id.'";
                 var orthoeman_toggle_link = '.($toggle_link ? "true" : "false").';
                 var orthoeman_frame = "<iframe id=\"' . $frame_id . '\" style=\"width:100%; height: 600px;\" src=\"' . $url . '\" frameborder=\"0\"></iframe>";
+                var force_resize = false;
 
                 function init_orthoeman() {
                         if (orthoeman_initialized) {
@@ -507,7 +508,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                          7) When the available screen size is smaller than the absolute minimal required resize cannot be perfect
                         */
                             var viewportHeight = window.innerHeight;
-                            if (lastHeight !== viewportHeight) {
+                            if (lastHeight !== viewportHeight || force_resize) {
                                 var bodyRect = document.body.getBoundingClientRect();
                                 var frameRect = frame.getBoundingClientRect();
                                 var frameOffset = frameRect.top - bodyRect.top;
@@ -518,7 +519,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                                 + parseFloat(html_style.paddingTop) //+ parseFloat(html_style.paddingBottom)
                                 + parseFloat(html_style.borderTopWidth) //+ parseFloat(html_style.borderBottomWidth)
                                 + parseFloat(html_style.marginTop); // + parseFloat(html_style.marginBottom);
-                                console.log("page: resizeHanler: ", viewportHeight, lastHeight, frameOffset, others);
+                                console.log("page: resizeHandler: ", viewportHeight, lastHeight, frameOffset, others);
                                 frame.style.height = viewportHeight - frameOffset - others + "px";
                                 lastHeight = viewportHeight;
                             }
@@ -542,6 +543,12 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                         if (orthoeman_toggle_link) {
                             var toggle_link = document.getElementById("'.$toggle_link_id.'");
                             toggle_link.innerHTML = "'.$hide_text.'";
+                        }
+                        if (onresize) {
+                            console.log("Manually invoking resize()");
+                            force_resize = true;
+                            onresize();
+                            force_resize = false;
                         }
                     } else {
                         orthoeman_display = "none";

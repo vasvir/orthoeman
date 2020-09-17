@@ -254,6 +254,8 @@ public class AuthoringTool implements EntryPoint {
 			final int height_left = page_height - pageTitleContainerHeight - textTitleContainerHeight
 					- quizTitleContainerHeight - getDecorationHeight(getTextContainer())
 					- getDecorationHeight(getQuizContainer());
+			if (height_left < 0)
+				return 0;
 			return height_left / 2;
 		}
 
@@ -270,6 +272,8 @@ public class AuthoringTool implements EntryPoint {
 				+ " mediaTitleContainerHeight =" + mediaTitleContainerHeight + " mediaUploaderContainerHeight="
 				+ mediaUploaderContainerHeight + " mediaButtonContainerHeight=" + mediaButtonContainerHeight
 				+ " height_left=" + height_left);
+		if (height_left < 0)
+			return 0;
 		return height_left;
 	}
 
