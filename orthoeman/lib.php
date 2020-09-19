@@ -545,7 +545,7 @@ function get_orthoeman_frame($url, $display = "block", $toggle_link = FALSE) {
                             toggle_link.innerHTML = "'.$hide_text.'";
                         }
                         if (onresize) {
-                            console.log("Manually invoking resize()");
+                            // console.log("Manually invoking resize()");
                             force_resize = true;
                             onresize();
                             force_resize = false;
