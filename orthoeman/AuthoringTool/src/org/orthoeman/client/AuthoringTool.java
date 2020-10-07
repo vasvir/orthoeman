@@ -2239,8 +2239,7 @@ public class AuthoringTool implements EntryPoint {
 	}
 
 	private static int getDecorationHeight(Element el) {
-		return getPixels(GUI.getStyleProperty(el, "margin-top"))
-				+ getPixels(GUI.getStyleProperty(el, "margin-bottom"))
+		return getPixels(GUI.getStyleProperty(el, "margin-top")) + getPixels(GUI.getStyleProperty(el, "margin-bottom"))
 				+ getPixels(GUI.getStyleProperty(el, "padding-top"))
 				+ getPixels(GUI.getStyleProperty(el, "padding-bottom"))
 				+ getPixels(GUI.getStyleProperty(el, "border-top-width"))
