@@ -19,8 +19,8 @@ While there are plans to register this plugin with Moodle so far this has not ha
 
 * Clone this repository on your computer
 * Assuming that you have access to the host of Moodle via ssh
-** cd to plugin directory
-** Edit the scripts/deploy.sh in order to match your setup
-** Execute the scripts/deploy.sh to install/update the plugin into the Moodle directory.
+ * cd to plugin directory
+ * Edit the scripts/deploy.sh in order to match your setup
+ * Execute the scripts/deploy.sh to install/update the plugin into the Moodle directory.
 * Moodle will notice that you have a new plugin and it will ask you to activate it.
 * After activation you will be able to add an activity of type ORTHO-eMAN in your courses.
