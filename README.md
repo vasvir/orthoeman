@@ -23,9 +23,30 @@ The plugin has 3 main parts:
 While there are plans to register this plugin with Moodle so far this has not happened. So if you want to try it out and you are not afraid of some shell commands here you go.
 
 * Clone this repository on your computer
-* Assuming that you have access to the host of Moodle via ssh
-  * cd to plugin directory
-  * Edit the scripts/deploy.sh in order to match your setup
-  * Execute the scripts/deploy.sh to install/update the plugin into the Moodle directory.
+
+```
+git clone https://github.com/vasvir/orthoeman.git
+```
+
+Assuming that you have access to the host of Moodle via ssh
+
+* cd to plugin directory
+
+```
+    cd orthoeman
+```
+
+* Edit the scripts/deploy.sh in order to match your setup
+
+```
+    vi scripts/deploy.sh
+```
+
+* Execute the scripts/deploy.sh to install/update the plugin into the Moodle directory.
+
+```
+    ./scripts/deploy.sh
+```
+
 * Moodle will notice that you have a new plugin and it will ask you to activate it.
 * After activation you will be able to add an activity of type ORTHO-eMAN in your courses.
