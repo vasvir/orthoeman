@@ -9,8 +9,7 @@ The plugin offers the capability of media quizzes on annotated images via the su
 The students can then take the prepared quizzes using the provided Display tool.
 
 If you want to take a sneak peak on what a student sees during the exam you can watch a video here.
-[![Student Exam Environment. Click to start video.](https://i.vimeocdn.com/video/975966644_640.jpg "Student Exam ")](https://vimeo.com/437823452 "Student Exam Environment. Click to start video.")
-[![Student Exam Environment. Click to start video.](https://i.vimeocdn.com/video/975966644_640.jpg "Student Exam ")](https://vimeo.com/437823452 "Student Exam Environment. Click to start video.")
+[![Student Exam Environment. Click to start video.](https://i.vimeocdn.com/video/975966644_640.jpg "Student Exam. Click to start video.")](https://vimeo.com/437823452 "Student Exam Environment. Click to start video.")
 
 The video is available here: [https://vimeo.com/437823452](https://vimeo.com/437823452)
 
