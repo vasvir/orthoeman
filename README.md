@@ -50,3 +50,29 @@ Assuming that you have access to the host of Moodle via ssh
 
 * Moodle will notice that you have a new plugin and it will ask you to activate it.
 * After activation you will be able to add an activity of type ORTHO-eMAN in your courses.
+
+## Architecture
+
+### moodle plugin interface files
+* lib.php
+* version.php
+* view.php
+* mod_form.php
+* locallib.php
+* index.php
+* backup.php
+* restore.php
+
+### API exposed by orthoeman plugin files
+* get_timeleft.php
+* submit_grade.php
+* report_bug.php
+* get_details.php
+* get_answers.php
+* put_answer.php
+* delete_answers.php
+* get_resource.php
+* put_resource.php
+
+### 3rd party dependencies
+* byteserve.php
