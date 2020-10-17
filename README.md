@@ -1,5 +1,4 @@
 # ORTHO-eMAN
-
 This is the orthoeman **Moodle** plugin.
 
 While the plugin was developed initially under the ORTHO-eMAN European Project which was focused on orthopaedic and rehabilitation scopes, we believe that it is generic enough to be useful in the general case and not only for doctors.
@@ -20,7 +19,6 @@ Here is a screenshot of what the Authoring Tool looks like.
 More information in the online documentation: TODO link
 
 ## Getting Started
-
 While there are plans to register this plugin with Moodle so far this has not happened. So if you want to try it out and you are not afraid of some shell commands here you go.
 
 * Clone this repository on your computer
@@ -53,11 +51,10 @@ Assuming that you have access to the host of Moodle via ssh
 * After activation you will be able to add an activity of type ORTHO-eMAN in your courses.
 
 ## Architecture
-
 The plugin has 3 main parts:
-1. an Authoring Tool to design visual interacting courses
-1. a Display Tool for students in order to evaluate their knowledge and skills
-1. The main PHP Moodle plugin core that provides interoperability with Moodle
+1. Authoring Tool to design visual interacting courses
+1. Display Tool for students in order to evaluate their knowledge and skills
+1. Moodle plugin backend core that provides interoperability with Moodle
 
 ### Authoring Tool
 The Authoring Tool is a GWT project with an eclipse project file in case you would like to resume development.
@@ -69,7 +66,6 @@ The list of 3r party dependecies is:
 The Display tool is an Aptana powered eclipse project.
 
 The list of 3r party dependecies is:
-
 * FirePHP
 * jquery
 * jquery.countdown
@@ -85,7 +81,9 @@ The list of 3r party dependecies is:
 * spincontrol
 * turn
 
-### moodle plugin interface files
+### Moodle plugin backend core
+The plugin backend consists of the following files.
+
 * lib.php
 * version.php
 * view.php
@@ -95,7 +93,7 @@ The list of 3r party dependecies is:
 * backup.php
 * restore.php
 
-### API exposed by orthoeman plugin files
+The orthoeman plugin exposes an API for the Authoring and Display Tool to use. The following files implement this API.
 * get_timeleft.php
 * submit_grade.php
 * report_bug.php
@@ -106,5 +104,5 @@ The list of 3r party dependecies is:
 * get_resource.php
 * put_resource.php
 
-### 3rd party dependencies
+The list of 3r party dependecies is:
 * byteserve.php
