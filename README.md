@@ -13,10 +13,11 @@ If you want to take a sneak peak on what a student sees during the exam you can 
 
 The video is available here: [https://vimeo.com/437823452](https://vimeo.com/437823452)
 
-The plugin has 3 main parts:
-1. an Authoring Tool to design visual interacting courses
-1. a Display Tool for students in order to evaluate their knowledge and skills
-1. The main PHP Moodle plugin core that provides interoperability with Moodle
+More information in the online documentation: TODO link
+
+Here is a screenshot of what the Authoring Tool looks like.
+
+More information in the online documentation: TODO link
 
 ## Getting Started
 
@@ -52,6 +53,37 @@ Assuming that you have access to the host of Moodle via ssh
 * After activation you will be able to add an activity of type ORTHO-eMAN in your courses.
 
 ## Architecture
+
+The plugin has 3 main parts:
+1. an Authoring Tool to design visual interacting courses
+1. a Display Tool for students in order to evaluate their knowledge and skills
+1. The main PHP Moodle plugin core that provides interoperability with Moodle
+
+### Authoring Tool
+The Authoring Tool is a GWT project with an eclipse project file in case you would like to resume development.
+
+The list of 3r party dependecies is:
+* GWT elemental libraries
+
+### Display Tool
+The Display tool is an Aptana powered eclipse project.
+
+The list of 3r party dependecies is:
+
+* FirePHP
+* jquery
+* jquery.countdown
+* jquery.pnotify
+* jquery.prettyLoader
+* jquery-ui
+* jsrender
+* kinetic
+* modernizr
+* myimagetools
+* pixastic
+* Queue
+* spincontrol
+* turn
 
 ### moodle plugin interface files
 * lib.php
