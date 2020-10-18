@@ -1,3 +1,8 @@
+---
+title: Authoring Tool
+...
+
+
 Project 2011-1-RO1-LEO05-15321 (Contract LLP-LdV/ToI/2011/RO/008)\
 A web-based e-training platform for Extended Human Motion Investigation
 in Orthopedics ORTHO-eMAN
@@ -6,168 +11,13 @@ TEACHER
 
 GUIDE
 
-[]{#anchor}[]{#anchor-1}Introduction
-------------------------------------
+# Introduction
 
-The OrthoEMan Project is a technology transfer project based on a
-previous Leonardo project named e-Medi. The goal of the project is to
-integrate orthopedic content with a presentation and an evaluation
-aspect in order to be used in a e-Learning environment. To that end the
-chosen e-Learning system is moodle
-([http://www.moodle.org](http://www.moodle.org/)), and naturally the
-OrthoEMan has been developed as a moodle plug-in.
+The Authoring Tool is part of the orthoeman Moodle plugin and it designed
+so  course creators (authors, teachers) can annotate media and create
+quizzes based on them.
 
-The OrthoEMan plugin has 3 aspects
-
--   Authoring Tool
--   Display Tool
--   Moodle Administration
-
-The aim of this document is to provide simple guidelines for all parties
-interested in using the OrthoEMan plugin, including the authors
-(teachers) and the examinees (students),
-
-[]{#anchor-2}Software Requirements
-----------------------------------
-
-The OrthoEMan plugin and its modules have been developed with the newest
-W3C standards in mind in order to provide a modern experience to all
-faculty members including both the teacher and the students. Thus any
-HTML5 compatible browser should be enough for working with the OrthoEMan
-plugin. Furthermore the plugin has been explicitly tested with
-
--   Firefox 19
--   Chrome 23
--   Internet Explorer 10
-
-It is strongly advised to keep the computer which will access to the
-OrthoEMan facility in good shape with the latest updates applied.
-
-[]{#anchor-3}Entering Moodle
-----------------------------
-
-In order to visit the OrthoEMan\'s project development moodle site you
-have to startup your browser and type
-<http://orthoeman.iit.demokritos.gr/moodle/> in the browser\'s location
-(URL) bar[^1]. Your browser\'s window should look like the following
-picture.
-
-![Illustration 1: Moodle first
-contact](.//Pictures/100002010000068A000003DCC3117247.png){width="16.692cm"
-height="7.955cm"}
-
-The screen estate is divided in 3 main columns. Let\'s name it left
-panel, right panel and main area.The left panel is used mainly for
-navigation while the right panel has mostly informational or context
-specific actions. In the main area moodle displays the current
-activity\'s content.
-
-### []{#anchor-4}Getting Moodle Accounts
-
-While it is possible to visit the moodle development site without
-logging in you will not be able to see most of the interesting things.
-Therefore it is imperative to log in in order to fully use the system.
-
-In order to get a valid account please sent an e-mail to
-[mailto:orthoeman-devel\@iit.demokritos.gr](mailto:orthoeman-devel@iit.demokritos.gr)
-asking for a teacher account.
-
-This is the typical screen you see after a successful login.
-
-![Illustration 2: Moodle
-Navigation](.//Pictures/10000000000006900000041AF48EBB5E.png){width="15.685cm"
-height="9.802cm"}
-
-### []{#anchor-5}Course Hierarchy
-
-In moodle speak we have Course Categories which are groups of courses,
-In each category it is possible to have multiple courses. Each course
-may have one or more authors (editing teachers in moodle speak). Each
-course is divided in time slots and in each time slot it is allowed to
-have multiple activities. One such activity is the OrthoEMan activity
-and it corresponds to one case (in OrthoEMan speak.). In order to depict
-the above relationships graphically imagine the following tree.
-
--   Course Category
--   Course
--   Time Slot
--   Activity -- OrthoEMan activity (case)
-
-Navigate to the course of interest and you should see something like
-this.
-
-![Illustration 3: Course
-Outline](.//Pictures/100002010000068A000003DCE312E4E5.png){width="17cm"
-height="10.033cm"}
-
-In this example you can see a weekly outline with one OrthoEMan
-activity. The outline of the course, meaning the way the time slots are
-allocated, is entirely decision of the course creator. The course
-creator depending on the admininistrator may be different than the
-course author (editing teacher).
-
-One can think of this situation where the faculty decides about the
-format of the course (duration, exams, etc.) and the current teacher
-provides the content.
-
-![Illustration 4: Turn Editing On to edit an OrthoEMan
-case](.//Pictures/100000000000048E0000012899FDD767.png){width="17cm"
-height="4.314cm"}
-
-If you are a teacher a button in the right upper corner will prompt you
-to turn editing on. You have to press it in order to turn the editing
-on. This will allow you to enter the **Authoring Tool**. After you turn
-the editing on a series of icons should populate each activity in
-course\'s main area.
-
-You can add resources such as links, documents, images and HTML labels
-with the first combobox at the right side. You can also add various
-activities. One such activity is the OrthoEMan activity.
-
-### []{#anchor-6}Creating an OrthoEMan activity
-
-[]{#anchor-7}Let\' s create an OrthoEMan activity. Click on the right
-combobox in the desired time slot like the picture below:
-
-![Illustration 5: OrthoEMan case
-creation](.//Pictures/10000000000001C40000018B15B76C7F.png){width="11.957cm"
-height="10.326cm"}
-
-After that step a title and a brief description will be requested in
-order to fully qualify the lesson. The window\'s contents should look
-like the picture below.
-
-![Illustration 6: OrthoEMan case initial
-configuration](.//Pictures/100002010000068A000003DCFD319BDA.png){width="17cm"
-height="10.033cm"}
-
-The author has to enter the following pieces of information.
-
--   **Title**: That is the title of the case. It should be short and
-    descriptive. The title will be visible from the course outline.
--   **Description**: A more detailed description of the case. This text
-    may include HTML formatting elements and it will be displayed in the
-    first page of the **Display Tool**.
--   TimeOut: The amount of time a student is allowed to spend in a case.
-    The Display Tool will prevent further access or answer submissions
-    from the student after the timeout duration has been passed.
--   Cruize Mode: The Label has description \'\'Display Correct
-    Answers\'\'. This checkbox instructs Display Tool to display the
-    correct answer to all authorized students. This can be used for a
-    grace period after the exams have finished.
-
-When you are done configuring the case, press the button \'\'Save and
-Return to Course\'\'. In order to be able to alter the configuration you
-just entered from the Course Outline you have to click on the little
-icon that depicts a hand holding a pencil (update).
-
-In order to visit the **Authoring Tool** and actually edit the case you
-have to again click the update icon.
-
-[]{#anchor-8}Authoring Tool
----------------------------
-
-### []{#anchor-9}Entering Authoring Tool
+# Entering Authoring Tool
 
 The second time you visit the case configuration page you encounter a
 page similar to the picture but with one important difference. In the
@@ -179,7 +29,7 @@ way starting **Authoring Tool** in a new page. Note also, that the way
 of **Authoring Tool** invocation may change in general e.g. the link may
 become a button in the middle of the page etc.
 
-### []{#anchor-10}First Contact
+## First Contact
 
 The **Authoring Tool** is a web based application that helps the author
 to create or edit an OrthoEMan compatible case. In the figure below you
@@ -195,7 +45,7 @@ can see the opening screen for the program.
 
 Table 1: Authoring Tool
 
-#### []{#anchor-11}Toolbar
+## Toolbar
 
 The toolbar hosts 3 visible buttons. From left to right the buttons are
 **Save**, **Preview** (left aligned), and **Send a bug report** (right
@@ -430,6 +280,3 @@ authoring teacher specifies a multiple choice for the student to answer.
 
 The **Text -- Quiz** page type is a classic non multimedia quiz where
 the student can be examined in theory.
-
-[^1]: Note that the moodle installation has to be transferred from NCSR
-    Demokritos to University of Craiova in Romania.
