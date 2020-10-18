@@ -1,7 +1,13 @@
 # ORTHO-eMAN
 This is the orthoeman **Moodle** plugin.
 
-While the plugin was developed initially under the ORTHO-eMAN European Project which was focused on orthopaedic and rehabilitation scopes, we believe that it is generic enough to be useful in the general case and not only for doctors.
+The creation of this plugin was funded by a european project named
+ORTHO-eMAN. Here are the relevant details:
+>Project 2011-1-RO1-LEO05-15321 (Contract LLP-LdV/ToI/2011/RO/008)\
+>A web-based e-training platform for Extended Human Motion Investigation
+>in Orthopedics ORTHO-eMAN.
+
+While the plugin was developed initially under the ORTHO-eMAN European Project which was focused on orthopaedic and rehabilitation scopes, we believe that it is generic enough to be useful in a broader scope case and not only for medical doctors.
 
 The plugin offers the capability of media quizzes on annotated images via the supplied Authoring Tool.
 
