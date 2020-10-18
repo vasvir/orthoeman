@@ -63,9 +63,10 @@ The list of 3r party dependecies is:
 * GWT elemental libraries
 
 ### Display Tool
-The Display tool is an Aptana powered eclipse project.
+The Display tool is an Aptana powered eclipse project. It uses HTML5 Boilerplate project template.
 
 The list of 3r party dependecies is:
+* HTML5 Boilerplate
 * FirePHP
 * jquery
 * jquery.countdown
