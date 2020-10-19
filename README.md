@@ -18,7 +18,7 @@ If you want to take a sneak peak on what a student sees during the exam you can 
 
 The video is available here: [https://vimeo.com/437823452](https://vimeo.com/437823452)
 
-More information in the online documentation: TODO link
+[More information in the online documentation: https://github.com/vasvir/orthoeman/blob/master/AuthoringTool/doc/orthoeman-teacher-guide.md](https://github.com/vasvir/orthoeman/blob/master/AuthoringTool/doc/orthoeman-teacher-guide.md)
 
 Here is a screenshot of what the Authoring Tool looks like.
 
