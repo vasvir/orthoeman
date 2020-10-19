@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2020-10-19" />
+  <title>Authoring Tool</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="pandoc.css" />
+  \usepackage{float}
+  \let\origfigure\figure
+  \let\endorigfigure\endfigure
+  \renewenvironment{figure}[1][2] {
+      \expandafter\origfigure\expandafter[H]
+  } {
+      \endorigfigure
+  }
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Authoring Tool</h1>
+<p class="date">2020-10-19</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#authoring-tool"><span class="toc-section-number">1</span> Authoring Tool</a>
+<ul>
+<li><a href="#introduction"><span class="toc-section-number">1.1</span> Introduction</a></li>
+<li><a href="#entering-authoring-tool"><span class="toc-section-number">1.2</span> Entering Authoring Tool</a></li>
+<li><a href="#first-contact"><span class="toc-section-number">1.3</span> First Contact</a></li>
+<li><a href="#upper-toolbar"><span class="toc-section-number">1.4</span> Upper Toolbar</a></li>
+<li><a href="#page-container"><span class="toc-section-number">1.5</span> Page Container</a></li>
+<li><a href="#page-area"><span class="toc-section-number">1.6</span> Page Area</a></li>
+<li><a href="#media-container"><span class="toc-section-number">1.7</span> Media Container</a></li>
+<li><a href="#non-media-container"><span class="toc-section-number">1.8</span> Non Media Container</a></li>
+<li><a href="#case-structure"><span class="toc-section-number">1.9</span> Case structure</a>
+<ul>
+<li><a href="#image-text"><span class="toc-section-number">1.9.1</span> Image – Text</a></li>
+<li><a href="#image-quiz"><span class="toc-section-number">1.9.2</span> Image – Quiz</a></li>
+<li><a href="#image-range-quiz"><span class="toc-section-number">1.9.3</span> Image – Range Quiz</a></li>
+<li><a href="#video-text"><span class="toc-section-number">1.9.4</span> Video – Text</a></li>
+<li><a href="#video-quiz"><span class="toc-section-number">1.9.5</span> Video – Quiz</a></li>
+<li><a href="#text-quiz"><span class="toc-section-number">1.9.6</span> Text – Quiz</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 data-number="1" id="authoring-tool"><span class="header-section-number">1</span> Authoring Tool</h1>
+<h2 data-number="1.1" id="introduction"><span class="header-section-number">1.1</span> Introduction</h2>
+<p>The Authoring Tool is part of the orthoeman Moodle plugin and it designed so course creators (authors, teachers) can annotate media and create quizzes based on them.</p>
+<p>This document assumes that you have reached the point of creation of an activity of type orthoeman.</p>
+<h2 data-number="1.2" id="entering-authoring-tool"><span class="header-section-number">1.2</span> Entering Authoring Tool</h2>
+<p>The second time you visit the case configuration page you encounter a page similar to the picture but with one important difference. In the main area, at the start of the page, there is a link.</p>
+<figure>
+<img src="orthoeman_activity.png" title="Link to Authoring Tool" alt="" /><figcaption>Link to Authoring Tool</figcaption>
+</figure>
+<p>By clicking the link <strong>Authoring Tool</strong> will start in a frame inside moodle. If screen estate proves to be scarce we may consider of having a way starting <strong>Authoring Tool</strong> in a new page. Note also, that the way of <strong>Authoring Tool</strong> invocation may change in general e.g. the link may become a button in the middle of the page etc.</p>
+<h2 data-number="1.3" id="first-contact"><span class="header-section-number">1.3</span> First Contact</h2>
+<p>The <strong>Authoring Tool</strong> is a web based application that helps the author to create or edit an <strong>orthoeman</strong> compatible case. In the figure below you can see the opening screen for the program.</p>
+<figure>
+<img src="authoring_tool.png" title="Authoring Tool" alt="" /><figcaption>Authoring Tool</figcaption>
+</figure>
+<p>The main screen of the program is divided into the following areas:</p>
+<table>
+<caption>Main areas of Authoring Tool</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Upper Toolbar</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Pages Container</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Page Area</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Media Container</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Non Media Container (Text, Quiz, RangeQuiz)</td>
+</tr>
+</tbody>
+</table>
+<h2 data-number="1.4" id="upper-toolbar"><span class="header-section-number">1.4</span> Upper Toolbar</h2>
+<p>The toolbar hosts 4 visible buttons. From left to right the buttons are:</p>
+<ul>
+<li><p><strong>Fullscreen</strong>: Enters fullscreen for screen real estate challenged displays</p></li>
+<li><p><strong>Save</strong>: By pressing this the current state of the case is stored in the database case.</p></li>
+<li><p><strong>Preview</strong>: Invokes the <strong>Display Tool</strong> so the course author can preview the case from the student’s point of view. The time indication is always reset after the invocation as a teacher may take the exam as many he wishes. The <strong>Display Tool</strong> is either invoked in a different tab (or window) or it is reloaded it if it has been already loaded once.</p></li>
+<li><p><strong>Report a Bug</strong>: The button at the right side, with the warning sign and the envelop, is for the user to inform the <strong>orthoeman</strong> plugin authors about an unintended behavior of the program (namely a bug). See the picture below for an illustration of the bug reporting dialog. When you are filing a bug report try to be concise, short, and to the point. In the subject type the problem type you experience. In the body of message make sure you mention:</p>
+<ul>
+<li>What are you trying to do (intention of the user)</li>
+<li>What are you actually doing (series of events and user actions)</li>
+<li>How the computer responds (erratic (buggy) behavior)</li>
+<li>How the computer should respond (expected (correct) behavior)</li>
+</ul></li>
+</ul>
+<figure>
+<img src="bug_report.png" title="Bug Report" alt="" /><figcaption>Bug Report Tool</figcaption>
+</figure>
+<h2 data-number="1.5" id="page-container"><span class="header-section-number">1.5</span> Page Container</h2>
+<p>The page container contains the pages (slides) the author creates. There are 4 buttons in two button areas.</p>
+<ul>
+<li>In the lower button area the <strong>Add / Remove</strong> button pair helps the author to create new pages and remove unneeded ones.</li>
+<li>In the upper button area the <strong>Up / Down</strong> buttons helps the author to properly position the current page with respect to the other slides.</li>
+</ul>
+<figure>
+<img src="page_container.png" title="Page Container" alt="" /><figcaption>Page Container</figcaption>
+</figure>
+<p>The pages are identified by their title. Note that the <strong>Display Tool</strong> may not display the <strong>page title</strong>. Nevertheless a concise <strong>page title</strong> is strongly advised to be entered in order to help author organize the case and keep the overall overview. Note that the <strong>page title</strong> inside the slide will be updated when the <strong>Page Title</strong> textbox looses its input focus.</p>
+<h2 data-number="1.6" id="page-area"><span class="header-section-number">1.6</span> Page Area</h2>
+<p>The page area is depicted below.</p>
+<figure>
+<img src="page_area.png" title="Page Area" alt="" /><figcaption>Page Area</figcaption>
+</figure>
+<p>The page area has the following elements</p>
+<ul>
+<li><strong>Page Title</strong>: identifies the page and it is displayed in the Pages Container slide area for each page. It is strongly advised to enter a short descriptive page title that will organize the case flow. Note that the Display Tool may not display the Page Title text.</li>
+<li><strong>Page Type</strong>: a combobox that identifies the page type. See below for a discussion of the available page types.</li>
+<li><strong>Grade</strong>: The grade of the page. The sum of all pages will be normalized at the end anyway so it is possible to use any relative value without worrying about normalization issues.</li>
+<li><strong>Negative Grade</strong>: The punishment value that is subtracted from the positive grade for a wrong answer.</li>
+</ul>
+<h2 data-number="1.7" id="media-container"><span class="header-section-number">1.7</span> Media Container</h2>
+<p>The media container is the place where the image or the video is displayed. There is an upload button that initiates the upload procedure. In the case of image only <strong>PNG</strong> and <strong>JPEG</strong> image formats are allowed. In case of video the following video types are allowed (<strong>MPEG</strong>, <strong>MOV</strong>, <strong>AVI</strong>,and <strong>MP4</strong>). Note that <strong>AVI</strong> is not a video format itself, but a container format meaning it may include different video and audio encoding formats such as <strong>divx</strong>, <strong>xvid</strong>, <strong>theora</strong>, etc... In order for the video to be visible in modern HTML5 browsers it has to be trans-coded to <strong>mp4</strong> and to <strong>webm</strong> formats. This operation may take several minutes and it is being done during video upload. For a 10 second video a 90 second upload and trans-coding time may be required depending on the server load. Also the operation may fail if the original video format is not understandable by the <strong>ffmpeg</strong> which is used on the server to perform the trans-coding. In such a case you will have to resubmit the video using an alternative format.</p>
+<h2 data-number="1.8" id="non-media-container"><span class="header-section-number">1.8</span> Non Media Container</h2>
+<p>The <strong>Non Media Container</strong> contains the following widgets</p>
+<ul>
+<li><strong>Text</strong>: A text area for theory text, or instructions for the image hotspots.</li>
+<li><strong>Quiz</strong>: A multiple choice quiz. The widget supports arbitrary number of possible questions and arbitrary number of correct questions.</li>
+<li>Range Quiz: A quiz that accepts as correct any answer in the specified range.</li>
+</ul>
+<h2 data-number="1.9" id="case-structure"><span class="header-section-number">1.9</span> Case structure</h2>
+<p>A <strong>lesson</strong> consists of a collection of <strong>pages.</strong> Currently there are no limits in the number of pages a lesson can have. Each <strong>page</strong> has a a <strong>title</strong> and two <strong>items</strong> that should be edited and populated with the author's content. The left panel of the application is responsible for the management of the pages. There are buttons for adding and removing pages and buttons for page reordering. The content item can be of the following type:</p>
+<ul>
+<li>Text</li>
+<li>Image</li>
+<li>Video</li>
+<li>Quiz</li>
+<li>RangeQuiz</li>
+</ul>
+<p>However not all item type combinations are valid. A page can only have one the following item type combinations.</p>
+<ul>
+<li>Image – Text</li>
+<li>Image – Quiz</li>
+<li>Image – Range Quiz</li>
+<li>Video – Text</li>
+<li>Video – Quiz</li>
+<li>Text – Quiz</li>
+</ul>
+<p>A <strong>page </strong>is characterized by its title and by its type (the combination of item types)</p>
+<h3 data-number="1.9.1" id="image-text"><span class="header-section-number">1.9.1</span> Image – Text</h3>
+<p>The <strong>Image – Text</strong> page type used for two types of pages:</p>
+<ul>
+<li>Theory pages with informational areas pointed</li>
+<li>Hotspot identification by the students as it is depicted in the picture below.</li>
+</ul>
+<figure>
+<img src="image_text_hotspot.png" title="Image - Text: Hotspot" alt="" /><figcaption>Image - Text: Hotspot</figcaption>
+</figure>
+<p>The hotspots are drawn with a orange pen while the informational areas are drawn with blue pen. (consult the color map table below for reference). The choice where a drawing will be hotspot or informational is selected with the combobox in the middle of the tools as it is shown above. The difference is that hotspots are expected to be found by the students during the exam while the informational areas are shown to exemplify aspects of the theory.</p>
+<table>
+<caption>Color Map Table</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Hotspot</td>
+<td style="text-align: left;">Orange</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Informational</td>
+<td style="text-align: left;">Blue</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Helper</td>
+<td style="text-align: left;">Yellow</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Eraser</td>
+<td style="text-align: left;">Red</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Other uses</td>
+<td style="text-align: left;">Black</td>
+</tr>
+</tbody>
+</table>
+<p>The image container sports several tools in order to help the author properly annotate the image.</p>
+<figure>
+<img src="image_toolbar.png" title="Image Toolbar" alt="" /><figcaption>Image Toolbar</figcaption>
+</figure>
+<p>From left to right:</p>
+<ul>
+<li><p><strong>1-1</strong>: Removes all scaling. Every pixel of the image corresponds to one pixel of your viewing area.</p></li>
+<li><p><strong>Zoom In</strong>:. Zooms in by 20%.</p></li>
+<li><p><strong>Zoom Out</strong>: Zooms out by 20%.</p></li>
+<li><p><strong>Zoom To Fit width</strong>: Scales the image to fit in the width of your client area of your browser. This is the default behavior when an image is uploaded.</p></li>
+<li><p><strong>Zoom To Target</strong>: Requests from the user to draw a rectangle and then zooms to it.</p></li>
+<li><p><strong>Drawing Type combobox</strong>: Select if the next drawing area will be a hotspot or an informational area.</p></li>
+<li><p><strong>Rectangle</strong>: Draws a rectangle.</p></li>
+<li><p><strong>Ellipse</strong>: Draws an ellipse.</p></li>
+<li><p><strong>Polygon</strong>: Draws a polygon as a series of points. When the mouse hovers over the first point (within a range of 20 pixels) then a circle is drawn to indicate that the polygon will be closed. Although it is possible to create non convex polygons with this freehand drawing they should be avoided as it is possible to confuse the hotspot detection algorithm of the plugin.</p></li>
+<li><p><strong>Line</strong>: Draws a line. Lines are helper elements and they are painted with a yellow pen. Lines are not displayed in the <strong>Display Tool. </strong>If multiple lines are drawn and the mouse hovers over an intersection the automatic angle calculation tool kicks in and displays the angle in degrees.</p>
+<figure>
+<img src="angle_calculation.png" title="Angle calculation" alt="" /><figcaption>Angle calculation</figcaption>
+</figure></li>
+<li><p><strong>Crosshair Tool</strong>: Draws a croshair tool. Again this is a helper tool and it is painted with a yellow color meaning it is not displayed in the <strong>Display Tool</strong>.</p></li>
+<li><p><strong>Eraser</strong>: Paints with red every drawing when mouse hovers near it. When in red a click remove the drawing from the image. In order to remove multiple drawings a repeated selection of the <strong>eraser</strong> tool is required.</p></li>
+<li><p><strong>Image Editing Tools</strong>: Allows for brightness, contrast and image inversion control in order for medical finding to become apparent.</p>
+<figure>
+<img src="image_tools.png" title="Image Editing Tools" alt="" /><figcaption>Image Editing Tools</figcaption>
+</figure>
+<ul>
+<li><strong>Show Regions checkbox</strong>: Specifies if the hotspots will be displayed from the <strong>Display Tool </strong>during the exam after student's answer submission.</li>
+</ul></li>
+</ul>
+<h3 data-number="1.9.2" id="image-quiz"><span class="header-section-number">1.9.2</span> Image – Quiz</h3>
+<p>In the image below the <strong>Image – Quiz</strong> combination is depicted. When the quiz is selected the hotspot functionality is disabled. Existing hotspots are converted to informational drawings. The <strong>quiz</strong> widget is shown in the right side of the <strong>Authoring Tool.</strong> The quiz supports arbitrary number of possible questions and arbitrary number of correct questions. The widget supports addition and removal of questions but not reordering of the questions.</p>
+<figure>
+<img src="image_quiz.png" title="Image Quiz" alt="" /><figcaption>Image Quiz</figcaption>
+</figure>
+<h3 data-number="1.9.3" id="image-range-quiz"><span class="header-section-number">1.9.3</span> Image – Range Quiz</h3>
+<p>The <strong>Image – Range Quiz</strong> page type asks from the student to submit a value. The authoring teacher specifies in the right side panel the range of acceptable answers. Before entering the range the teacher should also type in a descriptive question just above the range. Make sure that units are properly specified in the question and in the entered region since the student can only type raw numbers.</p>
+<figure>
+<img src="image_range_quiz.png" title="Image Range Quiz" alt="" /><figcaption>Image Range-Quiz</figcaption>
+</figure>
+<h3 data-number="1.9.4" id="video-text"><span class="header-section-number">1.9.4</span> Video – Text</h3>
+<p>The <strong>Video – Text</strong> page type can be used only for theory and not for student's evaluation. The authoring teacher provides a video (be patient during upload and trans-coding) and a text description highlighting the relevant points.</p>
+<h3 data-number="1.9.5" id="video-quiz"><span class="header-section-number">1.9.5</span> Video – Quiz</h3>
+<p>The <strong>Video – Quiz</strong> page type is like the <strong>Image – Quiz</strong> where the authoring teacher specifies a multiple choice for the student to answer.</p>
+<h3 data-number="1.9.6" id="text-quiz"><span class="header-section-number">1.9.6</span> Text – Quiz</h3>
+<p>The <strong>Text – Quiz</strong> page type is a classic non multimedia quiz where the student can be examined in theory.</p>
+</body>
+</html>
