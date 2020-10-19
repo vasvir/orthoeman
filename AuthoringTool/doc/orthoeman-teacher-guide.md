@@ -2,26 +2,24 @@
 title: Authoring Tool
 ...
 
+# Authoring Tool
 
-Project 2011-1-RO1-LEO05-15321 (Contract LLP-LdV/ToI/2011/RO/008)\
-A web-based e-training platform for Extended Human Motion Investigation
-in Orthopedics ORTHO-eMAN
-
-TEACHER
-
-GUIDE
-
-# Introduction
+## Introduction
 
 The Authoring Tool is part of the orthoeman Moodle plugin and it designed
 so  course creators (authors, teachers) can annotate media and create
 quizzes based on them.
 
-# Entering Authoring Tool
+This document assumes that you have reached the point of creation of an
+activity of type orthoeman.
+
+## Entering Authoring Tool
 
 The second time you visit the case configuration page you encounter a
 page similar to the picture but with one important difference. In the
 main area, at the start of the page, there is a link.
+
+![Link to Authoring Tool](orthoeman_activity.png "Link to Authoring Tool")
 
 By clicking the link **Authoring Tool** will start in a frame inside
 moodle. If screen estate proves to be scarce we may consider of having a
@@ -32,80 +30,92 @@ become a button in the middle of the page etc.
 ## First Contact
 
 The **Authoring Tool** is a web based application that helps the author
-to create or edit an OrthoEMan compatible case. In the figure below you
+to create or edit an **orthoeman** compatible case. In the figure below you
 can see the opening screen for the program.
 
+![Authoring Tool](authoring_tool.png "Authoring Tool")
+
+The main screen of the program is divided into the following areas:
+
   --- ---------------------------------------------
-  1   Toolbar
+  1   Upper Toolbar
   2   Pages Container
   3   Page Area
   4   Media Container
   5   Non Media Container (Text, Quiz, RangeQuiz)
   --- ---------------------------------------------
 
-Table 1: Authoring Tool
+  Table: Main areas of Authoring Tool
 
-## Toolbar
+## Upper Toolbar
 
-The toolbar hosts 3 visible buttons. From left to right the buttons are
-**Save**, **Preview** (left aligned), and **Send a bug report** (right
-aligned). With the **Save** button one can save in the database the
-case. A teacher may choose to quickly preview the case in order to get
-an idea what students will face when they take the exam. When the
-**Preview **button is clicked **Authoring Tool** will invoke the
-**Display Tool** in a different tab (or window) or reloads it if it
-already exists.
+The toolbar hosts 4 visible buttons. From left to right the buttons are:
 
-The button at the right side, with the warning sign and the envelop, is
-for the user to inform the OrthoEMan plugin authors about an unintended
-behavior of the program (namely a bug). See the picture below for an
-illustration of the bug reporting dialog. When you are filing a bug
-report try to be concise, short, and to the point. In the subject type
-the problem type you experience. In the body of message make sure you
-mention:
+- **Fullscreen**: Enters fullscreen for screen real estate challenged displays
 
--   What are you trying to do (intention of the user)
--   What are you actually doing (series of events and user actions)
--   How the computer responds (erratic (buggy) behavior)
--   How the computer should respond (expected (correct) behavior)
+- **Save**: By pressing this the current state of the case is stored in the database case.
 
-Finally there is one hidden button aimed at advancing debugging users.
-The button can be made visible by the **Moodle** administrator or by a
-user\'s browser with debug facilities (such as firebug). The button
-toggles a console with debug messages representing user events and
-program internal state. The button is positioned left of the **Report a
-bug** button.
+- **Preview**: Invokes the **Display Tool** so the course author can preview the
+case from the student's point of view. The time indication is always reset
+after the invocation as a teacher may take the exam as many he wishes.  The
+**Display Tool** is either invoked in a different tab (or window) or it is
+reloaded it if it has been already loaded once.
 
-#### []{#anchor-12}Pages Container
+- **Report a Bug**: The button at the right side, with the warning sign and
+the envelop, is for the user to inform the **orthoeman** plugin authors about an
+unintended behavior of the program (namely a bug).  See the picture below
+for an illustration of the bug reporting dialog.  When you are filing a bug
+report try to be concise, short, and to the point.  In the subject type the
+problem type you experience.  In the body of message make sure you mention:
 
-The pages container contains the pages (slides) the author creates.
-There are 4 buttons. The **Add / Remove** button pair helps the author
-to create new pages and remove unneeded ones. The **Up / Down** buttons
+    - What are you trying to do (intention of the user)
+    - What are you actually doing (series of events and user actions)
+    - How the computer responds (erratic (buggy) behavior)
+    - How the computer should respond (expected (correct) behavior)
+
+![Bug Report Tool](bug_report.png "Bug Report")
+
+## Page Container
+
+The page container contains the pages (slides) the author creates.
+There are 4 buttons in two button areas.
+
+- In the lower button area the **Add / Remove** button pair helps the author
+to create new pages and remove unneeded ones.
+- In the upper button area the **Up / Down** buttons
 helps the author to properly position the current page with respect to
-the other slides. The pages are identified by their title. The **Display
+the other slides.
+
+![Page Container](page_container.png "Page Container")
+
+The pages are identified by their title. Note that the **Display
 Tool** may not display the **page title**. Nevertheless a concise **page
 title** is strongly advised to be entered in order to help author
 organize the case and keep the overall overview. Note that the **page
 title** inside the slide will be updated when the **Page Title** textbox
 looses its input focus.
 
-#### []{#anchor-13}Page Area
+## Page Area
+
+The page area is depicted below.
+
+![Page Area](page_area.png "Page Area")
 
 The page area has the following elements
 
--   Page Title: identifies the page and it is displayed in the Pages
-    Container slide area for each page. It is strongly advised to enter
-    a short descriptive page title that will organize the case flow.
-    Note that the Display Tool may not display the Page Title text.
--   Page Type: a combobox that identifies the page type. See below for a
-    discussion of the available page types.
--   Grade: The grade of the page. The sum of all pages will be
-    normalized at the end anyway so it is possible to use any relative
-    value without worrying about normalization issues.
--   Negative Grade: The punishment value that is subtracted from the
-    positive grade for a wrong answer.
+- **Page Title**: identifies the page and it is displayed in the Pages
+Container slide area for each page. It is strongly advised to enter
+a short descriptive page title that will organize the case flow.
+Note that the Display Tool may not display the Page Title text.
+- **Page Type**: a combobox that identifies the page type. See below for a
+discussion of the available page types.
+- **Grade**: The grade of the page. The sum of all pages will be
+normalized at the end anyway so it is possible to use any relative
+value without worrying about normalization issues.
+- **Negative Grade**: The punishment value that is subtracted from the
+positive grade for a wrong answer.
 
-#### []{#anchor-14}Media Container
+## Media Container
 
 The media container is the place where the image or the video is
 displayed. There is an upload button that initiates the upload
@@ -124,18 +134,18 @@ may fail if the original video format is not understandable by the
 such a case you will have to resubmit the video using an alternative
 format.
 
-#### []{#anchor-15}Non Media Container
+## Non Media Container
 
 The **Non Media Container** contains the following widgets
 
--   Text: A text area for theory text, or instructions for the image
+-   **Text**: A text area for theory text, or instructions for the image
     hotspots.
--   Quiz: A multiple choice quiz. The widget supports arbitrary number
+-   **Quiz**: A multiple choice quiz. The widget supports arbitrary number
     of possible questions and arbitrary number of correct questions.
 -   Range Quiz: A quiz that accepts as correct any answer in the
     specified range.
 
-### []{#anchor-16}Case structure
+## Case structure
 
 A **lesson** consists of a collection of **pages.** Currently there are
 no limits in the number of pages a lesson can have. Each **page** has a
@@ -164,13 +174,15 @@ one the following item type combinations.
 A **page **is characterized by its title and by its type (the
 combination of item types)
 
-#### []{#anchor-17}Image -- Text
+### Image -- Text
 
 The **Image -- Text** page type used for two types of pages:
 
 -   Theory pages with informational areas pointed
 -   Hotspot identification by the students as it is depicted in the
     picture below.
+
+![Image - Text: Hotspot](image_text_hotspot.png "Image - Text: Hotspot")
 
 The hotspots are drawn with a orange pen while the informational areas
 are drawn with blue pen. (consult the color map table below for
@@ -188,10 +200,12 @@ exemplify aspects of the theory.
   Other uses      Black
   --------------- --------
 
-Table 2: Color Map Table
+Table: Color Map Table
 
 The image container sports several tools in order to help the author
 properly annotate the image.
+
+![Image Toolbar](image_toolbar.png "Image Toolbar")
 
 From left to right:
 
@@ -229,6 +243,8 @@ From left to right:
     intersection the automatic angle calculation tool kicks in and
     displays the angle in degrees.
 
+    ![Angle calculation](angle_calculation.png "Angle calculation")
+
 -   **Crosshair Tool**: Draws a croshair tool. Again this is a helper
     tool and it is painted with a yellow color meaning it is not
     displayed in the **Display Tool**.
@@ -241,11 +257,13 @@ From left to right:
 -   **Image Editing Tools**: Allows for brightness, contrast and image
     inversion control in order for medical finding to become apparent.
 
--   **Show Regions checkbox**: Specifies if the hotspots will be
+    ![Image Editing Tools](image_tools.png "Image Editing Tools")
+
+    -   **Show Regions checkbox**: Specifies if the hotspots will be
     displayed from the **Display Tool **during the exam after student\'s
     answer submission.
 
-#### []{#anchor-18}Image -- Quiz
+### Image -- Quiz
 
 In the image below the **Image -- Quiz** combination is depicted. When
 the quiz is selected the hotspot functionality is disabled. Existing
@@ -255,7 +273,9 @@ arbitrary number of possible questions and arbitrary number of correct
 questions. The widget supports addition and removal of questions but not
 reordering of the questions.
 
-#### []{#anchor-19}Image -- Range Quiz
+![Image Quiz](image_quiz.png "Image Quiz")
+
+### Image -- Range Quiz
 
 The **Image -- Range Quiz** page type asks from the student to submit a
 value. The authoring teacher specifies in the right side panel the range
@@ -264,19 +284,21 @@ type in a descriptive question just above the range. Make sure that
 units are properly specified in the question and in the entered region
 since the student can only type raw numbers.
 
-#### []{#anchor-20}Video -- Text
+![Image Range-Quiz](image_range_quiz.png "Image Range Quiz")
+
+### Video -- Text
 
 The **Video -- Text** page type can be used only for theory and not for
 student\'s evaluation. The authoring teacher provides a video (be
 patient during upload and trans-coding) and a text description
 highlighting the relevant points.
 
-#### []{#anchor-21}Video -- Quiz
+### Video -- Quiz
 
 The **Video -- Quiz** page type is like the **Image -- Quiz** where the
 authoring teacher specifies a multiple choice for the student to answer.
 
-#### []{#anchor-22}***Text*** -- Quiz
+### Text -- Quiz
 
 The **Text -- Quiz** page type is a classic non multimedia quiz where
 the student can be examined in theory.
