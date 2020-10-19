@@ -1,0 +1,1 @@
+../../AuthoringTool/doc/Makefile
