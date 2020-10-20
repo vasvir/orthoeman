@@ -18,11 +18,12 @@ If you want to take a sneak peak on what a student sees during the exam you can 
 
 The video is available here: [https://vimeo.com/437823452](https://vimeo.com/437823452)
 
-[More information in the online documentation: https://github.com/vasvir/orthoeman/blob/master/AuthoringTool/doc/orthoeman-teacher-guide.md](https://github.com/vasvir/orthoeman/blob/master/AuthoringTool/doc/orthoeman-teacher-guide.md)
+Step by step instructions are available in [Display Tool Documentation](https://github.com/vasvir/orthoeman/blob/master/Display/docs/orthoeman-student-guide.md)
 
-Here is a screenshot of what the Authoring Tool looks like.
+Quizzes have been created with the Authoring Tool. Here is a screenshot of what the Authoring Tool looks like.
+![Authoring Tool](https://raw.githubusercontent.com/vasvir/orthoeman/master/AuthoringTool/doc/image_text_hotspot.png "Authoring Tool")
 
-More information in the online documentation: TODO link
+Step by step instructions are available in [Authoring Tool Documentation](https://github.com/vasvir/orthoeman/blob/master/AuthoringTool/doc/orthoeman-teacher-guide.md)
 
 ## Getting Started
 While there are plans to register this plugin with Moodle so far this has not happened. So if you want to try it out and you are not afraid of some shell commands here you go.
