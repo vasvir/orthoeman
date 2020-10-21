@@ -16,7 +16,7 @@ The title and the case's description that are displayed in the initial
 screen of the **Display Tool** have been entered in case configuration
 page as it is illustrated at Illustration.
 
-![Illustration 1: Display Tool: First Contact](Pictures/illustration_1.png)
+![Illustration 1: Display Tool: First Contact](illustration_1.png)
 
 The student can navigate between pages by using the buttons on the upper
 part of the screen. The clock that shows the remaining time for the
@@ -25,7 +25,7 @@ has two mode: the compact mode which it is the default and the expanded
 mode which it is evoked by clicking the compact clock. Illustration 2
 shows these two clock versions.
 
-![Illustration 2: Clock showing the remaining time until the lesson completion (a) compact version (b) expanded version](./Pictures/illustration_2.png)
+![Illustration 2: Clock showing the remaining time until the lesson completion (a) compact version (b) expanded version](illustration_2.png)
 
 ## Pages Types
 
@@ -38,7 +38,7 @@ if his answer is correct or wrong (Illustration (a) and (b)). The
 Display Tool may provide the correct answer if the student answer it
 wrong but only by the teacher consent.
 
-![Illustration 3: Responses to the students answers (a) response to a correct answer (b) response to a wrong answer](./Pictures/illustration_3.png)
+![Illustration 3: Responses to the students answers (a) response to a correct answer (b) response to a wrong answer](illustration_3.png)
 
 ### Image - Text
 
@@ -46,7 +46,7 @@ The **Image - Text** page type is used to present theory pages which
 they contain just an image and text. Moreover, it may used for hotspot
 identification by the students.
 
-![Illustration 4: Image Tools](Pictures/illustration_4.png)
+![Illustration 4: Image Tools](illustration_4.png)
 
 When a page contains an image, the student has in his disposal a number
 of tools in order to manipulate the image to help him answer the
@@ -71,7 +71,7 @@ question. Illustration depicts those tools. From left to right:
 -   **Reset**: Resets the image to original state. Removes the
     Brightness/Contrast and Invert effects.
 
-![Illustration 5: Line drawing and angle calculation](./Pictures/illustration_5.png)
+![Illustration 5: Line drawing and angle calculation](illustration_5.png)
 
 The Illustration shows the **image - text** page type when involves
 hotspot identification. The student by pressing the **Hotspot Drawing
@@ -81,7 +81,7 @@ hovering the mouse cursor over it and pressing the left button. When the
 required hotspots are created by the student, the "Submit your Answer"
 button appears and the answer is ready to be send.
 
-![Illustration 6: Image - Text](Pictures/illustration_6.png)
+![Illustration 6: Image - Text](illustration_6.png)
 
 ### Image - Quiz
 
@@ -91,7 +91,7 @@ from the available answers. When at least one answer is selected, a
 button labeled "Submit your Answer" will appear. The student by pressing
 this button, he submit his answer.
 
-![Illustration 7: Image - Quiz](Pictures/illustration_7.png)
+![Illustration 7: Image - Quiz](illustration_7.png)
 
 ### Image - Range Quiz
 
@@ -109,7 +109,7 @@ student\'s evaluation. It is not requires any action from the student.
 The authoring teacher provides a video and a text that highlights the
 more relevant points of it.
 
-![Illustration 8: Image - Range Quiz](Pictures/illustration_8.png)
+![Illustration 8: Image - Range Quiz](illustration_8.png)
 
 ### Video - Quiz
 
@@ -126,4 +126,4 @@ The Text - Quiz page type is a classic non-multimedia quiz where the
 student reads the question and the accompany theory and selects one or
 more answers from the provided answers.
 
-![Illustration 9: Video - Quiz](Pictures/illustration_9.png)
+![Illustration 9: Video - Quiz](illustration_9.png)
