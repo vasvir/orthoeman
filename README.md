@@ -18,7 +18,7 @@ If you want to take a sneak peak on what a student sees during the exam you can 
 
 The video is available here: [https://vimeo.com/437823452](https://vimeo.com/437823452)
 
-Step by step instructions are available in [Display Tool Documentation](https://github.com/vasvir/orthoeman/blob/master/Display/docs/orthoeman-student-guide.md)
+Step by step instructions are available in [Display Tool Documentation](https://github.com/vasvir/orthoeman/blob/master/Display/doc/orthoeman-student-guide.md)
 
 Quizzes have been created with the Authoring Tool. Here is a screenshot of what the Authoring Tool looks like.
 ![Authoring Tool](https://raw.githubusercontent.com/vasvir/orthoeman/master/AuthoringTool/doc/image_text_hotspot.png "Authoring Tool")
