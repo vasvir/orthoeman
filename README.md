@@ -9,7 +9,7 @@ ORTHO-eMAN. Here are the relevant details:
 
 While the plugin was developed initially under the ORTHO-eMAN European Project which was focused on orthopaedic and rehabilitation scopes, we believe that it is generic enough to be useful in a broader scope case and not only for medical doctors.
 
-The plugin offers the capability of media quizzes on annotated images via the supplied Authoring Tool.
+The plugin offers the capability to create media quizzes on annotated images via the supplied Authoring Tool.
 
 The students can then take the prepared quizzes using the provided Display tool.
 
@@ -28,7 +28,9 @@ Step by step instructions are available in [Authoring Tool Documentation](https:
 ## Getting Started
 While there are plans to register this plugin with Moodle so far this has not happened. So if you want to try it out and you are not afraid of some shell commands here you go.
 
-* Clone this repository on your computer
+**Note:** Do not mindlessly clone the repository inside the moodle directory. This will not work because a difference structure is expected during deployment. Instead try these steps:
+
+* Clone this repository on your computer. Location does not play any role as long as it is not the moodle plugins destination folder.
 
 ```
 git clone https://github.com/vasvir/orthoeman.git
@@ -36,7 +38,7 @@ git clone https://github.com/vasvir/orthoeman.git
 
 Assuming that you have access to the host of Moodle via ssh
 
-* cd to plugin directory
+* cd to plugin directory of the newly cloned orthoeman repository
 
 ```
     cd orthoeman
@@ -70,7 +72,7 @@ The list of 3r party dependecies is:
 * GWT elemental libraries
 
 ### Display Tool
-The Display tool is an Aptana powered eclipse project. It uses HTML5 Boilerplate project template.
+The Display tool is an Aptana powered eclipse project. It uses HTML5 Boilerplate project template and some PHP.
 
 The list of 3r party dependecies is:
 * HTML5 Boilerplate
